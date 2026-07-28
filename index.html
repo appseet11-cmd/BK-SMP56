@@ -38,8 +38,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="image" href="https://cdn-useast1.kapwing.com/Logo_SMPN_56_01_3-Pp6NEKpn1ewFOF.jpg">
-<link rel="icon" type="image/jpeg" href="logo-sekolah.jpg" id="favicon">
-<link rel="apple-touch-icon" href="logo-sekolah.jpg" id="apple-touch-icon">
+<link rel="icon" type="image/jpeg" href="https://cdn-useast1.kapwing.com/Logo_SMPN_56_01_3-Pp6NEKpn1ewFOF.jpg">
+<link rel="apple-touch-icon" href="https://cdn-useast1.kapwing.com/Logo_SMPN_56_01_3-Pp6NEKpn1ewFOF.jpg">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"EducationalOrganization","name":"SMP Negeri 56 Jakarta","alternateName":"SMPN 56 Jakarta","url":"https://appseet11-cmd.github.io/","logo":"https://cdn-useast1.kapwing.com/Logo_SMPN_56_01_3-Pp6NEKpn1ewFOF.jpg","description":"Platform pembelajaran digital Bimbingan Konseling terintegrasi untuk siswa kelas VII, VIII, dan IX.","address":{"@type":"PostalAddress","addressLocality":"Jakarta","addressRegion":"DKI Jakarta","addressCountry":"ID"},"department":{"@type":"EducationalOrganization","name":"Guru Bimbingan Konseling"},"sameAs":["https://appseet11-cmd.github.io/"]}
 </script>
@@ -78,33 +78,6 @@ img { max-width: 100%; height: auto; display: block; }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.2); } }
 .logo-container { width: 90px; height: 90px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; padding: 10px; transition: transform 0.3s ease; }
 .logo-container:hover { transform: scale(1.05) rotate(-2deg); }
-.logo-upload-btn {
-    position: absolute;
-    bottom: -5px;
-    right: -5px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--gradient-accent);
-    border: 2px solid white;
-    color: var(--primary);
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.logo-container:hover .logo-upload-btn {
-    opacity: 1;
-}
-
-.logo-upload-btn:hover {
-    transform: scale(1.1);
-}
 .site-logo { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3)); }
 .hero-landing { background: linear-gradient(180deg, #0b1e54 0%, #1a369c 60%, #f8fafc 100%); padding: 80px 24px 120px; position: relative; overflow: hidden; color: white; }
 .hero-landing::before { content: ''; position: absolute; top: -50%; left: -20%; width: 140%; height: 200%; background: radial-gradient(circle at 30% 40%, rgba(255,213,79,0.1) 0%, transparent 50%), radial-gradient(circle at 70% 60%, rgba(59,130,246,0.15) 0%, transparent 50%); animation: floatBg 20s ease-in-out infinite; }
@@ -911,20 +884,16 @@ body { background: white; font-size: 12pt; color: black; }
 <div class="toast" id="toast"></div>
 <header class="header" role="banner">
 <div class="header-inner">
-<div class="logo-container" id="logo-sekolah-container">
-<img src="logo-sekolah.jpg" alt="Logo SMP Negeri 56 Jakarta" class="site-logo" id="logo-sekolah" loading="eager" width="90" height="90">
-<input type="file" id="upload-logo-sekolah" accept="image/*" style="display:none" onchange="handleLogoUpload(event, 'logo-sekolah')">
-<button class="logo-upload-btn" onclick="document.getElementById('upload-logo-sekolah').click()" title="Upload Logo Sekolah">📷</button>
+<div class="logo-container">
+<img src="https://cdn-useast1.kapwing.com/Logo_SMPN_56_01_3-Pp6NEKpn1ewFOF.jpg" alt="Logo SMP Negeri 56 Jakarta" class="site-logo" loading="eager" width="90" height="90">
 </div>
 <div class="header-text">
 <h1>Platform Bimbingan Konseling Digital</h1>
 <h2>SMP NEGERI 56 JAKARTA</h2>
 <span class="tagline">🎓 Pembelajaran Terintegrasi untuk Kelas VII, VIII, IX</span>
 </div>
-<div class="logo-container" id="logo-kedinasan-container">
-<img src="logo-kedinasan.jpg" alt="Logo Kedinasan BK SMPN 56 Jakarta" class="site-logo" id="logo-kedinasan" loading="eager" width="90" height="90">
-<input type="file" id="upload-logo-kedinasan" accept="image/*" style="display:none" onchange="handleLogoUpload(event, 'logo-kedinasan')">
-<button class="logo-upload-btn" onclick="document.getElementById('upload-logo-kedinasan').click()" title="Upload Logo Kedinasan">📷</button>
+<div class="logo-container">
+<img src="https://cdn-useast1.kapwing.com/Logo_SMPN_56_01_3-Pp6NEKpn1ewFOF.jpg" alt="Logo Kedinasan BK SMPN 56 Jakarta" class="site-logo" loading="eager" width="90" height="90">
 </div>
 </div>
 </header>
@@ -3194,40 +3163,6 @@ function filterRekapCards(category, clickedBtn) {
     showToast('🏷️ Filter: Kelas ' + labelMap[category] + ' (' + visibleCount + ' kelas)', 'info');
   }
 }
-// Tambahkan di dalam tag <script>
-function handleLogoUpload(event, logoType) {
-const file = event.target.files[0];
-if (!file) return;
-
-if (!file.type.startsWith('image/')) {
-showToast('❌ File harus berupa gambar!', 'error');
-return;
-}
-
-const reader = new FileReader();
-reader.onload = function(e) {
-const imgElement = document.getElementById(logoType);
-imgElement.src = e.target.result;
-
-// Simpan ke localStorage untuk persistensi
-localStorage.setItem(logoType + '_src', e.target.result);
-showToast('✅ Logo berhasil diupload!', 'success');
-};
-reader.readAsDataURL(file);
-}
-
-// Load logo dari localStorage saat halaman dimuat
-window.addEventListener('DOMContentLoaded', () => {
-const logoSekolah = localStorage.getItem('logo-sekolah_src');
-const logoKedinasan = localStorage.getItem('logo-kedinasan_src');
-
-if (logoSekolah) {
-document.getElementById('logo-sekolah').src = logoSekolah;
-}
-if (logoKedinasan) {
-document.getElementById('logo-kedinasan').src = logoKedinasan;
-}
-});
 </script>
 </body>
 </html>
