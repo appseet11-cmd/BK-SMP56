@@ -547,7 +547,76 @@ img { max-width: 100%; height: auto; display: block; }
 .admin56-page .a56-footer p { font-size: 0.88rem; margin-bottom: 0.4rem; }
 .admin56-page .a56-footer .a56-footer-divider { width: 60px; height: 2px; background: #fb923c; margin: 1.2rem auto; }
 .admin56-page .a56-footer .a56-copyright { font-size: 0.82rem; color: rgba(255, 255, 255, 0.5); margin-top: 0.8rem; }
-
+/* ================================================================ */
+/* ========== ADMINISTRASI BK 56 - UKURAN TEMPLATE STABIL ========== */
+/* ================================================================ */
+.admin56-page .a56-grid {
+  grid-auto-rows: 1fr;
+  align-items: stretch;
+}
+.admin56-page .a56-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  height: 100%;
+  box-sizing: border-box;
+}
+.admin56-page .a56-card > p {
+  flex: 0 0 auto;
+  min-height: 44px;
+  line-height: 1.5;
+}
+.admin56-page .a56-link-embedded {
+  flex: 1 1 auto;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border: 2px dashed #fb923c;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  min-height: 110px;
+  max-height: 140px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.admin56-page .a56-link-embedded .a56-link-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: #9a3412;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  min-height: 20px;
+  flex: 0 0 auto;
+}
+.admin56-page .a56-link-embedded .a56-link-url {
+  display: block;
+  font-size: 0.82rem;
+  color: #7c2d12;
+  font-family: 'Consolas', 'Monaco', monospace;
+  word-break: break-all;
+  background: #ffffff;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #fed7aa;
+  min-height: 52px;
+  max-height: 70px;
+  overflow-y: auto;
+  line-height: 1.4;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+}
+.admin56-page .a56-btn {
+  flex: 0 0 auto;
+  margin-top: auto;
+}
+.admin56-page .a56-card.hidden-by-tag {
+  display: none !important;
+}
 @media (max-width: 900px) {
 .panduanbk-dl-page .dl-container { grid-template-columns: 1fr; margin-top: -1.5rem; }
 .panduanbk-dl-page .dl-sidebar { position: relative; top: 0; max-height: none; }
@@ -600,6 +669,154 @@ body { background: white; font-size: 12pt; color: black; }
 .page { display: block !important; max-width: 100%; padding: 0; }
 .header { background: white !important; color: black !important; box-shadow: none; }
 .footer { background: white !important; color: black !important; border-top: 2px solid #000; }
+}
+/* ================================================================ */
+/* ========== ABSENSI TAG FILTER ========== */
+/* ================================================================ */
+.page.ab .absensi-tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  border: 2px solid #bfdbfe;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+}
+.page.ab .absensi-tag-filter-label {
+  width: 100%;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e40af;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.page.ab .absensi-tag-btn {
+  background: #ffffff;
+  border: 2px solid #bfdbfe;
+  color: #1e40af;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.page.ab .absensi-tag-btn:hover {
+  background: #eff6ff;
+  border-color: #60a5fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(59, 130, 246, 0.18);
+}
+.page.ab .absensi-tag-btn.active {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+  color: #fff;
+  border-color: #1e40af;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+  transform: translateY(-1px);
+}
+.page.ab .absensi-tag-btn .tag-count {
+  background: rgba(59, 130, 246, 0.15);
+  color: #1e40af;
+  padding: 0.15rem 0.55rem;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.page.ab .absensi-tag-btn.active .tag-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.page.ab .link-box.hidden-by-tag {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .page.ab .absensi-tag-filter { padding: 0.8rem; gap: 0.4rem; }
+  .page.ab .absensi-tag-btn { font-size: 0.78rem; padding: 0.45rem 0.85rem; }
+}
+/* ================================================================ */
+/* ========== REKAP TAG FILTER ========== */
+/* ================================================================ */
+.page.ra .rekap-tag-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+  border: 2px solid #fde68a;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+}
+.page.ra .rekap-tag-filter-label {
+  width: 100%;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #92400e;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.page.ra .rekap-tag-btn {
+  background: #ffffff;
+  border: 2px solid #fde68a;
+  color: #92400e;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: inherit;
+  white-space: nowrap;
+}
+.page.ra .rekap-tag-btn:hover {
+  background: #fffbeb;
+  border-color: #fbbf24;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.18);
+}
+.page.ra .rekap-tag-btn.active {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #fff;
+  border-color: #d97706;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+  transform: translateY(-1px);
+}
+.page.ra .rekap-tag-btn .tag-count {
+  background: rgba(245, 158, 11, 0.15);
+  color: #92400e;
+  padding: 0.15rem 0.55rem;
+  border-radius: 100px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.page.ra .rekap-tag-btn.active .tag-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+.page.ra .link-box.hidden-by-tag {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .page.ra .rekap-tag-filter { padding: 0.8rem; gap: 0.4rem; }
+  .page.ra .rekap-tag-btn { font-size: 0.78rem; padding: 0.45rem 0.85rem; }
 }
 </style>
 </head>
@@ -1921,7 +2138,8 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <div class="a56-tag-filter-label">🏷️ Filter Kategori Dokumen:</div>
 <button class="a56-tag-btn active" data-filter="all" onclick="filterA56Cards('vii','all',this)">📋 Semua <span class="tag-count">4</span></button>
 <button class="a56-tag-btn" data-filter="rpl" onclick="filterA56Cards('vii','rpl',this)">📝 RPL <span class="tag-count">1</span></button>
-<button class="a56-tag-btn" data-filter="protas" onclick="filterA56Cards('vii','protas',this)">📅 PORTAPROSEM <span class="tag-count">1</span></button>
+<button class="a56-tag-btn" data-filter="protas" onclick="filterA56Cards('vii','protas',this)">📅 PortaProsem Semester 1<span class="tag-count">1</span></button>
+<button class="a56-tag-btn" data-filter="protas" onclick="filterA56Cards('vii','protas',this)">📅 PortaProsem Semester 2<span class="tag-count">1</span></button>
 <button class="a56-tag-btn" data-filter="materi" onclick="filterA56Cards('vii','materi',this)">📚 Materi <span class="tag-count">1</span></button>
 <button class="a56-tag-btn" data-filter="kasus" onclick="filterA56Cards('vii','kasus',this)">📋 Catatan Kasus <span class="tag-count">1</span></button>
 </div>
@@ -2267,38 +2485,47 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <div id="absensi" class="page ab">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📋 Absensi Siswa</h2>
-<p class="page-desc">Pilih kelas untuk membuka halaman absensi digital.</p>
+<p class="page-desc">Pilih kelas untuk membuka halaman absensi digital. Gunakan filter untuk menampilkan kelas tertentu.</p>
+
+<div class="absensi-tag-filter">
+  <div class="absensi-tag-filter-label">🏷️ Filter Berdasarkan Kelas:</div>
+  <button class="absensi-tag-btn active" data-filter="all" onclick="filterAbsensiCards('all',this)">📋 Semua Kelas <span class="tag-count">30</span></button>
+  <button class="absensi-tag-btn" data-filter="vii" onclick="filterAbsensiCards('vii',this)">📘 Kelas VII <span class="tag-count">10</span></button>
+  <button class="absensi-tag-btn" data-filter="viii" onclick="filterAbsensiCards('viii',this)">📗 Kelas VIII <span class="tag-count">10</span></button>
+  <button class="absensi-tag-btn" data-filter="ix" onclick="filterAbsensiCards('ix',this)">📕 Kelas IX <span class="tag-count">10</span></button>
+</div>
+
 <div class="link-grid">
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbydbhKkQytq50X3VW2WeyBtkizLh7XukdwnprKKZ62mCxAgFq3h9XBvq8leEwAwJC1d/exec','absensi')"><span class="link-num">1</span><div class="link-text"><h5>Absensi Kelas VII-A</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxnSIxJxDXhY2ZY56ll2miXVSwDJgAg0Ij1R-ElQ8Oj4nHqkNxIPzObOLm0v6GZdrqu/exec','absensi')"><span class="link-num">2</span><div class="link-text"><h5>Absensi Kelas VII-B</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxQp6WKGEtJ4QtONLMJnLL9fU9-5QAfranc79akGD1LJWkCr2MEwaSS2DLzPRJJj2fy/exec','absensi')"><span class="link-num">3</span><div class="link-text"><h5>Absensi Kelas VII-C</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwWA3pDvHkMIkDLonLbgsZ_g_5uXTzoxMdx455CFJ4Usq4_kcIZRVcIlsuBTTnZSbGF/exec','absensi')"><span class="link-num">4</span><div class="link-text"><h5>Absensi Kelas VII-D</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycby7tE6u52mKGPtWFXXwQG8J9CocUZckwevUDa-NRY_qbQz9BXYTYIoFIhrh4klbftFGqw/exec','absensi')"><span class="link-num">5</span><div class="link-text"><h5>Absensi Kelas VII-E</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz-QtGHpeFbRvz_b78Xp7TWW48m6FLxaabs9NpscXltYP6mKZkqMosKknpmP29CSXc/exec','absensi')"><span class="link-num">6</span><div class="link-text"><h5>Absensi Kelas VII-F</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyWgTNkgx48Knd27bKo24y2KJQiDlQpXT8foZcdv52pX93Yqom_OZFiI5kEpLB_2Pj6DA/exec','absensi')"><span class="link-num">7</span><div class="link-text"><h5>Absensi Kelas VII-G</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbzCQCeCDPMrxg-W8OgJ0zdYN9o1v8-k3EQcGE-Ne7qDDhhclwfBtiWt3_GyLAgjZMy6QA/exec','absensi')"><span class="link-num">8</span><div class="link-text"><h5>Absensi Kelas VII-H</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbw8KThRZbjy_hgxsB9pjP0wCjwNs9fOMDJ410M0pKMWJ_MRsoJR17JpKoahZUIbGvpo/exec','absensi')"><span class="link-num">9</span><div class="link-text"><h5>Absensi Kelas VII-I</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwAgQGT_1ENzH_R8Ci9qK9OqzXsobBrEhyaSN3OEh5b1OGz18f-s9coB5sTS_wZRJGS/exec','absensi')"><span class="link-num">10</span><div class="link-text"><h5>Absensi Kelas VII-J</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz3M_MhwF_2qgatqX39JnNVt9Y3U3B05F2H6OcvqBFJHpnoYuDFF4FeWFY-Std-cv99Sg/exec','absensi')"><span class="link-num">11</span><div class="link-text"><h5>Absensi Kelas VIII-A</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxtA1zFeaUNo0Y2OwG4ipTNJV3hsUrXfXYiNgx0jWXgOk3LPpcMJJxUS0sUBxQiHSirew/exec','absensi')"><span class="link-num">12</span><div class="link-text"><h5>Absensi Kelas VIII-B</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz7Nfi_fcr9jM5cC_sVwQLjQ8Onw4UAnQySFKVZ5Yjh4qCkTLLpPOdkJx1R4cP7zLU0/exec','absensi')"><span class="link-num">13</span><div class="link-text"><h5>Absensi Kelas VIII-C</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz9DZ9Ubc2XhzgwFEBsvKqAVGjA6-w5btko3bBOT9-1IDHGZoHQcoMFgsEg34OI9YksMA/exec','absensi')"><span class="link-num">14</span><div class="link-text"><h5>Absensi Kelas VIII-D</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbzblZ4PZ7EzKFw2O9A5ER16SkLehScg43051KhB1z-VeD7FT8gKpQjcyjbrcx6-rjmR/exec','absensi')"><span class="link-num">15</span><div class="link-text"><h5>Absensi Kelas VIII-E</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwePrjp4hpJm9rKlKvKgoriw1oZ4SVWsQlkRk2asP-e_SKShGvWE8naSp7hDBvob-8-/exec','absensi')"><span class="link-num">16</span><div class="link-text"><h5>Absensi Kelas VIII-F</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwBtmfgv4x3BG83amfJzLIBnD0XcMtRlpHO-NRPixvPks2tm2V0kx6p2Ied_9mBOwnX/exec','absensi')"><span class="link-num">17</span><div class="link-text"><h5>Absensi Kelas VIII-G</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyH9N_J_2kM7s33914bxsG9PMALwliq0-owomHaxmBMc2NgOcvAAtR194K06sFl4aH-Uw/exec','absensi')"><span class="link-num">18</span><div class="link-text"><h5>Absensi Kelas VIII-H</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwVodL8bhYXA9N5qcrZ51ug6UYjZi3WOAGyQsBB9SRYU2tCfNIwVmu-y69AmlaZEjFu/exec','absensi')"><span class="link-num">19</span><div class="link-text"><h5>Absensi Kelas VIII-I</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwwyA2qzkpIkYF27r3-ZuQg9MlDHeXm0rHjbTTFxcg8IaOwQ08C5Q97o51OcQoq1A_kOQ/exec','absensi')"><span class="link-num">20</span><div class="link-text"><h5>Absensi Kelas VIII-J</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxGx-HVonC2trYKTtBhZfyir9qQCd4__Im5hp1CKljptJOT1tKow-Ii7DUGsnSOEJ0OHQ/exec','absensi')"><span class="link-num">21</span><div class="link-text"><h5>Absensi Kelas IX-A</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyIPl5Jo1y169-otDviqGn7_srdigC5DpDqAAyrcLoib-6A_NF3swFwAvs-W-GzqDUk9A/exec','absensi')"><span class="link-num">22</span><div class="link-text"><h5>Absensi Kelas IX-B</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxS3vE3Z6uaxernMi53rGl0ycIWwkY2H3F2t-jg5EhBGWg8xMYfaa0qAFkwRwA83wDhBw/exec','absensi')"><span class="link-num">23</span><div class="link-text"><h5>Absensi Kelas IX-C</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxnxqBJUuLGRxQcxj8D98eH6A5ZJ46b9SFhrGKzOBTn7wh-gDmRh4LW-Lz-nlHA9KDX/exec','absensi')"><span class="link-num">24</span><div class="link-text"><h5>Absensi Kelas IX-D</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbw24jXdqQk64WTdcFMq7BQAPLv5ExUDEXSJ5Sz6y9_AhUAoBO_4w53g-kgIzrilCRHiAg/exec','absensi')"><span class="link-num">25</span><div class="link-text"><h5>Absensi Kelas IX-E</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwzgdnlZMr1XJPZuqfTTa99kcX5QXSBikuaQG279TZnyyRUxnv1hcqUyVoV0h_BDg_1yA/exec','absensi')"><span class="link-num">26</span><div class="link-text"><h5>Absensi Kelas IX-F</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyWOOYUXgJwg-G9w9bp24PaSxu7a3_DsFZxaDIsk8X-27IKzOKG9fL-Z0q6WXJ9uFDe/exec','absensi')"><span class="link-num">27</span><div class="link-text"><h5>Absensi Kelas IX-G</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxmBRMAj7MdL6hs5ulvHCGbWxp3VctqcVEWHzNJSvdE1KCZGJ_fltPEAH_Xya80rSG-FA/exec','absensi')"><span class="link-num">28</span><div class="link-text"><h5>Absensi Kelas IX-H</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwsmq3rFMOOB0SlpPsPVB8prtPWlNTJGsdZ_zV9Txep_dodGP2pApTOHKqZqOH1yJu9Kw/exec','absensi')"><span class="link-num">29</span><div class="link-text"><h5>Absensi Kelas IX-I</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbzJj_YF5Rno7saI2V-AqGmoIFCvK2jfUfyf01WX6OHyGyM2g0Vp7OxWF5xU5E11S5WjjA/exec','absensi')"><span class="link-num">30</span><div class="link-text"><h5>Absensi Kelas IX-J</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbydbhKkQytq50X3VW2WeyBtkizLh7XukdwnprKKZ62mCxAgFq3h9XBvq8leEwAwJC1d/exec','absensi')"><span class="link-num">1</span><div class="link-text"><h5>Absensi Kelas VII-A</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxnSIxJxDXhY2ZY56ll2miXVSwDJgAg0Ij1R-ElQ8Oj4nHqkNxIPzObOLm0v6GZdrqu/exec','absensi')"><span class="link-num">2</span><div class="link-text"><h5>Absensi Kelas VII-B</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxQp6WKGEtJ4QtONLMJnLL9fU9-5QAfranc79akGD1LJWkCr2MEwaSS2DLzPRJJj2fy/exec','absensi')"><span class="link-num">3</span><div class="link-text"><h5>Absensi Kelas VII-C</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwWA3pDvHkMIkDLonLbgsZ_g_5uXTzoxMdx455CFJ4Usq4_kcIZRVcIlsuBTTnZSbGF/exec','absensi')"><span class="link-num">4</span><div class="link-text"><h5>Absensi Kelas VII-D</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycby7tE6u52mKGPtWFXXwQG8J9CocUZckwevUDa-NRY_qbQz9BXYTYIoFIhrh4klbftFGqw/exec','absensi')"><span class="link-num">5</span><div class="link-text"><h5>Absensi Kelas VII-E</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz-QtGHpeFbRvz_b78Xp7TWW48m6FLxaabs9NpscXltYP6mKZkqMosKknpmP29CSXc/exec','absensi')"><span class="link-num">6</span><div class="link-text"><h5>Absensi Kelas VII-F</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyWgTNkgx48Knd27bKo24y2KJQiDlQpXT8foZcdv52pX93Yqom_OZFiI5kEpLB_2Pj6DA/exec','absensi')"><span class="link-num">7</span><div class="link-text"><h5>Absensi Kelas VII-G</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbzCQCeCDPMrxg-W8OgJ0zdYN9o1v8-k3EQcGE-Ne7qDDhhclwfBtiWt3_GyLAgjZMy6QA/exec','absensi')"><span class="link-num">8</span><div class="link-text"><h5>Absensi Kelas VII-H</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbw8KThRZbjy_hgxsB9pjP0wCjwNs9fOMDJ410M0pKMWJ_MRsoJR17JpKoahZUIbGvpo/exec','absensi')"><span class="link-num">9</span><div class="link-text"><h5>Absensi Kelas VII-I</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwAgQGT_1ENzH_R8Ci9qK9OqzXsobBrEhyaSN3OEh5b1OGz18f-s9coB5sTS_wZRJGS/exec','absensi')"><span class="link-num">10</span><div class="link-text"><h5>Absensi Kelas VII-J</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz3M_MhwF_2qgatqX39JnNVt9Y3U3B05F2H6OcvqBFJHpnoYuDFF4FeWFY-Std-cv99Sg/exec','absensi')"><span class="link-num">11</span><div class="link-text"><h5>Absensi Kelas VIII-A</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxtA1zFeaUNo0Y2OwG4ipTNJV3hsUrXfXYiNgx0jWXgOk3LPpcMJJxUS0sUBxQiHSirew/exec','absensi')"><span class="link-num">12</span><div class="link-text"><h5>Absensi Kelas VIII-B</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz7Nfi_fcr9jM5cC_sVwQLjQ8Onw4UAnQySFKVZ5Yjh4qCkTLLpPOdkJx1R4cP7zLU0/exec','absensi')"><span class="link-num">13</span><div class="link-text"><h5>Absensi Kelas VIII-C</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbz9DZ9Ubc2XhzgwFEBsvKqAVGjA6-w5btko3bBOT9-1IDHGZoHQcoMFgsEg34OI9YksMA/exec','absensi')"><span class="link-num">14</span><div class="link-text"><h5>Absensi Kelas VIII-D</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbzblZ4PZ7EzKFw2O9A5ER16SkLehScg43051KhB1z-VeD7FT8gKpQjcyjbrcx6-rjmR/exec','absensi')"><span class="link-num">15</span><div class="link-text"><h5>Absensi Kelas VIII-E</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwePrjp4hpJm9rKlKvKgoriw1oZ4SVWsQlkRk2asP-e_SKShGvWE8naSp7hDBvob-8-/exec','absensi')"><span class="link-num">16</span><div class="link-text"><h5>Absensi Kelas VIII-F</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwBtmfgv4x3BG83amfJzLIBnD0XcMtRlpHO-NRPixvPks2tm2V0kx6p2Ied_9mBOwnX/exec','absensi')"><span class="link-num">17</span><div class="link-text"><h5>Absensi Kelas VIII-G</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyH9N_J_2kM7s33914bxsG9PMALwliq0-owomHaxmBMc2NgOcvAAtR194K06sFl4aH-Uw/exec','absensi')"><span class="link-num">18</span><div class="link-text"><h5>Absensi Kelas VIII-H</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwVodL8bhYXA9N5qcrZ51ug6UYjZi3WOAGyQsBB9SRYU2tCfNIwVmu-y69AmlaZEjFu/exec','absensi')"><span class="link-num">19</span><div class="link-text"><h5>Absensi Kelas VIII-I</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwwyA2qzkpIkYF27r3-ZuQg9MlDHeXm0rHjbTTFxcg8IaOwQ08C5Q97o51OcQoq1A_kOQ/exec','absensi')"><span class="link-num">20</span><div class="link-text"><h5>Absensi Kelas VIII-J</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxGx-HVonC2trYKTtBhZfyir9qQCd4__Im5hp1CKljptJOT1tKow-Ii7DUGsnSOEJ0OHQ/exec','absensi')"><span class="link-num">21</span><div class="link-text"><h5>Absensi Kelas IX-A</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyIPl5Jo1y169-otDviqGn7_srdigC5DpDqAAyrcLoib-6A_NF3swFwAvs-W-GzqDUk9A/exec','absensi')"><span class="link-num">22</span><div class="link-text"><h5>Absensi Kelas IX-B</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxS3vE3Z6uaxernMi53rGl0ycIWwkY2H3F2t-jg5EhBGWg8xMYfaa0qAFkwRwA83wDhBw/exec','absensi')"><span class="link-num">23</span><div class="link-text"><h5>Absensi Kelas IX-C</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxnxqBJUuLGRxQcxj8D98eH6A5ZJ46b9SFhrGKzOBTn7wh-gDmRh4LW-Lz-nlHA9KDX/exec','absensi')"><span class="link-num">24</span><div class="link-text"><h5>Absensi Kelas IX-D</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbw24jXdqQk64WTdcFMq7BQAPLv5ExUDEXSJ5Sz6y9_AhUAoBO_4w53g-kgIzrilCRHiAg/exec','absensi')"><span class="link-num">25</span><div class="link-text"><h5>Absensi Kelas IX-E</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwzgdnlZMr1XJPZuqfTTa99kcX5QXSBikuaQG279TZnyyRUxnv1hcqUyVoV0h_BDg_1yA/exec','absensi')"><span class="link-num">26</span><div class="link-text"><h5>Absensi Kelas IX-F</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbyWOOYUXgJwg-G9w9bp24PaSxu7a3_DsFZxaDIsk8X-27IKzOKG9fL-Z0q6WXJ9uFDe/exec','absensi')"><span class="link-num">27</span><div class="link-text"><h5>Absensi Kelas IX-G</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbxmBRMAj7MdL6hs5ulvHCGbWxp3VctqcVEWHzNJSvdE1KCZGJ_fltPEAH_Xya80rSG-FA/exec','absensi')"><span class="link-num">28</span><div class="link-text"><h5>Absensi Kelas IX-H</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbwsmq3rFMOOB0SlpPsPVB8prtPWlNTJGsdZ_zV9Txep_dodGP2pApTOHKqZqOH1yJu9Kw/exec','absensi')"><span class="link-num">29</span><div class="link-text"><h5>Absensi Kelas IX-I</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://script.google.com/macros/s/AKfycbzJj_YF5Rno7saI2V-AqGmoIFCvK2jfUfyf01WX6OHyGyM2g0Vp7OxWF5xU5E11S5WjjA/exec','absensi')"><span class="link-num">30</span><div class="link-text"><h5>Absensi Kelas IX-J</h5><span>Buka Absensi</span></div><span class="arrow-icon">→</span></a></div>
 </div>
 </div>
 <!-- ================================================================ -->
@@ -2310,38 +2537,53 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <div id="rekap" class="page ra">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📈 Rekap Absensi Siswa</h2>
-<p class="page-desc">Pilih kelas untuk membuka halaman rekap absensi.</p>
+<p class="page-desc">Pilih kelas untuk membuka halaman rekap absensi. Gunakan filter untuk menampilkan kelas tertentu.</p>
+
+<!-- ====== TAG FILTER REKAP ====== -->
+<div class="rekap-tag-filter">
+  <div class="rekap-tag-filter-label">🏷️ Filter Berdasarkan Kelas:</div>
+  <button class="rekap-tag-btn active" data-filter="all" onclick="filterRekapCards('all',this)">📋 Semua Kelas <span class="tag-count">30</span></button>
+  <button class="rekap-tag-btn" data-filter="vii" onclick="filterRekapCards('vii',this)">📘 Kelas VII <span class="tag-count">10</span></button>
+  <button class="rekap-tag-btn" data-filter="viii" onclick="filterRekapCards('viii',this)">📗 Kelas VIII <span class="tag-count">10</span></button>
+  <button class="rekap-tag-btn" data-filter="ix" onclick="filterRekapCards('ix',this)">📕 Kelas IX <span class="tag-count">10</span></button>
+</div>
+
 <div class="link-grid">
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1Mail0QfiMBYV1j0LCSQURdN2MKtuTY8cMr4wtHaXKc0/edit?usp=sharing','rekap')"><span class="link-num">1</span><div class="link-text"><h5>Rekap Absen Kelas VII-A</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1-ODx18uGobHXzSszY4tPi4EQoNQuUDSb8udT5RNei1w/edit?usp=sharing','rekap')"><span class="link-num">2</span><div class="link-text"><h5>Rekap Absen Kelas VII-B</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1DXKyesa4dQ-EKNO-xhHVeJ73z2CiqzgqKmzZsbcA5gw/edit?usp=sharing','rekap')"><span class="link-num">3</span><div class="link-text"><h5>Rekap Absen Kelas VII-C</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1NjKfisiCEVS53aBggxndapBhZr_CxB4ZMMOBzS6Fz3g/edit?usp=sharing','rekap')"><span class="link-num">4</span><div class="link-text"><h5>Rekap Absen Kelas VII-D</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1Uah47tQgwYeRlJsB-3Mr4ZxXBgHSpbQVzpbQZEhjUGw/edit?usp=sharing','rekap')"><span class="link-num">5</span><div class="link-text"><h5>Rekap Absen Kelas VII-E</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1dIM6VzovQ4MSkeFKt3ppmRrmypymchlZkk0nsmnJaPo/edit?usp=sharing','rekap')"><span class="link-num">6</span><div class="link-text"><h5>Rekap Absen Kelas VII-F</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1jhhnth1CmMsjr2oE8x7N1BixelXdhZI14EOw5S8hYK4/edit?usp=sharing','rekap')"><span class="link-num">7</span><div class="link-text"><h5>Rekap Absen Kelas VII-G</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1ji0fYjszEUq-Ipn1arI8nqp2vh6x-Br-pjHIr4l3IRs/edit?usp=sharing','rekap')"><span class="link-num">8</span><div class="link-text"><h5>Rekap Absen Kelas VII-H</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1mmCA413jSrXtsYWRSWSpk45swINNCpOLj-KZFnlE2Ec/edit?usp=sharing','rekap')"><span class="link-num">9</span><div class="link-text"><h5>Rekap Absen Kelas VII-I</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1YddSN0j69HX2F_3Jne8R8njg69CkGktgU_Paeq73x-Y/edit?usp=sharing','rekap')"><span class="link-num">10</span><div class="link-text"><h5>Rekap Absen Kelas VII-J</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1LN-xnkd_1V1YSsb4vZCv8NL_Z5cc7f74ikJ9pGSCiT4/edit?usp=sharing','rekap')"><span class="link-num">11</span><div class="link-text"><h5>Rekap Absen Kelas VIII-A</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/13rhkd7XL3o6A6FW8pjVaDtH1BW1cw9hiCwLlXUilgKg/edit?usp=sharing','rekap')"><span class="link-num">12</span><div class="link-text"><h5>Rekap Absen Kelas VIII-B</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1owfqHbiioWjSWAwd3nPluvQx6A6VeSE3FQivi1TJfsI/edit?usp=sharing','rekap')"><span class="link-num">13</span><div class="link-text"><h5>Rekap Absen Kelas VIII-C</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/18THCCITCcGyUNAY-VlCamfsMm_mKkvd162CZTlJ7H6s/edit?usp=sharing','rekap')"><span class="link-num">14</span><div class="link-text"><h5>Rekap Absen Kelas VIII-D</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1QwQZjv9VtZn8Zyk2AHcD9h1JIlr152uFnXYg3-49MTQ/edit?usp=sharing','rekap')"><span class="link-num">15</span><div class="link-text"><h5>Rekap Absen Kelas VIII-E</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1hyrpvEk9Wasm0Csz-ElPjrbs9vt2VdzqhLeyeKjsgpA/edit?usp=sharing','rekap')"><span class="link-num">16</span><div class="link-text"><h5>Rekap Absen Kelas VIII-F</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/13n1taOcDjvftWreqcHeqCWhtQsr5rGxPlFICTRL5-cw/edit?usp=sharing','rekap')"><span class="link-num">17</span><div class="link-text"><h5>Rekap Absen Kelas VIII-G</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1pijMsQ7fP8zp6oM5bb_FKAFjvCEFHJVqwU__FeqPZYU/edit?usp=sharing','rekap')"><span class="link-num">18</span><div class="link-text"><h5>Rekap Absen Kelas VIII-H</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1jGf_dOmRXIh6-CvFX9kliNJvNeTi4ZWanhXJzUmaYTQ/edit?usp=sharing','rekap')"><span class="link-num">19</span><div class="link-text"><h5>Rekap Absen Kelas VIII-I</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/19pyVT5rICTXBW8_VJ4G4cn-TZpDjJmfvFiOSKiZlxfE/edit?usp=sharing','rekap')"><span class="link-num">20</span><div class="link-text"><h5>Rekap Absen Kelas VIII-J</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1rB633ZwKYBzvYgCNzl_GOS7T8rp7qrgoE8TUmDTm97g/edit?usp=sharing','rekap')"><span class="link-num">21</span><div class="link-text"><h5>Rekap Absen Kelas IX-A</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1w9c_hrsABPO9jgdT8SVMarFIHPWg5XlCSk1zZKA1IUY/edit?usp=sharing','rekap')"><span class="link-num">22</span><div class="link-text"><h5>Rekap Absen Kelas IX-B</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/11--hkpnnwDREJgX2VLNUY-XerBr5_Jz0YJZdN1KnLrU/edit?usp=sharing','rekap')"><span class="link-num">23</span><div class="link-text"><h5>Rekap Absen Kelas IX-C</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/19-o9mMr4yXlrjr7jNfvnh0jZ9n9WXKtu4WdBTW-bQq8/edit?usp=sharing','rekap')"><span class="link-num">24</span><div class="link-text"><h5>Rekap Absen Kelas IX-D</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1DxtpmuU9Hkp-4uzzf_rpKW5ezJKJLMXi_hO_UcwXCPM/edit?usp=sharing','rekap')"><span class="link-num">25</span><div class="link-text"><h5>Rekap Absen Kelas IX-E</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1OmbHQq2dpTZCDg9MlUNoIRfvMOKAwDmOxFkOigpJMSk/edit?usp=sharing','rekap')"><span class="link-num">26</span><div class="link-text"><h5>Rekap Absen Kelas IX-F</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1U4-KBHixWoLoFUDOcFHFIXss7WDpcTmuzVppSfrVtoE/edit?usp=sharing','rekap')"><span class="link-num">27</span><div class="link-text"><h5>Rekap Absen Kelas IX-G</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1eYpnhjW740Kmv_L8_-KWcYvZnEX4T2m6Grwu-jn6t7c/edit?usp=sharing','rekap')"><span class="link-num">28</span><div class="link-text"><h5>Rekap Absen Kelas IX-H</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1fMCsqf1LlD9qSt2oanGbiqf11Y-mklgbss6zz3_g51k/edit?usp=sharing','rekap')"><span class="link-num">29</span><div class="link-text"><h5>Rekap Absen Kelas IX-I</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
-<div class="link-box"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1tZFNKlVPBjz9Hfr-_JgMYMDftXUByc7nCn_I3JsBwok/edit?usp=sharing','rekap')"><span class="link-num">30</span><div class="link-text"><h5>Rekap Absen Kelas IX-J</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <!-- ===== KELAS VII (10 kelas) ===== -->
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1Mail0QfiMBYV1j0LCSQURdN2MKtuTY8cMr4wtHaXKc0/edit?usp=sharing','rekap')"><span class="link-num">1</span><div class="link-text"><h5>Rekap Absen Kelas VII-A</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1-ODx18uGobHXzSszY4tPi4EQoNQuUDSb8udT5RNei1w/edit?usp=sharing','rekap')"><span class="link-num">2</span><div class="link-text"><h5>Rekap Absen Kelas VII-B</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1DXKyesa4dQ-EKNO-xhHVeJ73z2CiqzgqKmzZsbcA5gw/edit?usp=sharing','rekap')"><span class="link-num">3</span><div class="link-text"><h5>Rekap Absen Kelas VII-C</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1NjKfisiCEVS53aBggxndapBhZr_CxB4ZMMOBzS6Fz3g/edit?usp=sharing','rekap')"><span class="link-num">4</span><div class="link-text"><h5>Rekap Absen Kelas VII-D</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1Uah47tQgwYeRlJsB-3Mr4ZxXBgHSpbQVzpbQZEhjUGw/edit?usp=sharing','rekap')"><span class="link-num">5</span><div class="link-text"><h5>Rekap Absen Kelas VII-E</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1dIM6VzovQ4MSkeFKt3ppmRrmypymchlZkk0nsmnJaPo/edit?usp=sharing','rekap')"><span class="link-num">6</span><div class="link-text"><h5>Rekap Absen Kelas VII-F</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1jhhnth1CmMsjr2oE8x7N1BixelXdhZI14EOw5S8hYK4/edit?usp=sharing','rekap')"><span class="link-num">7</span><div class="link-text"><h5>Rekap Absen Kelas VII-G</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1ji0fYjszEUq-Ipn1arI8nqp2vh6x-Br-pjHIr4l3IRs/edit?usp=sharing','rekap')"><span class="link-num">8</span><div class="link-text"><h5>Rekap Absen Kelas VII-H</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1mmCA413jSrXtsYWRSWSpk45swINNCpOLj-KZFnlE2Ec/edit?usp=sharing','rekap')"><span class="link-num">9</span><div class="link-text"><h5>Rekap Absen Kelas VII-I</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="vii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1YddSN0j69HX2F_3Jne8R8njg69CkGktgU_Paeq73x-Y/edit?usp=sharing','rekap')"><span class="link-num">10</span><div class="link-text"><h5>Rekap Absen Kelas VII-J</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+
+  <!-- ===== KELAS VIII (10 kelas) ===== -->
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1LN-xnkd_1V1YSsb4vZCv8NL_Z5cc7f74ikJ9pGSCiT4/edit?usp=sharing','rekap')"><span class="link-num">11</span><div class="link-text"><h5>Rekap Absen Kelas VIII-A</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/13rhkd7XL3o6A6FW8pjVaDtH1BW1cw9hiCwLlXUilgKg/edit?usp=sharing','rekap')"><span class="link-num">12</span><div class="link-text"><h5>Rekap Absen Kelas VIII-B</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1owfqHbiioWjSWAwd3nPluvQx6A6VeSE3FQivi1TJfsI/edit?usp=sharing','rekap')"><span class="link-num">13</span><div class="link-text"><h5>Rekap Absen Kelas VIII-C</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/18THCCITCcGyUNAY-VlCamfsMm_mKkvd162CZTlJ7H6s/edit?usp=sharing','rekap')"><span class="link-num">14</span><div class="link-text"><h5>Rekap Absen Kelas VIII-D</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1QwQZjv9VtZn8Zyk2AHcD9h1JIlr152uFnXYg3-49MTQ/edit?usp=sharing','rekap')"><span class="link-num">15</span><div class="link-text"><h5>Rekap Absen Kelas VIII-E</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1hyrpvEk9Wasm0Csz-ElPjrbs9vt2VdzqhLeyeKjsgpA/edit?usp=sharing','rekap')"><span class="link-num">16</span><div class="link-text"><h5>Rekap Absen Kelas VIII-F</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/13n1taOcDjvftWreqcHeqCWhtQsr5rGxPlFICTRL5-cw/edit?usp=sharing','rekap')"><span class="link-num">17</span><div class="link-text"><h5>Rekap Absen Kelas VIII-G</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1pijMsQ7fP8zp6oM5bb_FKAFjvCEFHJVqwU__FeqPZYU/edit?usp=sharing','rekap')"><span class="link-num">18</span><div class="link-text"><h5>Rekap Absen Kelas VIII-H</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1jGf_dOmRXIh6-CvFX9kliNJvNeTi4ZWanhXJzUmaYTQ/edit?usp=sharing','rekap')"><span class="link-num">19</span><div class="link-text"><h5>Rekap Absen Kelas VIII-I</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="viii"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/19pyVT5rICTXBW8_VJ4G4cn-TZpDjJmfvFiOSKiZlxfE/edit?usp=sharing','rekap')"><span class="link-num">20</span><div class="link-text"><h5>Rekap Absen Kelas VIII-J</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+
+  <!-- ===== KELAS IX (10 kelas) ===== -->
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1rB633ZwKYBzvYgCNzl_GOS7T8rp7qrgoE8TUmDTm97g/edit?usp=sharing','rekap')"><span class="link-num">21</span><div class="link-text"><h5>Rekap Absen Kelas IX-A</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1w9c_hrsABPO9jgdT8SVMarFIHPWg5XlCSk1zZKA1IUY/edit?usp=sharing','rekap')"><span class="link-num">22</span><div class="link-text"><h5>Rekap Absen Kelas IX-B</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/11--hkpnnwDREJgX2VLNUY-XerBr5_Jz0YJZdN1KnLrU/edit?usp=sharing','rekap')"><span class="link-num">23</span><div class="link-text"><h5>Rekap Absen Kelas IX-C</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/19-o9mMr4yXlrjr7jNfvnh0jZ9n9WXKtu4WdBTW-bQq8/edit?usp=sharing','rekap')"><span class="link-num">24</span><div class="link-text"><h5>Rekap Absen Kelas IX-D</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1DxtpmuU9Hkp-4uzzf_rpKW5ezJKJLMXi_hO_UcwXCPM/edit?usp=sharing','rekap')"><span class="link-num">25</span><div class="link-text"><h5>Rekap Absen Kelas IX-E</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1OmbHQq2dpTZCDg9MlUNoIRfvMOKAwDmOxFkOigpJMSk/edit?usp=sharing','rekap')"><span class="link-num">26</span><div class="link-text"><h5>Rekap Absen Kelas IX-F</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1U4-KBHixWoLoFUDOcFHFIXss7WDpcTmuzVppSfrVtoE/edit?usp=sharing','rekap')"><span class="link-num">27</span><div class="link-text"><h5>Rekap Absen Kelas IX-G</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1eYpnhjW740Kmv_L8_-KWcYvZnEX4T2m6Grwu-jn6t7c/edit?usp=sharing','rekap')"><span class="link-num">28</span><div class="link-text"><h5>Rekap Absen Kelas IX-H</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1fMCsqf1LlD9qSt2oanGbiqf11Y-mklgbss6zz3_g51k/edit?usp=sharing','rekap')"><span class="link-num">29</span><div class="link-text"><h5>Rekap Absen Kelas IX-I</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
+  <div class="link-box" data-category="ix"><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1tZFNKlVPBjz9Hfr-_JgMYMDftXUByc7nCn_I3JsBwok/edit?usp=sharing','rekap')"><span class="link-num">30</span><div class="link-text"><h5>Rekap Absen Kelas IX-J</h5><span>Buka Rekap</span></div><span class="arrow-icon">→</span></a></div>
 </div>
 </div>
 <!-- ================================================================ -->
@@ -2849,6 +3091,78 @@ saveToLocalStorage();
 initI6cTabs();
 initA56Tabs();
 });
+/* ================================================================ */
+/* ========== FILTER ABSENSI BERDASARKAN KELAS ========== */
+/* ================================================================ */
+function filterAbsensiCards(category, clickedBtn) {
+  const container = document.getElementById('absensi');
+  if (!container) return;
+  const grid = container.querySelector('.link-grid');
+  const cards = grid.querySelectorAll('.link-box');
+  const filterContainer = container.querySelector('.absensi-tag-filter');
+  const allBtns = filterContainer.querySelectorAll('.absensi-tag-btn');
+
+  // Update tombol aktif
+  allBtns.forEach(btn => btn.classList.remove('active'));
+  if (clickedBtn) clickedBtn.classList.add('active');
+
+  // Filter kartu
+  let visibleCount = 0;
+  cards.forEach(card => {
+    const cardCategory = card.getAttribute('data-category');
+    if (category === 'all' || cardCategory === category) {
+      card.classList.remove('hidden-by-tag');
+      visibleCount++;
+    } else {
+      card.classList.add('hidden-by-tag');
+    }
+  });
+
+  // Tampilkan notifikasi
+  if (category === 'all') {
+    showToast('📋 Menampilkan semua kelas (' + visibleCount + ' kelas)', 'info');
+  } else {
+    const labelMap = { 'vii': 'VII', 'viii': 'VIII', 'ix': 'IX' };
+    showToast('🏷️ Filter: Kelas ' + labelMap[category] + ' (' + visibleCount + ' kelas)', 'info');
+  }
+}
+/* ================================================================ */
+/* ========== FILTER REKAP BERDASARKAN KELAS ========== */
+/* ================================================================ */
+function filterRekapCards(category, clickedBtn) {
+  const container = document.getElementById('rekap');
+  if (!container) return;
+  const grid = container.querySelector('.link-grid');
+  if (!grid) return;
+  const cards = grid.querySelectorAll('.link-box');
+  const filterContainer = container.querySelector('.rekap-tag-filter');
+  if (!filterContainer) return;
+  const allBtns = filterContainer.querySelectorAll('.rekap-tag-btn');
+
+  // Update tombol aktif
+  allBtns.forEach(btn => btn.classList.remove('active'));
+  if (clickedBtn) clickedBtn.classList.add('active');
+
+  // Filter kartu
+  let visibleCount = 0;
+  cards.forEach(card => {
+    const cardCategory = card.getAttribute('data-category');
+    if (category === 'all' || cardCategory === category) {
+      card.classList.remove('hidden-by-tag');
+      visibleCount++;
+    } else {
+      card.classList.add('hidden-by-tag');
+    }
+  });
+
+  // Tampilkan notifikasi
+  if (category === 'all') {
+    showToast('📋 Menampilkan semua kelas (' + visibleCount + ' kelas)', 'info');
+  } else {
+    const labelMap = { 'vii': 'VII', 'viii': 'VIII', 'ix': 'IX' };
+    showToast('🏷️ Filter: Kelas ' + labelMap[category] + ' (' + visibleCount + ' kelas)', 'info');
+  }
+}
 </script>
 </body>
 </html>
