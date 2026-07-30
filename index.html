@@ -4628,6 +4628,56 @@ const SESSION_ACCESS = "bk_platform_access";
 const SESSION_EDIT   = "bk_edit_access";
 const STORAGE_HTML   = "bk_custom_html";
 let shareUnlocked = false;
+/* ================================================================ */
+/* ========== PAKSA HALAMAN STAY DI BERANDA SAAT REFRESH ========== */
+/* ================================================================ */
+// 1. Matikan fitur auto-restore scroll bawaan browser
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+
+// 2. Saat halaman selesai dimuat, paksa kembali ke beranda
+window.addEventListener('load', () => {
+  // Hapus semua halaman aktif (kembalikan ke landing page)
+  document.querySelectorAll('.page.active').forEach(p => {
+    p.classList.remove('active');
+  });
+
+  // Reset iframe konten eksternal
+  const frame = document.getElementById('ext-frame');
+  if (frame) frame.src = 'about:blank';
+  const extContainer = document.getElementById('ext-container');
+  if (extContainer) {
+    extContainer.classList.remove('active');
+    delete extContainer.dataset.back;
+  }
+
+  // Reset breadcrumb ke beranda
+  updateBreadcrumb('home');
+
+  // Reset semua dropdown navigasi
+  closeAllDD();
+
+  // Paksa scroll ke posisi paling atas (hero section)
+  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+  // Pastikan overlay login tetap konsisten
+  if (sessionStorage.getItem(SESSION_ACCESS) !== 'granted') {
+    document.getElementById('login-overlay').style.display = 'flex';
+    document.getElementById('login-overlay').classList.remove('hidden');
+    setTimeout(() => document.getElementById('password-input').focus(), 300);
+  }
+});
+
+// 3. Cegah scroll otomatis saat user menekan tombol back/forward browser
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    // Halaman dimuat dari cache (bfcache) — reset ke beranda
+    document.querySelectorAll('.page.active').forEach(p => p.classList.remove('active'));
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    updateBreadcrumb('home');
+  }
+});
 const BREADCRUMB_MAP = {
 'home': 'Platform BK Digital',
 'adminbk56': 'Administrasi BK56',   // ← TAMBAHKAN BARIS INI
