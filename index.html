@@ -515,6 +515,43 @@ body { background: white; font-size: 12pt; color: black; }
 .footer { background: white !important; color: black !important; border-top: 2px solid #000; }
 }
 /* ================================================================ */
+/* ========== AKHIR PANDUAN BK DL - SCOPED STYLES ========== */
+/* ================================================================ */
+@media (max-width: 768px) {
+.hamburger { display: block; }
+.nav-wrap { display: none; flex-direction: column; width: 100%; }
+.nav-wrap.show { display: flex; }
+.nav-btn { width: 100%; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.dropdown { position: relative; width: 100%; min-width: 100%; border-radius: 0; box-shadow: none; background: #f8fafc; transform: none; }
+.dropdown.show { animation: none; }
+.dd-back-btn { border-radius: 0; }
+.logo-container { width: 70px; height: 70px; padding: 8px; border-radius: 16px; }
+.header-inner { padding: 24px 16px; gap: 16px; }
+.hero-landing { padding: 60px 20px 100px; }
+.hero-cta { flex-direction: column; align-items: stretch; }
+.btn-cta { justify-content: center; }
+.features-section { margin-top: -40px; padding: 0 16px 40px; }
+.features-grid { grid-template-columns: 1fr; gap: 14px; }
+.link-grid { grid-template-columns: 1fr; }
+.breadcrumb { font-size: 13px; padding: 12px 16px; }
+.share-btn { font-size: 12px; padding: 8px 14px; }
+.fab-edit { width: 48px; height: 48px; font-size: 20px; bottom: 16px; right: 16px; border-radius: 14px; }
+.fab-edit .fab-tooltip { display: none; }
+.editor-header h3 { font-size: 16px; }
+.editor-actions button { font-size: 12px; padding: 6px 10px; }
+.editor-textarea { font-size: 12px; }
+.footer-info { flex-direction: column; gap: 8px; }
+.back-btn-i6c { margin: 16px; }
+.back-btn-dl { margin: 16px; }
+}
+@media print {
+.navbar, .hamburger, .share-box, #login-overlay, #reading-progress, .back-btn, .fab-edit, .pw-modal, .editor-modal, .toast, .hero-landing, .features-section { display: none !important; }
+body { background: white; font-size: 12pt; color: black; }
+.page { display: block !important; max-width: 100%; padding: 0; }
+.header { background: white !important; color: black !important; box-shadow: none; }
+.footer { background: white !important; color: black !important; border-top: 2px solid #000; }
+}
+/* ================================================================ */
 /* ========== ABSENSI TAG FILTER ========== */
 /* ================================================================ */
 .page.ab .absensi-tag-filter {
@@ -666,571 +703,569 @@ display: none !important;
 /* ========== ADMIN BK56 - SCOPED STYLES ========== */
 /* ================================================================ */
 .adminbk56-page {
-  --abk-primary: #f97316;
-  --abk-primary-light: #fb923c;
-  --abk-primary-dark: #c2410c;
-  --abk-secondary: #ec4899;
-  --abk-secondary-light: #f472b6;
-  --abk-accent: #06b6d4;
-  --abk-accent-light: #22d3ee;
-  --abk-sunshine: #facc15;
-  --abk-lime: #84cc16;
-  --abk-coral: #fb7185;
-  --abk-bg-base: #fffbeb;
-  --abk-bg-gradient-start: #fef9c3;
-  --abk-bg-gradient-mid: #ffe4e6;
-  --abk-bg-gradient-end: #dbeafe;
-  --abk-bg-mesh-1: rgba(251, 191, 36, 0.18);
-  --abk-bg-mesh-2: rgba(236, 72, 153, 0.15);
-  --abk-bg-mesh-3: rgba(6, 182, 212, 0.14);
-  --abk-glass-bg: rgba(255, 255, 255, 0.88);
-  --abk-glass-border: rgba(255, 255, 255, 0.75);
-  --abk-shadow-float-sm: 0 1px 2px rgba(249,115,22,0.08), 0 2px 4px rgba(236,72,153,0.06);
-  --abk-shadow-float-md: 0 4px 6px rgba(249,115,22,0.10), 0 10px 15px rgba(236,72,153,0.12), 0 20px 25px rgba(6,182,212,0.08);
-  --abk-shadow-float-lg: 0 10px 15px rgba(249,115,22,0.12), 0 20px 30px rgba(236,72,153,0.15), 0 40px 60px rgba(6,182,212,0.10);
-  --abk-shadow-float-xl: 0 15px 25px rgba(249,115,22,0.14), 0 30px 50px rgba(236,72,153,0.16), 0 50px 80px rgba(6,182,212,0.12);
-  --abk-radius-sm: 10px;
-  --abk-radius-md: 14px;
-  --abk-radius-lg: 22px;
-  --abk-radius-xl: 30px;
-  --abk-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --abk-font-display: 'Playfair Display', Georgia, serif;
-  --abk-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  --abk-transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-
-  max-width: 100% !important;
-  padding: 0 !important;
-  margin: 0 auto;
-  font-family: var(--abk-font-primary);
-  background:
-    radial-gradient(ellipse 80% 60% at 10% 0%, var(--abk-bg-mesh-1) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 50% at 90% 10%, var(--abk-bg-mesh-2) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 20% 90%, var(--abk-bg-mesh-3) 0%, transparent 50%),
-    radial-gradient(ellipse 50% 40% at 80% 80%, rgba(250,204,21,0.18) 0%, transparent 50%),
-    linear-gradient(135deg, var(--abk-bg-gradient-start) 0%, var(--abk-bg-gradient-mid) 50%, var(--abk-bg-gradient-end) 100%);
-  background-attachment: fixed;
-  min-height: 100vh;
-  color: #1e293b;
-  line-height: 1.7;
-  position: relative;
-  overflow-x: hidden;
+--abk-primary: #f97316;
+--abk-primary-light: #fb923c;
+--abk-primary-dark: #c2410c;
+--abk-secondary: #ec4899;
+--abk-secondary-light: #f472b6;
+--abk-accent: #06b6d4;
+--abk-accent-light: #22d3ee;
+--abk-sunshine: #facc15;
+--abk-lime: #84cc16;
+--abk-coral: #fb7185;
+--abk-bg-base: #fffbeb;
+--abk-bg-gradient-start: #fef9c3;
+--abk-bg-gradient-mid: #ffe4e6;
+--abk-bg-gradient-end: #dbeafe;
+--abk-bg-mesh-1: rgba(251, 191, 36, 0.18);
+--abk-bg-mesh-2: rgba(236, 72, 153, 0.15);
+--abk-bg-mesh-3: rgba(6, 182, 212, 0.14);
+--abk-glass-bg: rgba(255, 255, 255, 0.88);
+--abk-glass-border: rgba(255, 255, 255, 0.75);
+--abk-shadow-float-sm: 0 1px 2px rgba(249,115,22,0.08), 0 2px 4px rgba(236,72,153,0.06);
+--abk-shadow-float-md: 0 4px 6px rgba(249,115,22,0.10), 0 10px 15px rgba(236,72,153,0.12), 0 20px 25px rgba(6,182,212,0.08);
+--abk-shadow-float-lg: 0 10px 15px rgba(249,115,22,0.12), 0 20px 30px rgba(236,72,153,0.15), 0 40px 60px rgba(6,182,212,0.10);
+--abk-shadow-float-xl: 0 15px 25px rgba(249,115,22,0.14), 0 30px 50px rgba(236,72,153,0.16), 0 50px 80px rgba(6,182,212,0.12);
+--abk-radius-sm: 10px;
+--abk-radius-md: 14px;
+--abk-radius-lg: 22px;
+--abk-radius-xl: 30px;
+--abk-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+--abk-font-display: 'Playfair Display', Georgia, serif;
+--abk-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+--abk-transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+max-width: 100% !important;
+padding: 0 !important;
+margin: 0 auto;
+font-family: var(--abk-font-primary);
+background:
+radial-gradient(ellipse 80% 60% at 10% 0%, var(--abk-bg-mesh-1) 0%, transparent 50%),
+radial-gradient(ellipse 70% 50% at 90% 10%, var(--abk-bg-mesh-2) 0%, transparent 50%),
+radial-gradient(ellipse 60% 40% at 20% 90%, var(--abk-bg-mesh-3) 0%, transparent 50%),
+radial-gradient(ellipse 50% 40% at 80% 80%, rgba(250,204,21,0.18) 0%, transparent 50%),
+linear-gradient(135deg, var(--abk-bg-gradient-start) 0%, var(--abk-bg-gradient-mid) 50%, var(--abk-bg-gradient-end) 100%);
+background-attachment: fixed;
+min-height: 100vh;
+color: #1e293b;
+line-height: 1.7;
+position: relative;
+overflow-x: hidden;
 }
 .adminbk56-page *, .adminbk56-page *::before, .adminbk56-page *::after { box-sizing: border-box; }
 .adminbk56-page::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background:
-    radial-gradient(circle 300px at 15% 20%, rgba(250,204,21,0.25) 0%, transparent 70%),
-    radial-gradient(circle 400px at 85% 70%, rgba(236,72,153,0.20) 0%, transparent 70%),
-    radial-gradient(circle 350px at 50% 50%, rgba(6,182,212,0.18) 0%, transparent 70%),
-    radial-gradient(circle 280px at 70% 20%, rgba(132,204,22,0.15) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 0;
-  animation: abkFloatOrbs 40s ease-in-out infinite;
+content: '';
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background:
+radial-gradient(circle 300px at 15% 20%, rgba(250,204,21,0.25) 0%, transparent 70%),
+radial-gradient(circle 400px at 85% 70%, rgba(236,72,153,0.20) 0%, transparent 70%),
+radial-gradient(circle 350px at 50% 50%, rgba(6,182,212,0.18) 0%, transparent 70%),
+radial-gradient(circle 280px at 70% 20%, rgba(132,204,22,0.15) 0%, transparent 70%);
+pointer-events: none;
+z-index: 0;
+animation: abkFloatOrbs 40s ease-in-out infinite;
 }
 @keyframes abkFloatOrbs {
-  0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
-  33% { transform: translate(30px, -20px) scale(1.05); opacity: 0.9; }
-  66% { transform: translate(-20px, 30px) scale(0.95); opacity: 0.95; }
+0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
+33% { transform: translate(30px, -20px) scale(1.05); opacity: 0.9; }
+66% { transform: translate(-20px, 30px) scale(0.95); opacity: 0.95; }
 }
 .adminbk56-page::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-image: radial-gradient(circle at 1px 1px, rgba(249,115,22,0.12) 1px, transparent 0);
-  background-size: 50px 50px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.9;
+content: '';
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background-image: radial-gradient(circle at 1px 1px, rgba(249,115,22,0.12) 1px, transparent 0);
+background-size: 50px 50px;
+pointer-events: none;
+z-index: 0;
+opacity: 0.9;
 }
 .adminbk56-page a { text-decoration: none; color: inherit; transition: var(--abk-transition); }
 .adminbk56-page .abk-site-header {
-  position: relative;
-  z-index: 10;
-  background: var(--abk-glass-bg);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
-  border: 1px solid var(--abk-glass-border);
-  border-top: none;
-  padding: 2.8rem 1.5rem;
-  text-align: center;
-  box-shadow: var(--abk-shadow-float-lg);
-  margin: 0 1.5rem;
-  border-radius: 0 0 var(--abk-radius-xl) var(--abk-radius-xl);
+position: relative;
+z-index: 10;
+background: var(--abk-glass-bg);
+backdrop-filter: blur(25px) saturate(180%);
+-webkit-backdrop-filter: blur(25px) saturate(180%);
+border: 1px solid var(--abk-glass-border);
+border-top: none;
+padding: 2.8rem 1.5rem;
+text-align: center;
+box-shadow: var(--abk-shadow-float-lg);
+margin: 0 1.5rem;
+border-radius: 0 0 var(--abk-radius-xl) var(--abk-radius-xl);
 }
 .adminbk56-page .abk-site-header h1 {
-  font-family: var(--abk-font-display);
-  color: var(--abk-primary-dark);
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, var(--abk-primary) 0%, var(--abk-secondary) 50%, var(--abk-accent) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+font-family: var(--abk-font-display);
+color: var(--abk-primary-dark);
+font-size: clamp(2rem, 5vw, 3.2rem);
+font-weight: 800;
+margin-bottom: 0.5rem;
+letter-spacing: -0.02em;
+background: linear-gradient(135deg, var(--abk-primary) 0%, var(--abk-secondary) 50%, var(--abk-accent) 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
 }
 .adminbk56-page .abk-site-header .abk-tagline {
-  color: #475569;
-  font-size: 1.1rem;
-  font-weight: 500;
-  letter-spacing: 0.02em;
+color: #475569;
+font-size: 1.1rem;
+font-weight: 500;
+letter-spacing: 0.02em;
 }
 .adminbk56-page .abk-site-nav {
-  position: sticky;
-  top: 80px;
-  z-index: 100;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--abk-glass-border);
-  border-radius: var(--abk-radius-lg);
-  padding: 0.8rem 1.5rem;
-  box-shadow: var(--abk-shadow-float-lg);
-  margin: 1.5rem 1.5rem 0;
+position: sticky;
+top: 80px;
+z-index: 100;
+background: rgba(255, 255, 255, 0.92);
+backdrop-filter: blur(20px) saturate(180%);
+-webkit-backdrop-filter: blur(20px) saturate(180%);
+border: 1px solid var(--abk-glass-border);
+border-radius: var(--abk-radius-lg);
+padding: 0.8rem 1.5rem;
+box-shadow: var(--abk-shadow-float-lg);
+margin: 1.5rem 1.5rem 0;
 }
 .adminbk56-page .abk-nav-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+max-width: 1200px;
+margin: 0 auto;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 0.5rem;
+flex-wrap: wrap;
 }
 .adminbk56-page .abk-nav-link {
-  padding: 0.55rem 1.2rem;
-  background: transparent;
-  color: #475569;
-  border-radius: var(--abk-radius-sm);
-  font-weight: 500;
-  font-size: 0.9rem;
-  transition: var(--abk-transition);
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-  border: none;
-  font-family: inherit;
+padding: 0.55rem 1.2rem;
+background: transparent;
+color: #475569;
+border-radius: var(--abk-radius-sm);
+font-weight: 500;
+font-size: 0.9rem;
+transition: var(--abk-transition);
+position: relative;
+overflow: hidden;
+cursor: pointer;
+border: none;
+font-family: inherit;
 }
 .adminbk56-page .abk-nav-link::before {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 50%;
-  width: 0; height: 2px;
-  background: linear-gradient(90deg, var(--abk-primary), var(--abk-secondary));
-  transition: var(--abk-transition);
-  transform: translateX(-50%);
+content: '';
+position: absolute;
+bottom: 0; left: 50%;
+width: 0; height: 2px;
+background: linear-gradient(90deg, var(--abk-primary), var(--abk-secondary));
+transition: var(--abk-transition);
+transform: translateX(-50%);
 }
 .adminbk56-page .abk-nav-link:hover {
-  color: var(--abk-primary);
-  background: rgba(249, 115, 22, 0.12);
-  transform: translateY(-2px);
+color: var(--abk-primary);
+background: rgba(249, 115, 22, 0.12);
+transform: translateY(-2px);
 }
 .adminbk56-page .abk-nav-link:hover::before { width: 80%; }
 .adminbk56-page .abk-nav-link--primary {
-  background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
-  color: #fff;
-  box-shadow: 0 6px 15px rgba(249, 115, 22, 0.45);
+background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
+color: #fff;
+box-shadow: 0 6px 15px rgba(249, 115, 22, 0.45);
 }
 .adminbk56-page .abk-nav-link--primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(236, 72, 153, 0.55);
+transform: translateY(-2px);
+box-shadow: 0 10px 25px rgba(236, 72, 153, 0.55);
 }
 .adminbk56-page .abk-main-content {
-  max-width: 1200px;
-  margin: 1.5rem auto 3rem;
-  padding: 0 1.5rem;
-  position: relative;
-  z-index: 1;
+max-width: 1200px;
+margin: 1.5rem auto 3rem;
+padding: 0 1.5rem;
+position: relative;
+z-index: 1;
 }
 .adminbk56-page .abk-page-title {
-  text-align: center;
-  color: var(--abk-primary-dark);
-  font-family: var(--abk-font-display);
-  font-size: clamp(1.5rem, 4vw, 2.2rem);
-  margin-bottom: 2rem;
-  text-shadow: 0 2px 15px rgba(255, 255, 255, 0.9);
+text-align: center;
+color: var(--abk-primary-dark);
+font-family: var(--abk-font-display);
+font-size: clamp(1.5rem, 4vw, 2.2rem);
+margin-bottom: 2rem;
+text-shadow: 0 2px 15px rgba(255, 255, 255, 0.9);
 }
 .adminbk56-page .abk-tab-navigation {
-  display: flex;
-  justify-content: center;
-  gap: 0.6rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  background: var(--abk-glass-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 1rem 1.5rem;
-  border-radius: var(--abk-radius-lg);
-  box-shadow: var(--abk-shadow-float-lg);
-  border: 1px solid var(--abk-glass-border);
+display: flex;
+justify-content: center;
+gap: 0.6rem;
+margin-bottom: 2rem;
+flex-wrap: wrap;
+background: var(--abk-glass-bg);
+backdrop-filter: blur(20px);
+-webkit-backdrop-filter: blur(20px);
+padding: 1rem 1.5rem;
+border-radius: var(--abk-radius-lg);
+box-shadow: var(--abk-shadow-float-lg);
+border: 1px solid var(--abk-glass-border);
 }
 .adminbk56-page .abk-tab-btn {
-  padding: 0.85rem 1.8rem;
-  background: #ffffff;
-  color: #64748b;
-  border: 2px solid transparent;
-  border-radius: var(--abk-radius-md);
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
-  font-family: var(--abk-font-primary);
-  transition: var(--abk-transition-bounce);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--abk-shadow-float-sm);
+padding: 0.85rem 1.8rem;
+background: #ffffff;
+color: #64748b;
+border: 2px solid transparent;
+border-radius: var(--abk-radius-md);
+cursor: pointer;
+font-size: 0.95rem;
+font-weight: 600;
+font-family: var(--abk-font-primary);
+transition: var(--abk-transition-bounce);
+display: flex;
+align-items: center;
+gap: 0.5rem;
+position: relative;
+overflow: hidden;
+box-shadow: var(--abk-shadow-float-sm);
 }
 .adminbk56-page .abk-tab-btn:hover {
-  background: #fef3c7;
-  color: var(--abk-primary);
-  transform: translateY(-3px);
-  box-shadow: var(--abk-shadow-float-md);
+background: #fef3c7;
+color: var(--abk-primary);
+transform: translateY(-3px);
+box-shadow: var(--abk-shadow-float-md);
 }
 .adminbk56-page .abk-tab-btn.active {
-  background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 10px 30px rgba(249, 115, 22, 0.45), 0 20px 50px rgba(236, 72, 153, 0.30);
-  transform: translateY(-2px);
+background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
+color: #fff;
+border-color: transparent;
+box-shadow: 0 10px 30px rgba(249, 115, 22, 0.45), 0 20px 50px rgba(236, 72, 153, 0.30);
+transform: translateY(-2px);
 }
 .adminbk56-page .abk-tab-btn.active:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 40px rgba(249, 115, 22, 0.55), 0 25px 60px rgba(236, 72, 153, 0.35);
+transform: translateY(-4px);
+box-shadow: 0 15px 40px rgba(249, 115, 22, 0.55), 0 25px 60px rgba(236, 72, 153, 0.35);
 }
 .adminbk56-page .abk-kelas-section {
-  display: none;
-  background: var(--abk-glass-bg);
-  backdrop-filter: blur(25px) saturate(180%);
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
-  border-radius: var(--abk-radius-xl);
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid var(--abk-glass-border);
-  box-shadow: var(--abk-shadow-float-xl);
-  animation: abkSectionFloat 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+display: none;
+background: var(--abk-glass-bg);
+backdrop-filter: blur(25px) saturate(180%);
+-webkit-backdrop-filter: blur(25px) saturate(180%);
+border-radius: var(--abk-radius-xl);
+padding: 2.5rem;
+margin-bottom: 2rem;
+border: 1px solid var(--abk-glass-border);
+box-shadow: var(--abk-shadow-float-xl);
+animation: abkSectionFloat 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
 }
 .adminbk56-page .abk-kelas-section.active { display: block; }
 @keyframes abkSectionFloat {
-  from { opacity: 0; transform: translateY(30px) scale(0.97); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+from { opacity: 0; transform: translateY(30px) scale(0.97); }
+to { opacity: 1; transform: translateY(0) scale(1); }
 }
 .adminbk56-page .abk-kelas-section > h2 {
-  font-family: var(--abk-font-display);
-  color: var(--abk-primary-dark);
-  font-size: 1.9rem;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 3px solid transparent;
-  border-image: linear-gradient(90deg, var(--abk-primary), var(--abk-secondary), var(--abk-accent)) 1;
-  position: relative;
+font-family: var(--abk-font-display);
+color: var(--abk-primary-dark);
+font-size: 1.9rem;
+margin-bottom: 2rem;
+padding-bottom: 1rem;
+border-bottom: 3px solid transparent;
+border-image: linear-gradient(90deg, var(--abk-primary), var(--abk-secondary), var(--abk-accent)) 1;
+position: relative;
 }
 .adminbk56-page .abk-menu-group {
-  margin-bottom: 1.5rem;
-  padding: 1.5rem 1.7rem;
-  background: #ffffff;
-  border-radius: var(--abk-radius-md);
-  border: 1px solid rgba(249, 115, 22, 0.15);
-  border-left: 4px solid var(--abk-primary);
-  transition: var(--abk-transition);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgba(249,115,22,0.06), 0 4px 8px rgba(236,72,153,0.08), 0 8px 16px rgba(6,182,212,0.06), 0 16px 32px rgba(249,115,22,0.05);
+margin-bottom: 1.5rem;
+padding: 1.5rem 1.7rem;
+background: #ffffff;
+border-radius: var(--abk-radius-md);
+border: 1px solid rgba(249, 115, 22, 0.15);
+border-left: 4px solid var(--abk-primary);
+transition: var(--abk-transition);
+position: relative;
+overflow: hidden;
+box-shadow: 0 1px 2px rgba(249,115,22,0.06), 0 4px 8px rgba(236,72,153,0.08), 0 8px 16px rgba(6,182,212,0.06), 0 16px 32px rgba(249,115,22,0.05);
 }
 .adminbk56-page .abk-menu-group::before {
-  content: '';
-  position: absolute;
-  top: 0; right: 0;
-  width: 150px; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(250, 204, 21, 0.15));
-  pointer-events: none;
+content: '';
+position: absolute;
+top: 0; right: 0;
+width: 150px; height: 100%;
+background: linear-gradient(90deg, transparent, rgba(250, 204, 21, 0.15));
+pointer-events: none;
 }
 .adminbk56-page .abk-menu-group:hover {
-  transform: translateY(-4px);
-  border-left-color: var(--abk-secondary);
-  box-shadow: 0 4px 8px rgba(249,115,22,0.15), 0 12px 24px rgba(236,72,153,0.18), 0 24px 48px rgba(6,182,212,0.12), 0 40px 80px rgba(249,115,22,0.10);
+transform: translateY(-4px);
+border-left-color: var(--abk-secondary);
+box-shadow: 0 4px 8px rgba(249,115,22,0.15), 0 12px 24px rgba(236,72,153,0.18), 0 24px 48px rgba(6,182,212,0.12), 0 40px 80px rgba(249,115,22,0.10);
 }
 .adminbk56-page .abk-menu-group h3 {
-  color: var(--abk-secondary);
-  margin-bottom: 1rem;
-  font-size: 1.15rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  letter-spacing: -0.01em;
+color: var(--abk-secondary);
+margin-bottom: 1rem;
+font-size: 1.15rem;
+font-weight: 700;
+display: flex;
+align-items: center;
+gap: 0.6rem;
+letter-spacing: -0.01em;
 }
 .adminbk56-page .abk-menu-links {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 0.6rem;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+gap: 0.6rem;
 }
 .adminbk56-page .abk-menu-links a {
-  padding: 0.75rem 1.1rem;
-  background: #ffffff;
-  border: 1px solid #fed7aa;
-  border-radius: var(--abk-radius-sm);
-  transition: var(--abk-transition);
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: #334155;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgba(249,115,22,0.06), 0 2px 4px rgba(236,72,153,0.05);
-  cursor: pointer;
+padding: 0.75rem 1.1rem;
+background: #ffffff;
+border: 1px solid #fed7aa;
+border-radius: var(--abk-radius-sm);
+transition: var(--abk-transition);
+display: flex;
+align-items: center;
+gap: 0.5rem;
+font-size: 0.92rem;
+font-weight: 500;
+color: #334155;
+position: relative;
+overflow: hidden;
+box-shadow: 0 1px 2px rgba(249,115,22,0.06), 0 2px 4px rgba(236,72,153,0.05);
+cursor: pointer;
 }
 .adminbk56-page .abk-menu-links a::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0;
-  width: 3px; height: 100%;
-  background: linear-gradient(180deg, var(--abk-primary), var(--abk-secondary));
-  transform: scaleY(0);
-  transition: var(--abk-transition);
-  transform-origin: top;
+content: '';
+position: absolute;
+left: 0; top: 0;
+width: 3px; height: 100%;
+background: linear-gradient(180deg, var(--abk-primary), var(--abk-secondary));
+transform: scaleY(0);
+transition: var(--abk-transition);
+transform-origin: top;
 }
 .adminbk56-page .abk-menu-links a:hover {
-  background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
-  color: #fff;
-  border-color: transparent;
-  transform: translateX(6px) translateY(-3px);
-  box-shadow: 0 6px 12px rgba(249,115,22,0.35), 0 12px 24px rgba(236,72,153,0.25), 0 20px 40px rgba(6,182,212,0.18);
+background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
+color: #fff;
+border-color: transparent;
+transform: translateX(6px) translateY(-3px);
+box-shadow: 0 6px 12px rgba(249,115,22,0.35), 0 12px 24px rgba(236,72,153,0.25), 0 20px 40px rgba(6,182,212,0.18);
 }
 .adminbk56-page .abk-menu-links a:hover::before {
-  transform: scaleY(1);
-  background: #fff;
+transform: scaleY(1);
+background: #fff;
 }
 .adminbk56-page .abk-sub-menu-group {
-  margin-top: 0.8rem;
-  padding: 1.2rem 1.4rem;
-  background: #ffffff;
-  border-radius: var(--abk-radius-sm);
-  border: 1px solid rgba(236, 72, 153, 0.25);
-  border-left: 4px solid var(--abk-secondary-light);
-  transition: var(--abk-transition);
-  box-shadow: 0 2px 4px rgba(236,72,153,0.10), 0 6px 12px rgba(249,115,22,0.10), 0 12px 24px rgba(6,182,212,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
+margin-top: 0.8rem;
+padding: 1.2rem 1.4rem;
+background: #ffffff;
+border-radius: var(--abk-radius-sm);
+border: 1px solid rgba(236, 72, 153, 0.25);
+border-left: 4px solid var(--abk-secondary-light);
+transition: var(--abk-transition);
+box-shadow: 0 2px 4px rgba(236,72,153,0.10), 0 6px 12px rgba(249,115,22,0.10), 0 12px 24px rgba(6,182,212,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 .adminbk56-page .abk-sub-menu-group:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(236,72,153,0.15), 0 10px 20px rgba(249,115,22,0.18), 0 20px 40px rgba(6,182,212,0.10);
+transform: translateY(-2px);
+box-shadow: 0 4px 8px rgba(236,72,153,0.15), 0 10px 20px rgba(249,115,22,0.18), 0 20px 40px rgba(6,182,212,0.10);
 }
 .adminbk56-page .abk-sub-menu-group h4 {
-  color: var(--abk-secondary);
-  margin-bottom: 0.8rem;
-  font-size: 0.98rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
+color: var(--abk-secondary);
+margin-bottom: 0.8rem;
+font-size: 0.98rem;
+font-weight: 700;
+display: flex;
+align-items: center;
+gap: 0.4rem;
 }
 .adminbk56-page .abk-sub-menu-group .abk-menu-links a {
-  background: linear-gradient(135deg, #fef3c7 0%, #fce7f3 100%);
-  border-color: #fbcfe8;
-  font-size: 0.88rem;
-  box-shadow: 0 1px 2px rgba(236,72,153,0.08), 0 2px 4px rgba(249,115,22,0.06);
+background: linear-gradient(135deg, #fef3c7 0%, #fce7f3 100%);
+border-color: #fbcfe8;
+font-size: 0.88rem;
+box-shadow: 0 1px 2px rgba(236,72,153,0.08), 0 2px 4px rgba(249,115,22,0.06);
 }
 .adminbk56-page .abk-sub-menu-group .abk-menu-links a:hover {
-  background: linear-gradient(135deg, var(--abk-secondary), #db2777);
-  color: #fff;
-  border-color: transparent;
-  box-shadow: 0 6px 12px rgba(236,72,153,0.40), 0 12px 24px rgba(249,115,22,0.25);
+background: linear-gradient(135deg, var(--abk-secondary), #db2777);
+color: #fff;
+border-color: transparent;
+box-shadow: 0 6px 12px rgba(236,72,153,0.40), 0 12px 24px rgba(249,115,22,0.25);
 }
 .adminbk56-page .abk-laporan-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.2rem;
-  margin-top: 0.5rem;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 1.2rem;
+margin-top: 0.5rem;
 }
 .adminbk56-page .abk-laporan-container .abk-sub-menu-group {
-  margin-left: 0;
-  margin-top: 0;
+margin-left: 0;
+margin-top: 0;
 }
 .adminbk56-page .abk-info-section {
-  background: var(--abk-glass-bg);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
-  border-radius: var(--abk-radius-xl);
-  padding: 2.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid var(--abk-glass-border);
-  box-shadow: var(--abk-shadow-float-xl);
+background: var(--abk-glass-bg);
+backdrop-filter: blur(25px);
+-webkit-backdrop-filter: blur(25px);
+border-radius: var(--abk-radius-xl);
+padding: 2.5rem;
+margin-bottom: 2rem;
+border: 1px solid var(--abk-glass-border);
+box-shadow: var(--abk-shadow-float-xl);
 }
 .adminbk56-page .abk-info-section h2 {
-  font-family: var(--abk-font-display);
-  color: var(--abk-primary-dark);
-  margin-bottom: 1rem;
-  font-size: 1.6rem;
+font-family: var(--abk-font-display);
+color: var(--abk-primary-dark);
+margin-bottom: 1rem;
+font-size: 1.6rem;
 }
 .adminbk56-page .abk-info-section h3 {
-  color: var(--abk-primary);
-  margin-bottom: 0.8rem;
-  font-size: 1.1rem;
+color: var(--abk-primary);
+margin-bottom: 0.8rem;
+font-size: 1.1rem;
 }
 .adminbk56-page .abk-info-section p {
-  margin-bottom: 1rem;
-  color: #475569;
-  line-height: 1.8;
+margin-bottom: 1rem;
+color: #475569;
+line-height: 1.8;
 }
 .adminbk56-page .abk-info-section code {
-  background: linear-gradient(135deg, #fef3c7, #fce7f3);
-  padding: 3px 10px;
-  border-radius: 6px;
-  color: #be185d;
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
-  font-size: 0.88rem;
-  border: 1px solid #fbcfe8;
+background: linear-gradient(135deg, #fef3c7, #fce7f3);
+padding: 3px 10px;
+border-radius: 6px;
+color: #be185d;
+font-family: 'JetBrains Mono', 'Fira Code', monospace;
+font-size: 0.88rem;
+border: 1px solid #fbcfe8;
 }
 .adminbk56-page .abk-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1.2rem;
-  margin-top: 2rem;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+gap: 1.2rem;
+margin-top: 2rem;
 }
 .adminbk56-page .abk-stat-card {
-  color: #fff;
-  padding: 1.8rem 1.2rem;
-  border-radius: var(--abk-radius-md);
-  text-align: center;
-  transition: var(--abk-transition-bounce);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 16px rgba(249,115,22,0.35), 0 16px 32px rgba(236,72,153,0.25), 0 24px 48px rgba(6,182,212,0.15);
+color: #fff;
+padding: 1.8rem 1.2rem;
+border-radius: var(--abk-radius-md);
+text-align: center;
+transition: var(--abk-transition-bounce);
+position: relative;
+overflow: hidden;
+box-shadow: 0 8px 16px rgba(249,115,22,0.35), 0 16px 32px rgba(236,72,153,0.25), 0 24px 48px rgba(6,182,212,0.15);
 }
 .adminbk56-page .abk-stat-card:nth-child(1) { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
 .adminbk56-page .abk-stat-card:nth-child(2) { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
 .adminbk56-page .abk-stat-card:nth-child(3) { background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); }
 .adminbk56-page .abk-stat-card:nth-child(4) { background: linear-gradient(135deg, #facc15 0%, #f97316 100%); color: #7c2d12; }
 .adminbk56-page .abk-stat-card::before {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
-  animation: abkShimmer 4s ease-in-out infinite;
+content: '';
+position: absolute;
+top: -50%; left: -50%;
+width: 200%; height: 200%;
+background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
+animation: abkShimmer 4s ease-in-out infinite;
 }
 @keyframes abkShimmer {
-  0%, 100% { transform: translate(-30%, -30%); }
-  50% { transform: translate(30%, 30%); }
+0%, 100% { transform: translate(-30%, -30%); }
+50% { transform: translate(30%, 30%); }
 }
 .adminbk56-page .abk-stat-card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 12px 24px rgba(249,115,22,0.45), 0 24px 48px rgba(236,72,153,0.35), 0 40px 80px rgba(6,182,212,0.25);
+transform: translateY(-6px) scale(1.03);
+box-shadow: 0 12px 24px rgba(249,115,22,0.45), 0 24px 48px rgba(236,72,153,0.35), 0 40px 80px rgba(6,182,212,0.25);
 }
 .adminbk56-page .abk-stat-card .number {
-  font-size: 2.8rem;
-  font-weight: 800;
-  display: block;
-  line-height: 1.2;
-  position: relative;
-  z-index: 1;
+font-size: 2.8rem;
+font-weight: 800;
+display: block;
+line-height: 1.2;
+position: relative;
+z-index: 1;
 }
 .adminbk56-page .abk-stat-card .label {
-  font-size: 0.85rem;
-  opacity: 0.95;
-  font-weight: 600;
-  margin-top: 0.3rem;
-  position: relative;
-  z-index: 1;
+font-size: 0.85rem;
+opacity: 0.95;
+font-weight: 600;
+margin-top: 0.3rem;
+position: relative;
+z-index: 1;
 }
 .adminbk56-page .abk-site-footer {
-  position: relative;
-  z-index: 10;
-  background: linear-gradient(135deg, rgba(194,65,12,0.95), rgba(190,24,93,0.95));
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  color: #fff;
-  text-align: center;
-  padding: 2rem 1.5rem;
-  margin: 0 1.5rem 1.5rem;
-  border-radius: var(--abk-radius-xl);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: var(--abk-shadow-float-lg);
+position: relative;
+z-index: 10;
+background: linear-gradient(135deg, rgba(194,65,12,0.95), rgba(190,24,93,0.95));
+backdrop-filter: blur(15px);
+-webkit-backdrop-filter: blur(15px);
+color: #fff;
+text-align: center;
+padding: 2rem 1.5rem;
+margin: 0 1.5rem 1.5rem;
+border-radius: var(--abk-radius-xl);
+border: 1px solid rgba(255, 255, 255, 0.15);
+box-shadow: var(--abk-shadow-float-lg);
 }
 .adminbk56-page .abk-site-footer p { margin-bottom: 0.6rem; font-size: 0.9rem; }
 .adminbk56-page .abk-site-footer a {
-  color: #fef3c7;
-  margin: 0 0.6rem;
-  font-weight: 500;
-  transition: var(--abk-transition);
+color: #fef3c7;
+margin: 0 0.6rem;
+font-weight: 500;
+transition: var(--abk-transition);
 }
 .adminbk56-page .abk-site-footer a:hover { color: #fff; text-decoration: underline; }
 .adminbk56-page .abk-footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
+display: flex;
+justify-content: center;
+gap: 0.5rem;
+flex-wrap: wrap;
+margin-top: 0.5rem;
 }
 .adminbk56-page .abk-footer-links a {
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.15);
-  font-size: 0.82rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+padding: 0.3rem 0.8rem;
+border-radius: 20px;
+background: rgba(255, 255, 255, 0.15);
+font-size: 0.82rem;
+border: 1px solid rgba(255, 255, 255, 0.25);
 }
 .adminbk56-page .abk-footer-links a:hover {
-  background: rgba(255, 255, 255, 0.30);
-  text-decoration: none;
-  transform: translateY(-2px);
+background: rgba(255, 255, 255, 0.30);
+text-decoration: none;
+transform: translateY(-2px);
 }
 .back-btn-abk {
-  background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
-  color: white !important;
-  border: none;
-  padding: 12px 22px;
-  border-radius: 100px;
-  font-size: 14px;
-  cursor: pointer;
-  margin: 20px 24px;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
-  position: relative;
-  z-index: 10;
+background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
+color: white !important;
+border: none;
+padding: 12px 22px;
+border-radius: 100px;
+font-size: 14px;
+cursor: pointer;
+margin: 20px 24px;
+font-weight: 600;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+transition: all 0.2s ease;
+font-family: 'Plus Jakarta Sans', sans-serif;
+box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
+position: relative;
+z-index: 10;
 }
 .back-btn-abk:hover {
-  transform: translateX(-3px);
-  box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
-  filter: brightness(1.1);
+transform: translateX(-3px);
+box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
+filter: brightness(1.1);
 }
 @media (max-width: 768px) {
-  .adminbk56-page .abk-site-header { padding: 1.8rem 1rem; margin: 0 0.8rem; }
-  .adminbk56-page .abk-site-nav { margin: 1rem 0.8rem 0; }
-  .adminbk56-page .abk-nav-inner { gap: 0.4rem; }
-  .adminbk56-page .abk-nav-link { padding: 0.5rem 0.9rem; font-size: 0.82rem; }
-  .adminbk56-page .abk-kelas-section { padding: 1.5rem; border-radius: var(--abk-radius-lg); }
-  .adminbk56-page .abk-menu-group { padding: 1.2rem; }
-  .adminbk56-page .abk-menu-links { grid-template-columns: 1fr; }
-  .adminbk56-page .abk-tab-btn {
-    flex: 1;
-    min-width: 100px;
-    justify-content: center;
-    padding: 0.75rem 1rem;
-    font-size: 0.88rem;
-  }
-  .adminbk56-page .abk-laporan-container { grid-template-columns: 1fr; }
-  .adminbk56-page .abk-stats { grid-template-columns: repeat(2, 1fr); }
-  .adminbk56-page .abk-site-footer { margin: 0 0.8rem 0.8rem; }
-  .back-btn-abk { margin: 16px; }
+.adminbk56-page .abk-site-header { padding: 1.8rem 1rem; margin: 0 0.8rem; }
+.adminbk56-page .abk-site-nav { margin: 1rem 0.8rem 0; }
+.adminbk56-page .abk-nav-inner { gap: 0.4rem; }
+.adminbk56-page .abk-nav-link { padding: 0.5rem 0.9rem; font-size: 0.82rem; }
+.adminbk56-page .abk-kelas-section { padding: 1.5rem; border-radius: var(--abk-radius-lg); }
+.adminbk56-page .abk-menu-group { padding: 1.2rem; }
+.adminbk56-page .abk-menu-links { grid-template-columns: 1fr; }
+.adminbk56-page .abk-tab-btn {
+flex: 1;
+min-width: 100px;
+justify-content: center;
+padding: 0.75rem 1rem;
+font-size: 0.88rem;
+}
+.adminbk56-page .abk-laporan-container { grid-template-columns: 1fr; }
+.adminbk56-page .abk-stats { grid-template-columns: repeat(2, 1fr); }
+.adminbk56-page .abk-site-footer { margin: 0 0.8rem 0.8rem; }
+.back-btn-abk { margin: 16px; }
 }
 @media (max-width: 480px) {
-  .adminbk56-page .abk-stats { grid-template-columns: 1fr 1fr; }
-  .adminbk56-page .abk-tab-navigation { padding: 0.8rem; }
+.adminbk56-page .abk-stats { grid-template-columns: 1fr 1fr; }
+.adminbk56-page .abk-tab-navigation { padding: 0.8rem; }
 }
-
 </style>
 </head>
 <body>
@@ -1343,90 +1378,79 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <div class="features-grid">
 <style>
 .feature-card.fc-dl {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-08ce81b2-6f35-44de-ba8b-e0412709f529.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-08ce81b2-6f35-44de-ba8b-e0412709f529.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-dl::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-dl:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-dl > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-dl h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-dl p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('panduanbk-dl') dipertahankan 100%) -->
 <article class="feature-card fc-dl" onclick="go('panduanbk-dl')" role="button" tabindex="0" aria-label="Buka Panduan BK Deep Learning">
 <div class="feature-icon">📘</div><h3>PanduanBK DL</h3>
 <p>Panduan lengkap administrasi BK berbasis Deep Learning 6C dalam Kurikulum Merdeka.</p>
@@ -1434,1392 +1458,1223 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </article>
 <style>
 .feature-card.fc-i6c {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-7085f76e-eb6c-4584-9ee9-e2ee7874b728.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-7085f76e-eb6c-4584-9ee9-e2ee7874b728.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-i6c::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-i6c:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-i6c > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-i6c h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-i6c p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('instrumen6c') dipertahankan 100%) -->
 <article class="feature-card fc-i6c" onclick="go('instrumen6c')" role="button" tabindex="0" aria-label="Buka Instrument 6C">
-  <div class="feature-icon">📊</div>
-  <h3>Instrument 6C</h3>
-  <p>8 instrumen asesmen 6C Deep Learning siap pakai: Angket, Rubrik, Self/Peer Assessment, Dashboard, Wawancara, Jurnal & Laporan.</p>
-  <span class="feature-link">Buka Instrument →</span>
+<div class="feature-icon">📊</div>
+<h3>Instrument 6C</h3>
+<p>8 instrumen asesmen 6C Deep Learning siap pakai: Angket, Rubrik, Self/Peer Assessment, Dashboard, Wawancara, Jurnal & Laporan.</p>
+<span class="feature-link">Buka Instrument →</span>
 </article>
 <style>
 .feature-card.fc-tbkdl {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-81c0f5a6-74a0-458a-bdd6-2e4f31a1b0e6.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-81c0f5a6-74a0-458a-bdd6-2e4f31a1b0e6.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-tbkdl::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-tbkdl:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-tbkdl > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-tbkdl h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-tbkdl p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('templatebk-dl') dipertahankan 100%) -->
 <article class="feature-card fc-tbkdl" onclick="go('templatebk-dl')" role="button" tabindex="0" aria-label="Buka TemplateBK DL">
-  <div class="feature-icon">📄</div>
-  <h3>TemplateBK DL</h3>
-  <p>5 template dokumen BK siap cetak berbasis Deep Learning: RPL-DL, Rubrik 6C, Jurnal Refleksi, Catatan Anekdot, dan Impact Report.</p>
-  <span class="feature-link">Buka Template →</span>
+<div class="feature-icon">📄</div>
+<h3>TemplateBK DL</h3>
+<p>5 template dokumen BK siap cetak berbasis Deep Learning: RPL-DL, Rubrik 6C, Jurnal Refleksi, Catatan Anekdot, dan Impact Report.</p>
+<span class="feature-link">Buka Template →</span>
 </article>
 <style>
 .feature-card.fc-admin {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-808ba117-069e-48ee-937b-f248f6fcfd77.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-808ba117-069e-48ee-937b-f248f6fcfd77.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-admin::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-admin:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-admin > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-admin h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-admin p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('adminbk56') dipertahankan 100%) -->
 <article class="feature-card fc-admin" onclick="go('adminbk56')" role="button" tabindex="0" aria-label="Buka Administrasi BK56">
-  <div class="feature-icon">📚</div>
-  <h3>Administrasi BK56</h3>
-  <p>Sistem manajemen administrasi BK lengkap: RPL, Materi, Catatan Kasus, Home Visit, dan Laporan BK untuk Kelas VII, VIII, IX.</p>
-  <span class="feature-link">Buka Administrasi →</span>
+<div class="feature-icon">📚</div>
+<h3>Administrasi BK56</h3>
+<p>Sistem manajemen administrasi BK lengkap: RPL, Materi, Catatan Kasus, Home Visit, dan Laporan BK untuk Kelas VII, VIII, IX.</p>
+<span class="feature-link">Buka Administrasi →</span>
 </article>
 <style>
 .feature-card.fc-profile {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-ad508939-2cb1-4c59-9170-6239f80c266a.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-ad508939-2cb1-4c59-9170-6239f80c266a.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-profile::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-profile:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-profile > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-profile h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-profile p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-<!-- Kode HTML Asli (Fungsi window.open dipertahankan 100%) -->
 <article class="feature-card fc-profile" onclick="window.open('https://appseet11-cmd.github.io/Profile-Siswa-Kelas-VII/', '_blank')" role="button" tabindex="0" aria-label="Buka Profile Siswa Kelas VII">
 <div class="feature-icon">👦</div>
 <h3>Profile Siswa Kelas VII</h3>
 <p>Formulir data diri lengkap siswa kelas VII untuk pendampingan BK personal.</p>
 <span class="feature-link" style="text-decoration: none; color: inherit;">Buka Profile →</span>
 </article>
-
-
 <style>
 .feature-card.fc-profile-viii {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-3b368d4d-95a8-423c-bddc-873d08023d9e.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-3b368d4d-95a8-423c-bddc-873d08023d9e.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-profile-viii::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-profile-viii:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-profile-viii > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-profile-viii h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-profile-viii p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi window.open dipertahankan 100%) -->
 <article class="feature-card fc-profile-viii" onclick="window.open('https://appseet11-cmd.github.io/Profile-Siswa-Kelas-VIII/', '_blank')" role="button" tabindex="0" aria-label="Buka Profile Siswa Kelas VIII">
-  <div class="feature-icon">👧</div>
-  <h3>Profile Siswa Kelas VIII</h3>
-  <p>Formulir data diri lengkap siswa kelas VIII untuk pendampingan BK personal.</p>
-  <span class="feature-link" style="text-decoration: none; color: inherit;">Buka Profile →</span>
+<div class="feature-icon">👧</div>
+<h3>Profile Siswa Kelas VIII</h3>
+<p>Formulir data diri lengkap siswa kelas VIII untuk pendampingan BK personal.</p>
+<span class="feature-link" style="text-decoration: none; color: inherit;">Buka Profile →</span>
 </article>
-
 <style>
 .feature-card.fc-profile-ix {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-d9d10791-c713-4ad1-9303-f4c4bc87212e.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-d9d10791-c713-4ad1-9303-f4c4bc87212e.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-profile-ix::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-profile-ix:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-profile-ix > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-profile-ix h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-profile-ix p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi window.open dipertahankan 100%) -->
 <article class="feature-card fc-profile-ix" onclick="window.open('https://appseet11-cmd.github.io/Profile-Siswa-Kelas-IX/', '_blank')" role="button" tabindex="0" aria-label="Buka Profile Siswa Kelas IX">
-  <div class="feature-icon">🧑</div>
-  <h3>Profile Siswa Kelas IX</h3>
-  <p>Formulir data diri lengkap siswa kelas IX untuk pendampingan BK personal.</p>
-  <span class="feature-link" style="text-decoration: none; color: inherit;">Buka Profile →</span>
+<div class="feature-icon">🧑</div>
+<h3>Profile Siswa Kelas IX</h3>
+<p>Formulir data diri lengkap siswa kelas IX untuk pendampingan BK personal.</p>
+<span class="feature-link" style="text-decoration: none; color: inherit;">Buka Profile →</span>
 </article>
-
 <style>
 .feature-card.fc-m {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-566ba500-462b-4881-9b66-bc64acc22e43.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-566ba500-462b-4881-9b66-bc64acc22e43.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-m::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-m:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-m > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-m h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-m p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('materi') dipertahankan 100%) -->
 <article class="feature-card fc-m" onclick="go('materi')" role="button" tabindex="0" aria-label="Buka menu Materi BK">
-  <div class="feature-icon">📚</div>
-  <h3>Materi Pembelajaran</h3>
-  <p>Akses lengkap materi bimbingan pribadi, sosial, belajar, karir, dan pengembangan diri.</p>
-  <span class="feature-link">Buka Materi →</span>
+<div class="feature-icon">📚</div>
+<h3>Materi Pembelajaran</h3>
+<p>Akses lengkap materi bimbingan pribadi, sosial, belajar, karir, dan pengembangan diri.</p>
+<span class="feature-link">Buka Materi →</span>
 </article>
 <style>
 .feature-card.fc-a {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-2c20c65a-3b60-4b36-b3b0-2535bf8e3704.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-2c20c65a-3b60-4b36-b3b0-2535bf8e3704.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-a::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-a:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-a > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-a h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-a p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('asesmen') dipertahankan 100%) -->
 <article class="feature-card fc-a" onclick="go('asesmen')" role="button" tabindex="0" aria-label="Buka menu Asesmen Awal">
-  <div class="feature-icon">📝</div>
-  <h3>Asesmen Awal</h3>
-  <p>Diagnostik kognitif & non-kognitif untuk pemetaan kebutuhan belajar siswa.</p>
-  <span class="feature-link">Kerjakan Asesmen →</span>
+<div class="feature-icon">📝</div>
+<h3>Asesmen Awal</h3>
+<p>Diagnostik kognitif & non-kognitif untuk pemetaan kebutuhan belajar siswa.</p>
+<span class="feature-link">Kerjakan Asesmen →</span>
 </article>
 <style>
 .feature-card.fc-q {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-982d153a-4734-4a7b-b4d3-98f27ac7426a.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-982d153a-4734-4a7b-b4d3-98f27ac7426a.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-q::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-q:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-q > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-q h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-q p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('quiz') dipertahankan 100%) -->
 <article class="feature-card fc-q" onclick="go('quiz')" role="button" tabindex="0" aria-label="Buka menu Quiz">
-  <div class="feature-icon">🎯</div>
-  <h3>Quiz Interaktif</h3>
-  <p>Uji pemahaman materi melalui quiz singkat yang menyenangkan dan edukatif.</p>
-  <span class="feature-link">Mulai Quiz →</span>
+<div class="feature-icon">🎯</div>
+<h3>Quiz Interaktif</h3>
+<p>Uji pemahaman materi melalui quiz singkat yang menyenangkan dan edukatif.</p>
+<span class="feature-link">Mulai Quiz →</span>
 </article>
 <style>
 .feature-card.fc-v {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-475b6704-998e-43d6-a8f4-80fab35c33f8.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-475b6704-998e-43d6-a8f4-80fab35c33f8.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-v::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-v:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-v > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-v h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-v p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('video') dipertahankan 100%) -->
 <article class="feature-card fc-v" onclick="go('video')" role="button" tabindex="0" aria-label="Buka menu Video">
-  <div class="feature-icon">🎬</div>
-  <h3>Video Pembelajaran</h3>
-  <p>Penjelasan visual materi BK yang menarik dan mudah dipahami siswa.</p>
-  <span class="feature-link">Tonton Video →</span>
+<div class="feature-icon">🎬</div>
+<h3>Video Pembelajaran</h3>
+<p>Penjelasan visual materi BK yang menarik dan mudah dipahami siswa.</p>
+<span class="feature-link">Tonton Video →</span>
 </article>
 <style>
 .feature-card.fc-g {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-5d02967f-3d57-4c7f-84d2-9c528df77a86.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-5d02967f-3d57-4c7f-84d2-9c528df77a86.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-g::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-g:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-g > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-g h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-g p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('game') dipertahankan 100%) -->
 <article class="feature-card fc-g" onclick="go('game')" role="button" tabindex="0" aria-label="Buka menu Game Edukatif">
-  <div class="feature-icon">🎮</div>
-  <h3>Game Edukatif</h3>
-  <p>Belajar BK sambil bermain dengan game interaktif yang seru dan bermakna.</p>
-  <span class="feature-link">Mainkan Game →</span>
+<div class="feature-icon">🎮</div>
+<h3>Game Edukatif</h3>
+<p>Belajar BK sambil bermain dengan game interaktif yang seru dan bermakna.</p>
+<span class="feature-link">Mainkan Game →</span>
 </article>
 <style>
 .feature-card.fc-an {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-cce919e1-571d-4f2b-b465-afe4740a4343.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-cce919e1-571d-4f2b-b465-afe4740a4343.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-an::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-an:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-an > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-an h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-an p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('analisis') dipertahankan 100%) -->
 <article class="feature-card fc-an" onclick="go('analisis')" role="button" tabindex="0" aria-label="Buka menu Analisis Siswa">
-  <div class="feature-icon">📊</div>
-  <h3>Analisis Siswa</h3>
-  <p>Data & evaluasi perkembangan siswa secara komprehensif dan terukur.</p>
-  <span class="feature-link">Lihat Analisis →</span>
+<div class="feature-icon">📊</div>
+<h3>Analisis Siswa</h3>
+<p>Data & evaluasi perkembangan siswa secara komprehensif dan terukur.</p>
+<span class="feature-link">Lihat Analisis →</span>
 </article>
 <style>
 .feature-card.fc-iq {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-7ab02a72-97e4-4e68-b9f7-4e73be70ae39.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-7ab02a72-97e4-4e68-b9f7-4e73be70ae39.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-iq::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-iq:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-iq > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-iq h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-iq p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('iq') dipertahankan 100%) -->
 <article class="feature-card fc-iq" onclick="go('iq')" role="button" tabindex="0" aria-label="Buka menu Tes IQ">
-  <div class="feature-icon">🧠</div>
-  <h3>Tes IQ Online</h3>
-  <p>Ukur kecerdasan dan potensi kognitif siswa per kelas dengan tes terstandar.</p>
-  <span class="feature-link">Mulai Tes IQ →</span>
+<div class="feature-icon">🧠</div>
+<h3>Tes IQ Online</h3>
+<p>Ukur kecerdasan dan potensi kognitif siswa per kelas dengan tes terstandar.</p>
+<span class="feature-link">Mulai Tes IQ →</span>
 </article>
 <style>
 .feature-card.fc-ab {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/member/2026-07-30-8f174ebe-58e3-4ce1-b50e-1b2a0ee65702.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/member/2026-07-30-8f174ebe-58e3-4ce1-b50e-1b2a0ee65702.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-ab::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-ab:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-ab > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-ab h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-ab p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('absensi') dipertahankan 100%) -->
 <article class="feature-card fc-ab" onclick="go('absensi')" role="button" tabindex="0" aria-label="Buka menu Absensi">
-  <div class="feature-icon">📋</div>
-  <h3>Absensi Digital</h3>
-  <p>Catat kehadiran siswa per kelas secara online, cepat, dan terintegrasi.</p>
-  <span class="feature-link">Buka Absensi →</span>
+<div class="feature-icon">📋</div>
+<h3>Absensi Digital</h3>
+<p>Catat kehadiran siswa per kelas secara online, cepat, dan terintegrasi.</p>
+<span class="feature-link">Buka Absensi →</span>
 </article>
 <style>
 .feature-card.fc-ra {
-  position: relative;
-  /* GANTI URL DI BAWAH INI DENGAN URL GAMBAR ANDA */
-  background-image: url('https://cdn.phototourl.com/free/2026-07-30-493ed67e-60f6-4d04-97f7-fba7b3221d77.png');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-color: #2c3e50; /* Warna cadangan jika gambar gagal dimuat */
-  padding: 1.5rem;
-  border-radius: 12px;
-  color: white;
-  text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden; /* KUNCI: Mencegah gambar bocor keluar border */
-  border: 2px solid rgba(255,255,255,0.3);
-  isolation: isolate;
-  text-decoration: none;
+position: relative;
+background-image: url('https://cdn.phototourl.com/free/2026-07-30-493ed67e-60f6-4d04-97f7-fba7b3221d77.png');
+background-size: cover;
+background-position: center center;
+background-repeat: no-repeat;
+background-color: #2c3e50;
+padding: 1.5rem;
+border-radius: 12px;
+color: white;
+text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+min-height: 200px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+cursor: pointer;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+overflow: hidden;
+border: 2px solid rgba(255,255,255,0.3);
+isolation: isolate;
+text-decoration: none;
 }
-
 .feature-card.fc-ra::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
-  border-radius: 12px; /* Harus sama persis dengan parent */
-  z-index: 1;
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%);
+border-radius: 12px;
+z-index: 1;
 }
-
 .feature-card.fc-ra:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  border-color: rgba(255,255,255,0.6);
+transform: translateY(-5px);
+box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+border-color: rgba(255,255,255,0.6);
 }
-
 .feature-card.fc-ra > * {
-  position: relative;
-  z-index: 2;
+position: relative;
+z-index: 2;
 }
-
 .feature-icon {
-  font-size: 2rem;
-  margin-bottom: 0.5rem;
+font-size: 2rem;
+margin-bottom: 0.5rem;
 }
-
 .feature-card.fc-ra h3 {
-  font-size: 1.3rem;
-  margin: 0.5rem 0;
-  font-weight: bold;
-  color: #fff;
+font-size: 1.3rem;
+margin: 0.5rem 0;
+font-weight: bold;
+color: #fff;
 }
-
 .feature-card.fc-ra p {
-  font-size: 0.9rem;
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #f0f0f0;
+font-size: 0.9rem;
+margin: 0.5rem 0;
+line-height: 1.5;
+color: #f0f0f0;
 }
-
 .feature-link {
-  display: inline-block;
-  margin-top: 0.75rem;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0.4rem 0.8rem;
-  background: rgba(255,255,255,0.2);
-  border-radius: 6px;
-  transition: background 0.3s ease;
-  text-decoration: none;
-  color: #fff;
+display: inline-block;
+margin-top: 0.75rem;
+font-weight: bold;
+font-size: 0.9rem;
+padding: 0.4rem 0.8rem;
+background: rgba(255,255,255,0.2);
+border-radius: 6px;
+transition: background 0.3s ease;
+text-decoration: none;
+color: #fff;
 }
-
 .feature-link:hover {
-  background: rgba(255,255,255,0.35);
+background: rgba(255,255,255,0.35);
 }
 </style>
-
-<!-- Kode HTML Asli (Fungsi go('rekap') dipertahankan 100%) -->
 <article class="feature-card fc-ra" onclick="go('rekap')" role="button" tabindex="0" aria-label="Buka menu Rekap Absensi">
-  <div class="feature-icon">📈</div>
-  <h3>Rekap Kehadiran</h3>
-  <p>Rekapitulasi kehadiran siswa per kelas dalam format spreadsheet terstruktur.</p>
-  <span class="feature-link">Lihat Rekap →</span>
+<div class="feature-icon">📈</div>
+<h3>Rekap Kehadiran</h3>
+<p>Rekapitulasi kehadiran siswa per kelas dalam format spreadsheet terstruktur.</p>
+<span class="feature-link">Lihat Rekap →</span>
 </article>
 </div>
 </section>
-
 </div>
 </section>
 <!-- ================================================================ -->
 <!-- ===== AKHIR TAG TEMPLATE ===== -->
 <!-- ================================================================ -->
-<nav class="breadcrumb" aria-label="Breadcrumb" id="breadcrumb">
+ <nav class="breadcrumb" aria-label="Breadcrumb" id="breadcrumb">
 <a href="#" onclick="go('home'); return false;">🏠 Beranda</a>
 <span>›</span>
 <span class="current" id="breadcrumb-current">Platform BK Digital</span>
@@ -3058,11 +2913,11 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </div>
 </div>
 </nav>
-<main id="main-content" role="main">
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN INSTRUMENT 6C (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="instrumen6c" class="page instrumen6c-page">
+     <main id="main-content" role="main">
+    <div id="instrumen6c" class="page instrumen6c-page">
 <button class="back-btn-i6c" onclick="go('home')" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
 <header class="i6c-header">
 <div class="i6c-header-content">
@@ -3319,13 +3174,14 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </div>
 <footer class="i6c-footer"><div class="i6c-footer-content"><h4>📚 Referensi</h4><p>Panduan Bimbingan dan Konseling dalam Kurikulum Merdeka — BSKAP Kemendikbudristek</p><p>Fullan, M., et al. (2018). <em>Deep Learning: Engage the World Change the World.</em> Corwin Press.</p><div class="i6c-footer-divider"></div><p class="i6c-copyright">© 2026 Panduan BK Indonesia • Instrumen Asesmen 6C Deep Learning</p></div></footer>
 </div>
+
 <!-- ================================================================ -->
 <!-- ===== AKHIR HALAMAN INSTRUMENT 6C (1/6) ===== -->
 <!-- ================================================================ -->
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN PANDUAN BK DL (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="panduanbk-dl" class="page panduanbk-dl-page">
+ <div id="panduanbk-dl" class="page panduanbk-dl-page">
 <button class="back-btn-dl" onclick="go('home')" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
 <header class="dl-header" role="banner">
 <div class="dl-header-content">
@@ -3381,9 +3237,9 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ===== AKHIR HALAMAN PANDUAN BK DL (1/6) ===== -->
 <!-- ================================================================ -->
 <!-- ================================================================ -->
-<!-- ========== HALAMAN TEMPLATEBK DL (BARU) ========== -->
+<!-- ========== AWAL HALAMAN TEMPLATEBK DL (BARU) ========== -->
 <!-- ================================================================ -->
-<div id="templatebk-dl" class="page templatebk-dl-page">
+  <div id="templatebk-dl" class="page templatebk-dl-page">
 <button class="back-btn-tbkdl" onclick="go('home')" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
 <!-- HEADER -->
 <header class="tbk-header">
@@ -3850,7 +3706,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN MATERI (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="materi" class="page m">
+ <div id="materi" class="page m">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📚 Materi Pembelajaran</h2>
 <p class="page-desc">Pilih topik untuk membuka file materi bimbingan konseling.</p>
@@ -3903,7 +3759,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN ASESMEN (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="asesmen" class="page a">
+ <div id="asesmen" class="page a">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📝 Asesmen Awal</h2>
 <p class="page-desc">Penilaian untuk mengukur ketercapaian tujuan pembelajaran BK.</p>
@@ -3934,7 +3790,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN QUIZ (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="quiz" class="page q">
+ <div id="quiz" class="page q">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">🎯 Quiz Interaktif</h2>
 <p class="page-desc">Ikuti quiz singkat untuk menguji pemahaman materi BK.</p>
@@ -3980,7 +3836,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN GAME (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="game" class="page g">
+ <div id="game" class="page g">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">🎮 Game Bimbingan Konseling</h2>
 <p class="page-desc">Bermain sambil belajar dengan game edukatif yang seru!</p>
@@ -4001,7 +3857,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN ANALISIS (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="analisis" class="page an">
+ <div id="analisis" class="page an">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📊 Analisis Siswa</h2>
 <p class="page-desc">Klik untuk membuka halaman analisis perkembangan siswa.</p>
@@ -4039,7 +3895,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN IQ (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="iq" class="page iq">
+ <div id="iq" class="page iq">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">🧠 Tes IQ</h2>
 <p class="page-desc">Pilih kelas untuk memulai Tes IQ online.</p>
@@ -4055,7 +3911,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN ABSENSI (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="absensi" class="page ab">
+ <div id="absensi" class="page ab">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📋 Absensi Siswa</h2>
 <p class="page-desc">Pilih kelas untuk membuka halaman absensi digital. Gunakan filter untuk menampilkan kelas tertentu.</p>
@@ -4105,7 +3961,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN REKAP (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="rekap" class="page ra">
+ <div id="rekap" class="page ra">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📈 Rekap Absensi Siswa</h2>
 <p class="page-desc">Pilih kelas untuk membuka halaman rekap absensi. Gunakan filter untuk menampilkan kelas tertentu.</p>
@@ -4160,12 +4016,10 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <div id="adminbk56" class="page adminbk56-page">
 <button class="back-btn-abk" onclick="go('home')" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
-
 <header class="abk-site-header" role="banner">
 <h1>📚 Administrasi BK 56</h1>
 <p class="abk-tagline">Sistem Manajemen Bimbingan dan Konseling Digital</p>
 </header>
-
 <nav class="abk-site-nav" role="navigation" aria-label="Navigasi Administrasi">
 <div class="abk-nav-inner">
 <button class="abk-nav-link abk-nav-kelas-link" data-target="abk-kelas-vii" aria-label="Lihat Kelas VII">📋 Kelas VII</button>
@@ -4174,7 +4028,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <button class="abk-nav-link abk-nav-link--primary" onclick="showToast('📌 Klik menu mana saja, akan terbuka di tab baru', 'info')">📌 Panduan</button>
 </div>
 </nav>
-
 <main class="abk-main-content" role="main">
 <h2 class="abk-page-title">Administrasi BK 56</h2>
 <div class="abk-tab-navigation" role="tablist" aria-label="Pilih Kelas">
@@ -4182,11 +4035,9 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <button class="abk-tab-btn" data-target="abk-kelas-viii" role="tab" aria-selected="false">📋 Kelas VIII</button>
 <button class="abk-tab-btn" data-target="abk-kelas-ix" role="tab" aria-selected="false">📋 Kelas IX</button>
 </div>
-
 <!-- =================== KELAS VII =================== -->
 <section class="abk-kelas-section active" id="abk-kelas-vii" role="tabpanel">
 <h2>📋 Administrasi Kelas VII</h2>
-
 <div class="abk-menu-group">
 <h3>🔍 Analisa Kebutuhan Siswa</h3>
 <div class="abk-menu-links">
@@ -4194,15 +4045,13 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/vii/wawancara.html" target="_blank" rel="noopener">🎙️ Wawancara</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
-<h3>📊 Porta Promes</h3>
+<h3>📊 Prota Prosem</h3>
 <div class="abk-menu-links">
 <a href="admin/vii/porta-promes-sem1.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 1</a>
 <a href="admin/vii/porta-promes-sem2.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 2</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>📝 Rencana Pelaksanaan Layanan (RPL)</h3>
 <div class="abk-menu-links">
@@ -4210,16 +4059,22 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/vii/rpl-kelompok.html" target="_blank" rel="noopener">👥 RPL Kelompok</a>
 <a href="admin/vii/rpl-individual.html" target="_blank" rel="noopener">👤 RPL Individual</a>
 </div>
-</div
-
+</div>
 <div class="abk-menu-group">
-<h3>📅 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
+<h3>📅 Agenda Pembelajaran</h3>
 <div class="abk-menu-links">
-<a href="https://script.google.com/macros/s/AKfycbzCsLFH-IrnuiltlDZObpkE6b8Sb4slQbkKeQj34JCqJfEnCTVtUh2zpd32DfF12wgGRQ/exec" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 1</a>
+<a href="admin/vii/agenda-sem1.html" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 1</a>
 <a href="admin/vii/agenda-sem2.html" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 2</a>
 </div>
 </div>
-
+<!-- =================== BARU: JURNAL PELAKSANAAN LAYANAN BK =================== -->
+<div class="abk-menu-group">
+<h3>📓 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
+<div class="abk-menu-links">
+<a href="admin/vii/jurnal-layanan-sem1.html" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 1</a>
+<a href="admin/vii/jurnal-layanan-sem2.html" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 2</a>
+</div>
+</div>
 <div class="abk-menu-group">
 <h3>📚 Materi</h3>
 <div class="abk-menu-links">
@@ -4230,7 +4085,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/vii/materi-5.html" target="_blank" rel="noopener">📖 Materi 5</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>🌐 Lintas Kelas</h3>
 <div class="abk-menu-links">
@@ -4240,7 +4094,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/vii/tanggap-bencana.html" target="_blank" rel="noopener">🚨 Tanggap Bencana dan Keselamatan Diri</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>⚙️ Metode Bimbingan</h3>
 <div class="abk-menu-links">
@@ -4251,29 +4104,26 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/vii/p5.html" target="_blank" rel="noopener">🌟 Proyek Penguatan Profil Pelajar Pancasila</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>⚠️ Catatan Kasus</h3>
 <div class="abk-menu-links">
 <a href="https://appseet11-cmd.github.io/Catatan-Kasus-Kelas-VII-A/" target="_blank" rel="noopener">📕 Kelas VII-A</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-KELAS-VIIB/" target="_blank" rel="noopener">📕 Kelas VII-B</a>
+<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-B/" target="_blank" rel="noopener">📕 Kelas VII-B</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-C/" target="_blank" rel="noopener">📕 Kelas VII-C</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-D/" target="_blank" rel="noopener">📕 Kelas VII-D</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-E/" target="_blank" rel="noopener">📕 Kelas VII-E</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-F/" target="_blank" rel="noopener">📕 Kelas VII-F</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-G/" target="_blank" rel="noopener">📕 Kelas VII-G</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-H/" target="_blank" rel="noopener">📕 Kelas VII-H</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-I/" target="_blank" rel="noopener">📕 Kelas VII-I</a>
+<a href=" https://appseet11-cmd.github.io/CATATAN-KASUS-VII-I/" target="_blank" rel="noopener">📕 Kelas VII-I</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>🏠 Home Visit</h3>
 <div class="abk-menu-links">
 <a href="admin/vii/home-visit.html" target="_blank" rel="noopener">🏡 Home Visit Kelas VII</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>✅ Status Konseling</h3>
 <div class="abk-menu-links">
@@ -4281,6 +4131,17 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </div>
 </div>
 
+<!-- =================== BARU: SUARA SISWA =================== -->
+<div class="abk-menu-group">
+<h3>🗣️ Suara Siswa</h3>
+<div class="abk-menu-links">
+<a href="admin/vii/suara-aspirasi.html" target="_blank" rel="noopener">💬 Kotak Aspirasi Siswa</a>
+<a href="admin/vii/suara-testimoni.html" target="_blank" rel="noopener">⭐ Testimoni & Umpan Balik</a>
+<a href="admin/vii/suara-refleksi.html" target="_blank" rel="noopener">📝 Refleksi & Cerita Siswa</a>
+<a href="admin/vii/suara-harapan.html" target="_blank" rel="noopener">🌟 Harapan & Saran Siswa</a>
+</div>
+</div>
+<!-- =================== AKHIR MENU BARU =================== -->
 <div class="abk-menu-group">
 <h3>📑 Laporan BK</h3>
 <div class="abk-laporan-container">
@@ -4302,13 +4163,10 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </div>
 </div>
 </div>
-
 </section>
-
 <!-- =================== KELAS VIII =================== -->
 <section class="abk-kelas-section" id="abk-kelas-viii" role="tabpanel">
 <h2>📋 Administrasi Kelas VIII</h2>
-
 <div class="abk-menu-group">
 <h3>🔍 Analisa Kebutuhan Siswa</h3>
 <div class="abk-menu-links">
@@ -4316,15 +4174,13 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/viii/wawancara.html" target="_blank" rel="noopener">🎙️ Wawancara</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
-<h3>📊 Porta Promes</h3>
+<h3>📊 Prota Prosem</h3>
 <div class="abk-menu-links">
 <a href="admin/viii/porta-promes-sem1.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 1</a>
 <a href="admin/viii/porta-promes-sem2.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 2</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>📝 Rencana Pelaksanaan Layanan (RPL)</h3>
 <div class="abk-menu-links">
@@ -4333,15 +4189,21 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/viii/rpl-individual.html" target="_blank" rel="noopener">👤 RPL Individual</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
-<h3>📅 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
+<h3>📅 Agenda Pembelajaran</h3>
 <div class="abk-menu-links">
-<a href="https://script.google.com/macros/s/AKfycbzCsLFH-IrnuiltlDZObpkE6b8Sb4slQbkKeQj34JCqJfEnCTVtUh2zpd32DfF12wgGRQ/exec" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 1</a>
+<a href="admin/viii/agenda-sem1.html" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 1</a>
 <a href="admin/viii/agenda-sem2.html" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 2</a>
 </div>
 </div>
-
+<!-- =================== BARU: JURNAL PELAKSANAAN LAYANAN BK =================== -->
+<div class="abk-menu-group">
+<h3>📓 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
+<div class="abk-menu-links">
+<a href="admin/viii/jurnal-layanan-sem1.html" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 1</a>
+<a href="admin/viii/jurnal-layanan-sem2.html" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 2</a>
+</div>
+</div>
 <div class="abk-menu-group">
 <h3>📚 Materi</h3>
 <div class="abk-menu-links">
@@ -4352,7 +4214,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/viii/materi-5.html" target="_blank" rel="noopener">📖 Materi 5</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>🌐 Lintas Kelas</h3>
 <div class="abk-menu-links">
@@ -4362,7 +4223,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/viii/tanggap-bencana.html" target="_blank" rel="noopener">🚨 Tanggap Bencana dan Keselamatan Diri</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>⚙️ Metode Bimbingan</h3>
 <div class="abk-menu-links">
@@ -4373,13 +4233,12 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/viii/p5.html" target="_blank" rel="noopener">🌟 Proyek Penguatan Profil Pelajar Pancasila</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>⚠️ Catatan Kasus</h3>
 <div class="abk-menu-links">
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-A/" target="_blank" rel="noopener">📕 Kelas VIII-A</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-B/" target="_blank" rel="noopener">📕 Kelas VIII-B</a>
-<a href="admihttps://appseet11-cmd.github.io/CATATAN-KASUS-VIII-C/" target="_blank" rel="noopener">📕 Kelas VIII-C</a>
+<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-C/" target="_blank" rel="noopener">📕 Kelas VIII-C</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-D/" target="_blank" rel="noopener">📕 Kelas VIII-D</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-E/" target="_blank" rel="noopener">📕 Kelas VIII-E</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-F/" target="_blank" rel="noopener">📕 Kelas VIII-F</a>
@@ -4388,21 +4247,30 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-I/" target="_blank" rel="noopener">📕 Kelas VIII-I</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>🏠 Home Visit</h3>
 <div class="abk-menu-links">
 <a href="admin/viii/home-visit.html" target="_blank" rel="noopener">🏡 Home Visit Kelas VIII</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>✅ Status Konseling</h3>
 <div class="abk-menu-links">
-<a href=" https://appseet11-cmd.github.io/Status-Konseling-VIII/" target="_blank" rel="noopener">📊 Status Konseling Kelas VIII</a>
+<a href="https://appseet11-cmd.github.io/Status-Konseling-Kelas-VIII/" target="_blank" rel="noopener">📊 Status Konseling Kelas VIII</a>
 </div>
 </div>
 
+<!-- =================== BARU: SUARA SISWA =================== -->
+<div class="abk-menu-group">
+<h3>🗣️ Suara Siswa</h3>
+<div class="abk-menu-links">
+<a href="admin/viii/suara-aspirasi.html" target="_blank" rel="noopener">💬 Kotak Aspirasi Siswa</a>
+<a href="admin/viii/suara-testimoni.html" target="_blank" rel="noopener">⭐ Testimoni & Umpan Balik</a>
+<a href="admin/viii/suara-refleksi.html" target="_blank" rel="noopener">📝 Refleksi & Cerita Siswa</a>
+<a href="admin/viii/suara-harapan.html" target="_blank" rel="noopener">🌟 Harapan & Saran Siswa</a>
+</div>
+</div>
+<!-- =================== AKHIR MENU BARU =================== -->
 <div class="abk-menu-group">
 <h3>📑 Laporan BK</h3>
 <div class="abk-laporan-container">
@@ -4424,13 +4292,10 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </div>
 </div>
 </div>
-
 </section>
-
 <!-- =================== KELAS IX =================== -->
 <section class="abk-kelas-section" id="abk-kelas-ix" role="tabpanel">
 <h2>📋 Administrasi Kelas IX</h2>
-
 <div class="abk-menu-group">
 <h3>🔍 Analisa Kebutuhan Siswa</h3>
 <div class="abk-menu-links">
@@ -4438,15 +4303,13 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/ix/wawancara.html" target="_blank" rel="noopener">🎙️ Wawancara</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
-<h3>📊 Porta Promes</h3>
+<h3>📊 Prota Prosem</h3>
 <div class="abk-menu-links">
 <a href="admin/ix/porta-promes-sem1.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 1</a>
 <a href="admin/ix/porta-promes-sem2.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 2</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>📝 Rencana Pelaksanaan Layanan (RPL)</h3>
 <div class="abk-menu-links">
@@ -4455,15 +4318,21 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/ix/rpl-individual.html" target="_blank" rel="noopener">👤 RPL Individual</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
-<h3>📅 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
+<h3>📅 Agenda Pembelajaran</h3>
 <div class="abk-menu-links">
-<a href="admin/ix/jurnal pbk-sem1.html" target="_blank" rel="noopener">📆 Jurnal PBK Semester 1</a>
-<a href="admin/ix/jurnal pbk-sem2.html" target="_blank" rel="noopener">📆 Jurnal PBK Semester 2</a>
+<a href="admin/ix/agenda-sem1.html" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 1</a>
+<a href="admin/ix/agenda-sem2.html" target="_blank" rel="noopener">📆 Agenda Pembelajaran Semester 2</a>
 </div>
 </div>
-
+<!-- =================== BARU: JURNAL PELAKSANAAN LAYANAN BK =================== -->
+<div class="abk-menu-group">
+<h3>📓 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
+<div class="abk-menu-links">
+<a href="admin/ix/jurnal-layanan-sem1.html" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 1</a>
+<a href="admin/ix/jurnal-layanan-sem2.html" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 2</a>
+</div>
+</div>
 <div class="abk-menu-group">
 <h3>📚 Materi</h3>
 <div class="abk-menu-links">
@@ -4474,7 +4343,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/ix/materi-5.html" target="_blank" rel="noopener">📖 Materi 5</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>🌐 Lintas Kelas</h3>
 <div class="abk-menu-links">
@@ -4484,7 +4352,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/ix/tanggap-bencana.html" target="_blank" rel="noopener">🚨 Tanggap Bencana dan Keselamatan Diri</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>⚙️ Metode Bimbingan</h3>
 <div class="abk-menu-links">
@@ -4495,7 +4362,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="admin/ix/p5.html" target="_blank" rel="noopener">🌟 Proyek Penguatan Profil Pelajar Pancasila</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>⚠️ Catatan Kasus</h3>
 <div class="abk-menu-links">
@@ -4506,25 +4372,34 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-E/" target="_blank" rel="noopener">📕 Kelas IX-E</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-F/" target="_blank" rel="noopener">📕 Kelas IX-F</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-G/" target="_blank" rel="noopener">📕 Kelas IX-G</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-H/" target="_blank" rel="noopener">📕 Kelas I
+<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-H/" target="_blank" rel="noopener">📕 Kelas IX-H</a>
 <a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-I/" target="_blank" rel="noopener">📕 Kelas IX-I</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>🏠 Home Visit</h3>
 <div class="abk-menu-links">
 <a href="admin/ix/home-visit.html" target="_blank" rel="noopener">🏡 Home Visit Kelas IX</a>
 </div>
 </div>
-
 <div class="abk-menu-group">
 <h3>✅ Status Konseling</h3>
 <div class="abk-menu-links">
-<a href="  https://appseet11-cmd.github.io/Status-Konseling-Kelas-IX/" target="_blank" rel="noopener">📊 Status Konseling Kelas IX</a>
+<a href="https://appseet11-cmd.github.io/Status-Konseling-Kelas-IX/" target="_blank" rel="noopener">📊 Status Konseling Kelas IX</a>
 </div>
 </div>
 
+<!-- =================== BARU: SUARA SISWA =================== -->
+<div class="abk-menu-group">
+<h3>🗣️ Suara Siswa</h3>
+<div class="abk-menu-links">
+<a href="admin/ix/suara-aspirasi.html" target="_blank" rel="noopener">💬 Kotak Aspirasi Siswa</a>
+<a href="admin/ix/suara-testimoni.html" target="_blank" rel="noopener">⭐ Testimoni & Umpan Balik</a>
+<a href="admin/ix/suara-refleksi.html" target="_blank" rel="noopener">📝 Refleksi & Cerita Siswa</a>
+<a href="admin/ix/suara-harapan.html" target="_blank" rel="noopener">🌟 Harapan & Saran Siswa</a>
+</div>
+</div>
+<!-- =================== AKHIR MENU BARU =================== -->
 <div class="abk-menu-group">
 <h3>📑 Laporan BK</h3>
 <div class="abk-laporan-container">
@@ -4546,9 +4421,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </div>
 </div>
 </div>
-
 </section>
-
 <aside class="abk-info-section" aria-label="Informasi Sistem">
 <h2>📌 Informasi Sistem</h2>
 <h3>Panduan Penyematan Link</h3>
@@ -4559,16 +4432,17 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <li><code>admin/vii/rpl-klasikal.html</code></li>
 <li><code>admin/viii/kasus-viii-a.html</code></li>
 <li><code>admin/ix/laporan-sem2-individual.html</code></li>
+<li><code>admin/vii/jurnal-layanan-sem1.html</code> <em style="color:#059669;">(Baru)</em></li>
+<li><code>admin/viii/suara-aspirasi.html</code> <em style="color:#059669;">(Baru)</em></li>
 </ul>
 <div class="abk-stats" aria-label="Statistik menu">
-<div class="abk-stat-card"><span class="number">41</span><span class="label">Menu Kelas VII</span></div>
-<div class="abk-stat-card"><span class="number">41</span><span class="label">Menu Kelas VIII</span></div>
-<div class="abk-stat-card"><span class="number">41</span><span class="label">Menu Kelas IX</span></div>
-<div class="abk-stat-card"><span class="number">123</span><span class="label">Total Link</span></div>
+<div class="abk-stat-card"><span class="number">47</span><span class="label">Menu Kelas VII</span></div>
+<div class="abk-stat-card"><span class="number">47</span><span class="label">Menu Kelas VIII</span></div>
+<div class="abk-stat-card"><span class="number">47</span><span class="label">Menu Kelas IX</span></div>
+<div class="abk-stat-card"><span class="number">141</span><span class="label">Total Link</span></div>
 </div>
 </aside>
 </main>
-
 <footer class="abk-site-footer" role="contentinfo">
 <p>&copy; 2026 Administrasi BK 56 — Sistem Manajemen Bimbingan &amp; Konseling</p>
 <div class="abk-footer-links">
@@ -4581,7 +4455,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <!-- ================================================================ -->
 <!-- ===== AKHIR HALAMAN ADMINISTRASI BK56 ===== -->
 <!-- ================================================================ -->
-
 <div id="ext-container" class="page">
 <button class="back-btn" onclick="closeExt()">← Kembali ke Sub Menu</button>
 <div class="ext-viewer">
@@ -4620,7 +4493,6 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <span class="fab-tooltip">Edit HTML</span>
 </button>
 <script>
-
 const PASSWORD_ACCESS  = "@bk56jakarta#";
 const PASSWORD_SHARE   = "@bk56share#";
 const PASSWORD_EDIT    = "@bk56edit#";
@@ -4631,56 +4503,39 @@ let shareUnlocked = false;
 /* ================================================================ */
 /* ========== PAKSA HALAMAN STAY DI BERANDA SAAT REFRESH ========== */
 /* ================================================================ */
-// 1. Matikan fitur auto-restore scroll bawaan browser
 if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
+history.scrollRestoration = 'manual';
 }
-
-// 2. Saat halaman selesai dimuat, paksa kembali ke beranda
 window.addEventListener('load', () => {
-  // Hapus semua halaman aktif (kembalikan ke landing page)
-  document.querySelectorAll('.page.active').forEach(p => {
-    p.classList.remove('active');
-  });
-
-  // Reset iframe konten eksternal
-  const frame = document.getElementById('ext-frame');
-  if (frame) frame.src = 'about:blank';
-  const extContainer = document.getElementById('ext-container');
-  if (extContainer) {
-    extContainer.classList.remove('active');
-    delete extContainer.dataset.back;
-  }
-
-  // Reset breadcrumb ke beranda
-  updateBreadcrumb('home');
-
-  // Reset semua dropdown navigasi
-  closeAllDD();
-
-  // Paksa scroll ke posisi paling atas (hero section)
-  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-
-  // Pastikan overlay login tetap konsisten
-  if (sessionStorage.getItem(SESSION_ACCESS) !== 'granted') {
-    document.getElementById('login-overlay').style.display = 'flex';
-    document.getElementById('login-overlay').classList.remove('hidden');
-    setTimeout(() => document.getElementById('password-input').focus(), 300);
-  }
+document.querySelectorAll('.page.active').forEach(p => {
+p.classList.remove('active');
 });
-
-// 3. Cegah scroll otomatis saat user menekan tombol back/forward browser
+const frame = document.getElementById('ext-frame');
+if (frame) frame.src = 'about:blank';
+const extContainer = document.getElementById('ext-container');
+if (extContainer) {
+extContainer.classList.remove('active');
+delete extContainer.dataset.back;
+}
+updateBreadcrumb('home');
+closeAllDD();
+window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+if (sessionStorage.getItem(SESSION_ACCESS) !== 'granted') {
+document.getElementById('login-overlay').style.display = 'flex';
+document.getElementById('login-overlay').classList.remove('hidden');
+setTimeout(() => document.getElementById('password-input').focus(), 300);
+}
+});
 window.addEventListener('pageshow', (event) => {
-  if (event.persisted) {
-    // Halaman dimuat dari cache (bfcache) — reset ke beranda
-    document.querySelectorAll('.page.active').forEach(p => p.classList.remove('active'));
-    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    updateBreadcrumb('home');
-  }
+if (event.persisted) {
+document.querySelectorAll('.page.active').forEach(p => p.classList.remove('active'));
+window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+updateBreadcrumb('home');
+}
 });
 const BREADCRUMB_MAP = {
 'home': 'Platform BK Digital',
-'adminbk56': 'Administrasi BK56',   // ← TAMBAHKAN BARIS INI
+'adminbk56': 'Administrasi BK56',
 'instrumen6c': 'Instrument 6C',
 'panduanbk-dl': 'Panduan BK Deep Learning',
 'materi': 'Materi Pembelajaran',
@@ -4693,7 +4548,6 @@ function updateBreadcrumb(id) {
 const current = document.getElementById('breadcrumb-current');
 if (current && BREADCRUMB_MAP[id]) current.textContent = BREADCRUMB_MAP[id];
 }
-
 function go(id) {
 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 if (id === 'home') {
@@ -4749,9 +4603,6 @@ const nav = document.getElementById('navWrap');
 nav.classList.toggle('show');
 document.querySelector('.hamburger').setAttribute('aria-expanded', nav.classList.contains('show'));
 }
-/* ================================================================ */
-/* ========== TAB SWITCHING - INSTRUMENT 6C ========== */
-/* ================================================================ */
 function initI6cTabs() {
 const tabBtns = document.querySelectorAll('.i6c-tab-btn');
 const panels = document.querySelectorAll('.i6c-panel');
@@ -4768,9 +4619,6 @@ targetPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 });
 }
-/* ================================================================ */
-/* ========== SCROLL TO SECTION - PANDUAN BK DL ========== */
-/* ================================================================ */
 function scrollToDlSection(sectionId) {
 const section = document.getElementById(sectionId);
 if (section) {
@@ -4780,9 +4628,6 @@ const activeLink = document.querySelector(`.dl-toc a[onclick*="${sectionId}"]`);
 if (activeLink) activeLink.classList.add('active');
 }
 }
-/* ================================================================ */
-/* ========== INSTRUMENT 6C - HELPER FUNCTIONS ========== */
-/* ================================================================ */
 function i6cCalculateScore(formId, scoreId) {
 const form = document.getElementById(formId);
 const scoreDisplay = document.getElementById(scoreId);
@@ -5018,14 +4863,8 @@ e.preventDefault();
 saveToLocalStorage();
 }
 });
-/* ================================================================ */
-/* ========== INIT TABS ========== */
-/* ================================================================ */
 initI6cTabs();
 });
-/* ================================================================ */
-/* ========== FILTER ABSENSI BERDASARKAN KELAS ========== */
-/* ================================================================ */
 function filterAbsensiCards(category, clickedBtn) {
 const container = document.getElementById('absensi');
 if (!container) return;
@@ -5033,10 +4872,8 @@ const grid = container.querySelector('.link-grid');
 const cards = grid.querySelectorAll('.link-box');
 const filterContainer = container.querySelector('.absensi-tag-filter');
 const allBtns = filterContainer.querySelectorAll('.absensi-tag-btn');
-// Update tombol aktif
 allBtns.forEach(btn => btn.classList.remove('active'));
 if (clickedBtn) clickedBtn.classList.add('active');
-// Filter kartu
 let visibleCount = 0;
 cards.forEach(card => {
 const cardCategory = card.getAttribute('data-category');
@@ -5047,7 +4884,6 @@ visibleCount++;
 card.classList.add('hidden-by-tag');
 }
 });
-// Tampilkan notifikasi
 if (category === 'all') {
 showToast('📋 Menampilkan semua kelas (' + visibleCount + ' kelas)', 'info');
 } else {
@@ -5055,9 +4891,6 @@ const labelMap = { 'vii': 'VII', 'viii': 'VIII', 'ix': 'IX' };
 showToast('🏷️ Filter: Kelas ' + labelMap[category] + ' (' + visibleCount + ' kelas)', 'info');
 }
 }
-/* ================================================================ */
-/* ========== FILTER REKAP BERDASARKAN KELAS ========== */
-/* ================================================================ */
 function filterRekapCards(category, clickedBtn) {
 const container = document.getElementById('rekap');
 if (!container) return;
@@ -5067,10 +4900,8 @@ const cards = grid.querySelectorAll('.link-box');
 const filterContainer = container.querySelector('.rekap-tag-filter');
 if (!filterContainer) return;
 const allBtns = filterContainer.querySelectorAll('.rekap-tag-btn');
-// Update tombol aktif
 allBtns.forEach(btn => btn.classList.remove('active'));
 if (clickedBtn) clickedBtn.classList.add('active');
-// Filter kartu
 let visibleCount = 0;
 cards.forEach(card => {
 const cardCategory = card.getAttribute('data-category');
@@ -5081,7 +4912,6 @@ visibleCount++;
 card.classList.add('hidden-by-tag');
 }
 });
-// Tampilkan notifikasi
 if (category === 'all') {
 showToast('📋 Menampilkan semua kelas (' + visibleCount + ' kelas)', 'info');
 } else {
@@ -5089,65 +4919,56 @@ const labelMap = { 'vii': 'VII', 'viii': 'VIII', 'ix': 'IX' };
 showToast('🏷️ Filter: Kelas ' + labelMap[category] + ' (' + visibleCount + ' kelas)', 'info');
 }
 }
-/* ================================================================ */
-/* ========== TAB SWITCHING - ADMINISTRASI BK56 ========== */
-/* ================================================================ */
 function initAdminBk56Tabs() {
-  const tabButtons = document.querySelectorAll('.adminbk56-page .abk-tab-btn');
-  const kelasSections = document.querySelectorAll('.adminbk56-page .abk-kelas-section');
-  const navKelasLinks = document.querySelectorAll('.adminbk56-page .abk-nav-kelas-link');
-
-  function showAbkSection(targetId) {
-    kelasSections.forEach(section => {
-      section.classList.remove('active');
-      section.setAttribute('aria-hidden', 'true');
-    });
-    tabButtons.forEach(btn => {
-      btn.classList.remove('active');
-      btn.setAttribute('aria-selected', 'false');
-    });
-    const targetSection = document.getElementById(targetId);
-    if (targetSection) {
-      targetSection.classList.add('active');
-      targetSection.setAttribute('aria-hidden', 'false');
-    }
-    tabButtons.forEach(btn => {
-      if (btn.getAttribute('data-target') === targetId) {
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected', 'true');
-      }
-    });
-  }
-
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-      const targetId = this.getAttribute('data-target');
-      showAbkSection(targetId);
-    });
-  });
-
-  navKelasLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-      const targetId = this.getAttribute('data-target');
-      showAbkSection(targetId);
-      const section = document.getElementById(targetId);
-      if (section) {
-        setTimeout(() => {
-          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
-      }
-    });
-  });
+const tabButtons = document.querySelectorAll('.adminbk56-page .abk-tab-btn');
+const kelasSections = document.querySelectorAll('.adminbk56-page .abk-kelas-section');
+const navKelasLinks = document.querySelectorAll('.adminbk56-page .abk-nav-kelas-link');
+function showAbkSection(targetId) {
+kelasSections.forEach(section => {
+section.classList.remove('active');
+section.setAttribute('aria-hidden', 'true');
+});
+tabButtons.forEach(btn => {
+btn.classList.remove('active');
+btn.setAttribute('aria-selected', 'false');
+});
+const targetSection = document.getElementById(targetId);
+if (targetSection) {
+targetSection.classList.add('active');
+targetSection.setAttribute('aria-hidden', 'false');
 }
-
-// Panggil di DOMContentLoaded
+tabButtons.forEach(btn => {
+if (btn.getAttribute('data-target') === targetId) {
+btn.classList.add('active');
+btn.setAttribute('aria-selected', 'true');
+}
+});
+}
+tabButtons.forEach(btn => {
+btn.addEventListener('click', function() {
+const targetId = this.getAttribute('data-target');
+showAbkSection(targetId);
+});
+});
+navKelasLinks.forEach(link => {
+link.addEventListener('click', function(e) {
+e.preventDefault();
+const targetId = this.getAttribute('data-target');
+showAbkSection(targetId);
+const section = document.getElementById(targetId);
+if (section) {
+setTimeout(() => {
+section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}, 100);
+}
+});
+});
+}
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAdminBk56Tabs);
+document.addEventListener('DOMContentLoaded', initAdminBk56Tabs);
 } else {
-  initAdminBk56Tabs();
+initAdminBk56Tabs();
 }
-</script>
 </script>
 </body>
 </html>
