@@ -702,570 +702,70 @@ display: none !important;
 /* ================================================================ */
 /* ========== ADMIN BK56 - SCOPED STYLES ========== */
 /* ================================================================ */
-.adminbk56-page {
---abk-primary: #f97316;
---abk-primary-light: #fb923c;
---abk-primary-dark: #c2410c;
---abk-secondary: #ec4899;
---abk-secondary-light: #f472b6;
---abk-accent: #06b6d4;
---abk-accent-light: #22d3ee;
---abk-sunshine: #facc15;
---abk-lime: #84cc16;
---abk-coral: #fb7185;
---abk-bg-base: #fffbeb;
---abk-bg-gradient-start: #fef9c3;
---abk-bg-gradient-mid: #ffe4e6;
---abk-bg-gradient-end: #dbeafe;
---abk-bg-mesh-1: rgba(251, 191, 36, 0.18);
---abk-bg-mesh-2: rgba(236, 72, 153, 0.15);
---abk-bg-mesh-3: rgba(6, 182, 212, 0.14);
---abk-glass-bg: rgba(255, 255, 255, 0.88);
---abk-glass-border: rgba(255, 255, 255, 0.75);
---abk-shadow-float-sm: 0 1px 2px rgba(249,115,22,0.08), 0 2px 4px rgba(236,72,153,0.06);
---abk-shadow-float-md: 0 4px 6px rgba(249,115,22,0.10), 0 10px 15px rgba(236,72,153,0.12), 0 20px 25px rgba(6,182,212,0.08);
---abk-shadow-float-lg: 0 10px 15px rgba(249,115,22,0.12), 0 20px 30px rgba(236,72,153,0.15), 0 40px 60px rgba(6,182,212,0.10);
---abk-shadow-float-xl: 0 15px 25px rgba(249,115,22,0.14), 0 30px 50px rgba(236,72,153,0.16), 0 50px 80px rgba(6,182,212,0.12);
---abk-radius-sm: 10px;
---abk-radius-md: 14px;
---abk-radius-lg: 22px;
---abk-radius-xl: 30px;
---abk-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
---abk-font-display: 'Playfair Display', Georgia, serif;
---abk-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
---abk-transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+.page.adminbk56-page {
 max-width: 100% !important;
 padding: 0 !important;
 margin: 0 auto;
-font-family: var(--abk-font-primary);
-background:
-radial-gradient(ellipse 80% 60% at 10% 0%, var(--abk-bg-mesh-1) 0%, transparent 50%),
-radial-gradient(ellipse 70% 50% at 90% 10%, var(--abk-bg-mesh-2) 0%, transparent 50%),
-radial-gradient(ellipse 60% 40% at 20% 90%, var(--abk-bg-mesh-3) 0%, transparent 50%),
-radial-gradient(ellipse 50% 40% at 80% 80%, rgba(250,204,21,0.18) 0%, transparent 50%),
-linear-gradient(135deg, var(--abk-bg-gradient-start) 0%, var(--abk-bg-gradient-mid) 50%, var(--abk-bg-gradient-end) 100%);
-background-attachment: fixed;
-min-height: 100vh;
-color: #1e293b;
-line-height: 1.7;
-position: relative;
-overflow-x: hidden;
 }
-.adminbk56-page *, .adminbk56-page *::before, .adminbk56-page *::after { box-sizing: border-box; }
-.adminbk56-page::before {
-content: '';
-position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
-background:
-radial-gradient(circle 300px at 15% 20%, rgba(250,204,21,0.25) 0%, transparent 70%),
-radial-gradient(circle 400px at 85% 70%, rgba(236,72,153,0.20) 0%, transparent 70%),
-radial-gradient(circle 350px at 50% 50%, rgba(6,182,212,0.18) 0%, transparent 70%),
-radial-gradient(circle 280px at 70% 20%, rgba(132,204,22,0.15) 0%, transparent 70%);
-pointer-events: none;
-z-index: 0;
-animation: abkFloatOrbs 40s ease-in-out infinite;
-}
-@keyframes abkFloatOrbs {
-0%, 100% { transform: translate(0, 0) scale(1); opacity: 1; }
-33% { transform: translate(30px, -20px) scale(1.05); opacity: 0.9; }
-66% { transform: translate(-20px, 30px) scale(0.95); opacity: 0.95; }
-}
-.adminbk56-page::after {
-content: '';
-position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
-background-image: radial-gradient(circle at 1px 1px, rgba(249,115,22,0.12) 1px, transparent 0);
-background-size: 50px 50px;
-pointer-events: none;
-z-index: 0;
-opacity: 0.9;
-}
-.adminbk56-page a { text-decoration: none; color: inherit; transition: var(--abk-transition); }
-.adminbk56-page .abk-site-header {
-position: relative;
-z-index: 10;
-background: var(--abk-glass-bg);
-backdrop-filter: blur(25px) saturate(180%);
--webkit-backdrop-filter: blur(25px) saturate(180%);
-border: 1px solid var(--abk-glass-border);
-border-top: none;
-padding: 2.8rem 1.5rem;
-text-align: center;
-box-shadow: var(--abk-shadow-float-lg);
-margin: 0 1.5rem;
-border-radius: 0 0 var(--abk-radius-xl) var(--abk-radius-xl);
-}
-.adminbk56-page .abk-site-header h1 {
-font-family: var(--abk-font-display);
-color: var(--abk-primary-dark);
-font-size: clamp(2rem, 5vw, 3.2rem);
-font-weight: 800;
-margin-bottom: 0.5rem;
-letter-spacing: -0.02em;
-background: linear-gradient(135deg, var(--abk-primary) 0%, var(--abk-secondary) 50%, var(--abk-accent) 100%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-background-clip: text;
-}
-.adminbk56-page .abk-site-header .abk-tagline {
-color: #475569;
-font-size: 1.1rem;
-font-weight: 500;
-letter-spacing: 0.02em;
-}
-.adminbk56-page .abk-site-nav {
-position: sticky;
-top: 80px;
-z-index: 100;
-background: rgba(255, 255, 255, 0.92);
-backdrop-filter: blur(20px) saturate(180%);
--webkit-backdrop-filter: blur(20px) saturate(180%);
-border: 1px solid var(--abk-glass-border);
-border-radius: var(--abk-radius-lg);
-padding: 0.8rem 1.5rem;
-box-shadow: var(--abk-shadow-float-lg);
-margin: 1.5rem 1.5rem 0;
-}
-.adminbk56-page .abk-nav-inner {
-max-width: 1200px;
-margin: 0 auto;
-display: flex;
-justify-content: center;
-align-items: center;
-gap: 0.5rem;
-flex-wrap: wrap;
-}
-.adminbk56-page .abk-nav-link {
-padding: 0.55rem 1.2rem;
-background: transparent;
-color: #475569;
-border-radius: var(--abk-radius-sm);
-font-weight: 500;
-font-size: 0.9rem;
-transition: var(--abk-transition);
-position: relative;
-overflow: hidden;
-cursor: pointer;
-border: none;
-font-family: inherit;
-}
-.adminbk56-page .abk-nav-link::before {
-content: '';
-position: absolute;
-bottom: 0; left: 50%;
-width: 0; height: 2px;
-background: linear-gradient(90deg, var(--abk-primary), var(--abk-secondary));
-transition: var(--abk-transition);
-transform: translateX(-50%);
-}
-.adminbk56-page .abk-nav-link:hover {
-color: var(--abk-primary);
-background: rgba(249, 115, 22, 0.12);
-transform: translateY(-2px);
-}
-.adminbk56-page .abk-nav-link:hover::before { width: 80%; }
-.adminbk56-page .abk-nav-link--primary {
-background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
-color: #fff;
-box-shadow: 0 6px 15px rgba(249, 115, 22, 0.45);
-}
-.adminbk56-page .abk-nav-link--primary:hover {
-transform: translateY(-2px);
-box-shadow: 0 10px 25px rgba(236, 72, 153, 0.55);
-}
-.adminbk56-page .abk-main-content {
-max-width: 1200px;
-margin: 1.5rem auto 3rem;
-padding: 0 1.5rem;
-position: relative;
-z-index: 1;
-}
-.adminbk56-page .abk-page-title {
-text-align: center;
-color: var(--abk-primary-dark);
-font-family: var(--abk-font-display);
-font-size: clamp(1.5rem, 4vw, 2.2rem);
-margin-bottom: 2rem;
-text-shadow: 0 2px 15px rgba(255, 255, 255, 0.9);
-}
-.adminbk56-page .abk-tab-navigation {
-display: flex;
-justify-content: center;
-gap: 0.6rem;
-margin-bottom: 2rem;
-flex-wrap: wrap;
-background: var(--abk-glass-bg);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-padding: 1rem 1.5rem;
-border-radius: var(--abk-radius-lg);
-box-shadow: var(--abk-shadow-float-lg);
-border: 1px solid var(--abk-glass-border);
-}
-.adminbk56-page .abk-tab-btn {
-padding: 0.85rem 1.8rem;
-background: #ffffff;
-color: #64748b;
-border: 2px solid transparent;
-border-radius: var(--abk-radius-md);
-cursor: pointer;
-font-size: 0.95rem;
-font-weight: 600;
-font-family: var(--abk-font-primary);
-transition: var(--abk-transition-bounce);
-display: flex;
-align-items: center;
-gap: 0.5rem;
-position: relative;
-overflow: hidden;
-box-shadow: var(--abk-shadow-float-sm);
-}
-.adminbk56-page .abk-tab-btn:hover {
-background: #fef3c7;
-color: var(--abk-primary);
-transform: translateY(-3px);
-box-shadow: var(--abk-shadow-float-md);
-}
-.adminbk56-page .abk-tab-btn.active {
-background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
-color: #fff;
-border-color: transparent;
-box-shadow: 0 10px 30px rgba(249, 115, 22, 0.45), 0 20px 50px rgba(236, 72, 153, 0.30);
-transform: translateY(-2px);
-}
-.adminbk56-page .abk-tab-btn.active:hover {
-transform: translateY(-4px);
-box-shadow: 0 15px 40px rgba(249, 115, 22, 0.55), 0 25px 60px rgba(236, 72, 153, 0.35);
-}
-.adminbk56-page .abk-kelas-section {
-display: none;
-background: var(--abk-glass-bg);
-backdrop-filter: blur(25px) saturate(180%);
--webkit-backdrop-filter: blur(25px) saturate(180%);
-border-radius: var(--abk-radius-xl);
-padding: 2.5rem;
-margin-bottom: 2rem;
-border: 1px solid var(--abk-glass-border);
-box-shadow: var(--abk-shadow-float-xl);
-animation: abkSectionFloat 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-position: relative;
-}
-.adminbk56-page .abk-kelas-section.active { display: block; }
-@keyframes abkSectionFloat {
-from { opacity: 0; transform: translateY(30px) scale(0.97); }
-to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.adminbk56-page .abk-kelas-section > h2 {
-font-family: var(--abk-font-display);
-color: var(--abk-primary-dark);
-font-size: 1.9rem;
-margin-bottom: 2rem;
-padding-bottom: 1rem;
-border-bottom: 3px solid transparent;
-border-image: linear-gradient(90deg, var(--abk-primary), var(--abk-secondary), var(--abk-accent)) 1;
-position: relative;
-}
-.adminbk56-page .abk-menu-group {
-margin-bottom: 1.5rem;
-padding: 1.5rem 1.7rem;
-background: #ffffff;
-border-radius: var(--abk-radius-md);
-border: 1px solid rgba(249, 115, 22, 0.15);
-border-left: 4px solid var(--abk-primary);
-transition: var(--abk-transition);
-position: relative;
-overflow: hidden;
-box-shadow: 0 1px 2px rgba(249,115,22,0.06), 0 4px 8px rgba(236,72,153,0.08), 0 8px 16px rgba(6,182,212,0.06), 0 16px 32px rgba(249,115,22,0.05);
-}
-.adminbk56-page .abk-menu-group::before {
-content: '';
-position: absolute;
-top: 0; right: 0;
-width: 150px; height: 100%;
-background: linear-gradient(90deg, transparent, rgba(250, 204, 21, 0.15));
-pointer-events: none;
-}
-.adminbk56-page .abk-menu-group:hover {
-transform: translateY(-4px);
-border-left-color: var(--abk-secondary);
-box-shadow: 0 4px 8px rgba(249,115,22,0.15), 0 12px 24px rgba(236,72,153,0.18), 0 24px 48px rgba(6,182,212,0.12), 0 40px 80px rgba(249,115,22,0.10);
-}
-.adminbk56-page .abk-menu-group h3 {
-color: var(--abk-secondary);
-margin-bottom: 1rem;
-font-size: 1.15rem;
-font-weight: 700;
-display: flex;
-align-items: center;
-gap: 0.6rem;
-letter-spacing: -0.01em;
-}
-.adminbk56-page .abk-menu-links {
-display: grid;
-grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-gap: 0.6rem;
-}
-.adminbk56-page .abk-menu-links a {
-padding: 0.75rem 1.1rem;
-background: #ffffff;
-border: 1px solid #fed7aa;
-border-radius: var(--abk-radius-sm);
-transition: var(--abk-transition);
-display: flex;
-align-items: center;
-gap: 0.5rem;
-font-size: 0.92rem;
-font-weight: 500;
-color: #334155;
-position: relative;
-overflow: hidden;
-box-shadow: 0 1px 2px rgba(249,115,22,0.06), 0 2px 4px rgba(236,72,153,0.05);
-cursor: pointer;
-}
-.adminbk56-page .abk-menu-links a::before {
-content: '';
-position: absolute;
-left: 0; top: 0;
-width: 3px; height: 100%;
-background: linear-gradient(180deg, var(--abk-primary), var(--abk-secondary));
-transform: scaleY(0);
-transition: var(--abk-transition);
-transform-origin: top;
-}
-.adminbk56-page .abk-menu-links a:hover {
-background: linear-gradient(135deg, var(--abk-primary), var(--abk-secondary));
-color: #fff;
-border-color: transparent;
-transform: translateX(6px) translateY(-3px);
-box-shadow: 0 6px 12px rgba(249,115,22,0.35), 0 12px 24px rgba(236,72,153,0.25), 0 20px 40px rgba(6,182,212,0.18);
-}
-.adminbk56-page .abk-menu-links a:hover::before {
-transform: scaleY(1);
-background: #fff;
-}
-.adminbk56-page .abk-sub-menu-group {
-margin-top: 0.8rem;
-padding: 1.2rem 1.4rem;
-background: #ffffff;
-border-radius: var(--abk-radius-sm);
-border: 1px solid rgba(236, 72, 153, 0.25);
-border-left: 4px solid var(--abk-secondary-light);
-transition: var(--abk-transition);
-box-shadow: 0 2px 4px rgba(236,72,153,0.10), 0 6px 12px rgba(249,115,22,0.10), 0 12px 24px rgba(6,182,212,0.06), inset 0 1px 0 rgba(255,255,255,0.8);
-}
-.adminbk56-page .abk-sub-menu-group:hover {
-transform: translateY(-2px);
-box-shadow: 0 4px 8px rgba(236,72,153,0.15), 0 10px 20px rgba(249,115,22,0.18), 0 20px 40px rgba(6,182,212,0.10);
-}
-.adminbk56-page .abk-sub-menu-group h4 {
-color: var(--abk-secondary);
-margin-bottom: 0.8rem;
-font-size: 0.98rem;
-font-weight: 700;
-display: flex;
-align-items: center;
-gap: 0.4rem;
-}
-.adminbk56-page .abk-sub-menu-group .abk-menu-links a {
-background: linear-gradient(135deg, #fef3c7 0%, #fce7f3 100%);
-border-color: #fbcfe8;
-font-size: 0.88rem;
-box-shadow: 0 1px 2px rgba(236,72,153,0.08), 0 2px 4px rgba(249,115,22,0.06);
-}
-.adminbk56-page .abk-sub-menu-group .abk-menu-links a:hover {
-background: linear-gradient(135deg, var(--abk-secondary), #db2777);
-color: #fff;
-border-color: transparent;
-box-shadow: 0 6px 12px rgba(236,72,153,0.40), 0 12px 24px rgba(249,115,22,0.25);
-}
-.adminbk56-page .abk-laporan-container {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 1.2rem;
-margin-top: 0.5rem;
-}
-.adminbk56-page .abk-laporan-container .abk-sub-menu-group {
-margin-left: 0;
-margin-top: 0;
-}
-.adminbk56-page .abk-info-section {
-background: var(--abk-glass-bg);
-backdrop-filter: blur(25px);
--webkit-backdrop-filter: blur(25px);
-border-radius: var(--abk-radius-xl);
-padding: 2.5rem;
-margin-bottom: 2rem;
-border: 1px solid var(--abk-glass-border);
-box-shadow: var(--abk-shadow-float-xl);
-}
-.adminbk56-page .abk-info-section h2 {
-font-family: var(--abk-font-display);
-color: var(--abk-primary-dark);
-margin-bottom: 1rem;
-font-size: 1.6rem;
-}
-.adminbk56-page .abk-info-section h3 {
-color: var(--abk-primary);
-margin-bottom: 0.8rem;
-font-size: 1.1rem;
-}
-.adminbk56-page .abk-info-section p {
-margin-bottom: 1rem;
-color: #475569;
-line-height: 1.8;
-}
-.adminbk56-page .abk-info-section code {
-background: linear-gradient(135deg, #fef3c7, #fce7f3);
-padding: 3px 10px;
-border-radius: 6px;
-color: #be185d;
-font-family: 'JetBrains Mono', 'Fira Code', monospace;
-font-size: 0.88rem;
-border: 1px solid #fbcfe8;
-}
-.adminbk56-page .abk-stats {
-display: grid;
-grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-gap: 1.2rem;
-margin-top: 2rem;
-}
-.adminbk56-page .abk-stat-card {
-color: #fff;
-padding: 1.8rem 1.2rem;
-border-radius: var(--abk-radius-md);
-text-align: center;
-transition: var(--abk-transition-bounce);
-position: relative;
-overflow: hidden;
-box-shadow: 0 8px 16px rgba(249,115,22,0.35), 0 16px 32px rgba(236,72,153,0.25), 0 24px 48px rgba(6,182,212,0.15);
-}
-.adminbk56-page .abk-stat-card:nth-child(1) { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
-.adminbk56-page .abk-stat-card:nth-child(2) { background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%); }
-.adminbk56-page .abk-stat-card:nth-child(3) { background: linear-gradient(135deg, #06b6d4 0%, #22d3ee 100%); }
-.adminbk56-page .abk-stat-card:nth-child(4) { background: linear-gradient(135deg, #facc15 0%, #f97316 100%); color: #7c2d12; }
-.adminbk56-page .abk-stat-card::before {
-content: '';
-position: absolute;
-top: -50%; left: -50%;
-width: 200%; height: 200%;
-background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%);
-animation: abkShimmer 4s ease-in-out infinite;
-}
-@keyframes abkShimmer {
-0%, 100% { transform: translate(-30%, -30%); }
-50% { transform: translate(30%, 30%); }
-}
-.adminbk56-page .abk-stat-card:hover {
-transform: translateY(-6px) scale(1.03);
-box-shadow: 0 12px 24px rgba(249,115,22,0.45), 0 24px 48px rgba(236,72,153,0.35), 0 40px 80px rgba(6,182,212,0.25);
-}
-.adminbk56-page .abk-stat-card .number {
-font-size: 2.8rem;
-font-weight: 800;
-display: block;
-line-height: 1.2;
-position: relative;
-z-index: 1;
-}
-.adminbk56-page .abk-stat-card .label {
-font-size: 0.85rem;
-opacity: 0.95;
-font-weight: 600;
-margin-top: 0.3rem;
-position: relative;
-z-index: 1;
-}
-.adminbk56-page .abk-site-footer {
-position: relative;
-z-index: 10;
-background: linear-gradient(135deg, rgba(194,65,12,0.95), rgba(190,24,93,0.95));
-backdrop-filter: blur(15px);
--webkit-backdrop-filter: blur(15px);
-color: #fff;
-text-align: center;
-padding: 2rem 1.5rem;
-margin: 0 1.5rem 1.5rem;
-border-radius: var(--abk-radius-xl);
-border: 1px solid rgba(255, 255, 255, 0.15);
-box-shadow: var(--abk-shadow-float-lg);
-}
-.adminbk56-page .abk-site-footer p { margin-bottom: 0.6rem; font-size: 0.9rem; }
-.adminbk56-page .abk-site-footer a {
-color: #fef3c7;
-margin: 0 0.6rem;
-font-weight: 500;
-transition: var(--abk-transition);
-}
-.adminbk56-page .abk-site-footer a:hover { color: #fff; text-decoration: underline; }
-.adminbk56-page .abk-footer-links {
-display: flex;
-justify-content: center;
-gap: 0.5rem;
-flex-wrap: wrap;
-margin-top: 0.5rem;
-}
-.adminbk56-page .abk-footer-links a {
-padding: 0.3rem 0.8rem;
-border-radius: 20px;
-background: rgba(255, 255, 255, 0.15);
-font-size: 0.82rem;
-border: 1px solid rgba(255, 255, 255, 0.25);
-}
-.adminbk56-page .abk-footer-links a:hover {
-background: rgba(255, 255, 255, 0.30);
-text-decoration: none;
-transform: translateY(-2px);
-}
-.back-btn-abk {
-background: linear-gradient(135deg, #f97316 0%, #ec4899 100%);
-color: white !important;
-border: none;
-padding: 12px 22px;
-border-radius: 100px;
-font-size: 14px;
-cursor: pointer;
-margin: 20px 24px;
-font-weight: 600;
-display: inline-flex;
-align-items: center;
-gap: 8px;
-transition: all 0.2s ease;
-font-family: 'Plus Jakarta Sans', sans-serif;
-box-shadow: 0 4px 16px rgba(249, 115, 22, 0.3);
-position: relative;
-z-index: 10;
-}
-.back-btn-abk:hover {
-transform: translateX(-3px);
-box-shadow: 0 8px 24px rgba(249, 115, 22, 0.4);
-filter: brightness(1.1);
-}
-@media (max-width: 768px) {
-.adminbk56-page .abk-site-header { padding: 1.8rem 1rem; margin: 0 0.8rem; }
-.adminbk56-page .abk-site-nav { margin: 1rem 0.8rem 0; }
-.adminbk56-page .abk-nav-inner { gap: 0.4rem; }
-.adminbk56-page .abk-nav-link { padding: 0.5rem 0.9rem; font-size: 0.82rem; }
-.adminbk56-page .abk-kelas-section { padding: 1.5rem; border-radius: var(--abk-radius-lg); }
-.adminbk56-page .abk-menu-group { padding: 1.2rem; }
-.adminbk56-page .abk-menu-links { grid-template-columns: 1fr; }
-.adminbk56-page .abk-tab-btn {
-flex: 1;
-min-width: 100px;
-justify-content: center;
-padding: 0.75rem 1rem;
-font-size: 0.88rem;
-}
-.adminbk56-page .abk-laporan-container { grid-template-columns: 1fr; }
-.adminbk56-page .abk-stats { grid-template-columns: repeat(2, 1fr); }
-.adminbk56-page .abk-site-footer { margin: 0 0.8rem 0.8rem; }
-.back-btn-abk { margin: 16px; }
-}
-@media (max-width: 480px) {
-.adminbk56-page .abk-stats { grid-template-columns: 1fr 1fr; }
-.adminbk56-page .abk-tab-navigation { padding: 0.8rem; }
-}
+.a56 h1,.a56 h2,.a56 h3,.a56 h4{font-family:'Merriweather',serif;color:#7c2d12;line-height:1.3}
+.a56-header{background:linear-gradient(135deg,#c2410c,#9a3412 50%,#431407);color:#fff;padding:3rem 1.5rem 3.5rem;position:relative;overflow:hidden}
+.a56-header::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(253,186,116,.2),transparent 40%),radial-gradient(circle at 80% 70%,rgba(251,146,60,.2),transparent 40%)}
+.a56-header-content{max-width:1100px;margin:0 auto;position:relative;z-index:1;text-align:center}
+.a56-badge{display:inline-block;background:rgba(253,186,116,.25);color:#fed7aa;padding:.5rem 1.3rem;border-radius:50px;font-size:.8rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin-bottom:1.2rem;border:1px solid rgba(253,186,116,.4)}
+.a56-header h1{color:#fff;font-size:clamp(1.8rem,5vw,3rem);font-weight:900;margin-bottom:.8rem}
+.a56-header h1 em{color:#fed7aa;font-style:italic}
+.a56-subtitle{font-size:1rem;color:rgba(255,255,255,.9);max-width:780px;margin:0 auto 1.5rem;font-weight:300}
+.a56-stats-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;max-width:900px;margin:1.2rem auto 0}
+.a56-stat-item{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:1rem .5rem;text-align:center}
+.a56-stat-number{font-family:'Merriweather',serif;font-size:1.7rem;font-weight:700;color:#fed7aa;display:block}
+.a56-stat-label{font-size:.72rem;color:rgba(255,255,255,.8);letter-spacing:.05em;text-transform:uppercase}
+.a56-tab-nav{background:#fff;box-shadow:0 8px 24px rgba(194,65,12,.1);position:sticky;top:0;z-index:100;border-bottom:3px solid #ea580c}
+.a56-tab-container{max-width:1200px;margin:0 auto;display:flex;overflow-x:auto;padding:0 1rem;gap:.3rem}
+.a56-tab-btn{background:transparent;border:none;padding:1.1rem 1.7rem;font-size:.95rem;font-weight:700;color:#64748b;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-3px;font-family:inherit}
+.a56-tab-btn:hover{color:#c2410c;background:rgba(194,65,12,.05)}
+.a56-tab-btn.active{color:#c2410c;border-bottom-color:#ea580c;background:rgba(234,88,12,.05)}
+.a56-container{max-width:1280px;margin:0 auto;padding:1.8rem 1.5rem}
+.a56-info-tip{background:linear-gradient(135deg,rgba(194,65,12,.06),rgba(251,146,60,.06));border-left:4px solid #ea580c;padding:1rem 1.2rem;border-radius:8px;margin-bottom:1.4rem;font-size:.9rem;color:#7c2d12}
+.a56-info-tip strong{color:#9a3412}
+.a56-panel-header{background:linear-gradient(135deg,#fff7ed,#ffedd5);border-left:5px solid #ea580c;padding:1.2rem 1.6rem;border-radius:12px;margin-bottom:1.2rem;box-shadow:0 4px 12px rgba(194,65,12,.08)}
+.a56-panel-header h2{font-size:1.45rem}
+.a56-panel-header p{color:#9a3412;font-size:.9rem;font-weight:600}
+.a56-filter{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;padding:1rem;background:linear-gradient(135deg,#fff,#fff7ed);border:2px solid #fed7aa;border-radius:14px}
+.a56-filter-label{width:100%;font-size:.8rem;font-weight:700;color:#9a3412;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.2rem}
+.a56-chip{background:#fff;border:2px solid #fed7aa;color:#7c2d12;padding:.45rem .95rem;border-radius:100px;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:.4rem;font-family:inherit;white-space:nowrap}
+.a56-chip:hover{background:#fff7ed;border-color:#fb923c;transform:translateY(-2px)}
+.a56-chip.active{background:linear-gradient(135deg,#c2410c,#9a3412);color:#fff;border-color:#9a3412;box-shadow:0 4px 12px rgba(194,65,12,.3)}
+.a56-chip .cnt{background:rgba(194,65,12,.12);color:#9a3412;padding:.08rem .45rem;border-radius:100px;font-size:.7rem;font-weight:700}
+.a56-chip.active .cnt{background:rgba(255,255,255,.25);color:#fff}
+.a56-gdot{width:11px;height:11px;border-radius:50%;display:inline-block}
+.a56-count-info{font-size:.85rem;font-weight:700;color:#9a3412;margin:.3rem 0 1.2rem}
+.a56-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.4rem}
+.a56-card{background:#fff;border-radius:16px;padding:1.5rem;box-shadow:0 8px 24px rgba(194,65,12,.08);border:1px solid #fed7aa;transition:all .35s;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.a56-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#c2410c,#ea580c,#fb923c);transform:scaleX(0);transform-origin:left;transition:transform .35s}
+.a56-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(194,65,12,.15);border-color:#ea580c}
+.a56-card:hover::before{transform:scaleX(1)}
+.a56-card-icon{width:52px;height:52px;background:linear-gradient(135deg,#fed7aa,#fdba74);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;margin-bottom:.8rem;box-shadow:0 4px 12px rgba(234,88,12,.2)}
+.a56-guru-badge{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:800;padding:.25rem .7rem .25rem .3rem;border-radius:100px;color:#fff;margin-bottom:.7rem;width:fit-content}
+.a56-guru-badge b{background:rgba(255,255,255,.28);min-width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.6rem}
+.a56-card h3{font-size:1.05rem;font-family:'Space Grotesk',sans-serif;font-weight:700;margin-bottom:.2rem}
+.a56-path{font-size:.72rem;color:#a8a29e;font-weight:700;margin-bottom:.5rem}
+.a56-desc{font-size:.82rem;color:#64748b;margin-bottom:.9rem;flex:1}
+.a56-link-embedded{background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px dashed #fb923c;border-radius:10px;padding:.8rem;margin-bottom:.9rem}
+.a56-link-label{font-size:.72rem;color:#9a3412;font-weight:700;margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.03em}
+.a56-link-url{display:block;font-size:.74rem;color:#7c2d12;font-family:Consolas,Monaco,monospace;word-break:break-all;background:#fff;padding:.5rem .7rem;border-radius:6px;border:1px solid #fed7aa;max-height:56px;overflow-y:auto;line-height:1.4}
+.a56-link-url.kosong{color:#b91c1c;font-family:'Nunito',sans-serif;font-style:italic}
+.a56-btn{width:100%;background:linear-gradient(135deg,#c2410c,#9a3412);color:#fff;border:none;padding:.8rem 1rem;border-radius:10px;font-weight:700;cursor:pointer;transition:all .3s;font-size:.9rem;font-family:inherit;box-shadow:0 4px 12px rgba(194,65,12,.25)}
+.a56-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(194,65,12,.35)}
+.a56-empty{display:none;text-align:center;padding:3rem 1.5rem;background:#fff;border:2px dashed #fed7aa;border-radius:16px;color:#9a3412}
+.a56-empty.show{display:block}
+.a56-empty .e-icon{font-size:2.8rem;margin-bottom:.6rem;opacity:.6}
+.a56-footer{background:linear-gradient(135deg,#9a3412,#431407);color:rgba(255,255,255,.85);padding:2.2rem 1.5rem 1.5rem;text-align:center;margin-top:3rem}
+.a56-footer h4{color:#fed7aa;font-size:1.1rem;margin-bottom:.5rem}
+.a56-footer p{font-size:.85rem;margin-bottom:.3rem}
+.a56-footer .div{width:60px;height:2px;background:#fb923c;margin:1rem auto}
+.a56-footer .copy{font-size:.78rem;color:rgba(255,255,255,.5)}
+@media(max-width:900px){.a56-stats-bar{grid-template-columns:repeat(2,1fr)}.a56-grid{grid-template-columns:1fr}}
+@media(max-width:768px){.a56-container{padding:1.2rem 1rem}.a56-card{padding:1.2rem}}
 </style>
 </head>
 <body>
@@ -2916,7 +2416,7 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN INSTRUMENT 6C (1/6) ===== -->
 <!-- ================================================================ -->
-     <main id="main-content" role="main">
+  <main id="main-content" role="main">
     <div id="instrumen6c" class="page instrumen6c-page">
 <button class="back-btn-i6c" onclick="go('home')" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
 <header class="i6c-header">
@@ -3174,7 +2674,6 @@ background: rgba(255,255,255,0.35);
 </div>
 <footer class="i6c-footer"><div class="i6c-footer-content"><h4>📚 Referensi</h4><p>Panduan Bimbingan dan Konseling dalam Kurikulum Merdeka — BSKAP Kemendikbudristek</p><p>Fullan, M., et al. (2018). <em>Deep Learning: Engage the World Change the World.</em> Corwin Press.</p><div class="i6c-footer-divider"></div><p class="i6c-copyright">© 2026 Panduan BK Indonesia • Instrumen Asesmen 6C Deep Learning</p></div></footer>
 </div>
-
 <!-- ================================================================ -->
 <!-- ===== AKHIR HALAMAN INSTRUMENT 6C (1/6) ===== -->
 <!-- ================================================================ -->
@@ -3706,7 +3205,7 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN MATERI (1/6) ===== -->
 <!-- ================================================================ -->
- <div id="materi" class="page m">
+<div id="materi" class="page m">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📚 Materi Pembelajaran</h2>
 <p class="page-desc">Pilih topik untuk membuka file materi bimbingan konseling.</p>
@@ -3729,7 +3228,7 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN LATIHAN / REFLEKSI (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="latihan" class="page l">
+ <div id="latihan" class="page l">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">✏️ Refleksi</h2>
 <p class="page-desc">Kerjakan refleksi per topik untuk memahami diri lebih dalam.</p>
@@ -3790,7 +3289,7 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN QUIZ (1/6) ===== -->
 <!-- ================================================================ -->
- <div id="quiz" class="page q">
+  <div id="quiz" class="page q">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">🎯 Quiz Interaktif</h2>
 <p class="page-desc">Ikuti quiz singkat untuk menguji pemahaman materi BK.</p>
@@ -3813,7 +3312,7 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN VIDEO (1/6) ===== -->
 <!-- ================================================================ -->
-<div id="video" class="page v">
+ <div id="video" class="page v">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">🎬 Video Pembelajaran</h2>
 <p class="page-desc">Tonton penjelasan visual materi BK yang menarik.</p>
@@ -3836,7 +3335,7 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN GAME (1/6) ===== -->
 <!-- ================================================================ -->
- <div id="game" class="page g">
+  <div id="game" class="page g">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">🎮 Game Bimbingan Konseling</h2>
 <p class="page-desc">Bermain sambil belajar dengan game edukatif yang seru!</p>
@@ -3963,7 +3462,7 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AWAL HALAMAN REKAP (1/6) ===== -->
 <!-- ================================================================ -->
- <div id="rekap" class="page ra">
+<div id="rekap" class="page ra">
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">📈 Rekap Absensi Siswa</h2>
 <p class="page-desc">Pilih kelas untuk membuka halaman rekap absensi. Gunakan filter untuk menampilkan kelas tertentu.</p>
@@ -4014,449 +3513,53 @@ background: rgba(255,255,255,0.35);
 <!-- ================================================================ -->
 <!-- ===== AKHIR HALAMAN REKAP (1/6) ===== -->
 <!-- ================================================================ -->
-<!-- ===== AWAL HALAMAN ADMINISTRASI BK56 (VERSI FINAL) ===== -->
+<!-- ===== AWAL HALAMAN ADMINISTRASI BK56 ===== -->
 <!-- ================================================================ -->
 <div id="adminbk56" class="page adminbk56-page">
-<button class="back-btn-abk" onclick="go('home')" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
-<header class="abk-site-header" role="banner">
-<h1>📚 Administrasi BK 56</h1>
-<p class="abk-tagline">Sistem Manajemen Bimbingan dan Konseling Digital</p>
+<button class="back-btn" onclick="go('home')" style="margin:20px 24px;" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
+<div class="a56">
+<header class="a56-header">
+<div class="a56-header-content">
+<span class="a56-badge">Administrasi • Dokumen • Terintegrasi</span>
+<h1>Administrasi <em>BK 56</em></h1>
+<p class="a56-subtitle">Dokumen administrasi Bimbingan dan Konseling SMP Negeri 56 Jakarta untuk <strong>4 Guru BK</strong> di Kelas VII, VIII, dan IX. Gunakan filter Kelas → Guru BK → Kategori untuk menemukan dokumen.</p>
+<div class="a56-stats-bar">
+<div class="a56-stat-item"><span class="a56-stat-number">3</span><span class="a56-stat-label">Kelas</span></div>
+<div class="a56-stat-item"><span class="a56-stat-number">4</span><span class="a56-stat-label">Guru BK</span></div>
+<div class="a56-stat-item"><span class="a56-stat-number">15</span><span class="a56-stat-label">Kategori</span></div>
+<div class="a56-stat-item"><span class="a56-stat-number" id="stat-docs">0</span><span class="a56-stat-label">Dokumen</span></div>
+</div>
+</div>
 </header>
-<nav class="abk-site-nav" role="navigation" aria-label="Navigasi Administrasi">
-<div class="abk-nav-inner">
-<button class="abk-nav-link abk-nav-kelas-link" data-target="abk-kelas-vii" aria-label="Lihat Kelas VII">📋 Kelas VII</button>
-<button class="abk-nav-link abk-nav-kelas-link" data-target="abk-kelas-viii" aria-label="Lihat Kelas VIII">📋 Kelas VIII</button>
-<button class="abk-nav-link abk-nav-kelas-link" data-target="abk-kelas-ix" aria-label="Lihat Kelas IX">📋 Kelas IX</button>
-<button class="abk-nav-link abk-nav-link--primary" onclick="showToast('📌 Klik menu mana saja, akan terbuka di tab baru', 'info')">📌 Panduan</button>
+<nav class="a56-tab-nav">
+<div class="a56-tab-container">
+<button class="a56-tab-btn active" onclick="pindahKelas('vii',this)">📘 Kelas VII</button>
+<button class="a56-tab-btn" onclick="pindahKelas('viii',this)">📗 Kelas VIII</button>
+<button class="a56-tab-btn" onclick="pindahKelas('ix',this)">📕 Kelas IX</button>
 </div>
 </nav>
-<main class="abk-main-content" role="main">
-<h2 class="abk-page-title">Administrasi BK 56</h2>
-<div class="abk-tab-navigation" role="tablist" aria-label="Pilih Kelas">
-<button class="abk-tab-btn active" data-target="abk-kelas-vii" role="tab" aria-selected="true">📋 Kelas VII</button>
-<button class="abk-tab-btn" data-target="abk-kelas-viii" role="tab" aria-selected="false">📋 Kelas VIII</button>
-<button class="abk-tab-btn" data-target="abk-kelas-ix" role="tab" aria-selected="false">📋 Kelas IX</button>
-</div>
-<!-- =================== KELAS VII =================== -->
-<section class="abk-kelas-section active" id="abk-kelas-vii" role="tabpanel">
-<h2>📋 Administrasi Kelas VII</h2>
-<div class="abk-menu-group">
-<h3>🔍 Analisa Kebutuhan Siswa</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/angket.html" target="_blank" rel="noopener">📝 Angket</a>
-<a href="admin/vii/wawancara.html" target="_blank" rel="noopener">🎙️ Wawancara</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📊 Prota Prosem</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/porta-promes-sem1.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 1</a>
-<a href="admin/vii/porta-promes-sem2.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 2</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📝 Rencana Pelaksanaan Layanan (RPL)</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/rpl-klasikal.html" target="_blank" rel="noopener">📄 RPL Klasikal</a>
-<a href="admin/vii/rpl-kelompok.html" target="_blank" rel="noopener">👥 RPL Kelompok</a>
-<a href="admin/vii/rpl-individual.html" target="_blank" rel="noopener">👤 RPL Individual</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📅 Agenda Pembelajaran</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/Agenda-Belaja-Siti-Wahyuni-KLSVII-Sem-1/" target="_blank" rel="noopener">📆Siti Wahyuni, S.Pd Semester 1</a>
-<a href="admin/vii/agenda-sem2.html" target="_blank" rel="noopener">📆Siti Wahyuni, S.Pd Semester 2</a>
-<a href="https://appseet11-cmd.github.io/Agenda-Belajar-Rizqi-Putri-S-KLS-VII-Sem1/" target="_blank" rel="noopener">📆Rizqi Putri Sholihatin, S.Pd Semester 1</a>
-<a href="admin/vii/agenda-sem2.html" target="_blank" rel="noopener">📆Rizqi Putri Sholihatin, S.Pd Semester 2</a>
-</div>
-</div>
-<!-- =================== BARU: JURNAL PELAKSANAAN LAYANAN BK =================== -->
-<div class="abk-menu-group">
-<h3>📓 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
-<div class="abk-menu-links">
-<a href="https://script.google.com/macros/s/AKfycbz0ubf0v888gZhMB7joeqQE6o7EazciFrASyOZWoPsKT-M2d9d5OcoB8IEdhsG8keOM_g/exec" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 1</a>
-<a href="https://script.google.com/macros/s/AKfycbz0ubf0v888gZhMB7joeqQE6o7EazciFrASyOZWoPsKT-M2d9d5OcoB8IEdhsG8keOM_g/exec" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 2</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📚 Materi</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/materi-1.html" target="_blank" rel="noopener">📖 Materi 1</a>
-<a href="admin/vii/materi-2.html" target="_blank" rel="noopener">📖 Materi 2</a>
-<a href="admin/vii/materi-3.html" target="_blank" rel="noopener">📖 Materi 3</a>
-<a href="admin/vii/materi-4.html" target="_blank" rel="noopener">📖 Materi 4</a>
-<a href="admin/vii/materi-5.html" target="_blank" rel="noopener">📖 Materi 5</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>🌐 Lintas Kelas</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/kesehatan-mental.html" target="_blank" rel="noopener">🧠 Kesehatan Mental</a>
-<a href="admin/vii/anti-korupsi.html" target="_blank" rel="noopener">⚖️ Pendidikan Anti Korupsi dan Integritas</a>
-<a href="admin/vii/toleransi.html" target="_blank" rel="noopener">🌍 Toleransi dan Kebhinekaan Global</a>
-<a href="admin/vii/tanggap-bencana.html" target="_blank" rel="noopener">🚨 Tanggap Bencana dan Keselamatan Diri</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>⚙️ Metode Bimbingan</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/bimbing-klasikal.html" target="_blank" rel="noopener">🏫 Bimbingan Klasikal</a>
-<a href="admin/vii/bimbing-kelompok.html" target="_blank" rel="noopener">👥 Bimbingan Kelompok</a>
-<a href="admin/vii/konseling-individual.html" target="_blank" rel="noopener">👤 Konseling Individual</a>
-<a href="admin/vii/kolaborasi.html" target="_blank" rel="noopener">🤝 Kolaborasi</a>
-<a href="admin/vii/p5.html" target="_blank" rel="noopener">🌟 Proyek Penguatan Profil Pelajar Pancasila</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>⚠️ Catatan Kasus</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/Catatan-Kasus-Kelas-VII-A/" target="_blank" rel="noopener">📕 Kelas VII-A</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-B/" target="_blank" rel="noopener">📕 Kelas VII-B</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-C/" target="_blank" rel="noopener">📕 Kelas VII-C</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-D/" target="_blank" rel="noopener">📕 Kelas VII-D</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-E/" target="_blank" rel="noopener">📕 Kelas VII-E</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-F/" target="_blank" rel="noopener">📕 Kelas VII-F</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-G/" target="_blank" rel="noopener">📕 Kelas VII-G</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-H/" target="_blank" rel="noopener">📕 Kelas VII-H</a>
-<a href=" https://appseet11-cmd.github.io/CATATAN-KASUS-VII-I/" target="_blank" rel="noopener">📕 Kelas VII-I</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>🏠 Home Visit</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/home-visit.html" target="_blank" rel="noopener">🏡 Home Visit Kelas VII</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>✅ Status Konseling</h3>
-<div class="abk-menu-links">
-<a href=" https://appseet11-cmd.github.io/Status-Konseling-Kelas-VII/" target="_blank" rel="noopener">📊 Status Konseling Kelas VII</a>
-</div>
-</div>
-
-<!-- =================== BARU: SUARA SISWA =================== -->
-<div class="abk-menu-group">
-<h3>🗣️ Suara Siswa</h3>
-<div class="abk-menu-links">
-<a href="admin/vii/suara-aspirasi.html" target="_blank" rel="noopener">💬 Kotak Aspirasi Siswa</a>
-<a href="admin/vii/suara-testimoni.html" target="_blank" rel="noopener">⭐ Testimoni & Umpan Balik</a>
-<a href="admin/vii/suara-refleksi.html" target="_blank" rel="noopener">📝 Refleksi & Cerita Siswa</a>
-<a href="admin/vii/suara-harapan.html" target="_blank" rel="noopener">🌟 Harapan & Saran Siswa</a>
-</div>
-</div>
-<!-- =================== AKHIR MENU BARU =================== -->
-<div class="abk-menu-group">
-<h3>📑 Laporan BK</h3>
-<div class="abk-laporan-container">
-<div class="abk-sub-menu-group">
-<h4>📅 Laporan BK Semester 1</h4>
-<div class="abk-menu-links">
-<a href="admin/vii/laporan-sem1-klasikal.html" target="_blank" rel="noopener">🏫 Laporan Bimbingan Klasikal</a>
-<a href="admin/vii/laporan-sem1-kelompok.html" target="_blank" rel="noopener">👥 Laporan Bimbingan Kelompok</a>
-<a href="admin/vii/laporan-sem1-individual.html" target="_blank" rel="noopener">👤 Laporan Bimbingan Individual</a>
-</div>
-</div>
-<div class="abk-sub-menu-group">
-<h4>📅 Laporan BK Semester 2</h4>
-<div class="abk-menu-links">
-<a href="admin/vii/laporan-sem2-klasikal.html" target="_blank" rel="noopener">🏫 Laporan Bimbingan Klasikal</a>
-<a href="admin/vii/laporan-sem2-kelompok.html" target="_blank" rel="noopener">👥 Laporan Bimbingan Kelompok</a>
-<a href="admin/vii/laporan-sem2-individual.html" target="_blank" rel="noopener">👤 Laporan Bimbingan Individual</a>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- =================== KELAS VIII =================== -->
-<section class="abk-kelas-section" id="abk-kelas-viii" role="tabpanel">
-<h2>📋 Administrasi Kelas VIII</h2>
-<div class="abk-menu-group">
-<h3>🔍 Analisa Kebutuhan Siswa</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/angket.html" target="_blank" rel="noopener">📝 Angket</a>
-<a href="admin/viii/wawancara.html" target="_blank" rel="noopener">🎙️ Wawancara</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📊 Prota Prosem</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/porta-promes-sem1.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 1</a>
-<a href="admin/viii/porta-promes-sem2.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 2</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📝 Rencana Pelaksanaan Layanan (RPL)</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/rpl-klasikal.html" target="_blank" rel="noopener">📄 RPL Klasikal</a>
-<a href="admin/viii/rpl-kelompok.html" target="_blank" rel="noopener">👥 RPL Kelompok</a>
-<a href="admin/viii/rpl-individual.html" target="_blank" rel="noopener">👤 RPL Individual</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📅 Agenda Pembelajaran</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/Agenda-Belajar-Halaliah-Kelas-VIII-Sem-1/" target="_blank" rel="noopener">📆 Halaliah, S.Pd Semester 1</a>
-<a href="admin/viii/agenda-sem2.html" target="_blank" rel="noopener">📆 Halaliah, S.Pd Semester 2</a>
- <a href="https://appseet11-cmd.github.io/Agenda-Belaja-Siti-Wahyuni-KLS-VIII-Sem-1/" target="_blank" rel="noopener">📆 Sri Wahyuni, S.Pd Semester 1</a>
-<a href="admin/viii/agenda-sem2.html" target="_blank" rel="noopener">📆 Sri Wahyuni, S.Pd Semester 2</a>
-</div>
-</div>
-<!-- =================== BARU: JURNAL PELAKSANAAN LAYANAN BK =================== -->
-<div class="abk-menu-group">
-<h3>📓 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
-<div class="abk-menu-links">
-<a href="https://script.google.com/macros/s/AKfycbxbt-MI_PlANYU-N37y_az98rnaMjJm6WAO1PgyTK5IXqTrP_0SjQWNGCm_NZfzPdC0/exec" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 1</a>
-<a href="https://script.google.com/macros/s/AKfycbxbt-MI_PlANYU-N37y_az98rnaMjJm6WAO1PgyTK5IXqTrP_0SjQWNGCm_NZfzPdC0/exec" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 2</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📚 Materi</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/materi-1.html" target="_blank" rel="noopener">📖 Materi 1</a>
-<a href="admin/viii/materi-2.html" target="_blank" rel="noopener">📖 Materi 2</a>
-<a href="admin/viii/materi-3.html" target="_blank" rel="noopener">📖 Materi 3</a>
-<a href="admin/viii/materi-4.html" target="_blank" rel="noopener">📖 Materi 4</a>
-<a href="admin/viii/materi-5.html" target="_blank" rel="noopener">📖 Materi 5</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>🌐 Lintas Kelas</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/kesehatan-mental.html" target="_blank" rel="noopener">🧠 Kesehatan Mental</a>
-<a href="admin/viii/anti-korupsi.html" target="_blank" rel="noopener">⚖️ Pendidikan Anti Korupsi dan Integritas</a>
-<a href="admin/viii/toleransi.html" target="_blank" rel="noopener">🌍 Toleransi dan Kebhinekaan Global</a>
-<a href="admin/viii/tanggap-bencana.html" target="_blank" rel="noopener">🚨 Tanggap Bencana dan Keselamatan Diri</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>⚙️ Metode Bimbingan</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/bimbing-klasikal.html" target="_blank" rel="noopener">🏫 Bimbingan Klasikal</a>
-<a href="admin/viii/bimbing-kelompok.html" target="_blank" rel="noopener">👥 Bimbingan Kelompok</a>
-<a href="admin/viii/konseling-individual.html" target="_blank" rel="noopener">👤 Konseling Individual</a>
-<a href="admin/viii/kolaborasi.html" target="_blank" rel="noopener">🤝 Kolaborasi</a>
-<a href="admin/viii/p5.html" target="_blank" rel="noopener">🌟 Proyek Penguatan Profil Pelajar Pancasila</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>⚠️ Catatan Kasus</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-A/" target="_blank" rel="noopener">📕 Kelas VIII-A</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-B/" target="_blank" rel="noopener">📕 Kelas VIII-B</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-C/" target="_blank" rel="noopener">📕 Kelas VIII-C</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-D/" target="_blank" rel="noopener">📕 Kelas VIII-D</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-E/" target="_blank" rel="noopener">📕 Kelas VIII-E</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-F/" target="_blank" rel="noopener">📕 Kelas VIII-F</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-G/" target="_blank" rel="noopener">📕 Kelas VIII-G</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-H/" target="_blank" rel="noopener">📕 Kelas VIII-H</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-I/" target="_blank" rel="noopener">📕 Kelas VIII-I</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>🏠 Home Visit</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/home-visit.html" target="_blank" rel="noopener">🏡 Home Visit Kelas VIII</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>✅ Status Konseling</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/Status-Konseling-Kelas-VIII/" target="_blank" rel="noopener">📊 Status Konseling Kelas VIII</a>
-</div>
-</div>
-
-<!-- =================== BARU: SUARA SISWA =================== -->
-<div class="abk-menu-group">
-<h3>🗣️ Suara Siswa</h3>
-<div class="abk-menu-links">
-<a href="admin/viii/suara-aspirasi.html" target="_blank" rel="noopener">💬 Kotak Aspirasi Siswa</a>
-<a href="admin/viii/suara-testimoni.html" target="_blank" rel="noopener">⭐ Testimoni & Umpan Balik</a>
-<a href="admin/viii/suara-refleksi.html" target="_blank" rel="noopener">📝 Refleksi & Cerita Siswa</a>
-<a href="admin/viii/suara-harapan.html" target="_blank" rel="noopener">🌟 Harapan & Saran Siswa</a>
-</div>
-</div>
-<!-- =================== AKHIR MENU BARU =================== -->
-<div class="abk-menu-group">
-<h3>📑 Laporan BK</h3>
-<div class="abk-laporan-container">
-<div class="abk-sub-menu-group">
-<h4>📅 Laporan BK Semester 1</h4>
-<div class="abk-menu-links">
-<a href="admin/viii/laporan-sem1-klasikal.html" target="_blank" rel="noopener">🏫 Laporan Bimbingan Klasikal</a>
-<a href="admin/viii/laporan-sem1-kelompok.html" target="_blank" rel="noopener">👥 Laporan Bimbingan Kelompok</a>
-<a href="admin/viii/laporan-sem1-individual.html" target="_blank" rel="noopener">👤 Laporan Bimbingan Individual</a>
-</div>
-</div>
-<div class="abk-sub-menu-group">
-<h4>📅 Laporan BK Semester 2</h4>
-<div class="abk-menu-links">
-<a href="admin/viii/laporan-sem2-klasikal.html" target="_blank" rel="noopener">🏫 Laporan Bimbingan Klasikal</a>
-<a href="admin/viii/laporan-sem2-kelompok.html" target="_blank" rel="noopener">👥 Laporan Bimbingan Kelompok</a>
-<a href="admin/viii/laporan-sem2-individual.html" target="_blank" rel="noopener">👤 Laporan Bimbingan Individual</a>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- =================== KELAS IX =================== -->
-<section class="abk-kelas-section" id="abk-kelas-ix" role="tabpanel">
-<h2>📋 Administrasi Kelas IX</h2>
-<div class="abk-menu-group">
-<h3>🔍 Analisa Kebutuhan Siswa</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/angket.html" target="_blank" rel="noopener">📝 Angket</a>
-<a href="admin/ix/wawancara.html" target="_blank" rel="noopener">🎙️ Wawancara</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📊 Prota Prosem</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/porta-promes-sem1.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 1</a>
-<a href="admin/ix/porta-promes-sem2.html" target="_blank" rel="noopener">📅 ProtaPromes Semester 2</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📝 Rencana Pelaksanaan Layanan (RPL)</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/rpl-klasikal.html" target="_blank" rel="noopener">📄 RPL Klasikal</a>
-<a href="admin/ix/rpl-kelompok.html" target="_blank" rel="noopener">👥 RPL Kelompok</a>
-<a href="admin/ix/rpl-individual.html" target="_blank" rel="noopener">👤 RPL Individual</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📅 Agenda Pembelajaran</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/Agenda-Belajar-Sotya-Palupi-Kelas-IX-Sem-1/" target="_blank" rel="noopener">📆 Sotya Palupi, S.Pd, MM Semester 1</a>
-<a href="admin/ix/agenda-sem2.html" target="_blank" rel="noopener">📆 Sotya Palupi, S.Pd, MM Semester 2</a>
-</div>
-</div>
-<!-- =================== BARU: JURNAL PELAKSANAAN LAYANAN BK =================== -->
-<div class="abk-menu-group">
-<h3>📓 Jurnal Pelaksanaan Layanan Bimbingan Dan Konseling</h3>
-<div class="abk-menu-links">
-<a href="https://script.google.com/macros/s/AKfycbz2-zPRtMXTy8jfMWr_fo-PgkBNEiIHdt2WFLhB3EVm3EgmKT-hoZFf5bDWSQEOnk9ccg/exec" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 1</a>
-<a href="https://script.google.com/macros/s/AKfycbz2-zPRtMXTy8jfMWr_fo-PgkBNEiIHdt2WFLhB3EVm3EgmKT-hoZFf5bDWSQEOnk9ccg/exec" target="_blank" rel="noopener">📅 Jurnal Layanan BK Semester 2</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>📚 Materi</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/materi-1.html" target="_blank" rel="noopener">📖 Materi 1</a>
-<a href="admin/ix/materi-2.html" target="_blank" rel="noopener">📖 Materi 2</a>
-<a href="admin/ix/materi-3.html" target="_blank" rel="noopener">📖 Materi 3</a>
-<a href="admin/ix/materi-4.html" target="_blank" rel="noopener">📖 Materi 4</a>
-<a href="admin/ix/materi-5.html" target="_blank" rel="noopener">📖 Materi 5</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>🌐 Lintas Kelas</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/kesehatan-mental.html" target="_blank" rel="noopener">🧠 Kesehatan Mental</a>
-<a href="admin/ix/anti-korupsi.html" target="_blank" rel="noopener">⚖️ Pendidikan Anti Korupsi dan Integritas</a>
-<a href="admin/ix/toleransi.html" target="_blank" rel="noopener">🌍 Toleransi dan Kebhinekaan Global</a>
-<a href="admin/ix/tanggap-bencana.html" target="_blank" rel="noopener">🚨 Tanggap Bencana dan Keselamatan Diri</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>⚙️ Metode Bimbingan</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/bimbing-klasikal.html" target="_blank" rel="noopener">🏫 Bimbingan Klasikal</a>
-<a href="admin/ix/bimbing-kelompok.html" target="_blank" rel="noopener">👥 Bimbingan Kelompok</a>
-<a href="admin/ix/konseling-individual.html" target="_blank" rel="noopener">👤 Konseling Individual</a>
-<a href="admin/ix/kolaborasi.html" target="_blank" rel="noopener">🤝 Kolaborasi</a>
-<a href="admin/ix/p5.html" target="_blank" rel="noopener">🌟 Proyek Penguatan Profil Pelajar Pancasila</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>⚠️ Catatan Kasus</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/" target="_blank" rel="noopener">📕 Kelas IX-A</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/" target="_blank" rel="noopener">📕 Kelas IX-B</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-C/" target="_blank" rel="noopener">📕 Kelas IX-C</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-D/" target="_blank" rel="noopener">📕 Kelas IX-D</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-E/" target="_blank" rel="noopener">📕 Kelas IX-E</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-F/" target="_blank" rel="noopener">📕 Kelas IX-F</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-G/" target="_blank" rel="noopener">📕 Kelas IX-G</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-H/" target="_blank" rel="noopener">📕 Kelas IX-H</a>
-<a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-I/" target="_blank" rel="noopener">📕 Kelas IX-I</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>🏠 Home Visit</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/home-visit.html" target="_blank" rel="noopener">🏡 Home Visit Kelas IX</a>
-</div>
-</div>
-<div class="abk-menu-group">
-<h3>✅ Status Konseling</h3>
-<div class="abk-menu-links">
-<a href="https://appseet11-cmd.github.io/Status-Konseling-Kelas-IX/" target="_blank" rel="noopener">📊 Status Konseling Kelas IX</a>
-</div>
-</div>
-
-<!-- =================== BARU: SUARA SISWA =================== -->
-<div class="abk-menu-group">
-<h3>🗣️ Suara Siswa</h3>
-<div class="abk-menu-links">
-<a href="admin/ix/suara-aspirasi.html" target="_blank" rel="noopener">💬 Kotak Aspirasi Siswa</a>
-<a href="admin/ix/suara-testimoni.html" target="_blank" rel="noopener">⭐ Testimoni & Umpan Balik</a>
-<a href="admin/ix/suara-refleksi.html" target="_blank" rel="noopener">📝 Refleksi & Cerita Siswa</a>
-<a href="admin/ix/suara-harapan.html" target="_blank" rel="noopener">🌟 Harapan & Saran Siswa</a>
-</div>
-</div>
-<!-- =================== AKHIR MENU BARU =================== -->
-<div class="abk-menu-group">
-<h3>📑 Laporan BK</h3>
-<div class="abk-laporan-container">
-<div class="abk-sub-menu-group">
-<h4>📅 Laporan BK Semester 1</h4>
-<div class="abk-menu-links">
-<a href=" https://appseet11-cmd.github.io/" target="_blank" rel="noopener">🏫 Laporan Bimbingan Klasikal</a>
-<a href="admin/ix/laporan-sem1-kelompok.html" target="_blank" rel="noopener">👥 Laporan Bimbingan Kelompok</a>
-<a href="admin/ix/laporan-sem1-individual.html" target="_blank" rel="noopener">👤 Laporan Bimbingan Individual</a>
-</div>
-</div>
-<div class="abk-sub-menu-group">
-<h4>📅 Laporan BK Semester 2</h4>
-<div class="abk-menu-links">
-<a href="admin/ix/laporan-sem2-klasikal.html" target="_blank" rel="noopener">🏫 Laporan Bimbingan Klasikal</a>
-<a href="admin/ix/laporan-sem2-kelompok.html" target="_blank" rel="noopener">👥 Laporan Bimbingan Kelompok</a>
-<a href="admin/ix/laporan-sem2-individual.html" target="_blank" rel="noopener">👤 Laporan Bimbingan Individual</a>
-</div>
-</div>
-</div>
-</div>
-</section>
-<aside class="abk-info-section" aria-label="Informasi Sistem">
-<h2>📌 Informasi Sistem</h2>
-<h3>Panduan Penyematan Link</h3>
-<p>Semua menu di atas telah disematkan link. Klik menu akan membuka halaman terkait di <strong>tab baru</strong>.</p>
-<p>Struktur folder: <code>admin/{kelas}/{nama-file}.html</code></p>
-<p>Contoh:</p>
-<ul style="margin-left:1.5rem; margin-bottom:1rem;">
-<li><code>admin/vii/rpl-klasikal.html</code></li>
-<li><code>admin/viii/kasus-viii-a.html</code></li>
-<li><code>admin/ix/laporan-sem2-individual.html</code></li>
-<li><code>admin/vii/jurnal-layanan-sem1.html</code> <em style="color:#059669;">(Baru)</em></li>
-<li><code>admin/viii/suara-aspirasi.html</code> <em style="color:#059669;">(Baru)</em></li>
-</ul>
-<div class="abk-stats" aria-label="Statistik menu">
-<div class="abk-stat-card"><span class="number">47</span><span class="label">Menu Kelas VII</span></div>
-<div class="abk-stat-card"><span class="number">47</span><span class="label">Menu Kelas VIII</span></div>
-<div class="abk-stat-card"><span class="number">47</span><span class="label">Menu Kelas IX</span></div>
-<div class="abk-stat-card"><span class="number">141</span><span class="label">Total Link</span></div>
-</div>
-</aside>
-</main>
-<footer class="abk-site-footer" role="contentinfo">
-<p>&copy; 2026 Administrasi BK 56 — Sistem Manajemen Bimbingan &amp; Konseling</p>
-<div class="abk-footer-links">
-<a href="#" onclick="showToast('📌 Sitemap', 'info'); return false;">Sitemap</a>
-<a href="#" onclick="showToast('🔒 Kebijakan Privasi', 'info'); return false;">Kebijakan Privasi</a>
-<a href="#" onclick="showToast('📌 Panduan', 'info'); return false;">Panduan</a>
-</div>
+<div class="a56-container">
+<div class="a56-info-tip">
+<strong>💡 Cara mengisi link:</strong> buka kode halaman ini, tekan <strong>Ctrl+F</strong>, ketik <strong>nama guru</strong> (contoh: SOTYA PALUPI). Setiap baris dokumen diakhiri tanda <strong>""</strong> — tempelkan link Anda di antara dua tanda kutip itu.
+</div>
+<div class="a56-panel-header">
+<h2 id="judul-panel">📘 Administrasi BK Kelas VII</h2>
+<p>Tahun Ajaran 2026/2027 — Fase D • 4 Guru BK • 15 Kategori</p>
+</div>
+<div class="a56-filter"><div class="a56-filter-label">👩‍🏫 Filter Guru BK:</div><div id="filter-guru" style="display:contents"></div></div>
+<div class="a56-filter"><div class="a56-filter-label">🗂️ Filter Kategori:</div><div id="filter-kat" style="display:contents"></div></div>
+<div class="a56-count-info" id="info-jumlah"></div>
+<div class="a56-grid" id="grid-dokumen"></div>
+<div class="a56-empty" id="empty-state"><div class="e-icon">🔍</div><h4>Tidak ada dokumen</h4><p>Silakan ubah pilihan filter.</p></div>
+</div>
+<footer class="a56-footer">
+<h4>📁 Administrasi BK 56</h4>
+<p>Sistem Manajemen Dokumen Administrasi Bimbingan dan Konseling</p>
+<p>SMP Negeri 56 Jakarta — Kurikulum Deep Learning</p>
+<div class="div"></div>
+<p class="copy">© 2026 SMP Negeri 56 Jakarta • Dokumen Tersemat Langsung di HTML</p>
 </footer>
+</div>
 </div>
 <!-- ================================================================ -->
 <!-- ===== AKHIR HALAMAN ADMINISTRASI BK56 ===== -->
@@ -4925,56 +4028,925 @@ const labelMap = { 'vii': 'VII', 'viii': 'VIII', 'ix': 'IX' };
 showToast('🏷️ Filter: Kelas ' + labelMap[category] + ' (' + visibleCount + ' kelas)', 'info');
 }
 }
-function initAdminBk56Tabs() {
-const tabButtons = document.querySelectorAll('.adminbk56-page .abk-tab-btn');
-const kelasSections = document.querySelectorAll('.adminbk56-page .abk-kelas-section');
-const navKelasLinks = document.querySelectorAll('.adminbk56-page .abk-nav-kelas-link');
-function showAbkSection(targetId) {
-kelasSections.forEach(section => {
-section.classList.remove('active');
-section.setAttribute('aria-hidden', 'true');
-});
-tabButtons.forEach(btn => {
-btn.classList.remove('active');
-btn.setAttribute('aria-selected', 'false');
-});
-const targetSection = document.getElementById(targetId);
-if (targetSection) {
-targetSection.classList.add('active');
-targetSection.setAttribute('aria-hidden', 'false');
+/* =====================================================================
+ADMIN BK56 - DATA & LOGIC
+===================================================================== */
+const GURU = {
+sotya:    {nama:"Sotya Palupi, S.Pd, MM",       inisial:"SP", warna:"#c2410c"},
+halaliah: {nama:"Halaliah, S.Pd",               inisial:"HA", warna:"#0f766e"},
+wahyuni:  {nama:"Siti Wahyuni, S.Pd",           inisial:"SW", warna:"#be185d"},
+rizqi:    {nama:"Rizqi Putri Sholihatin, S.Pd", inisial:"RP", warna:"#6d28d9"}
+};
+const DOCS = [];
+function D(kelas,guru,kat,nama,link){ DOCS.push({kelas:kelas,guru:guru,kat:kat,nama:nama,link:link||""}); }
+D("vii","sotya","analisis","Metode Angket","");
+D("vii","sotya","analisis","Metode Wawancara","");
+D("vii","sotya","protapromes","ProtaPromes Semester 1","");
+D("vii","sotya","protapromes","ProtaPromes Semester 2","");
+D("vii","sotya","rpl","RPL Klasikal TW1","");
+D("vii","sotya","rpl","RPL Klasikal TW2","");
+D("vii","sotya","rpl","RPL Klasikal TW3","");
+D("vii","sotya","rpl","RPL Kelompok TW1","");
+D("vii","sotya","rpl","RPL Kelompok TW2","");
+D("vii","sotya","rpl","RPL Kelompok TW3","");
+D("vii","sotya","rpl","RPL Individual TW1","");
+D("vii","sotya","rpl","RPL Individual TW2","");
+D("vii","sotya","rpl","RPL Individual TW3","");
+D("vii","sotya","jurnal","Jurnal Layanan BK Sem 1","");
+D("vii","sotya","jurnal","Jurnal Layanan BK Sem 2","");
+D("vii","sotya","agenda","Agenda Belajar Semester 1","");
+D("vii","sotya","agenda","Agenda Belajar Semester 2","");
+D("vii","sotya","materi","Materi 1","");
+D("vii","sotya","materi","Materi 2","");
+D("vii","sotya","materi","Materi 3","");
+D("vii","sotya","materi","Materi 4","");
+D("vii","sotya","materi","Materi 5","");
+D("vii","sotya","materi","Materi 6","");
+D("vii","sotya","metode","Bimbingan Klasikal","");
+D("vii","sotya","metode","Bimbingan Kelompok","");
+D("vii","sotya","metode","Bimbingan Individual","");
+D("vii","sotya","metode","Kolaborasi","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-A","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-B","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-C","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-D","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-E","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-F","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-G","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-H","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-I","");
+D("vii","sotya","kasus","Catatan Kasus Kelas VII-J","");
+D("vii","sotya","homevisit","Home Visit","");
+D("vii","sotya","status","Status Konseling","");
+D("vii","sotya","lintas","Kesehatan Mental","");
+D("vii","sotya","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("vii","sotya","lintas","Toleransi dan Kebhinekaan Global","");
+D("vii","sotya","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Individual TW1","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Individual TW2","");
+D("vii","sotya","lapsem1","Laporan Bimbingan Individual TW3","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Individual TW1","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Individual TW2","");
+D("vii","sotya","lapsem2","Laporan Bimbingan Individual TW3","");
+D("vii","sotya","lapind","Laporan Bimbingan Individual TW1","");
+D("vii","sotya","lapind","Laporan Bimbingan Individual TW2","");
+D("vii","sotya","lapind","Laporan Bimbingan Individual TW3","");
+D("vii","sotya","suara","Aspirasi Siswa & Aduan Siswa","");
+D("vii","sotya","suara","Refleksi & Cerita Siswa","");
+D("vii","sotya","suara","Harapan & Saran Siswa","");
+D("vii","sotya","suara","Testimoni & Umpan Balik","");
+D("vii","halaliah","analisis","Metode Angket","");
+D("vii","halaliah","analisis","Metode Wawancara","");
+D("vii","halaliah","protapromes","ProtaPromes Semester 1","");
+D("vii","halaliah","protapromes","ProtaPromes Semester 2","");
+D("vii","halaliah","rpl","RPL Klasikal TW1","");
+D("vii","halaliah","rpl","RPL Klasikal TW2","");
+D("vii","halaliah","rpl","RPL Klasikal TW3","");
+D("vii","halaliah","rpl","RPL Kelompok TW1","");
+D("vii","halaliah","rpl","RPL Kelompok TW2","");
+D("vii","halaliah","rpl","RPL Kelompok TW3","");
+D("vii","halaliah","rpl","RPL Individual TW1","");
+D("vii","halaliah","rpl","RPL Individual TW2","");
+D("vii","halaliah","rpl","RPL Individual TW3","");
+D("vii","halaliah","jurnal","Jurnal Layanan BK Sem 1","");
+D("vii","halaliah","jurnal","Jurnal Layanan BK Sem 2","");
+D("vii","halaliah","agenda","Agenda Belajar Semester 1","");
+D("vii","halaliah","agenda","Agenda Belajar Semester 2","");
+D("vii","halaliah","materi","Materi 1","");
+D("vii","halaliah","materi","Materi 2","");
+D("vii","halaliah","materi","Materi 3","");
+D("vii","halaliah","materi","Materi 4","");
+D("vii","halaliah","materi","Materi 5","");
+D("vii","halaliah","materi","Materi 6","");
+D("vii","halaliah","metode","Bimbingan Klasikal","");
+D("vii","halaliah","metode","Bimbingan Kelompok","");
+D("vii","halaliah","metode","Bimbingan Individual","");
+D("vii","halaliah","metode","Kolaborasi","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-A","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-B","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-C","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-D","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-E","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-F","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-G","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-H","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-I","");
+D("vii","halaliah","kasus","Catatan Kasus Kelas VII-J","");
+D("vii","halaliah","homevisit","Home Visit","");
+D("vii","halaliah","status","Status Konseling","");
+D("vii","halaliah","lintas","Kesehatan Mental","");
+D("vii","halaliah","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("vii","halaliah","lintas","Toleransi dan Kebhinekaan Global","");
+D("vii","halaliah","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Individual TW1","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Individual TW2","");
+D("vii","halaliah","lapsem1","Laporan Bimbingan Individual TW3","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Individual TW1","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Individual TW2","");
+D("vii","halaliah","lapsem2","Laporan Bimbingan Individual TW3","");
+D("vii","halaliah","lapind","Laporan Bimbingan Individual TW1","");
+D("vii","halaliah","lapind","Laporan Bimbingan Individual TW2","");
+D("vii","halaliah","lapind","Laporan Bimbingan Individual TW3","");
+D("vii","halaliah","suara","Aspirasi Siswa & Aduan Siswa","");
+D("vii","halaliah","suara","Refleksi & Cerita Siswa","");
+D("vii","halaliah","suara","Harapan & Saran Siswa","");
+D("vii","halaliah","suara","Testimoni & Umpan Balik","");
+D("vii","wahyuni","analisis","Metode Angket","");
+D("vii","wahyuni","analisis","Metode Wawancara","");
+D("vii","wahyuni","protapromes","ProtaPromes Semester 1","");
+D("vii","wahyuni","protapromes","ProtaPromes Semester 2","");
+D("vii","wahyuni","rpl","RPL Klasikal TW1","");
+D("vii","wahyuni","rpl","RPL Klasikal TW2","");
+D("vii","wahyuni","rpl","RPL Klasikal TW3","");
+D("vii","wahyuni","rpl","RPL Kelompok TW1","");
+D("vii","wahyuni","rpl","RPL Kelompok TW2","");
+D("vii","wahyuni","rpl","RPL Kelompok TW3","");
+D("vii","wahyuni","rpl","RPL Individual TW1","");
+D("vii","wahyuni","rpl","RPL Individual TW2","");
+D("vii","wahyuni","rpl","RPL Individual TW3","");
+D("vii","wahyuni","jurnal","Jurnal Layanan BK Sem 1","");
+D("vii","wahyuni","jurnal","Jurnal Layanan BK Sem 2","");
+D("vii","wahyuni","agenda","Agenda Belajar Semester 1","");
+D("vii","wahyuni","agenda","Agenda Belajar Semester 2","");
+D("vii","wahyuni","materi","Materi 1","");
+D("vii","wahyuni","materi","Materi 2","");
+D("vii","wahyuni","materi","Materi 3","");
+D("vii","wahyuni","materi","Materi 4","");
+D("vii","wahyuni","materi","Materi 5","");
+D("vii","wahyuni","materi","Materi 6","");
+D("vii","wahyuni","metode","Bimbingan Klasikal","");
+D("vii","wahyuni","metode","Bimbingan Kelompok","");
+D("vii","wahyuni","metode","Bimbingan Individual","");
+D("vii","wahyuni","metode","Kolaborasi","");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-A","https://appseet11-cmd.github.io/Catatan-Kasus-Kelas-VII-A/");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-B","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-B/");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-C","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-C/");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-D","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-D/");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-E","");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-F","");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-G","");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-H","");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-I","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-I/");
+D("vii","wahyuni","kasus","Catatan Kasus Kelas VII-J","");
+D("vii","wahyuni","homevisit","Home Visit","");
+D("vii","wahyuni","status","Status Konseling","");
+D("vii","wahyuni","lintas","Kesehatan Mental","");
+D("vii","wahyuni","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("vii","wahyuni","lintas","Toleransi dan Kebhinekaan Global","");
+D("vii","wahyuni","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Individual TW1","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Individual TW2","");
+D("vii","wahyuni","lapsem1","Laporan Bimbingan Individual TW3","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Individual TW1","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Individual TW2","");
+D("vii","wahyuni","lapsem2","Laporan Bimbingan Individual TW3","");
+D("vii","wahyuni","lapind","Laporan Bimbingan Individual TW1","");
+D("vii","wahyuni","lapind","Laporan Bimbingan Individual TW2","");
+D("vii","wahyuni","lapind","Laporan Bimbingan Individual TW3","");
+D("vii","wahyuni","suara","Aspirasi Siswa & Aduan Siswa","");
+D("vii","wahyuni","suara","Refleksi & Cerita Siswa","");
+D("vii","wahyuni","suara","Harapan & Saran Siswa","");
+D("vii","wahyuni","suara","Testimoni & Umpan Balik","");
+D("vii","rizqi","analisis","Metode Angket","");
+D("vii","rizqi","analisis","Metode Wawancara","");
+D("vii","rizqi","protapromes","ProtaPromes Semester 1","");
+D("vii","rizqi","protapromes","ProtaPromes Semester 2","");
+D("vii","rizqi","rpl","RPL Klasikal TW1","");
+D("vii","rizqi","rpl","RPL Klasikal TW2","");
+D("vii","rizqi","rpl","RPL Klasikal TW3","");
+D("vii","rizqi","rpl","RPL Kelompok TW1","");
+D("vii","rizqi","rpl","RPL Kelompok TW2","");
+D("vii","rizqi","rpl","RPL Kelompok TW3","");
+D("vii","rizqi","rpl","RPL Individual TW1","");
+D("vii","rizqi","rpl","RPL Individual TW2","");
+D("vii","rizqi","rpl","RPL Individual TW3","");
+D("vii","rizqi","jurnal","Jurnal Layanan BK Sem 1","");
+D("vii","rizqi","jurnal","Jurnal Layanan BK Sem 2","");
+D("vii","rizqi","agenda","Agenda Belajar Semester 1","");
+D("vii","rizqi","agenda","Agenda Belajar Semester 2","");
+D("vii","rizqi","materi","Materi 1","");
+D("vii","rizqi","materi","Materi 2","");
+D("vii","rizqi","materi","Materi 3","");
+D("vii","rizqi","materi","Materi 4","");
+D("vii","rizqi","materi","Materi 5","");
+D("vii","rizqi","materi","Materi 6","");
+D("vii","rizqi","metode","Bimbingan Klasikal","");
+D("vii","rizqi","metode","Bimbingan Kelompok","");
+D("vii","rizqi","metode","Bimbingan Individual","");
+D("vii","rizqi","metode","Kolaborasi","");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-A","");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-B","");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-C","");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-D","");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-E","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-E/");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-F","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-F/");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-G","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-G/");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-H","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-H/");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-I","");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-J","");
+D("vii","rizqi","homevisit","Home Visit","");
+D("vii","rizqi","status","Status Konseling","");
+D("vii","rizqi","lintas","Kesehatan Mental","");
+D("vii","rizqi","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("vii","rizqi","lintas","Toleransi dan Kebhinekaan Global","");
+D("vii","rizqi","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Individual TW1","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Individual TW2","");
+D("vii","rizqi","lapsem1","Laporan Bimbingan Individual TW3","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Individual TW1","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Individual TW2","");
+D("vii","rizqi","lapsem2","Laporan Bimbingan Individual TW3","");
+D("vii","rizqi","lapind","Laporan Bimbingan Individual TW1","");
+D("vii","rizqi","lapind","Laporan Bimbingan Individual TW2","");
+D("vii","rizqi","lapind","Laporan Bimbingan Individual TW3","");
+D("vii","rizqi","suara","Aspirasi Siswa & Aduan Siswa","");
+D("vii","rizqi","suara","Refleksi & Cerita Siswa","");
+D("vii","rizqi","suara","Harapan & Saran Siswa","");
+D("vii","rizqi","suara","Testimoni & Umpan Balik","");
+D("viii","sotya","analisis","Metode Angket","");
+D("viii","sotya","analisis","Metode Wawancara","");
+D("viii","sotya","protapromes","ProtaPromes Semester 1","");
+D("viii","sotya","protapromes","ProtaPromes Semester 2","");
+D("viii","sotya","rpl","RPL Klasikal TW1","");
+D("viii","sotya","rpl","RPL Klasikal TW2","");
+D("viii","sotya","rpl","RPL Klasikal TW3","");
+D("viii","sotya","rpl","RPL Kelompok TW1","");
+D("viii","sotya","rpl","RPL Kelompok TW2","");
+D("viii","sotya","rpl","RPL Kelompok TW3","");
+D("viii","sotya","rpl","RPL Individual TW1","");
+D("viii","sotya","rpl","RPL Individual TW2","");
+D("viii","sotya","rpl","RPL Individual TW3","");
+D("viii","sotya","jurnal","Jurnal Layanan BK Sem 1","");
+D("viii","sotya","jurnal","Jurnal Layanan BK Sem 2","");
+D("viii","sotya","agenda","Agenda Belajar Semester 1","");
+D("viii","sotya","agenda","Agenda Belajar Semester 2","");
+D("viii","sotya","materi","Materi 1","");
+D("viii","sotya","materi","Materi 2","");
+D("viii","sotya","materi","Materi 3","");
+D("viii","sotya","materi","Materi 4","");
+D("viii","sotya","materi","Materi 5","");
+D("viii","sotya","materi","Materi 6","");
+D("viii","sotya","metode","Bimbingan Klasikal","");
+D("viii","sotya","metode","Bimbingan Kelompok","");
+D("viii","sotya","metode","Bimbingan Individual","");
+D("viii","sotya","metode","Kolaborasi","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-A","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-B","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-C","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-D","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-E","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-F","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-G","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-H","");
+D("viii","sotya","kasus","Catatan Kasus Kelas VIII-I","");
+D("viii","sotya","homevisit","Home Visit","");
+D("viii","sotya","status","Status Konseling","");
+D("viii","sotya","lintas","Kesehatan Mental","");
+D("viii","sotya","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("viii","sotya","lintas","Toleransi dan Kebhinekaan Global","");
+D("viii","sotya","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Individual TW1","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Individual TW2","");
+D("viii","sotya","lapsem1","Laporan Bimbingan Individual TW3","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Individual TW1","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Individual TW2","");
+D("viii","sotya","lapsem2","Laporan Bimbingan Individual TW3","");
+D("viii","sotya","lapind","Laporan Bimbingan Individual TW1","");
+D("viii","sotya","lapind","Laporan Bimbingan Individual TW2","");
+D("viii","sotya","lapind","Laporan Bimbingan Individual TW3","");
+D("viii","sotya","suara","Aspirasi Siswa & Aduan Siswa","");
+D("viii","sotya","suara","Refleksi & Cerita Siswa","");
+D("viii","sotya","suara","Harapan & Saran Siswa","");
+D("viii","sotya","suara","Testimoni & Umpan Balik","");
+D("viii","halaliah","analisis","Metode Angket","");
+D("viii","halaliah","analisis","Metode Wawancara","");
+D("viii","halaliah","protapromes","ProtaPromes Semester 1","");
+D("viii","halaliah","protapromes","ProtaPromes Semester 2","");
+D("viii","halaliah","rpl","RPL Klasikal TW1","");
+D("viii","halaliah","rpl","RPL Klasikal TW2","");
+D("viii","halaliah","rpl","RPL Klasikal TW3","");
+D("viii","halaliah","rpl","RPL Kelompok TW1","");
+D("viii","halaliah","rpl","RPL Kelompok TW2","");
+D("viii","halaliah","rpl","RPL Kelompok TW3","");
+D("viii","halaliah","rpl","RPL Individual TW1","");
+D("viii","halaliah","rpl","RPL Individual TW2","");
+D("viii","halaliah","rpl","RPL Individual TW3","");
+D("viii","halaliah","jurnal","Jurnal Layanan BK Sem 1","");
+D("viii","halaliah","jurnal","Jurnal Layanan BK Sem 2","");
+D("viii","halaliah","agenda","Agenda Belajar Semester 1","");
+D("viii","halaliah","agenda","Agenda Belajar Semester 2","");
+D("viii","halaliah","materi","Materi 1","");
+D("viii","halaliah","materi","Materi 2","");
+D("viii","halaliah","materi","Materi 3","");
+D("viii","halaliah","materi","Materi 4","");
+D("viii","halaliah","materi","Materi 5","");
+D("viii","halaliah","materi","Materi 6","");
+D("viii","halaliah","metode","Bimbingan Klasikal","");
+D("viii","halaliah","metode","Bimbingan Kelompok","");
+D("viii","halaliah","metode","Bimbingan Individual","");
+D("viii","halaliah","metode","Kolaborasi","");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-A","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-A/");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-B","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-B/");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-C","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-C/");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-D","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-D/");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-E","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-E/");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-F","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-F/");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-G","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-G/");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-H","");
+D("viii","halaliah","kasus","Catatan Kasus Kelas VIII-I","");
+D("viii","halaliah","homevisit","Home Visit","");
+D("viii","halaliah","status","Status Konseling","");
+D("viii","halaliah","lintas","Kesehatan Mental","");
+D("viii","halaliah","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("viii","halaliah","lintas","Toleransi dan Kebhinekaan Global","");
+D("viii","halaliah","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Individual TW1","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Individual TW2","");
+D("viii","halaliah","lapsem1","Laporan Bimbingan Individual TW3","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Individual TW1","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Individual TW2","");
+D("viii","halaliah","lapsem2","Laporan Bimbingan Individual TW3","");
+D("viii","halaliah","lapind","Laporan Bimbingan Individual TW1","");
+D("viii","halaliah","lapind","Laporan Bimbingan Individual TW2","");
+D("viii","halaliah","lapind","Laporan Bimbingan Individual TW3","");
+D("viii","halaliah","suara","Aspirasi Siswa & Aduan Siswa","");
+D("viii","halaliah","suara","Refleksi & Cerita Siswa","");
+D("viii","halaliah","suara","Harapan & Saran Siswa","");
+D("viii","halaliah","suara","Testimoni & Umpan Balik","");
+D("viii","wahyuni","analisis","Metode Angket","");
+D("viii","wahyuni","analisis","Metode Wawancara","");
+D("viii","wahyuni","protapromes","ProtaPromes Semester 1","");
+D("viii","wahyuni","protapromes","ProtaPromes Semester 2","");
+D("viii","wahyuni","rpl","RPL Klasikal TW1","");
+D("viii","wahyuni","rpl","RPL Klasikal TW2","");
+D("viii","wahyuni","rpl","RPL Klasikal TW3","");
+D("viii","wahyuni","rpl","RPL Kelompok TW1","");
+D("viii","wahyuni","rpl","RPL Kelompok TW2","");
+D("viii","wahyuni","rpl","RPL Kelompok TW3","");
+D("viii","wahyuni","rpl","RPL Individual TW1","");
+D("viii","wahyuni","rpl","RPL Individual TW2","");
+D("viii","wahyuni","rpl","RPL Individual TW3","");
+D("viii","wahyuni","jurnal","Jurnal Layanan BK Sem 1","");
+D("viii","wahyuni","jurnal","Jurnal Layanan BK Sem 2","");
+D("viii","wahyuni","agenda","Agenda Belajar Semester 1","");
+D("viii","wahyuni","agenda","Agenda Belajar Semester 2","");
+D("viii","wahyuni","materi","Materi 1","");
+D("viii","wahyuni","materi","Materi 2","");
+D("viii","wahyuni","materi","Materi 3","");
+D("viii","wahyuni","materi","Materi 4","");
+D("viii","wahyuni","materi","Materi 5","");
+D("viii","wahyuni","materi","Materi 6","");
+D("viii","wahyuni","metode","Bimbingan Klasikal","");
+D("viii","wahyuni","metode","Bimbingan Kelompok","");
+D("viii","wahyuni","metode","Bimbingan Individual","");
+D("viii","wahyuni","metode","Kolaborasi","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-A","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-B","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-C","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-D","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-E","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-F","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-G","");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-H","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-H/");
+D("viii","wahyuni","kasus","Catatan Kasus Kelas VIII-I","https://appseet11-cmd.github.io/CATATAN-KASUS-VIII-I/");
+D("viii","wahyuni","homevisit","Home Visit","");
+D("viii","wahyuni","status","Status Konseling","");
+D("viii","wahyuni","lintas","Kesehatan Mental","");
+D("viii","wahyuni","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("viii","wahyuni","lintas","Toleransi dan Kebhinekaan Global","");
+D("viii","wahyuni","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Individual TW1","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Individual TW2","");
+D("viii","wahyuni","lapsem1","Laporan Bimbingan Individual TW3","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Individual TW1","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Individual TW2","");
+D("viii","wahyuni","lapsem2","Laporan Bimbingan Individual TW3","");
+D("viii","wahyuni","lapind","Laporan Bimbingan Individual TW1","");
+D("viii","wahyuni","lapind","Laporan Bimbingan Individual TW2","");
+D("viii","wahyuni","lapind","Laporan Bimbingan Individual TW3","");
+D("viii","wahyuni","suara","Aspirasi Siswa & Aduan Siswa","");
+D("viii","wahyuni","suara","Refleksi & Cerita Siswa","");
+D("viii","wahyuni","suara","Harapan & Saran Siswa","");
+D("viii","wahyuni","suara","Testimoni & Umpan Balik","");
+D("viii","rizqi","analisis","Metode Angket","");
+D("viii","rizqi","analisis","Metode Wawancara","");
+D("viii","rizqi","protapromes","ProtaPromes Semester 1","");
+D("viii","rizqi","protapromes","ProtaPromes Semester 2","");
+D("viii","rizqi","rpl","RPL Klasikal TW1","");
+D("viii","rizqi","rpl","RPL Klasikal TW2","");
+D("viii","rizqi","rpl","RPL Klasikal TW3","");
+D("viii","rizqi","rpl","RPL Kelompok TW1","");
+D("viii","rizqi","rpl","RPL Kelompok TW2","");
+D("viii","rizqi","rpl","RPL Kelompok TW3","");
+D("viii","rizqi","rpl","RPL Individual TW1","");
+D("viii","rizqi","rpl","RPL Individual TW2","");
+D("viii","rizqi","rpl","RPL Individual TW3","");
+D("viii","rizqi","jurnal","Jurnal Layanan BK Sem 1","");
+D("viii","rizqi","jurnal","Jurnal Layanan BK Sem 2","");
+D("viii","rizqi","agenda","Agenda Belajar Semester 1","");
+D("viii","rizqi","agenda","Agenda Belajar Semester 2","");
+D("viii","rizqi","materi","Materi 1","");
+D("viii","rizqi","materi","Materi 2","");
+D("viii","rizqi","materi","Materi 3","");
+D("viii","rizqi","materi","Materi 4","");
+D("viii","rizqi","materi","Materi 5","");
+D("viii","rizqi","materi","Materi 6","");
+D("viii","rizqi","metode","Bimbingan Klasikal","");
+D("viii","rizqi","metode","Bimbingan Kelompok","");
+D("viii","rizqi","metode","Bimbingan Individual","");
+D("viii","rizqi","metode","Kolaborasi","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-A","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-B","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-C","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-D","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-E","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-F","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-G","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-H","");
+D("viii","rizqi","kasus","Catatan Kasus Kelas VIII-I","");
+D("viii","rizqi","homevisit","Home Visit","");
+D("viii","rizqi","status","Status Konseling","");
+D("viii","rizqi","lintas","Kesehatan Mental","");
+D("viii","rizqi","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("viii","rizqi","lintas","Toleransi dan Kebhinekaan Global","");
+D("viii","rizqi","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Individual TW1","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Individual TW2","");
+D("viii","rizqi","lapsem1","Laporan Bimbingan Individual TW3","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Individual TW1","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Individual TW2","");
+D("viii","rizqi","lapsem2","Laporan Bimbingan Individual TW3","");
+D("viii","rizqi","lapind","Laporan Bimbingan Individual TW1","");
+D("viii","rizqi","lapind","Laporan Bimbingan Individual TW2","");
+D("viii","rizqi","lapind","Laporan Bimbingan Individual TW3","");
+D("viii","rizqi","suara","Aspirasi Siswa & Aduan Siswa","");
+D("viii","rizqi","suara","Refleksi & Cerita Siswa","");
+D("viii","rizqi","suara","Harapan & Saran Siswa","");
+D("viii","rizqi","suara","Testimoni & Umpan Balik","");
+D("ix","sotya","analisis","Metode Angket","");
+D("ix","sotya","analisis","Metode Wawancara","");
+D("ix","sotya","protapromes","ProtaPromes Semester 1","");
+D("ix","sotya","protapromes","ProtaPromes Semester 2","");
+D("ix","sotya","rpl","RPL Klasikal TW1","https://script.google.com/macros/s/AKfycbzuzSNf1St7TUMxnwkPc0khHi5CJgMHfHwTzclBphnbropyGVIYoGDd7CMdM5QwHOXS/exec");
+D("ix","sotya","rpl","RPL Klasikal TW2","https://script.google.com/macros/s/AKfycbxoRO6cyz-lVTvz_iZkEb_5lzA7aOzXBJi8ryoAea5G7a5BpF_r9keouZzodzP0cRrtIA/exec");
+D("ix","sotya","rpl","RPL Klasikal TW3","https://script.google.com/macros/s/AKfycby8Igm8OtY4taBoZKq8eNjryxdVs6hnCLUDNnSUnLCFmT04rNwvxO0ZGPCqUaNsmC8O/exec");
+D("ix","sotya","rpl","RPL Kelompok TW1","");
+D("ix","sotya","rpl","RPL Kelompok TW2","");
+D("ix","sotya","rpl","RPL Kelompok TW3","");
+D("ix","sotya","rpl","RPL Individual TW1","");
+D("ix","sotya","rpl","RPL Individual TW2","");
+D("ix","sotya","rpl","RPL Individual TW3","");
+D("ix","sotya","jurnal","Jurnal Layanan BK Sem 1","https://script.google.com/macros/s/AKfycbz2-zPRtMXTy8jfMWr_fo-PgkBNEiIHdt2WFLhB3EVm3EgmKT-hoZFf5bDWSQEOnk9ccg/exec");
+D("ix","sotya","jurnal","Jurnal Layanan BK Sem 2","https://script.google.com/macros/s/AKfycbz2-zPRtMXTy8jfMWr_fo-PgkBNEiIHdt2WFLhB3EVm3EgmKT-hoZFf5bDWSQEOnk9ccg/exec");
+D("ix","sotya","agenda","Agenda Belajar Semester 1","https://appseet11-cmd.github.io/Agenda-Belajar-Sotya-Palupi-Kelas-IX-Sem-1/");
+D("ix","sotya","agenda","Agenda Belajar Semester 2","");
+D("ix","sotya","materi","Materi 1","");
+D("ix","sotya","materi","Materi 2","");
+D("ix","sotya","materi","Materi 3","");
+D("ix","sotya","materi","Materi 4","");
+D("ix","sotya","materi","Materi 5","");
+D("ix","sotya","materi","Materi 6","");
+D("ix","sotya","metode","Bimbingan Klasikal","");
+D("ix","sotya","metode","Bimbingan Kelompok","");
+D("ix","sotya","metode","Bimbingan Individual","");
+D("ix","sotya","metode","Kolaborasi","");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-A","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-B","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-C","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-C/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-D","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-D/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-E","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-E/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-F","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-F/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-G","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-G/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-H","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-H/");
+D("ix","sotya","kasus","Catatan Kasus Kelas IX-I","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-I/");
+D("ix","sotya","homevisit","Home Visit","");
+D("ix","sotya","status","Status Konseling","https://appseet11-cmd.github.io/Status-Konseling-Kelas-IX/");
+D("ix","sotya","lintas","Kesehatan Mental","");
+D("ix","sotya","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("ix","sotya","lintas","Toleransi dan Kebhinekaan Global","");
+D("ix","sotya","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Individual TW1","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Individual TW2","");
+D("ix","sotya","lapsem1","Laporan Bimbingan Individual TW3","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Individual TW1","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Individual TW2","");
+D("ix","sotya","lapsem2","Laporan Bimbingan Individual TW3","");
+D("ix","sotya","lapind","Laporan Bimbingan Individual TW1","");
+D("ix","sotya","lapind","Laporan Bimbingan Individual TW2","");
+D("ix","sotya","lapind","Laporan Bimbingan Individual TW3","");
+D("ix","sotya","suara","Aspirasi Siswa & Aduan Siswa","");
+D("ix","sotya","suara","Refleksi & Cerita Siswa","");
+D("ix","sotya","suara","Harapan & Saran Siswa","");
+D("ix","sotya","suara","Testimoni & Umpan Balik","");
+D("ix","halaliah","analisis","Metode Angket","");
+D("ix","halaliah","analisis","Metode Wawancara","");
+D("ix","halaliah","protapromes","ProtaPromes Semester 1","");
+D("ix","halaliah","protapromes","ProtaPromes Semester 2","");
+D("ix","halaliah","rpl","RPL Klasikal TW1","");
+D("ix","halaliah","rpl","RPL Klasikal TW2","");
+D("ix","halaliah","rpl","RPL Klasikal TW3","");
+D("ix","halaliah","rpl","RPL Kelompok TW1","");
+D("ix","halaliah","rpl","RPL Kelompok TW2","");
+D("ix","halaliah","rpl","RPL Kelompok TW3","");
+D("ix","halaliah","rpl","RPL Individual TW1","");
+D("ix","halaliah","rpl","RPL Individual TW2","");
+D("ix","halaliah","rpl","RPL Individual TW3","");
+D("ix","halaliah","jurnal","Jurnal Layanan BK Sem 1","");
+D("ix","halaliah","jurnal","Jurnal Layanan BK Sem 2","");
+D("ix","halaliah","agenda","Agenda Belajar Semester 1","");
+D("ix","halaliah","agenda","Agenda Belajar Semester 2","");
+D("ix","halaliah","materi","Materi 1","");
+D("ix","halaliah","materi","Materi 2","");
+D("ix","halaliah","materi","Materi 3","");
+D("ix","halaliah","materi","Materi 4","");
+D("ix","halaliah","materi","Materi 5","");
+D("ix","halaliah","materi","Materi 6","");
+D("ix","halaliah","metode","Bimbingan Klasikal","");
+D("ix","halaliah","metode","Bimbingan Kelompok","");
+D("ix","halaliah","metode","Bimbingan Individual","");
+D("ix","halaliah","metode","Kolaborasi","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-A","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-B","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-C","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-D","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-E","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-F","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-G","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-H","");
+D("ix","halaliah","kasus","Catatan Kasus Kelas IX-I","");
+D("ix","halaliah","homevisit","Home Visit","");
+D("ix","halaliah","status","Status Konseling","");
+D("ix","halaliah","lintas","Kesehatan Mental","");
+D("ix","halaliah","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("ix","halaliah","lintas","Toleransi dan Kebhinekaan Global","");
+D("ix","halaliah","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Individual TW1","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Individual TW2","");
+D("ix","halaliah","lapsem1","Laporan Bimbingan Individual TW3","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Individual TW1","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Individual TW2","");
+D("ix","halaliah","lapsem2","Laporan Bimbingan Individual TW3","");
+D("ix","halaliah","lapind","Laporan Bimbingan Individual TW1","");
+D("ix","halaliah","lapind","Laporan Bimbingan Individual TW2","");
+D("ix","halaliah","lapind","Laporan Bimbingan Individual TW3","");
+D("ix","halaliah","suara","Aspirasi Siswa & Aduan Siswa","");
+D("ix","halaliah","suara","Refleksi & Cerita Siswa","");
+D("ix","halaliah","suara","Harapan & Saran Siswa","");
+D("ix","halaliah","suara","Testimoni & Umpan Balik","");
+D("ix","wahyuni","analisis","Metode Angket","");
+D("ix","wahyuni","analisis","Metode Wawancara","");
+D("ix","wahyuni","protapromes","ProtaPromes Semester 1","");
+D("ix","wahyuni","protapromes","ProtaPromes Semester 2","");
+D("ix","wahyuni","rpl","RPL Klasikal TW1","");
+D("ix","wahyuni","rpl","RPL Klasikal TW2","");
+D("ix","wahyuni","rpl","RPL Klasikal TW3","");
+D("ix","wahyuni","rpl","RPL Kelompok TW1","");
+D("ix","wahyuni","rpl","RPL Kelompok TW2","");
+D("ix","wahyuni","rpl","RPL Kelompok TW3","");
+D("ix","wahyuni","rpl","RPL Individual TW1","");
+D("ix","wahyuni","rpl","RPL Individual TW2","");
+D("ix","wahyuni","rpl","RPL Individual TW3","");
+D("ix","wahyuni","jurnal","Jurnal Layanan BK Sem 1","");
+D("ix","wahyuni","jurnal","Jurnal Layanan BK Sem 2","");
+D("ix","wahyuni","agenda","Agenda Belajar Semester 1","");
+D("ix","wahyuni","agenda","Agenda Belajar Semester 2","");
+D("ix","wahyuni","materi","Materi 1","");
+D("ix","wahyuni","materi","Materi 2","");
+D("ix","wahyuni","materi","Materi 3","");
+D("ix","wahyuni","materi","Materi 4","");
+D("ix","wahyuni","materi","Materi 5","");
+D("ix","wahyuni","materi","Materi 6","");
+D("ix","wahyuni","metode","Bimbingan Klasikal","");
+D("ix","wahyuni","metode","Bimbingan Kelompok","");
+D("ix","wahyuni","metode","Bimbingan Individual","");
+D("ix","wahyuni","metode","Kolaborasi","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-A","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-B","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-C","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-D","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-E","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-F","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-G","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-H","");
+D("ix","wahyuni","kasus","Catatan Kasus Kelas IX-I","");
+D("ix","wahyuni","homevisit","Home Visit","");
+D("ix","wahyuni","status","Status Konseling","");
+D("ix","wahyuni","lintas","Kesehatan Mental","");
+D("ix","wahyuni","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("ix","wahyuni","lintas","Toleransi dan Kebhinekaan Global","");
+D("ix","wahyuni","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Individual TW1","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Individual TW2","");
+D("ix","wahyuni","lapsem1","Laporan Bimbingan Individual TW3","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Individual TW1","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Individual TW2","");
+D("ix","wahyuni","lapsem2","Laporan Bimbingan Individual TW3","");
+D("ix","wahyuni","lapind","Laporan Bimbingan Individual TW1","");
+D("ix","wahyuni","lapind","Laporan Bimbingan Individual TW2","");
+D("ix","wahyuni","lapind","Laporan Bimbingan Individual TW3","");
+D("ix","wahyuni","suara","Aspirasi Siswa & Aduan Siswa","");
+D("ix","wahyuni","suara","Refleksi & Cerita Siswa","");
+D("ix","wahyuni","suara","Harapan & Saran Siswa","");
+D("ix","wahyuni","suara","Testimoni & Umpan Balik","");
+D("ix","rizqi","analisis","Metode Angket","");
+D("ix","rizqi","analisis","Metode Wawancara","");
+D("ix","rizqi","protapromes","ProtaPromes Semester 1","");
+D("ix","rizqi","protapromes","ProtaPromes Semester 2","");
+D("ix","rizqi","rpl","RPL Klasikal TW1","");
+D("ix","rizqi","rpl","RPL Klasikal TW2","");
+D("ix","rizqi","rpl","RPL Klasikal TW3","");
+D("ix","rizqi","rpl","RPL Kelompok TW1","");
+D("ix","rizqi","rpl","RPL Kelompok TW2","");
+D("ix","rizqi","rpl","RPL Kelompok TW3","");
+D("ix","rizqi","rpl","RPL Individual TW1","");
+D("ix","rizqi","rpl","RPL Individual TW2","");
+D("ix","rizqi","rpl","RPL Individual TW3","");
+D("ix","rizqi","jurnal","Jurnal Layanan BK Sem 1","");
+D("ix","rizqi","jurnal","Jurnal Layanan BK Sem 2","");
+D("ix","rizqi","agenda","Agenda Belajar Semester 1","");
+D("ix","rizqi","agenda","Agenda Belajar Semester 2","");
+D("ix","rizqi","materi","Materi 1","");
+D("ix","rizqi","materi","Materi 2","");
+D("ix","rizqi","materi","Materi 3","");
+D("ix","rizqi","materi","Materi 4","");
+D("ix","rizqi","materi","Materi 5","");
+D("ix","rizqi","materi","Materi 6","");
+D("ix","rizqi","metode","Bimbingan Klasikal","");
+D("ix","rizqi","metode","Bimbingan Kelompok","");
+D("ix","rizqi","metode","Bimbingan Individual","");
+D("ix","rizqi","metode","Kolaborasi","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-A","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-B","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-C","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-D","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-E","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-F","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-G","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-H","");
+D("ix","rizqi","kasus","Catatan Kasus Kelas IX-I","");
+D("ix","rizqi","homevisit","Home Visit","");
+D("ix","rizqi","status","Status Konseling","");
+D("ix","rizqi","lintas","Kesehatan Mental","");
+D("ix","rizqi","lintas","Pendidikan Anti Korupsi dan Integritas","");
+D("ix","rizqi","lintas","Toleransi dan Kebhinekaan Global","");
+D("ix","rizqi","lintas","Tanggap Bencana dan Keselamatan Diri","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Klasikal TW1","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Klasikal TW2","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Klasikal TW3","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Kelompok TW1","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Kelompok TW2","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Kelompok TW3","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Individual TW1","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Individual TW2","");
+D("ix","rizqi","lapsem1","Laporan Bimbingan Individual TW3","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Klasikal TW1","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Klasikal TW2","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Klasikal TW3","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Kelompok TW1","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Kelompok TW2","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Kelompok TW3","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Individual TW1","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Individual TW2","");
+D("ix","rizqi","lapsem2","Laporan Bimbingan Individual TW3","");
+D("ix","rizqi","lapind","Laporan Bimbingan Individual TW1","");
+D("ix","rizqi","lapind","Laporan Bimbingan Individual TW2","");
+D("ix","rizqi","lapind","Laporan Bimbingan Individual TW3","");
+D("ix","rizqi","suara","Aspirasi Siswa & Aduan Siswa","");
+D("ix","rizqi","suara","Refleksi & Cerita Siswa","");
+D("ix","rizqi","suara","Harapan & Saran Siswa","");
+D("ix","rizqi","suara","Testimoni & Umpan Balik","");
+const KAT = {
+analisis:["🔍","Analisis Kebutuhan Siswa"],
+protapromes:["📅","ProtaPromes"],
+rpl:["📝","Rencana Pelaksanaan Layanan (RPL)"],
+jurnal:["📒","Jurnal Pelaksanaan Layanan dan BK"],
+agenda:["📖","Agenda Belajar"],
+materi:["📚","Materi"],
+metode:["🎯","Metode Bimbingan"],
+kasus:["🚨","Catatan Kasus"],
+homevisit:["🏠","Home Visit"],
+status:["🗂️","Status Konseling"],
+lintas:["🌐","Lintas Kelas"],
+lapsem1:["📈","Laporan BK Semester 1"],
+lapsem2:["📉","Laporan BK Semester 2"],
+lapind:["🧾","Laporan Bimbingan Individual"],
+suara:["🗣️","Suara Siswa"]
+};
+
+const KELAS = {vii:"VII", viii:"VIII", ix:"IX"};
+let kelasAktif = "vii", filterGuru = "all", filterKat = "all", docTerlihat = [];
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function pindahKelas(k, btn){
+kelasAktif = k; filterGuru = "sotya"; filterKat = "all";
+document.querySelectorAll(".a56-tab-btn").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+document.getElementById("judul-panel").innerHTML = (k==="vii"?"📘":k==="viii"?"📗":"📕") + " Administrasi BK Kelas " + KELAS[k];
+render();
 }
-tabButtons.forEach(btn => {
-if (btn.getAttribute('data-target') === targetId) {
-btn.classList.add('active');
-btn.setAttribute('aria-selected', 'true');
+function setGuru(id, btn){
+filterGuru = id;
+document.querySelectorAll("#filter-guru .a56-chip").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+render(true);
 }
-});
+function setKat(id, btn){
+filterKat = id;
+document.querySelectorAll("#filter-kat .a56-chip").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+render(true);
 }
-tabButtons.forEach(btn => {
-btn.addEventListener('click', function() {
-const targetId = this.getAttribute('data-target');
-showAbkSection(targetId);
-});
-});
-navKelasLinks.forEach(link => {
-link.addEventListener('click', function(e) {
-e.preventDefault();
-const targetId = this.getAttribute('data-target');
-showAbkSection(targetId);
-const section = document.getElementById(targetId);
-if (section) {
-setTimeout(() => {
-section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}, 100);
+function render(hanyaKartu){
+const dataKelas = DOCS.filter(d=>d.kelas===kelasAktif);
+if(!hanyaKartu){
+let h = '';
+for(const gid in GURU){
+const n = dataKelas.filter(d=>d.guru===gid).length;
+const activeClass = (gid === filterGuru) ? ' active' : '';
+h += '<button class="a56-chip'+activeClass+'" onclick="setGuru(\''+gid+'\',this)"><span class="a56-gdot" style="background:'+GURU[gid].warna+'"></span>'+esc(GURU[gid].nama)+' <span class="cnt">'+n+'</span></button>';
 }
-});
-});
+document.getElementById("filter-guru").innerHTML = h;
 }
-if (document.readyState === 'loading') {
-document.addEventListener('DOMContentLoaded', initAdminBk56Tabs);
-} else {
-initAdminBk56Tabs();
+let hk = '<button class="a56-chip '+(filterKat==="all"?"active":"")+'" onclick="setKat(\'all\',this)">📋 Semua Kategori</button>';
+for(const kid in KAT){
+const n = dataKelas.filter(d=>d.kat===kid && d.guru===filterGuru).length;
+if(n>0) hk += '<button class="a56-chip '+(filterKat===kid?"active":"")+'" onclick="setKat(\''+kid+'\',this)">'+KAT[kid][0]+' '+KAT[kid][1]+' <span class="cnt">'+n+'</span></button>';
 }
+document.getElementById("filter-kat").innerHTML = hk;
+docTerlihat = [];
+let html = "";
+dataKelas.forEach((d,i)=>{
+if(d.guru!==filterGuru) return;
+if(filterKat!=="all" && d.kat!==filterKat) return;
+const idx = DOCS.indexOf(d);
+docTerlihat.push(idx);
+const g = GURU[d.guru];
+const adaLink = d.link && d.link.trim()!=="";
+html += '<div class="a56-card">'
++ '<div class="a56-card-icon">'+KAT[d.kat][0]+'</div>'
++ '<span class="a56-guru-badge" style="background:'+g.warna+'"><b>'+g.inisial+'</b>'+esc(g.nama)+'</span>'
++ '<h3>'+esc(d.nama)+'</h3>'
++ '<div class="a56-path">Kelas '+KELAS[d.kelas]+' › '+KAT[d.kat][1]+'</div>'
++ '<p class="a56-desc">Dokumen administrasi BK — '+KAT[d.kat][1]+' Kelas '+KELAS[d.kelas]+'</p>'
++ '<div class="a56-link-embedded"><div class="a56-link-label">🔗 Link Dokumen Tersemat</div>'
++ (adaLink
+? '<span class="a56-link-url">'+esc(d.link)+'</span>'
+: '<span class="a56-link-url kosong">BELUM DIISI — cari dokumen ini di bagian "BAGIAN ISI LINK" pada kode, lalu tempel linknya.</span>')
++ '</div>'
++ '<button class="a56-btn" onclick="bukaDoc('+idx+')">📂 Buka Dokumen</button>'
++ '</div>';
+});
+document.getElementById("grid-dokumen").innerHTML = html;
+document.getElementById("empty-state").classList.toggle("show", docTerlihat.length===0);
+document.getElementById("info-jumlah").innerHTML = "🧮 Menampilkan <b>"+docTerlihat.length+"</b> dokumen";
+}
+function bukaDoc(idx){
+const link = DOCS[idx].link;
+if(!link || link.trim()===""){
+showToast("⚠️ Link belum diisi. Buka kode, cari nama dokumen ini di BAGIAN ISI LINK, lalu tempel linknya.","error");
+return;
+}
+let url = link;
+if(!link.startsWith("http://") && !link.startsWith("https://")) url = "https://"+link;
+window.open(url,"_blank","noopener,noreferrer");
+showToast("📂 Membuka dokumen di tab baru...","success");
+}
+document.addEventListener("DOMContentLoaded",()=>{
+const statDocs = document.getElementById("stat-docs");
+if(statDocs) statDocs.textContent = DOCS.length;
+render();
+});
 </script>
 </body>
 </html>
