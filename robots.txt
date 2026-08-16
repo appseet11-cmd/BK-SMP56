@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://appseet11-cmd.github.io/BK-SMP56/sitemap.xml
