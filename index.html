@@ -701,6 +701,117 @@ padding: 0.15rem 0.55rem; border-radius: 100px; font-size: 0.72rem; font-weight:
 .page.ra .rekap-tag-filter { padding: 0.8rem; gap: 0.4rem; }
 .page.ra .rekap-tag-btn { font-size: 0.78rem; padding: 0.45rem 0.85rem; }
 }
+
+/* ================================================================ */
+/* ========== CARI NIS - SCOPED STYLES ========== */
+/* ================================================================ */
+.page.carinis-page { padding: 0; max-width: 100%; }
+.carinis-wrap {
+max-width: 1100px; margin: 0 auto; padding: 32px 24px;
+}
+.carinis-container {
+background: #fff; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+overflow: hidden; border: 1px solid var(--border);
+}
+.carinis-header {
+background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+color: #fff; padding: 28px 25px; text-align: center;
+position: relative; overflow: hidden;
+}
+.carinis-header::before {
+content: ''; position: absolute; inset: 0;
+background: radial-gradient(circle at 20% 30%, rgba(255,213,79,0.15) 0%, transparent 40%),
+radial-gradient(circle at 80% 70%, rgba(59,130,246,0.2) 0%, transparent 40%);
+pointer-events: none;
+}
+.carinis-header h1 {
+font-family: 'Space Grotesk', sans-serif; font-size: clamp(20px, 4vw, 26px);
+margin-bottom: 6px; font-weight: 700; position: relative; z-index: 2;
+}
+.carinis-header h2 {
+font-size: clamp(14px, 2.5vw, 17px); font-weight: 500; opacity: 0.95;
+position: relative; z-index: 2;
+}
+.carinis-header p {
+font-size: 13px; margin-top: 8px; opacity: 0.85; position: relative; z-index: 2;
+}
+.carinis-search-box {
+padding: 25px; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%);
+border-bottom: 2px solid var(--border);
+}
+.carinis-search-box label {
+display: block; font-weight: 700; margin-bottom: 10px;
+color: var(--primary); font-family: 'Space Grotesk', sans-serif; font-size: 15px;
+}
+.carinis-search-box input {
+width: 100%; padding: 14px 18px; font-size: 15px;
+border: 2px solid var(--border); border-radius: var(--radius-md);
+outline: none; transition: all 0.2s ease; font-family: inherit;
+background: #fff;
+}
+.carinis-search-box input:focus {
+border-color: var(--primary-light);
+box-shadow: 0 0 0 4px rgba(26,54,156,0.12);
+}
+.carinis-info {
+margin-top: 12px; font-size: 13px; color: var(--text-muted);
+line-height: 1.6; background: #fff; padding: 12px 14px;
+border-radius: var(--radius-sm); border-left: 3px solid var(--accent-2);
+}
+.carinis-info strong { color: var(--primary); }
+.carinis-status {
+padding: 12px 25px; font-size: 14px; font-weight: 600;
+border-left: 4px solid var(--border);
+}
+.carinis-status.found {
+background: #ecfdf5; border-color: var(--success); color: #065f46;
+}
+.carinis-status.notfound {
+background: #fef2f2; border-color: var(--danger); color: #991b1b;
+}
+.carinis-table { width: 100%; border-collapse: collapse; }
+.carinis-table thead {
+background: linear-gradient(135deg, #0b1e54 0%, #1a369c 100%);
+color: #fff;
+}
+.carinis-table th, .carinis-table td {
+padding: 12px 15px; text-align: left;
+border-bottom: 1px solid var(--border); font-size: 14px;
+}
+.carinis-table tbody tr { transition: background 0.2s ease; }
+.carinis-table tbody tr:hover { background: #eff6ff; }
+.carinis-table tbody tr.highlight { background: #fffbeb; }
+.carinis-kelas-badge {
+display: inline-block; background: var(--gradient-hero);
+color: #fff; padding: 3px 12px; border-radius: 100px;
+font-size: 12px; font-weight: 700; letter-spacing: 0.3px;
+}
+.carinis-lp-badge {
+display: inline-block; padding: 3px 12px; border-radius: 100px;
+font-size: 12px; font-weight: 700;
+}
+.carinis-lp-badge.lp-L { background: #dbeafe; color: #1e40af; }
+.carinis-lp-badge.lp-P { background: #fce7f3; color: #9f1239; }
+.carinis-footer {
+padding: 18px 25px; background: #f8fafc; text-align: center;
+font-size: 12px; color: var(--text-muted);
+border-top: 1px solid var(--border); line-height: 1.6;
+}
+.carinis-empty {
+padding: 40px 20px; text-align: center; color: var(--text-muted);
+}
+.carinis-empty .ce-icon { font-size: 48px; margin-bottom: 10px; }
+@media (max-width: 768px) {
+.carinis-wrap { padding: 20px 14px; }
+.carinis-header { padding: 22px 18px; }
+.carinis-search-box { padding: 18px; }
+.carinis-table th, .carinis-table td { padding: 10px 8px; font-size: 13px; }
+.carinis-table .col-no { width: 40px; }
+.carinis-table .col-nis { width: 80px; }
+.carinis-table .col-lp { width: 50px; }
+.carinis-table .col-kelas { width: 80px; }
+}
+
 /* ================================================================ */
 /* ========== ADMIN BK56 - SCOPED STYLES ========== */
 /* ================================================================ */
@@ -1191,6 +1302,21 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <div class="feature-icon">📈</div><h3>Rekap Kehadiran</h3><p>Rekapitulasi kehadiran siswa per kelas dalam format spreadsheet terstruktur.</p><span class="feature-link">Lihat Rekap →</span>
 </article>
 </div>
+<style>
+.feature-card.fc-cn { position: relative; background-image: url('https://cdn.phototourl.com/free/2026-07-30-808ba117-069e-48ee-937b-f248f6fcfd77.png'); background-size: cover; background-position: center center; background-repeat: no-repeat; background-color: #2c3e50; padding: 1.5rem; border-radius: 12px; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); min-height: 200px; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; overflow: hidden; border: 2px solid rgba(255,255,255,0.3); isolation: isolate; text-decoration: none; }
+.feature-card.fc-cn::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%); border-radius: 12px; z-index: 1; }
+.feature-card.fc-cn:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.6); }
+.feature-card.fc-cn > * { position: relative; z-index: 2; }
+.feature-card.fc-cn h3 { font-size: 1.3rem; margin: 0.5rem 0; font-weight: bold; color: #fff; }
+.feature-card.fc-cn p { font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.5; color: #f0f0f0; }
+.feature-card.fc-cn .feature-link { display: inline-block; margin-top: 0.75rem; font-weight: bold; font-size: 0.9rem; padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.2); border-radius: 6px; transition: background 0.3s ease; text-decoration: none; color: #fff; }
+.feature-card.fc-cn .feature-link:hover { background: rgba(255,255,255,0.35); }
+</style>
+<article class="feature-card fc-cn" onclick="go('carinis')" role="button" tabindex="0" aria-label="Buka menu Cari NIS Siswa">
+<div class="feature-icon">🔍</div><h3>Cari NIS Siswa</h3>
+<p>Pencarian Nomor Induk Siswa (NIS) berdasarkan nama — khusus siswa Kelas IX SMPN 56 Jakarta.</p>
+<span class="feature-link">Cari NIS →</span>
+</article>
 </section>
 <!-- ================================================================ -->
 <!-- ===== AKHIR TAG TEMPLATE ===== -->
@@ -2499,6 +2625,52 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 </div>
 </div>
 <!-- ===== AKHIR HALAMAN REKAP (1/6) ===== -->
+ <!-- ================================================================ -->
+<!-- ===== AWAL HALAMAN CARI NIS (BARU) ===== -->
+<!-- ================================================================ -->
+<div id="carinis" class="page carinis-page">
+<button class="back-btn" onclick="go('home')" style="margin:20px 24px;" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
+<div class="carinis-wrap">
+<div class="carinis-container">
+<div class="carinis-header">
+<h1>SMP NEGERI 56 JAKARTA</h1>
+<h2>Pencarian Nomor Induk Siswa (NIS)</h2>
+<p>Daftar Nama Murid Kelas 9 — Tahun Ajaran 2026/2027</p>
+</div>
+<div class="carinis-search-box">
+<label for="cnNamaInput">🔎 Masukkan Nama Siswa:</label>
+<input type="text" id="cnNamaInput" placeholder="Ketik nama siswa (contoh: Ahmad, Mutiara, Kevin...)" autocomplete="off">
+<div class="carinis-info">
+<strong>Cara pencarian:</strong> Sistem akan mencocokkan <strong>4–9 karakter pertama</strong> nama.
+Huruf besar/kecil tidak berpengaruh. Jika nama hanya 4 karakter, sistem akan menggunakan karakter ke-6 sampai ke-9 sebagai pembeda.
+</div>
+</div>
+<div id="cnStatus" class="carinis-status" style="display:none;"></div>
+<table class="carinis-table">
+<thead>
+<tr>
+<th class="col-no" style="width:60px;">No.</th>
+<th class="col-nis" style="width:110px;">NIS</th>
+<th>Nama Siswa</th>
+<th class="col-lp" style="width:70px;">L/P</th>
+<th class="col-kelas" style="width:110px;">Kelas</th>
+</tr>
+</thead>
+<tbody id="cnHasilBody">
+<tr><td colspan="5" class="carinis-empty">
+<div class="ce-icon">🔍</div>
+<div>Ketik nama siswa di kolom pencarian untuk memulai</div>
+</td></tr>
+</tbody>
+</table>
+<div class="carinis-footer">
+Jl. Jeruk Purut, Cilandak Timur, Pasar Minggu — Jakarta Selatan 12560<br>
+Telp. (021) 7803516 | www.smpn56jakarta.sch.id
+</div>
+</div>
+</div>
+</div>
+<!-- ===== AKHIR HALAMAN CARI NIS ===== -->
 <!-- ===== AWAL HALAMAN ADMINISTRASI BK56 ===== -->
  <div id="adminbk56" class="page adminbk56-page">
 <button class="back-btn" onclick="go('home')" style="margin:20px 24px;" aria-label="Kembali ke Menu Utama">← Kembali ke Menu Utama</button>
@@ -2894,12 +3066,15 @@ window.addEventListener('pageshow', function(event) {
 
 const BREADCRUMB_MAP = {
   'home': 'Platform BK Digital', 'adminbk56': 'Administrasi BK56',
-  'instrumen6c': 'Instrument 6C', 'panduanbk-dl': 'Panduan BK Deep Learning',
-  'materi': 'Materi Pembelajaran', 'latihan': 'Refleksi', 'asesmen': 'Asesmen Awal',
-  'quiz': 'Quiz Interaktif', 'video': 'Video Pembelajaran',
-  'game': 'Game Edukatif', 'analisis': 'Analisis Siswa',
-  'iq': 'Tes IQ', 'absensi': 'Absensi Siswa', 'rekap': 'Rekap Absensi'
+'instrumen6c': 'Instrument 6C', 'panduanbk-dl': 'Panduan BK Deep Learning',
+'templatebk-dl': 'Template BK Deep Learning',
+'materi': 'Materi Pembelajaran', 'latihan': 'Refleksi', 'asesmen': 'Asesmen Awal',
+'quiz': 'Quiz Interaktif', 'video': 'Video Pembelajaran',
+'game': 'Game Edukatif', 'analisis': 'Analisis Siswa',
+'iq': 'Tes IQ', 'absensi': 'Absensi Siswa', 'rekap': 'Rekap Absensi',
+'carinis': 'Cari NIS Siswa'
 };
+
 function updateBreadcrumb(id) {
   var current = document.getElementById('breadcrumb-current');
   if (current && BREADCRUMB_MAP[id]) current.textContent = BREADCRUMB_MAP[id];
@@ -4126,6 +4301,401 @@ var statDocs = document.getElementById("stat-docs");
 if(statDocs) statDocs.textContent = DOCS.length;
 render();
 });
+/* ================================================================ */
+/* ========== 🔎 CARI NIS SISWA KELAS IX ========== */
+/* ================================================================ */
+const DATA_SISWA_IX = [
+{no:1, nis:"21481", nama:"ACHMAD FADLI", lp:"L", kelas:"9.A"},
+{no:2, nis:"21694", nama:"ADNAN KHIAR SYARIEF", lp:"L", kelas:"9.A"},
+{no:3, nis:"21516", nama:"AGIL FERDIYAN", lp:"L", kelas:"9.A"},
+{no:4, nis:"21660", nama:"AKILA KHAIRUN NISA", lp:"P", kelas:"9.A"},
+{no:5, nis:"21627", nama:"ARIMBI NAYYARA AZKADINA PUTRI", lp:"P", kelas:"9.A"},
+{no:6, nis:"21663", nama:"ATHAYA PUTRI HUMAYRAH", lp:"P", kelas:"9.A"},
+{no:7, nis:"21733", nama:"AYESHA AFRILIA AZZAHRA", lp:"P", kelas:"9.A"},
+{no:8, nis:"21523", nama:"AZKA DWI OKTAVIANI", lp:"P", kelas:"9.A"},
+{no:9, nis:"21630", nama:"CALLYSTA PUTRI SUPARNOTO", lp:"P", kelas:"9.A"},
+{no:10, nis:"21667", nama:"DANANG PRAKOSO", lp:"L", kelas:"9.A"},
+{no:11, nis:"21489", nama:"DONI ASHARI", lp:"L", kelas:"9.A"},
+{no:12, nis:"21669", nama:"FADHILAH AKBAR", lp:"L", kelas:"9.A"},
+{no:13, nis:"21634", nama:"GALIH PAMUNGKAS", lp:"L", kelas:"9.A"},
+{no:14, nis:"21706", nama:"GENDIS SATRIYANI", lp:"P", kelas:"9.A"},
+{no:15, nis:"21532", nama:"INDRI AULIA", lp:"P", kelas:"9.A"},
+{no:16, nis:"21494", nama:"JASON DANIEL PINEHAS SIAHAAN", lp:"L", kelas:"9.A"},
+{no:17, nis:"21495", nama:"JEREMI PANDAPOTAN PARLUHUTAN N", lp:"L", kelas:"9.A"},
+{no:18, nis:"21500", nama:"MUHAMAD FAHRI RASYA HUMAIDI", lp:"L", kelas:"9.A"},
+{no:19, nis:"21712", nama:"MUHAMAD RAFI ARDIYANTO", lp:"L", kelas:"9.A"},
+{no:20, nis:"21678", nama:"MUHAMMAD FAIQ KABES", lp:"L", kelas:"9.A"},
+{no:21, nis:"21503", nama:"MUHAMMAD HAIKAL", lp:"L", kelas:"9.A"},
+{no:22, nis:"21611", nama:"MUHAMMAD RASYID AZKA KHALFANI", lp:"L", kelas:"9.A"},
+{no:23, nis:"21575", nama:"MUTIARA SYIFA AZZAHRA", lp:"P", kelas:"9.A"},
+{no:24, nis:"21682", nama:"NABILA NUR AROFAH", lp:"P", kelas:"9.A"},
+{no:25, nis:"21647", nama:"NAYSHILA KASI PUTRI", lp:"P", kelas:"9.A"},
+{no:26, nis:"21754", nama:"NILAM KANAYA", lp:"P", kelas:"9.A"},
+{no:27, nis:"21789", nama:"NONA MUTIARA TSANI", lp:"P", kelas:"9.A"},
+{no:28, nis:"21507", nama:"NOVA ADINDA DWI AZURA", lp:"P", kelas:"9.A"},
+{no:29, nis:"21685", nama:"QANITAH NABILAH", lp:"P", kelas:"9.A"},
+{no:30, nis:"21686", nama:"RADITYA ADIPRADHANA", lp:"L", kelas:"9.A"},
+{no:31, nis:"21651", nama:"REVANSYAH KIANU", lp:"L", kelas:"9.A"},
+{no:32, nis:"21582", nama:"SABRIA REZQINA ALMIRA", lp:"P", kelas:"9.A"},
+{no:33, nis:"21692", nama:"VICKA ALIZYA ESA", lp:"P", kelas:"9.A"},
+{no:34, nis:"21621", nama:"WILDHAN RAMADHAN", lp:"L", kelas:"9.A"},
+{no:35, nis:"21512", nama:"ZAIDAN RIZKI ALFATHAN", lp:"L", kelas:"9.A"},
+{no:1, nis:"21696", nama:"ALDA FEBRIANA ENDAH CANTIKA", lp:"P", kelas:"9.B"},
+{no:2, nis:"21592", nama:"AOZORA RIANI MUBAROK", lp:"P", kelas:"9.B"},
+{no:3, nis:"21521", nama:"ARYO WAHYU SYAHPUTRA", lp:"L", kelas:"9.B"},
+{no:4, nis:"21700", nama:"BANI HASYIM ALBASIT", lp:"L", kelas:"9.B"},
+{no:5, nis:"21525", nama:"DAFAA AL HABSYI HUSEN", lp:"L", kelas:"9.B"},
+{no:6, nis:"21771", nama:"DANISH ZAVIER RAFLIANDRA", lp:"L", kelas:"9.B"},
+{no:7, nis:"21527", nama:"DZAFIF DAYYAN PUTRA WIJAYA", lp:"L", kelas:"9.B"},
+{no:8, nis:"21599", nama:"ERZHA WAHYU JULYANSAH", lp:"L", kelas:"9.B"},
+{no:9, nis:"21775", nama:"FAYYADAH SANDA FITRIYAH", lp:"P", kelas:"9.B"},
+{no:10, nis:"21602", nama:"IBNU FADHIL", lp:"L", kelas:"9.B"},
+{no:11, nis:"21742", nama:"INAYA KHAIRIYA", lp:"P", kelas:"9.B"},
+{no:12, nis:"21776", nama:"INAYAH", lp:"P", kelas:"9.B"},
+{no:13, nis:"21493", nama:"IRFAN AFIF", lp:"L", kelas:"9.B"},
+{no:14, nis:"21674", nama:"KYNA PUTRI RIZKIANI", lp:"P", kelas:"9.B"},
+{no:15, nis:"22499", nama:"LANGIT KHAIRUL AZZAM", lp:"L", kelas:"9.B"},
+{no:16, nis:"21677", nama:"MUHAMAD RAFAEL DA ROZAK", lp:"L", kelas:"9.B"},
+{no:17, nis:"21714", nama:"MUHAMMAD GAVIN RAFFASYA", lp:"L", kelas:"9.B"},
+{no:18, nis:"21681", nama:"MUHAMMAD RIDWAN DWI PUTRA", lp:"L", kelas:"9.B"},
+{no:19, nis:"21786", nama:"MUHAMMAD WILDANSYAH", lp:"L", kelas:"9.B"},
+{no:20, nis:"21505", nama:"MUHAMMAD YUSUF MANSUR", lp:"L", kelas:"9.B"},
+{no:21, nis:"21717", nama:"NADIRA NURSYAFINA PURWANTI", lp:"P", kelas:"9.B"},
+{no:22, nis:"21788", nama:"NAZILA ROSYIDA", lp:"P", kelas:"9.B"},
+{no:23, nis:"21684", nama:"NIKKITA MALIKA MAHEERA", lp:"P", kelas:"9.B"},
+{no:24, nis:"21543", nama:"NUR NABILLAH AINI", lp:"P", kelas:"9.B"},
+{no:25, nis:"22140", nama:"PANJI TRISNA YUDHASKARA", lp:"L", kelas:"9.B"},
+{no:26, nis:"21615", nama:"PUTRA RASYID RAMADANI", lp:"L", kelas:"9.B"},
+{no:27, nis:"21755", nama:"RADJATA PATRA WIJAYA", lp:"L", kelas:"9.B"},
+{no:28, nis:"21790", nama:"RAEESA LIZAHRA SATRIA", lp:"P", kelas:"9.B"},
+{no:29, nis:"21807", nama:"RAISA AVILLA", lp:"P", kelas:"9.B"},
+{no:30, nis:"21545", nama:"RATU BILQIS GHASSANI", lp:"P", kelas:"9.B"},
+{no:31, nis:"21617", nama:"REZKI SAPUTRA", lp:"L", kelas:"9.B"},
+{no:32, nis:"21619", nama:"SALVANIA TIARA SYABILLA", lp:"P", kelas:"9.B"},
+{no:33, nis:"21724", nama:"SHILVINA ZAHWA HASAN", lp:"P", kelas:"9.B"},
+{no:34, nis:"21796", nama:"VINKA SYAKIRA", lp:"P", kelas:"9.B"},
+{no:35, nis:"21657", nama:"YASMIN NAURA SYAFIAH", lp:"P", kelas:"9.B"},
+{no:1, nis:"21729", nama:"ALIKA NASHWA KAMILA", lp:"P", kelas:"9.C"},
+{no:2, nis:"21765", nama:"ALMAJEN", lp:"P", kelas:"9.C"},
+{no:3, nis:"21662", nama:"ANUGRAH FIKRIANSYAH YAHYA", lp:"L", kelas:"9.C"},
+{no:4, nis:"21731", nama:"ARNA KAAMILATUL KHASANAH", lp:"P", kelas:"9.C"},
+{no:5, nis:"21769", nama:"AZHFAR IBNU ASHIS", lp:"L", kelas:"9.C"},
+{no:6, nis:"21559", nama:"BAGUS TRI HADMAJA", lp:"L", kelas:"9.C"},
+{no:7, nis:"21806", nama:"BRYAN MARINES TABALUBUN", lp:"L", kelas:"9.C"},
+{no:8, nis:"21631", nama:"DAMAR PUTRA WIJAYA", lp:"L", kelas:"9.C"},
+{no:9, nis:"21735", nama:"DANISH DHIYAULRAHMAN SYABIL ISMOYO", lp:"L", kelas:"9.C"},
+{no:10, nis:"21633", nama:"EZWAN PANJI IRWANSYAH", lp:"L", kelas:"9.C"},
+{no:11, nis:"21704", nama:"FADHIL AKBAR BAIHAQI", lp:"L", kelas:"9.C"},
+{no:12, nis:"21705", nama:"FAIRUL IHSAN", lp:"L", kelas:"9.C"},
+{no:13, nis:"21530", nama:"FIRZANAH GHAISANI", lp:"P", kelas:"9.C"},
+{no:14, nis:"21670", nama:"GENDHIS CLARIESTA PUTRI", lp:"P", kelas:"9.C"},
+{no:15, nis:"21635", nama:"IDRIS MADANI", lp:"L", kelas:"9.C"},
+{no:16, nis:"21566", nama:"INTAN DINDA PANGESTU", lp:"P", kelas:"9.C"},
+{no:17, nis:"21533", nama:"KEYSHA PUTRI OKTAVIANI", lp:"P", kelas:"9.C"},
+{no:18, nis:"21638", nama:"KIRANA ASTABILLA", lp:"P", kelas:"9.C"},
+{no:19, nis:"21568", nama:"MAHIRA RAHMADINA", lp:"P", kelas:"9.C"},
+{no:20, nis:"21710", nama:"MAULANA MALIK IBRAHIM", lp:"L", kelas:"9.C"},
+{no:21, nis:"21569", nama:"MIRZA ZAKI", lp:"L", kelas:"9.C"},
+{no:22, nis:"21785", nama:"MUHAMMAD NAWAFIL AZKA", lp:"L", kelas:"9.C"},
+{no:23, nis:"21716", nama:"MUHAMMAD RODLY AL HAFIZH", lp:"L", kelas:"9.C"},
+{no:24, nis:"21541", nama:"NASYTHA ALIYATIN", lp:"P", kelas:"9.C"},
+{no:25, nis:"22136", nama:"NAYLA ALYA FAWWAZAH HARIYADI", lp:"P", kelas:"9.C"},
+{no:26, nis:"21648", nama:"PUTRI AMELIA FARIDA", lp:"P", kelas:"9.C"},
+{no:27, nis:"21649", nama:"QESHA HASNA AULIA", lp:"P", kelas:"9.C"},
+{no:28, nis:"21544", nama:"RAKHA PRAWIRA PUTRA RIYANTO", lp:"L", kelas:"9.C"},
+{no:29, nis:"21616", nama:"RASYA MAHIRA RYANKA", lp:"L", kelas:"9.C"},
+{no:30, nis:"21652", nama:"RICHIE CAHYA AZ ZAHRA", lp:"P", kelas:"9.C"},
+{no:31, nis:"21688", nama:"RIEZKI RADHITYA SAPUTRA", lp:"L", kelas:"9.C"},
+{no:32, nis:"21761", nama:"TIARA LAILA RIYADI", lp:"P", kelas:"9.C"},
+{no:33, nis:"21811", nama:"ZAHIRA AFIFA SUGIYANTO", lp:"P", kelas:"9.C"},
+{no:34, nis:"21762", nama:"ZAHRA PUTRI MALAHAYATI", lp:"P", kelas:"9.C"},
+{no:1, nis:"21727", nama:"ADYA JIHA ARRHASYA", lp:"P", kelas:"9.D"},
+{no:2, nis:"21482", nama:"AFIQAH PUTRI NAFIAN", lp:"P", kelas:"9.D"},
+{no:3, nis:"21623", nama:"AISYAH AFIQAH", lp:"P", kelas:"9.D"},
+{no:4, nis:"21590", nama:"ALI PANDEGA PRABOWO", lp:"L", kelas:"9.D"},
+{no:5, nis:"21808", nama:"ANNIZA AULIA ADHINDA", lp:"P", kelas:"9.D"},
+{no:6, nis:"21767", nama:"ARSHA RIMSAN MALIKEOLA", lp:"L", kelas:"9.D"},
+{no:7, nis:"21811", nama:"ARTHUR PUTRA BOYADI", lp:"L", kelas:"9.D"},
+{no:8, nis:"22138", nama:"AZELLIA ZAHRA KIRANA", lp:"P", kelas:"9.D"},
+{no:9, nis:"21595", nama:"AZQIA ALYKHA PUTRI", lp:"P", kelas:"9.D"},
+{no:10, nis:"21629", nama:"AZRA MUNIFAH ZAHIDAH", lp:"P", kelas:"9.D"},
+{no:11, nis:"21734", nama:"BANU HASAN ALBASIT", lp:"L", kelas:"9.D"},
+{no:12, nis:"21770", nama:"BAYHAQI PRATAMA", lp:"L", kelas:"9.D"},
+{no:13, nis:"21596", nama:"BINTANG ARFIAN ARKANANTA", lp:"L", kelas:"9.D"},
+{no:14, nis:"21492", nama:"INDAH RAMADHANIA", lp:"P", kelas:"9.D"},
+{no:15, nis:"21567", nama:"KEYSHA SHAFIRA WIBOWO", lp:"P", kelas:"9.D"},
+{no:16, nis:"21497", nama:"KIMIKO RAFFA HARDIYAN", lp:"L", kelas:"9.D"},
+{no:17, nis:"21745", nama:"MAULANA YUSUF ABDULLAH", lp:"L", kelas:"9.D"},
+{no:18, nis:"21779", nama:"MAYA NUR FATONAH", lp:"P", kelas:"9.D"},
+{no:19, nis:"21780", nama:"MOHAMMAD CAHYO", lp:"L", kelas:"9.D"},
+{no:20, nis:"21782", nama:"MUHAMAD FIKRI HIDAYAT", lp:"L", kelas:"9.D"},
+{no:21, nis:"21571", nama:"MUHAMMAD ARDHAN ZEFIRINO", lp:"L", kelas:"9.D"},
+{no:22, nis:"21502", nama:"MUHAMMAD HAFIDZ RAMADHAN", lp:"L", kelas:"9.D"},
+{no:23, nis:"21810", nama:"MUHAMMAD TAJ'HIRO", lp:"L", kelas:"9.D"},
+{no:24, nis:"21540", nama:"MUHAMMAD ZAKI HAMSYAH", lp:"L", kelas:"9.D"},
+{no:25, nis:"21646", nama:"NABILA KHOIRUNNISA", lp:"P", kelas:"9.D"},
+{no:26, nis:"21577", nama:"NUR ALIF PUTRA ANANDIKA", lp:"L", kelas:"9.D"},
+{no:27, nis:"21719", nama:"RACHEL QUEEN CAHYADI", lp:"P", kelas:"9.D"},
+{no:28, nis:"21804", nama:"RANDI SAPUTRA PRAMUDA", lp:"L", kelas:"9.D"},
+{no:29, nis:"21509", nama:"RATNA GENDHIS DWI RANUKUMBOLO", lp:"P", kelas:"9.D"},
+{no:30, nis:"21654", nama:"SALMA HUSNA MAHIRAH", lp:"P", kelas:"9.D"},
+{no:31, nis:"21655", nama:"SANJI MAHARDIKA", lp:"L", kelas:"9.D"},
+{no:32, nis:"21795", nama:"SHADAM RIZKI ADITYA", lp:"L", kelas:"9.D"},
+{no:33, nis:"21548", nama:"SHEILA MAULIDINA", lp:"P", kelas:"9.D"},
+{no:34, nis:"21656", nama:"SYAQINA QAMARA TIFFANY", lp:"P", kelas:"9.D"},
+{no:1, nis:"21763", nama:"ADYSTI AMELIA PUTRI", lp:"P", kelas:"9.E"},
+{no:2, nis:"21483", nama:"AGENG ZAHRAINI WICAKSONO", lp:"P", kelas:"9.E"},
+{no:3, nis:"21517", nama:"AHMAD BUSAIRI", lp:"L", kelas:"9.E"},
+{no:4, nis:"21552", nama:"AHMAD FARHAN", lp:"L", kelas:"9.E"},
+{no:5, nis:"21553", nama:"AHMAD HAFIDZ HASYIM", lp:"L", kelas:"9.E"},
+{no:6, nis:"21625", nama:"ALIFAH JULIANTI", lp:"P", kelas:"9.E"},
+{no:7, nis:"21519", nama:"ALYZAH SYAFAH AZZAHRA", lp:"P", kelas:"9.E"},
+{no:8, nis:"21555", nama:"AMIRA KAMILA LUTHFI", lp:"P", kelas:"9.E"},
+{no:9, nis:"21520", nama:"ANGELIA MAHARANI AZ-ZAHRA", lp:"P", kelas:"9.E"},
+{no:10, nis:"21524", nama:"AZRIL ALDIANSYAH", lp:"L", kelas:"9.E"},
+{no:11, nis:"21560", nama:"DAFI OMAR MAHASIN", lp:"L", kelas:"9.E"},
+{no:12, nis:"21703", nama:"DINO NUGRAHA ISWANTO", lp:"L", kelas:"9.E"},
+{no:13, nis:"21562", nama:"DZAKKIATUR RAMADANI", lp:"P", kelas:"9.E"},
+{no:14, nis:"21563", nama:"FAZRI RAMADHAN", lp:"L", kelas:"9.E"},
+{no:15, nis:"21603", nama:"JIHAN SAVIRA FAUZIAH", lp:"P", kelas:"9.E"},
+{no:16, nis:"21604", nama:"KHAIRA EFNAZARANTI", lp:"P", kelas:"9.E"},
+{no:17, nis:"21605", nama:"MALIKA NOOR MULKIA", lp:"P", kelas:"9.E"},
+{no:18, nis:"21676", nama:"MOHAMMAD IQBAL", lp:"L", kelas:"9.E"},
+{no:19, nis:"21538", nama:"MUHAMMAD DAFFI TEDJALAKSANA", lp:"L", kelas:"9.E"},
+{no:20, nis:"21642", nama:"MUHAMMAD FAHRI", lp:"L", kelas:"9.E"},
+{no:21, nis:"21609", nama:"MUHAMMAD FAJADHU BAIHAQI", lp:"L", kelas:"9.E"},
+{no:22, nis:"21643", nama:"MUHAMMAD FAKHRI HAMZAH", lp:"L", kelas:"9.E"},
+{no:23, nis:"21680", nama:"MUHAMMAD IRFAN ALYANSAH", lp:"L", kelas:"9.E"},
+{no:24, nis:"21751", nama:"MUHAMMAD LUCKY DAULANA", lp:"L", kelas:"9.E"},
+{no:25, nis:"21539", nama:"MUHAMMAD RAAMII ALVINO", lp:"L", kelas:"9.E"},
+{no:26, nis:"21576", nama:"NATASYA CAMELIA DESTIANTY SUARDI", lp:"P", kelas:"9.E"},
+{no:27, nis:"21542", nama:"NAZYRA SHAQUILLA TSAQIB", lp:"P", kelas:"9.E"},
+{no:28, nis:"21721", nama:"REFAN GHANIY FATRYANTO", lp:"L", kelas:"9.E"},
+{no:29, nis:"21757", nama:"REISYA NABILAH AGHSYAREI", lp:"P", kelas:"9.E"},
+{no:30, nis:"21793", nama:"RIZQY ALDHIPRATAMA IRSANDY", lp:"L", kelas:"9.E"},
+{no:31, nis:"21689", nama:"SARAH AULIA", lp:"P", kelas:"9.E"},
+{no:32, nis:"21690", nama:"SHAFA ATHIFAH", lp:"P", kelas:"9.E"},
+{no:33, nis:"21726", nama:"TRI HANDAYANI", lp:"P", kelas:"9.E"},
+{no:34, nis:"21511", nama:"TSABELLA AWAHITA LAVI", lp:"P", kelas:"9.E"},
+{no:1, nis:"21551", nama:"ADE AINURRIFQAH", lp:"P", kelas:"9.F"},
+{no:2, nis:"21587", nama:"ADELLA DWI NESHA", lp:"P", kelas:"9.F"},
+{no:3, nis:"21554", nama:"ALFIYA ZARA", lp:"P", kelas:"9.F"},
+{no:4, nis:"21557", nama:"ASLA NUR FAIZAH", lp:"P", kelas:"9.F"},
+{no:5, nis:"21628", nama:"AUNI RAHMAH", lp:"P", kelas:"9.F"},
+{no:6, nis:"22133", nama:"AURA SAFA AKIRA MARWA", lp:"P", kelas:"9.F"},
+{no:7, nis:"21522", nama:"AZIRA DINDA CALISTA", lp:"P", kelas:"9.F"},
+{no:8, nis:"21665", nama:"AZZAHRA WIDYA LESTARI", lp:"L", kelas:"9.F"},
+{no:9, nis:"21666", nama:"CUT AULIA PUTRI", lp:"P", kelas:"9.F"},
+{no:10, nis:"21772", nama:"DEWI RATIH AYESHA", lp:"P", kelas:"9.F"},
+{no:11, nis:"21561", nama:"DHIO FARROS MEIRIZAL", lp:"L", kelas:"9.F"},
+{no:12, nis:"21736", nama:"DITA JUNIKA", lp:"P", kelas:"9.F"},
+{no:13, nis:"21737", nama:"DIYAS KEISHA ALZAHRA", lp:"L", kelas:"9.F"},
+{no:14, nis:"21490", nama:"FARIZ FAIRUZ RAMADHAN", lp:"L", kelas:"9.F"},
+{no:15, nis:"21529", nama:"FEBRI ANNISA RAHMAH", lp:"P", kelas:"9.F"},
+{no:16, nis:"21809", nama:"ISA SYAHRUL RAMADHAN", lp:"L", kelas:"9.F"},
+{no:17, nis:"21777", nama:"JIHAN PUTRI ALYA", lp:"L", kelas:"9.F"},
+{no:18, nis:"21803", nama:"JOSHUA CANDRA BUDIHERI", lp:"L", kelas:"9.F"},
+{no:19, nis:"21637", nama:"JULIO AJI PRANANDA", lp:"P", kelas:"9.F"},
+{no:20, nis:"21778", nama:"KHEREN AZZAHRA", lp:"P", kelas:"9.F"},
+{no:21, nis:"21744", nama:"MARLA MEICHA LISTRIANI", lp:"P", kelas:"9.F"},
+{no:22, nis:"21675", nama:"MAULANA AHMAD FATONI", lp:"L", kelas:"9.F"},
+{no:23, nis:"21711", nama:"MONICA MEYLANI DEWI", lp:"L", kelas:"9.F"},
+{no:24, nis:"21749", nama:"MUHAMMAD FATIH HARISUDIN", lp:"L", kelas:"9.F"},
+{no:25, nis:"21750", nama:"MUHAMMAD IRSYAAD ARRAFI", lp:"L", kelas:"9.F"},
+{no:26, nis:"21506", nama:"NASYA NAURAH RAYYANI", lp:"P", kelas:"9.F"},
+{no:27, nis:"21720", nama:"RAISAH AULIANA DEWI", lp:"P", kelas:"9.F"},
+{no:28, nis:"21756", nama:"RAMADHAN RYU RIAWAN", lp:"L", kelas:"9.F"},
+{no:29, nis:"21687", nama:"RAZI SAKHA RENDRA", lp:"L", kelas:"9.F"},
+{no:30, nis:"21547", nama:"SAHEL PUTRA KURNIAWAN", lp:"L", kelas:"9.F"},
+{no:31, nis:"21760", nama:"SYAHRUL RA'FA ABIYYA", lp:"L", kelas:"9.F"},
+{no:32, nis:"22137", nama:"YOSHUA THOMAS", lp:"L", kelas:"9.F"},
+{no:33, nis:"21693", nama:"ZACKY ARDIANSYAH", lp:"L", kelas:"9.F"},
+{no:34, nis:"21513", nama:"ZASKIA SALSABILA", lp:"P", kelas:"9.F"},
+{no:1, nis:"21589", nama:"AISHAA ALIFIA OKTAVIANI", lp:"P", kelas:"9.G"},
+{no:2, nis:"21484", nama:"ALDRIAN JABAR NUGRAHTAMA", lp:"L", kelas:"9.G"},
+{no:3, nis:"21518", nama:"ALEESYA DANIA MAISARA", lp:"P", kelas:"9.G"},
+{no:4, nis:"22139", nama:"ALLENA HERPATI", lp:"P", kelas:"9.G"},
+{no:5, nis:"21485", nama:"ALSA ZETYRA", lp:"P", kelas:"9.G"},
+{no:6, nis:"21697", nama:"ALVINO YUSRIN RESWARA", lp:"L", kelas:"9.G"},
+{no:7, nis:"21730", nama:"ALVIONITA", lp:"P", kelas:"9.G"},
+{no:8, nis:"21766", nama:"ALYSSA ROSARIA", lp:"P", kelas:"9.G"},
+{no:9, nis:"21805", nama:"ANINDYA JANEETA MAHESWARI", lp:"P", kelas:"9.G"},
+{no:10, nis:"21702", nama:"DARA ADISA NURSYAM", lp:"P", kelas:"9.G"},
+{no:11, nis:"21774", nama:"DYALFAR ALMEER RADITYO", lp:"L", kelas:"9.G"},
+{no:12, nis:"22134", nama:"FADILAH AFIF ZULIARI", lp:"L", kelas:"9.G"},
+{no:13, nis:"21741", nama:"HAIRUL SYABHIRIN", lp:"L", kelas:"9.G"},
+{no:14, nis:"21491", nama:"HANIFA ANDINNA ARHAB", lp:"L", kelas:"9.G"},
+{no:15, nis:"21601", nama:"HILWA NAILUS SA'ADAH", lp:"P", kelas:"9.G"},
+{no:16, nis:"21496", nama:"KALUNA ALTAIRA", lp:"P", kelas:"9.G"},
+{no:17, nis:"21673", nama:"KAYLA LATISYA MEILIANI", lp:"P", kelas:"9.G"},
+{no:18, nis:"21743", nama:"KEYSARANY AZANENKA", lp:"P", kelas:"9.G"},
+{no:19, nis:"21781", nama:"MUHAMAD CHEVY SYAHWALDI", lp:"L", kelas:"9.G"},
+{no:20, nis:"21536", nama:"MUHAMAD FAISAL", lp:"L", kelas:"9.G"},
+{no:21, nis:"21607", nama:"MUHAMAD LUTHFIE", lp:"L", kelas:"9.G"},
+{no:22, nis:"21748", nama:"MUHAMAD ZIDAN AL GHIFARI", lp:"L", kelas:"9.G"},
+{no:23, nis:"21783", nama:"MUHAMMAD ALVIANO BAYU NUGROHO", lp:"L", kelas:"9.G"},
+{no:24, nis:"21679", nama:"MUHAMMAD FEBRIANSYAH KHADAFI", lp:"L", kelas:"9.G"},
+{no:25, nis:"21610", nama:"MUHAMMAD ILYAS SAPUTRA", lp:"L", kelas:"9.G"},
+{no:26, nis:"21715", nama:"MUHAMMAD KHAIRIY UBAIDILLAH", lp:"L", kelas:"9.G"},
+{no:27, nis:"21645", nama:"MUHAMMAD RICKO ALVIANSYAH", lp:"L", kelas:"9.G"},
+{no:28, nis:"21612", nama:"NAAILAH ISYFALANA ALAWIYAH", lp:"P", kelas:"9.G"},
+{no:29, nis:"21753", nama:"NADYA SAPUTRI", lp:"P", kelas:"9.G"},
+{no:30, nis:"21579", nama:"RAQEELLA AZKA EL FAHREZI", lp:"L", kelas:"9.G"},
+{no:31, nis:"21583", nama:"SALSA DIYAN PITRIYANI", lp:"P", kelas:"9.G"},
+{no:32, nis:"21723", nama:"SARAH CADHLA AFFANDY", lp:"P", kelas:"9.G"},
+{no:33, nis:"21549", nama:"VINO PUTRA RUSDIYANSYAH", lp:"L", kelas:"9.G"},
+{no:34, nis:"21514", nama:"ZIDAN CATUR PUTRA", lp:"L", kelas:"9.G"},
+{no:35, nis:"21586", nama:"ZIEZIE NISCITA", lp:"P", kelas:"9.G"},
+{no:1, nis:"21622", nama:"ADITYA NAUFAL DARY ABIYYU", lp:"L", kelas:"9.H"},
+{no:2, nis:"21659", nama:"AIZZATI MAHEEMA UTARI", lp:"P", kelas:"9.H"},
+{no:3, nis:"21556", nama:"ANGGORO PRAKOSO WIBOWO", lp:"L", kelas:"9.H"},
+{no:4, nis:"21626", nama:"ANIENDA", lp:"P", kelas:"9.H"},
+{no:5, nis:"21699", nama:"AULIA MAULIDA AZZAHRO", lp:"P", kelas:"9.H"},
+{no:6, nis:"21664", nama:"AURA CAHAYA SUMIRAT", lp:"P", kelas:"9.H"},
+{no:7, nis:"21594", nama:"AZKIA AULIA MAULIDA", lp:"P", kelas:"9.H"},
+{no:8, nis:"21526", nama:"DHAFIN ATTAYA PUTRA", lp:"L", kelas:"9.H"},
+{no:9, nis:"21598", nama:"DHIZA KHANZA WIBOWO", lp:"P", kelas:"9.H"},
+{no:10, nis:"21773", nama:"DIVYA ARAZKHA HAFIDZ", lp:"L", kelas:"9.H"},
+{no:11, nis:"21739", nama:"FARDAN FAZA LUTFANY", lp:"P", kelas:"9.H"},
+{no:12, nis:"21528", nama:"FATHIA AZIZAH PRASETYO", lp:"P", kelas:"9.H"},
+{no:13, nis:"21564", nama:"FEBRIA LIDYARI NUGROHO", lp:"P", kelas:"9.H"},
+{no:14, nis:"21671", nama:"IKHWAN MULIA", lp:"L", kelas:"9.H"},
+{no:15, nis:"21707", nama:"INAPUTRI ZULKAILA", lp:"P", kelas:"9.H"},
+{no:16, nis:"21672", nama:"IQZALGANI DEFAN PRATAMA", lp:"L", kelas:"9.H"},
+{no:17, nis:"21639", nama:"MARIO FATHAN RASHID", lp:"L", kelas:"9.H"},
+{no:18, nis:"21746", nama:"MUHAMAD AKMALUDDIN", lp:"L", kelas:"9.H"},
+{no:19, nis:"21501", nama:"MUHAMMAD AZRIEL ZANETI", lp:"L", kelas:"9.H"},
+{no:20, nis:"21573", nama:"MUHAMMAD HAIKAL ALYANSAH", lp:"L", kelas:"9.H"},
+{no:21, nis:"21784", nama:"MUHAMMAD JIBRIL ARSYAD MAMBANNI", lp:"L", kelas:"9.H"},
+{no:22, nis:"21683", nama:"NABILAH NURUL ALIFAH", lp:"P", kelas:"9.H"},
+{no:23, nis:"21718", nama:"NILAM DWI CAHYANI", lp:"P", kelas:"9.H"},
+{no:24, nis:"21578", nama:"PRASTYO ADEN NOVIAN ICHSAN", lp:"L", kelas:"9.H"},
+{no:25, nis:"21546", nama:"REVI JULIAN", lp:"L", kelas:"9.H"},
+{no:26, nis:"21581", nama:"REZA WAHYU SAPUTRA", lp:"L", kelas:"9.H"},
+{no:27, nis:"21722", nama:"RINJANI ALTAFUZAHRO", lp:"P", kelas:"9.H"},
+{no:28, nis:"21758", nama:"RISMA CAHAYA SILVIANA", lp:"P", kelas:"9.H"},
+{no:29, nis:"21759", nama:"SATRIA DWI PRASETYO", lp:"L", kelas:"9.H"},
+{no:30, nis:"21584", nama:"SHOFI QURRATA' AINI RAHIM", lp:"P", kelas:"9.H"},
+{no:31, nis:"21691", nama:"SYARIF HIDAYATULLAH", lp:"L", kelas:"9.H"},
+{no:32, nis:"21725", nama:"TALITHA SHAHADA", lp:"P", kelas:"9.H"},
+{no:33, nis:"21798", nama:"ZHAFIRA FORTUNA RUDHI", lp:"P", kelas:"9.H"},
+{no:34, nis:"21550", nama:"ZIDAN NUZULUL RAMADHAN", lp:"L", kelas:"9.H"},
+{no:1, nis:"21515", nama:"ACHMAD ZHAFFA PUTRA AMRULLAH", lp:"L", kelas:"9.I"},
+{no:2, nis:"21588", nama:"AISHA AULIA ZAHRA", lp:"P", kelas:"9.I"},
+{no:3, nis:"21624", nama:"AISYAH VIRGINIA MAULIDA", lp:"P", kelas:"9.I"},
+{no:4, nis:"21728", nama:"ALDIANSYAH NUR AZZAHIR", lp:"L", kelas:"9.I"},
+{no:5, nis:"21764", nama:"ALDIANSYAH PUTRA PRATAMA", lp:"L", kelas:"9.I"},
+{no:6, nis:"21661", nama:"ALMIRA TAMA SAFHIRA", lp:"P", kelas:"9.I"},
+{no:7, nis:"21486", nama:"AMIRANDA PUTRI SULU", lp:"P", kelas:"9.I"},
+{no:8, nis:"21698", nama:"APRILLIA ANGGRAENI", lp:"P", kelas:"9.I"},
+{no:9, nis:"21593", nama:"ASSYA PUTRI YASMIN", lp:"P", kelas:"9.I"},
+{no:10, nis:"21768", nama:"AZHAR ISLAMI PASHA", lp:"L", kelas:"9.I"},
+{no:11, nis:"21558", nama:"AZKHIA HUSNA HUDZAIFAH MURYAWAN", lp:"P", kelas:"9.I"},
+{no:12, nis:"22135", nama:"AZMATUN NISA", lp:"P", kelas:"9.I"},
+{no:13, nis:"21597", nama:"DAHAYU MAYSA MAHARANI", lp:"P", kelas:"9.I"},
+{no:14, nis:"21488", nama:"DANYS ALFARO RISKY", lp:"L", kelas:"9.I"},
+{no:15, nis:"21632", nama:"DIANDRA ALMAIRA YASIN", lp:"P", kelas:"9.I"},
+{no:16, nis:"21738", nama:"FARASKA ADIGUNA KAETARAZAKTAN", lp:"L", kelas:"9.I"},
+{no:17, nis:"21600", nama:"GALIH DWI NUGROHO", lp:"L", kelas:"9.I"},
+{no:18, nis:"21531", nama:"HANYFA NOVALITA ASSAFA", lp:"P", kelas:"9.I"},
+{no:19, nis:"21565", nama:"HIFZHY ALBIE AZAMI", lp:"L", kelas:"9.I"},
+{no:20, nis:"21708", nama:"KEVIN GIBRALTAR", lp:"L", kelas:"9.I"},
+{no:21, nis:"21534", nama:"M VARIZ HIDAYAH", lp:"L", kelas:"9.I"},
+{no:22, nis:"21535", nama:"MELATI APRILIA", lp:"P", kelas:"9.I"},
+{no:23, nis:"21640", nama:"MOHAMMAD GHUFRON GHASSANI", lp:"L", kelas:"9.I"},
+{no:24, nis:"21747", nama:"MUHAMAD ARYA AFRIZAL", lp:"L", kelas:"9.I"},
+{no:25, nis:"21504", nama:"MUHAMMAD NUR RIZKI", lp:"L", kelas:"9.I"},
+{no:26, nis:"21752", nama:"MUHAMMAD TARENDRA HASYA FARRAS", lp:"L", kelas:"9.I"},
+{no:27, nis:"21787", nama:"NAILAH MUZAYYINAH", lp:"P", kelas:"9.I"},
+{no:28, nis:"21613", nama:"NAUFAL ZHAFIF ABHINAYA", lp:"L", kelas:"9.I"},
+{no:29, nis:"21508", nama:"RAISHA ZAHWA ATHIRA", lp:"P", kelas:"9.I"},
+{no:30, nis:"21791", nama:"RASYA PUTRA MAULANA", lp:"L", kelas:"9.I"},
+{no:31, nis:"21580", nama:"REFINA SAADAH DINIYAH", lp:"P", kelas:"9.I"},
+{no:32, nis:"21792", nama:"REIZHA FIKRI MAULANA", lp:"L", kelas:"9.I"},
+{no:33, nis:"21618", nama:"SABRINA AULIYA PUTRI ASADDY", lp:"P", kelas:"9.I"},
+{no:34, nis:"21585", nama:"VIRGIAWAN BANUYASA", lp:"L", kelas:"9.I"},
+{no:35, nis:"21797", nama:"ZALFA KHAIRUNNISA", lp:"P", kelas:"9.I"}
+];
+
+function cnNormalize(str) {
+return String(str).toUpperCase().replace(/\s+/g, ' ').trim();
+}
+function cnGetSearchKey(nama) {
+const n = cnNormalize(nama).replace(/\s/g, '');
+if (n.length <= 4) return n.length >= 4 ? n.substring(0, 4) : n;
+return n.substring(0, Math.min(n.length, 9));
+}
+function cnGetDifferentiator(nama) {
+const n = cnNormalize(nama).replace(/\s/g, '');
+if (n.length === 4) return n;
+return n.substring(5, Math.min(n.length, 9));
+}
+function cnCariSiswa(input) {
+const inputNorm = cnNormalize(input);
+if (inputNorm.length === 0) return [];
+const inputKey = cnGetSearchKey(inputNorm);
+const inputDiff = cnGetDifferentiator(inputNorm);
+const hasil = [];
+DATA_SISWA_IX.forEach(s => {
+const namaNorm = cnNormalize(s.nama);
+const namaKey = cnGetSearchKey(namaNorm);
+const namaDiff = cnGetDifferentiator(namaNorm);
+let cocok = false;
+if (inputNorm.replace(/\s/g,'').length <= 4) {
+cocok = (namaKey.substring(0,4) === inputKey.substring(0,4)) &&
+(namaDiff === inputDiff);
+} else {
+cocok = namaKey.startsWith(inputKey) || inputKey.startsWith(namaKey);
+}
+if (cocok) hasil.push(s);
+});
+return hasil;
+}
+function cnRenderTabel(data) {
+const tbody = document.getElementById('cnHasilBody');
+const status = document.getElementById('cnStatus');
+if (!tbody || !status) return;
+tbody.innerHTML = '';
+if (data.length === 0) {
+status.className = 'carinis-status notfound';
+status.textContent = '❌ Tidak ada siswa yang cocok dengan pencarian Anda.';
+status.style.display = 'block';
+tbody.innerHTML = '<tr><td colspan="5" class="carinis-empty"><div class="ce-icon">🔍</div><div>Coba kata kunci lain</div></td></tr>';
+return;
+}
+status.className = 'carinis-status found';
+status.textContent = '✅ Ditemukan ' + data.length + ' siswa yang cocok.';
+status.style.display = 'block';
+data.forEach((s, i) => {
+const tr = document.createElement('tr');
+tr.className = 'highlight';
+tr.innerHTML = '<td>' + (i + 1) + '</td>'
++ '<td><strong>' + s.nis + '</strong></td>'
++ '<td>' + s.nama + '</td>'
++ '<td><span class="carinis-lp-badge lp-' + s.lp + '">' + s.lp + '</span></td>'
++ '<td><span class="carinis-kelas-badge">' + s.kelas + '</span></td>';
+tbody.appendChild(tr);
+});
+}
+function initCariNIS() {
+const input = document.getElementById('cnNamaInput');
+if (!input) return;
+let timer = null;
+input.addEventListener('input', function() {
+clearTimeout(timer);
+timer = setTimeout(function() {
+const val = input.value.trim();
+if (val.length === 0) {
+document.getElementById('cnHasilBody').innerHTML = '<tr><td colspan="5" class="carinis-empty"><div class="ce-icon">🔍</div><div>Ketik nama siswa di kolom pencarian untuk memulai</div></td></tr>';
+document.getElementById('cnStatus').style.display = 'none';
+return;
+}
+const hasil = cnCariSiswa(val);
+cnRenderTabel(hasil);
+}, 200);
+});
+}
+document.addEventListener('DOMContentLoaded', function() { initCariNIS(); });
 </script>
 </body>
 </html>
