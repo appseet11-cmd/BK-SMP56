@@ -1312,11 +1312,35 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 .feature-card.fc-cn p { font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.5; color: #f0f0f0; }
 .feature-card.fc-cn .feature-link { display: inline-block; margin-top: 0.75rem; font-weight: bold; font-size: 0.9rem; padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.2); border-radius: 6px; transition: background 0.3s ease; text-decoration: none; color: #fff; }
 .feature-card.fc-cn .feature-link:hover { background: rgba(255,255,255,0.35); }
+.feature-card.fc-suara { position: relative; background-image: url('https://cdn.phototourl.com/free/2026-08-23-d978a315-98c3-438d-83ae-8f56cfdfc36b.jpg'); background-size: cover; background-position: center center; background-repeat: no-repeat; background-color: #6b4e9b; padding: 1.5rem; border-radius: 12px; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); min-height: 200px; display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; overflow: hidden; border: 2px solid rgba(255,255,255,0.3); isolation: isolate; text-decoration: none; }
+.feature-card.fc-suara::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.3) 100%); border-radius: 12px; z-index: 1; }
+.feature-card.fc-suara:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.6); }
+.feature-card.fc-suara > * { position: relative; z-index: 2; }
+.feature-card.fc-suara h3 { font-size: 1.3rem; margin: 0.5rem 0; font-weight: bold; color: #fff; }
+.feature-card.fc-suara p { font-size: 0.9rem; margin: 0.5rem 0; line-height: 1.5; color: #f0f0f0; }
+.feature-card.fc-suara .feature-link { display: inline-block; margin-top: 0.75rem; font-weight: bold; font-size: 0.9rem; padding: 0.4rem 0.8rem; background: rgba(255,255,255,0.2); border-radius: 6px; transition: background 0.3s ease; text-decoration: none; color: #fff; }
+.feature-card.fc-suara .feature-link:hover { background: rgba(255,255,255,0.35); }
 </style>
 <article class="feature-card fc-cn" onclick="go('carinis')" role="button" tabindex="0" aria-label="Buka menu Cari NIS Siswa">
 <div class="feature-icon">🔍</div><h3>Cari NIS Siswa</h3>
 <p>Pencarian Nomor Induk Siswa (NIS) berdasarkan nama — khusus siswa Kelas IX SMPN 56 Jakarta.</p>
 <span class="feature-link">Cari NIS →</span>
+</article>
+<style>
+/* CSS fc-ext sudah ditambahkan di atas */
+</style>
+<style>
+/* CSS fc-suara sudah ditambahkan di atas */
+</style>
+<article class="feature-card fc-suara" 
+         onclick="window.open('https://appseet11-cmd.github.io/ASPIRASI-ADUAN-SISWA-SMP-56/', '_blank')" 
+         role="button" 
+         tabindex="0" 
+         aria-label="Buka Suara Aspirasi & Aduan Siswa">
+  <div class="feature-icon">🗣️</div>
+  <h3>Suara Aspirasi & Aduan Siswa</h3>
+  <p>Salurkan aspirasi, saran, dan aduan Anda untuk kemajuan bersama SMP Negeri 56 Jakarta.</p>
+  <span class="feature-link">Suarakan Sekarang →</span>
 </article>
 </section>
 <!-- ================================================================ -->
