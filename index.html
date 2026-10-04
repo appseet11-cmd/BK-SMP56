@@ -4540,5 +4540,158 @@ document.addEventListener('DOMContentLoaded', function() { initCariNIS(); });
 })();
 </script>
 <!-- ========== PATCH FINAL: AUTO CLOSE MENU & DROPDOWN - END ========== -->
+ <!-- ========== PATCH: ADMINISTRASI BK56 - FILTER KATEGORI AUTO-HIDE ========== -->
+<script>
+(function(){
+"use strict";
+
+// State untuk kontrol tampilan filter kategori
+var _hideKatFilter = false;
+
+// Simpan referensi ke fungsi asli (yang sudah ada)
+var _origRender     = window.render;
+var _origPindahKelas= window.pindahKelas;
+var _origSetGuru    = window.setGuru;
+var _origSetKat     = window.setKat;
+
+/* ============================================================
+ * 1) PINDAH KELAS (tab Kelas VII / VIII / IX)
+ *    → Tampilkan SEMUA tombol filter nama guru
+ *    → Filter kategori ikut tampil (untuk guru default "sotya")
+ * ============================================================ */
+window.pindahKelas = function(k, btn){
+  _hideKatFilter = false;           // reset: filter kategori tampil
+  kelasAktif  = k;
+  filterGuru  = "sotya";            // default guru pertama
+  filterKat   = "all";
+  document.querySelectorAll(".a56-tab-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  document.getElementById("judul-panel").innerHTML =
+    (k==="vii"?"📘":k==="viii"?"📗":"📕") + " Administrasi BK Kelas " + KELAS[k];
+  render();                         // render penuh → tampilkan guru & kategori
+};
+
+/* ============================================================
+ * 2) KLIK NAMA GURU (misal Sotya Palupi, MM, S.Pd)
+ *    → Filter kategori untuk guru tersebut TERBUKA
+ * ============================================================ */
+window.setGuru = function(id, btn){
+  _hideKatFilter = false;           // buka kembali filter kategori
+  filterGuru = id;
+  filterKat  = "all";               // reset ke "Semua Kategori"
+  document.querySelectorAll("#filter-guru .a56-chip").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  render(true);                     // render ulang filter kategori + kartu
+};
+
+/* ============================================================
+ * 3) KLIK FILTER KATEGORI (misal "Program Inklusi")
+ *    → Menampilkan dokumen
+ *    → Filter kategori OTOMATIS TERTUTUP
+ *    → Yang tampil hanya: Filter Guru BK + Dokumen
+ *    (Klik "Semua Kategori" tetap membiarkan filter terbuka)
+ * ============================================================ */
+window.setKat = function(id, btn){
+  filterKat = id;
+  document.querySelectorAll("#filter-kat .a56-chip").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+
+  // Jika kategori yang dipilih BUKAN "all" → sembunyikan filter kategori
+  if(id !== "all"){
+    _hideKatFilter = true;
+  }
+  render(true);
+};
+
+/* ============================================================
+ * OVERRIDE RENDER – kendalikan visibilitas filter kategori
+ * ============================================================ */
+window.render = function(hanyaKartu){
+  var dataKelas = DOCS.filter(function(d){ return d.kelas === kelasAktif; });
+
+  /* ---------- FILTER GURU (selalu tampil) ---------- */
+  if(!hanyaKartu){
+    var h = '';
+    for(var gid in GURU){
+      var n = dataKelas.filter(function(d){ return d.guru === gid; }).length;
+      var activeClass = (gid === filterGuru) ? ' active' : '';
+      h += '<button class="a56-chip'+activeClass+'" onclick="setGuru(\''+gid+'\',this)">'
+         + '<span class="a56-gdot" style="background:'+GURU[gid].warna+'"></span>'
+         + esc(GURU[gid].nama)
+         + ' <span class="cnt">'+n+'</span></button>';
+    }
+    document.getElementById("filter-guru").innerHTML = h;
+  }
+
+  /* ---------- FILTER KATEGORI (bisa disembunyikan) ---------- */
+  var filterKatWrapper = document.getElementById("filter-kat").parentElement;
+  if(_hideKatFilter){
+    filterKatWrapper.style.display = "none";
+  } else {
+    filterKatWrapper.style.display = "";
+    var hk = '<button class="a56-chip '+(filterKat==="all"?"active":"")+'" onclick="setKat(\'all\',this)">📋 Semua Kategori</button>';
+    for(var kid in KAT){
+      var n2 = dataKelas.filter(function(d){ return d.kat === kid && d.guru === filterGuru; }).length;
+      if(n2 > 0){
+        hk += '<button class="a56-chip '+(filterKat===kid?"active":"")+'" onclick="setKat(\''+kid+'\',this)">'
+            + KAT[kid][0]+' '+KAT[kid][1]
+            + ' <span class="cnt">'+n2+'</span></button>';
+      }
+    }
+    document.getElementById("filter-kat").innerHTML = hk;
+  }
+
+  /* ---------- KARTU DOKUMEN ---------- */
+  docTerlihat = [];
+  var html = "";
+  dataKelas.forEach(function(d){
+    if(d.guru !== filterGuru) return;
+    if(filterKat !== "all" && d.kat !== filterKat) return;
+    var idx = DOCS.indexOf(d); docTerlihat.push(idx);
+    var g = GURU[d.guru];
+    var adaLink = d.link && d.link.trim() !== "";
+    html += '<div class="a56-card"><div class="a56-card-icon">'+KAT[d.kat][0]+'</div>'
+      + '<span class="a56-guru-badge" style="background:'+g.warna+'"><b>'+g.inisial+'</b>'+esc(g.nama)+'</span>'
+      + '<h3>'+esc(d.nama)+'</h3>'
+      + '<div class="a56-path">Kelas '+KELAS[d.kelas]+' › '+KAT[d.kat][1]+'</div>'
+      + '<p class="a56-desc">Dokumen administrasi BK — '+KAT[d.kat][1]+' Kelas '+KELAS[d.kelas]+'</p>'
+      + '<div class="a56-link-embedded"><div class="a56-link-label">🔗 Link Dokumen Tersemat</div>'
+      + (adaLink ? '<span class="a56-link-url">'+esc(d.link)+'</span>'
+                 : '<span class="a56-link-url kosong">BELUM DIISI</span>')
+      + '</div><button class="a56-btn" onclick="bukaDoc('+idx+')">📂 Buka Dokumen</button></div>';
+  });
+  document.getElementById("grid-dokumen").innerHTML = html;
+  document.getElementById("empty-state").classList.toggle("show", docTerlihat.length === 0);
+  document.getElementById("info-jumlah").innerHTML =
+    "🧮 Menampilkan <b>"+docTerlihat.length+"</b> dokumen"
+    + (_hideKatFilter
+        ? ' &nbsp;•&nbsp; <a href="#" onclick="munculkanFilterKategori();return false;" style="color:#c2410c;font-weight:700;text-decoration:underline;">🔄 Ubah Kategori</a>'
+        : '');
+};
+
+/* ============================================================
+ * Helper: Munculkan kembali filter kategori (dipanggil dari link
+ * "🔄 Ubah Kategori" di info-jumlah saat filter kategori tersembunyi)
+ * ============================================================ */
+window.munculkanFilterKategori = function(){
+  _hideKatFilter = false;
+  render(true);
+  // Scroll ke area filter kategori agar user langsung melihat
+  var wrapper = document.getElementById("filter-kat").parentElement;
+  if(wrapper) wrapper.scrollIntoView({ behavior:'smooth', block:'center' });
+};
+
+/* ============================================================
+ * Inisialisasi awal: pastikan filter kategori tampil saat load
+ * ============================================================ */
+document.addEventListener("DOMContentLoaded", function(){
+  _hideKatFilter = false;
+  // Render ulang agar state awal konsisten
+  if(typeof render === "function") render();
+});
+
+})();
+</script>
+<!-- ========== PATCH: ADMINISTRASI BK56 - FILTER KATEGORI AUTO-HIDE [END] ========== -->
 </body>
 </html>
