@@ -62,7 +62,171 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","name":"Platform BK SMPN 56 Jakarta","url":"https://appseet11-cmd.github.io/","inLanguage":"id-ID","potentialAction":{"@type":"SearchAction","target":"https://appseet11-cmd.github.io/?q={search_term_string}","query-input":"required name=search_term_string"}}
 </script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Nunito:wght@300;400;500;600;700;800&family=Merriweather:wght@400;700;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Righteous&display=swap" rel="stylesheet">
+
+<style>
+#welcome-overlay{
+  position:fixed;
+  inset:0;
+  z-index:100000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:26px;
+  text-align:center;
+  color:#fff;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,213,79,.18), transparent 34%),
+    radial-gradient(circle at 85% 25%, rgba(59,130,246,.24), transparent 32%),
+    radial-gradient(circle at 50% 90%, rgba(255,152,0,.18), transparent 28%),
+    linear-gradient(135deg, #050b24 0%, #0b1e54 34%, #1a369c 68%, #2563eb 100%);
+  transition:opacity .8s ease, visibility .8s ease;
+}
+
+#welcome-overlay.hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+
+#welcome-overlay::before{
+  content:'';
+  position:absolute;
+  inset:-20%;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,.08), transparent 18%),
+    radial-gradient(circle at 75% 65%, rgba(255,255,255,.06), transparent 20%);
+  animation:welcomeFloat 14s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+
+@keyframes welcomeFloat{
+  from{transform:translate3d(-35px,-20px,0) rotate(-4deg) scale(1.02);}
+  to{transform:translate3d(35px,25px,0) rotate(4deg) scale(1.08);}
+}
+
+.welcome-box{
+  position:relative;
+  z-index:2;
+  max-width:1180px;
+  width:100%;
+  animation:welcomePop 1s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes welcomePop{
+  from{opacity:0;transform:translateY(34px) scale(.92);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+
+.welcome-logo{
+  font-size:clamp(58px,9vw,100px);
+  line-height:1;
+  margin-bottom:22px;
+  filter:drop-shadow(0 12px 28px rgba(0,0,0,.35));
+  animation:pulse 2s infinite;
+}
+
+.welcome-title{
+  font-family:'Bungee','Righteous','Space Grotesk',sans-serif;
+  font-weight:900;
+  font-size:clamp(29px,5.7vw,72px);
+  line-height:1.16;
+  letter-spacing:.045em;
+  text-transform:uppercase;
+  background:linear-gradient(90deg,#ffd54f,#fff6c9,#ff9800,#ffe082,#ffd54f);
+  background-size:240% auto;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  animation:welcomeShine 5s linear infinite, welcomeGlow 2.6s ease-in-out infinite;
+}
+
+@keyframes welcomeShine{
+  to{background-position:240% center;}
+}
+
+@keyframes welcomeGlow{
+  0%,100%{
+    filter:drop-shadow(0 0 14px rgba(255,213,79,.25)) drop-shadow(0 0 42px rgba(59,130,246,.12));
+  }
+  50%{
+    filter:drop-shadow(0 0 30px rgba(255,213,79,.52)) drop-shadow(0 0 70px rgba(255,152,0,.22));
+  }
+}
+
+.welcome-sub{
+  margin-top:24px;
+  font-family:'Space Grotesk',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.82);
+}
+
+.welcome-bar{
+  width:min(720px,86vw);
+  height:11px;
+  margin:26px auto 14px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  overflow:hidden;
+  box-shadow:inset 0 1px 8px rgba(0,0,0,.18);
+}
+
+.welcome-bar span{
+  display:block;
+  height:100%;
+  width:0;
+  border-radius:999px;
+  background:linear-gradient(90deg,#ffd54f,#ff9800,#fff);
+  box-shadow:0 0 18px rgba(255,152,0,.65);
+  animation:welcomeProgress 10s linear forwards;
+}
+
+@keyframes welcomeProgress{
+  from{width:0;}
+  to{width:100%;}
+}
+
+.welcome-note{
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.78);
+}
+
+@media (max-width:768px){
+  .welcome-title{
+    font-size:clamp(26px,7.2vw,46px);
+    line-height:1.28;
+    padding:0 6px;
+  }
+  .welcome-sub{
+    letter-spacing:.14em;
+    font-size:13px;
+  }
+}
+
+@media print{
+  #welcome-overlay{display:none!important;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  #welcome-overlay *,
+  #welcome-overlay::before{
+    animation:none!important;
+    transition:none!important;
+  }
+  .welcome-bar span{
+    width:100%!important;
+  }
+}
+</style>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html { scroll-behavior: smooth; scroll-padding-top: 90px; }
@@ -826,6 +990,15 @@ margin: 0 auto;
 @media(max-width:900px){.a56-stats-bar{grid-template-columns:repeat(2,1fr)}.a56-grid{grid-template-columns:1fr}}
 @media(max-width:768px){.a56-container{padding:1.2rem 1rem}.a56-card{padding:1.2rem}}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+.welcome-title{
+  font-family:'Fredoka','Baloo 2','Righteous',sans-serif !important;
+  font-weight:700 !important;
+  letter-spacing:.03em !important;
+}
+</style>
 </head>
 <body class="protected">
 <div id="reading-progress" aria-hidden="true"></div>
@@ -836,15 +1009,70 @@ margin: 0 auto;
 <div class="shield-desc">Developer Tools dan tindakan tidak sah terdeteksi. Tutup DevTools untuk melanjutkan.</div>
 <button class="shield-close" onclick="closeShield()">Saya Mengerti</button>
 </div>
-<div id="login-overlay" role="dialog" aria-labelledby="login-title" aria-modal="true">
-<div class="login-box">
-<div class="login-logo">🎓</div>
-<h2 id="login-title">Selamat Datang</h2>
-<p>Masukkan password untuk mengakses Platform BK SMPN 56 Jakarta</p>
-<input type="password" id="password-input" placeholder="Ketik password..." onkeypress="if(event.key==='Enter') checkPassword()" autocomplete="off" aria-label="Password akses platform">
-<button onclick="checkPassword()" aria-label="Tombol masuk">Masuk Platform →</button>
-<p id="login-error" style="color:#ef4444; font-size:13px; margin-top:12px; display:none; font-weight: 600;" role="alert">❌ Password salah!</p>
-</div>
+<div id="welcome-overlay" role="dialog" aria-modal="true" aria-label="Selamat datang di Platform BK SMP Negeri 56 Jakarta">
+  <div class="welcome-box">
+    <div class="welcome-logo" aria-hidden="true">🎓</div>
+
+    <h1 class="welcome-title">SELAMAT DATANG DI PLATFORM DIGITAL BIMBINGAN &amp; KONSELING SMP NEGERI 56 JAKARTA</h1>
+
+    <div class="welcome-sub">Bimbingan • Konseling • Refleksi • Asesmen • Analisis</div>
+
+    <div class="welcome-bar" aria-hidden="true"><span></span></div>
+
+    <div class="welcome-note" id="welcome-note">Memuat platform... 10 detik</div>
+  </div>
+
+  <script>
+  (function () {
+    var WELCOME_DURATION = 10000;
+
+    function hideWelcome() {
+      var overlay = document.getElementById('welcome-overlay');
+      if (!overlay) return;
+
+      overlay.classList.add('hidden');
+      document.body.style.overflow = '';
+
+      setTimeout(function () {
+        overlay.style.display = 'none';
+      }, 900);
+
+      try {
+        sessionStorage.setItem('bk_platform_access', 'granted');
+      } catch (e) {}
+    }
+
+    function startWelcome() {
+      var overlay = document.getElementById('welcome-overlay');
+      if (!overlay) return;
+
+      overlay.style.display = 'flex';
+      overlay.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      var note = document.getElementById('welcome-note');
+      var left = 10;
+
+      var countdown = setInterval(function () {
+        left--;
+        if (note) {
+          note.textContent = left > 0 ? 'Memuat platform... ' + left + ' detik' : 'Memuat platform...';
+        }
+        if (left <= 0) {
+          clearInterval(countdown);
+        }
+      }, 1000);
+
+      setTimeout(hideWelcome, WELCOME_DURATION);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startWelcome);
+    } else {
+      startWelcome();
+    }
+  })();
+  </script>
 </div>
 <div class="pw-modal" id="share-pw-modal" role="dialog" aria-modal="true">
 <div class="pw-modal-box">
@@ -2656,19 +2884,36 @@ statusEl.textContent = '❌ Gagal menyimpan: ' + e.message;
 }
 if ('scrollRestoration' in history) { history.scrollRestoration = 'manual'; }
 window.addEventListener('load', async function() {
-await initHashes(); applyProtectionCSS();
-document.querySelectorAll('.page.active').forEach(function(p) { p.classList.remove('active'); });
-var frame = document.getElementById('ext-frame');
-if (frame) frame.src = 'about:blank';
-var extContainer = document.getElementById('ext-container');
-if (extContainer) { extContainer.classList.remove('active'); delete extContainer.dataset.back; }
-updateBreadcrumb('home'); closeAllDD();
-window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-if (sessionStorage.getItem(SESSION_ACCESS) !== 'granted') {
-document.getElementById('login-overlay').style.display = 'flex';
-document.getElementById('login-overlay').classList.remove('hidden');
-setTimeout(function() { document.getElementById('password-input').focus(); }, 300);
-}
+  await initHashes();
+  applyProtectionCSS();
+
+  document.querySelectorAll('.page.active').forEach(function(p) {
+    p.classList.remove('active');
+  });
+
+  var frame = document.getElementById('ext-frame');
+  if (frame) frame.src = 'about:blank';
+
+  var extContainer = document.getElementById('ext-container');
+  if (extContainer) {
+    extContainer.classList.remove('active');
+    delete extContainer.dataset.back;
+  }
+
+  updateBreadcrumb('home');
+  closeAllDD();
+
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: 'instant'
+  });
+
+  // Dashboard login utama sudah dihapus.
+  // Welcome screen 10 detik ditangani oleh script #welcome-overlay.
+  try {
+    sessionStorage.setItem(SESSION_ACCESS, 'granted');
+  } catch (e) {}
 });
 window.addEventListener('pageshow', function(event) {
 if (event.persisted) {
@@ -2798,19 +3043,17 @@ else if (document.getElementById('master-panel-modal').classList.contains('show'
 }
 });
 async function checkPassword() {
-var input = document.getElementById('password-input').value;
-var errorMsg = document.getElementById('login-error');
-var hash = await sha256(input);
-if (hash === HASHES.access) {
-sessionStorage.setItem(SESSION_ACCESS, 'granted');
-document.getElementById('login-overlay').classList.add('hidden');
-setTimeout(function() { document.getElementById('login-overlay').style.display = 'none'; }, 400);
-showToast('✅ Akses diberikan! Selamat datang.', 'success');
-} else {
-errorMsg.style.display = 'block';
-document.getElementById('password-input').value = '';
-document.getElementById('password-input').focus();
-}
+  sessionStorage.setItem(SESSION_ACCESS, 'granted');
+
+  var overlay = document.getElementById('welcome-overlay');
+  if (overlay) {
+    overlay.classList.add('hidden');
+    setTimeout(function () {
+      overlay.style.display = 'none';
+    }, 900);
+  }
+
+  showToast('✅ Selamat datang!', 'success');
 }
 function openShareModal() {
 document.getElementById('share-pw-modal').classList.add('show');
@@ -2929,22 +3172,30 @@ setTimeout(function() { toast.classList.add('show'); }, 10);
 toastTimer = setTimeout(function() { toast.classList.remove('show'); }, 3500);
 }
 window.addEventListener('DOMContentLoaded', function() {
-if (sessionStorage.getItem(SESSION_ACCESS) === 'granted') {
-document.getElementById('login-overlay').style.display = 'none';
-} else {
-document.getElementById('password-input').focus();
-}
-document.getElementById('html-editor').addEventListener('keydown', function(e) {
-if (e.key === 'Tab') {
-e.preventDefault();
-var start = this.selectionStart, end = this.selectionEnd;
-this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
-this.selectionStart = this.selectionEnd = start + 2;
-updateEditorStats();
-}
-if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveToLocalStorage(); }
-});
-initI6cTabs();
+  // Dashboard login utama sudah dihapus.
+  // Akses platform tidak lagi menggunakan password utama.
+
+  var editor = document.getElementById('html-editor');
+  if (editor) {
+    editor.addEventListener('keydown', function(e) {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        var start = this.selectionStart,
+            end = this.selectionEnd;
+
+        this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 2;
+        updateEditorStats();
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveToLocalStorage();
+      }
+    });
+  }
+
+  initI6cTabs();
 });
 function filterAbsensiCards(category, clickedBtn) {
 var container = document.getElementById('absensi'); if (!container) return;
