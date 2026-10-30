@@ -3658,7 +3658,7 @@ D("vii","rizqi","kasus","Catatan Kasus Kelas VII-F","https://appseet11-cmd.githu
 D("vii","rizqi","kasus","Catatan Kasus Kelas VII-G","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-G/");
 D("vii","rizqi","kasus","Catatan Kasus Kelas VII-H","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-H/");
 D("vii","rizqi","kasus","Catatan Kasus Kelas VII-I","");
-D("vii","rizqi","kasus","Catatan Kasus Kelas VII-J","");
+D("vii","rizqi","kasus","Catatan Kasus Kelas VII-J","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-J/");
 D("vii","rizqi","homevisit","Home Visit","https://script.google.com/macros/s/AKfycbxS72j9_kjucLw0yQYTImvTvVMEToAMlnPuzwkcFK8d-Ivjh5zc2ZQgiZFUfgj5EEHf/exec");
 D("vii","rizqi","status","Status Konseling","https://appseet11-cmd.github.io/Status-Konseling-BK-Putri/");
 D("vii","rizqi","lintas","Kesehatan Mental","");
@@ -7179,5 +7179,480 @@ document.addEventListener('DOMContentLoaded', async function() {
 <!-- ================================================================ -->
 <!-- ========== PATCH: LOGIN ADMINISTRASI BK56 v2 - END ========== -->
 <!-- ================================================================ -->
+ <!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - CSS ========== -->
+<style>
+.link-modal{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:100004;padding:20px;overflow-y:auto}
+.link-modal.show{display:flex}
+.link-modal-box{background:#fff;border-radius:20px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(0,0,0,0.3);animation:linkPop 0.35s cubic-bezier(.22,1,.36,1)}
+@keyframes linkPop{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.link-modal-header{background:linear-gradient(135deg,#059669,#047857);color:#fff;padding:20px 24px}
+.link-modal-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin-bottom:4px;font-weight:700}
+.link-modal-header p{font-size:0.85rem;opacity:0.9}
+.link-panel{padding:20px 24px;flex:1;overflow-y:auto;background:#fff}
+.link-panel-title{font-size:0.95rem;font-weight:700;color:#047857;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.link-list{display:flex;flex-direction:column;gap:8px}
+.link-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0;border-radius:10px;transition:all 0.2s ease}
+.link-item:hover{border-color:#10b981;transform:translateX(3px);box-shadow:0 4px 12px rgba(16,185,129,0.15)}
+.link-num{background:#10b981;color:#fff;min-width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;flex-shrink:0}
+.link-url{flex:1;font-size:0.82rem;color:#047857;font-family:Consolas,Monaco,monospace;word-break:break-all;cursor:pointer;text-decoration:none;line-height:1.4}
+.link-url:hover{color:#059669;text-decoration:underline}
+.link-actions{display:flex;gap:6px;flex-shrink:0}
+.link-btn-icon{width:30px;height:30px;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease}
+.link-btn-icon.open{background:#10b981;color:#fff}
+.link-btn-icon.open:hover{background:#059669;transform:scale(1.1)}
+.link-btn-icon.del{background:#ef4444;color:#fff}
+.link-btn-icon.del:hover{background:#dc2626;transform:scale(1.1)}
+.link-empty{text-align:center;padding:30px 20px;color:#047857;background:#ecfdf5;border:2px dashed #a7f3d0;border-radius:12px}
+.link-empty-icon{font-size:2.5rem;margin-bottom:8px;opacity:0.6}
+.link-empty-text{font-size:0.88rem;font-weight:600}
+.link-add-section{margin-top:16px;padding-top:16px;border-top:1px dashed #a7f3d0;display:flex;gap:8px;flex-wrap:wrap}
+.link-input-wrap{flex:1;min-width:200px;display:flex;gap:6px}
+.link-input-wrap input{flex:1;padding:10px 14px;border:2px solid #a7f3d0;border-radius:10px;font-size:0.85rem;outline:none;font-family:inherit;transition:all 0.2s ease}
+.link-input-wrap input:focus{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.12)}
+.link-btn-add{background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s ease;font-family:inherit;white-space:nowrap}
+.link-btn-add:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(16,185,129,0.3)}
+.link-modal-footer{padding:14px 24px;background:#ecfdf5;border-top:1px solid #a7f3d0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.link-footer-info{font-size:0.78rem;color:#047857;font-weight:600}
+.link-btn-close{background:#f1f5f9;color:#047857;border:none;padding:10px 20px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s ease;font-family:inherit}
+.link-btn-close:hover{background:#e2e8f0}
+.a56-link-badges{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
+.a56-link-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:0.7rem;font-weight:700;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857}
+.a56-link-badge.has-link{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-color:#10b981;color:#065f46}
+.a56-btn-link-open{width:100%;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:12px 14px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.9rem;margin-top:8px;transition:all 0.3s ease;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(16,185,129,0.3)}
+.a56-btn-link-open:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,185,129,0.45);filter:brightness(1.08)}
+.a56-btn-link-open.empty-link{background:linear-gradient(135deg,#94a3b8,#64748b);box-shadow:0 4px 14px rgba(100,116,139,0.3)}
+.a56-link-actions-wrap{display:grid;grid-template-columns:1fr 44px;gap:8px;margin-top:8px}
+.a56-btn-link-manage-small{background:#f1f5f9;color:#047857;border:none;width:44px;height:44px;border-radius:10px;cursor:pointer;font-size:1.1rem;transition:all 0.2s ease;display:flex;align-items:center;justify-content:center}
+.a56-btn-link-manage-small:hover{background:#e2e8f0;transform:scale(1.05)}
+.link-open-toast{position:fixed;top:100px;left:50%;transform:translateX(-50%) translateY(-100px);background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:14px 24px;border-radius:100px;font-size:14px;font-weight:600;box-shadow:0 12px 32px rgba(16,185,129,0.4);z-index:100006;opacity:0;transition:all 0.4s ease;pointer-events:none;display:flex;align-items:center;gap:10px}
+.link-open-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.link-picker-modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:100005;padding:20px;overflow-y:auto}
+.link-picker-modal.show{display:flex}
+.link-picker-box{background:#fff;border-radius:20px;max-width:700px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(0,0,0,0.4);animation:pickerPop 0.35s cubic-bezier(.22,1,.36,1)}
+@keyframes pickerPop{from{opacity:0;transform:translateY(40px) scale(0.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+.link-picker-header{background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:20px 24px}
+.link-picker-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin-bottom:4px;font-weight:700}
+.link-picker-header p{font-size:0.85rem;opacity:0.9}
+.link-picker-panel{padding:18px 22px;flex:1;overflow-y:auto;background:#fff}
+.link-picker-list{display:flex;flex-direction:column;gap:8px}
+.link-picker-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #a7f3d0;border-radius:12px;transition:all 0.2s ease;cursor:pointer}
+.link-picker-item:hover{border-color:#10b981;transform:translateX(4px);box-shadow:0 4px 14px rgba(16,185,129,0.2);background:linear-gradient(135deg,#d1fae5,#a7f3d0)}
+.link-picker-item:active{transform:scale(0.98)}
+.pkr-num{background:#10b981;color:#fff;min-width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:700;flex-shrink:0}
+.pkr-info{flex:1;min-width:0}
+.pkr-name{font-size:0.85rem;color:#065f46;font-weight:700;margin-bottom:2px;word-break:break-word;line-height:1.3}
+.pkr-url{font-size:0.72rem;color:#047857;font-family:Consolas,Monaco,monospace;word-break:break-all;opacity:0.8;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.pkr-open-icon{background:#10b981;color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:all 0.2s ease}
+.link-picker-item:hover .pkr-open-icon{background:#059669;transform:scale(1.1) rotate(-5deg)}
+.link-picker-footer{padding:14px 22px;background:#ecfdf5;border-top:1px solid #a7f3d0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.link-picker-info{font-size:0.78rem;color:#065f46;font-weight:600}
+.link-picker-btn-close{background:#f1f5f9;color:#065f46;border:none;padding:10px 20px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s ease;font-family:inherit}
+.link-picker-btn-close:hover{background:#e2e8f0}
+@media (max-width:600px){
+.link-modal-box,.link-picker-box{max-height:95vh;border-radius:14px}
+.link-panel,.link-picker-panel{padding:14px}
+.link-item,.link-picker-item{padding:8px 10px}
+.link-url,.pkr-url{font-size:0.72rem}
+.a56-btn-link-open{font-size:0.82rem;padding:10px 12px}
+}
+</style>
+
+<!-- ========== LINK PERMANEN DOKUMEN - MODAL ========== -->
+<div class="link-modal" id="link-modal" role="dialog" aria-modal="true">
+<div class="link-modal-box">
+<div class="link-modal-header">
+<h3 id="link-modal-title">🔗 Kelola Link Dokumen</h3>
+<p id="link-modal-subtitle">Tambahkan link dokumen yang tersimpan permanen</p>
+</div>
+<div class="link-panel" id="link-panel"></div>
+<div class="link-modal-footer">
+<div class="link-footer-info">💾 Link tersimpan permanen di browser ini</div>
+<button class="link-btn-close" onclick="closeLinkModal()">✖ Tutup</button>
+</div>
+</div>
+</div>
+
+<!-- ========== LINK PICKER MODAL ========== -->
+<div class="link-picker-modal" id="link-picker-modal" role="dialog" aria-modal="true">
+<div class="link-picker-box">
+<div class="link-picker-header">
+<h3 id="picker-modal-title">📂 Pilih Link Dokumen</h3>
+<p id="picker-modal-subtitle">Klik link yang ingin dibuka</p>
+</div>
+<div class="link-picker-panel" id="link-picker-panel"></div>
+<div class="link-picker-footer">
+<div class="link-picker-info">🎯 Klik link untuk membuka di tab baru</div>
+<button class="link-picker-btn-close" onclick="closeLinkPicker()">✖ Tutup</button>
+</div>
+</div>
+</div>
+
+<!-- Toast Notifikasi -->
+<div class="link-open-toast" id="link-open-toast">📂 Membuka dokumen...</div>
+
+<!-- ========== LINK PERMANEN DOKUMEN - JAVASCRIPT ========== -->
+<script>
+(function(){
+"use strict";
+/* ============================================================
+* KONFIGURASI LINK PERMANEN DOKUMEN (KECUALI MATERI)
+* - Data disimpan di localStorage (key: 'bk56_doc_links')
+* - Format: { "docIdx": ["url1", "url2", ...] }
+* - Berlaku untuk SEMUA kategori KECUALI 'materi'
+* - Link TIDAK akan hilang walau refresh / tutup browser
+* - Link hanya hilang jika dihapus manual oleh user
+============================================================ */
+const DOC_LINK_KEY = 'bk56_doc_links';
+let currentLinkEdit = null;
+let currentPickerEdit = null;
+
+/* ---------- Helper: Load/Save localStorage ---------- */
+function loadDocLinks() {
+try {
+const raw = localStorage.getItem(DOC_LINK_KEY);
+return raw ? JSON.parse(raw) : {};
+} catch(e) { return {}; }
+}
+function saveDocLinks(data) {
+try { localStorage.setItem(DOC_LINK_KEY, JSON.stringify(data)); }
+catch(e) { if (typeof showToast === 'function') showToast('❌ Gagal menyimpan: ' + e.message, 'error'); }
+}
+function getDocLinkData(docIdx) {
+const all = loadDocLinks();
+return all[docIdx] || [];
+}
+function setDocLinkData(docIdx, data) {
+const all = loadDocLinks();
+all[docIdx] = data;
+saveDocLinks(all);
+}
+
+/* ---------- Helper: escape HTML ---------- */
+function escLink(s){
+return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* ---------- Helper: ekstrak nama file dari URL ---------- */
+function getLinkFileName(url){
+try {
+var clean = url.split('?')[0].split('#')[0];
+var parts = clean.split('/');
+var last = parts[parts.length - 1];
+if (last && last.length > 0 && last.length < 80) {
+return decodeURIComponent(last);
+}
+var match = url.match(/^https?:\/\/([^\/]+)/i);
+if (match) return match[1];
+return 'Link Dokumen';
+} catch(e) { return 'Link Dokumen'; }
+}
+
+/* ============================================================
+* BUKA MODAL KELOLA LINK
+============================================================ */
+window.openLinkModal = function(docIdx) {
+const doc = DOCS[docIdx];
+if (!doc) return;
+// JANGAN buka untuk kategori materi (sudah ada sistem sendiri)
+if (doc.kat === 'materi') {
+if (typeof openMateriModal === 'function') {
+openMateriModal(docIdx);
+}
+return;
+}
+const list = getDocLinkData(docIdx);
+const guru = GURU[doc.guru];
+currentLinkEdit = {
+docIdx: docIdx,
+docNama: doc.nama,
+docKat: doc.kat,
+kelas: doc.kelas,
+guruNama: guru.nama
+};
+document.getElementById('link-modal-title').textContent =
+'🔗 ' + doc.nama + ' — ' + KELAS[doc.kelas];
+document.getElementById('link-modal-subtitle').textContent =
+'Guru BK: ' + guru.nama + ' • ' + (KAT[doc.kat] ? KAT[doc.kat][1] : doc.kat) + ' • ' + list.length + ' link tersimpan';
+renderLinkModal();
+document.getElementById('link-modal').classList.add('show');
+};
+
+window.closeLinkModal = function() {
+document.getElementById('link-modal').classList.remove('show');
+currentLinkEdit = null;
+// Refresh kartu agar badge update
+if (typeof render === 'function') render(true);
+};
+
+/* ---------- Render panel link ---------- */
+function renderLinkModal() {
+if (!currentLinkEdit) return;
+const panel = document.getElementById('link-panel');
+const list = getDocLinkData(currentLinkEdit.docIdx);
+let html = '<div class="link-panel-title">🔗 Daftar Link Dokumen <span style="font-size:0.78rem;color:#047857;font-weight:500;">(' + list.length + ' link)</span></div>';
+if (list.length === 0) {
+html += '<div class="link-empty">' +
+'<div class="link-empty-icon">🔗</div>' +
+'<div class="link-empty-text">Belum ada link dokumen</div>' +
+'<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Tambahkan link di bawah ini</div>' +
+'</div>';
+} else {
+html += '<div class="link-list">';
+list.forEach(function(url, i){
+const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
+html += '<div class="link-item">' +
+'<div class="link-num">' + (i+1) + '</div>' +
+'<a class="link-url" href="' + escLink(url) + '" target="_blank" rel="noopener" title="' + escLink(url) + '">' + escLink(displayUrl) + '</a>' +
+'<div class="link-actions">' +
+'<button class="link-btn-icon open" onclick="openDocLink(' + i + ')" title="Buka link">🔗</button>' +
+'<button class="link-btn-icon del" onclick="removeDocLink(' + i + ')" title="Hapus link">🗑️</button>' +
+'</div></div>';
+});
+html += '</div>';
+}
+// Input tambah link
+html += '<div class="link-add-section">' +
+'<div class="link-input-wrap">' +
+'<input type="text" id="input-doc-link" placeholder="Tempel URL dokumen di sini (Google Drive, PDF, DOC, dll)..." onkeypress="if(event.key===\'Enter\') addDocLink()">' +
+'</div>' +
+'<button class="link-btn-add" onclick="addDocLink()">➕ Tambah Link</button>' +
+'</div>';
+panel.innerHTML = html;
+}
+
+/* ---------- Tambah link ---------- */
+window.addDocLink = function() {
+if (!currentLinkEdit) return;
+const input = document.getElementById('input-doc-link');
+if (!input) return;
+const url = input.value.trim();
+if (!url) { if (typeof showToast === 'function') showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
+let finalUrl = url;
+if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+finalUrl = 'https://' + url;
+}
+const data = getDocLinkData(currentLinkEdit.docIdx);
+data.push(finalUrl);
+setDocLinkData(currentLinkEdit.docIdx, data);
+input.value = '';
+renderLinkModal();
+if (typeof showToast === 'function') showToast('✅ Link dokumen berhasil ditambahkan!', 'success');
+};
+
+/* ---------- Hapus link ---------- */
+window.removeDocLink = function(idx) {
+if (!currentLinkEdit) return;
+if (!confirm('🗑️ Yakin ingin menghapus link ini?\nLink akan hilang permanen.')) return;
+const data = getDocLinkData(currentLinkEdit.docIdx);
+if (data[idx] !== undefined) {
+data.splice(idx, 1);
+setDocLinkData(currentLinkEdit.docIdx, data);
+renderLinkModal();
+if (typeof showToast === 'function') showToast('🗑️ Link berhasil dihapus', 'info');
+}
+};
+
+/* ---------- Buka link ---------- */
+window.openDocLink = function(idx) {
+if (!currentLinkEdit) return;
+const data = getDocLinkData(currentLinkEdit.docIdx);
+const url = data[idx];
+if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+window.open(url, '_blank', 'noopener,noreferrer');
+};
+
+/* ============================================================
+* BUKA LINK DOKUMEN (dari kartu) - target _self
+============================================================ */
+window.openDocLinkFinal = function(docIdx) {
+const doc = DOCS[docIdx];
+if (!doc) return;
+// JANGAN untuk kategori materi
+if (doc.kat === 'materi') {
+if (typeof openMateriFinal === 'function') {
+openMateriFinal(docIdx);
+}
+return;
+}
+const data = getDocLinkData(docIdx);
+const total = data.length;
+if (total === 0) {
+if (typeof showToast === 'function') showToast('⚠️ Belum ada link dokumen. Klik ⚙️ Kelola untuk menambah.', 'error');
+return;
+}
+// Jika hanya 1 link → buka langsung
+if (total === 1) {
+bukaDocLinkSelf(data[0]);
+return;
+}
+// Jika banyak link → buka modal picker
+currentPickerEdit = {
+docIdx: docIdx,
+docNama: doc.nama,
+data: data
+};
+renderLinkPicker();
+document.getElementById('link-picker-modal').classList.add('show');
+};
+
+/* ---------- Buka link dengan target _self ---------- */
+window.bukaDocLinkSelf = function(url) {
+if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+showLinkOpenToast();
+setTimeout(function(){ window.location.href = url; }, 300);
+};
+
+/* ---------- Buka link dari picker ---------- */
+window.bukaDocFromPicker = function(idx) {
+if (!currentPickerEdit) return;
+const url = currentPickerEdit.data[idx];
+if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+closeLinkPicker();
+bukaDocLinkSelf(url);
+};
+
+/* ---------- Render picker ---------- */
+function renderLinkPicker() {
+if (!currentPickerEdit) return;
+const panel = document.getElementById('link-picker-panel');
+const data = currentPickerEdit.data;
+document.getElementById('picker-modal-title').textContent = '📂 ' + currentPickerEdit.docNama;
+document.getElementById('picker-modal-subtitle').textContent = 'Pilih link dokumen yang ingin dibuka (' + data.length + ' link)';
+let html = '<div class="link-picker-list">';
+data.forEach(function(url, idx){
+const fileName = getLinkFileName(url);
+html += '<div class="link-picker-item" onclick="bukaDocFromPicker(' + idx + ')" title="Klik untuk membuka: ' + escLink(url) + '">' +
+'<div class="pkr-num">' + (idx+1) + '</div>' +
+'<div class="pkr-info">' +
+'<div class="pkr-name">' + escLink(fileName) + '</div>' +
+'<div class="pkr-url">' + escLink(url) + '</div>' +
+'</div>' +
+'<div class="pkr-open-icon">↗</div>' +
+'</div>';
+});
+html += '</div>';
+panel.innerHTML = html;
+}
+
+/* ---------- Tutup picker ---------- */
+window.closeLinkPicker = function() {
+document.getElementById('link-picker-modal').classList.remove('show');
+currentPickerEdit = null;
+};
+
+/* ---------- Toast notifikasi ---------- */
+function showLinkOpenToast() {
+const toast = document.getElementById('link-open-toast');
+if (!toast) return;
+toast.innerHTML = '📂 Membuka dokumen...';
+toast.classList.add('show');
+setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+}
+
+/* ============================================================
+* ENHANCE KARTU DOKUMEN - Tambahkan badge & tombol
+* HANYA untuk kategori BUKAN 'materi'
+============================================================ */
+function enhanceDocLinkCards() {
+const cards = document.querySelectorAll('#grid-dokumen .a56-card');
+cards.forEach(function(card){
+// Jangan tambahkan 2x
+if (card.querySelector('.a56-btn-link-open')) return;
+// Cari docIdx dari tombol
+const btn = card.querySelector('.a56-btn, .a56-btn-materi, .a56-btn-materi-open-final');
+if (!btn) return;
+const onclickAttr = btn.getAttribute('onclick') || '';
+const match = onclickAttr.match(/bukaDoc\((\d+)\)/);
+if (!match) return;
+const docIdx = parseInt(match[1]);
+const doc = DOCS[docIdx];
+if (!doc) return;
+// SKIP kategori materi (sudah ada sistem sendiri)
+if (doc.kat === 'materi') return;
+const data = getDocLinkData(docIdx);
+const total = data.length;
+// Buat wrapper actions
+const actionsWrap = document.createElement('div');
+actionsWrap.className = 'a56-link-actions-wrap';
+// Tombol "Buka Link" (utama)
+const btnOpen = document.createElement('button');
+btnOpen.className = 'a56-btn-link-open' + (total === 0 ? ' empty-link' : '');
+btnOpen.onclick = function(){ openDocLinkFinal(docIdx); };
+if (total === 0) {
+btnOpen.innerHTML = '<span class="btn-icon">⚠️</span> Belum Ada Link Dokumen';
+btnOpen.title = 'Klik untuk menambah link dokumen';
+} else if (total === 1) {
+btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Dokumen <span style="font-size:0.75rem;opacity:0.9;">(1 link)</span>';
+btnOpen.title = 'Klik untuk membuka dokumen';
+} else {
+btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Dokumen <span style="font-size:0.75rem;opacity:0.9;">(' + total + ' link)</span>';
+btnOpen.title = 'Klik untuk memilih link dokumen';
+}
+// Tombol "Kelola" kecil
+const btnManage = document.createElement('button');
+btnManage.className = 'a56-btn-link-manage-small';
+btnManage.onclick = function(){ openLinkModal(docIdx); };
+btnManage.title = 'Kelola link dokumen';
+btnManage.innerHTML = '⚙️';
+actionsWrap.appendChild(btnOpen);
+actionsWrap.appendChild(btnManage);
+// Tambahkan badge jumlah link
+if (total > 0) {
+const badges = document.createElement('div');
+badges.className = 'a56-link-badges';
+badges.innerHTML = '<span class="a56-link-badge has-link">🔗 Link: ' + total + '</span>';
+// Sisipkan sebelum actions wrap
+btn.parentNode.insertBefore(badges, btn);
+}
+// Ganti tombol lama
+const parent = btn.parentNode;
+parent.replaceChild(actionsWrap, btn);
+});
+}
+
+/* ============================================================
+* OVERRIDE render() agar enhanceDocLinkCards dipanggil
+============================================================ */
+const _origRenderLink = window.render;
+window.render = function(hanyaKartu){
+if (typeof _origRenderLink === 'function') _origRenderLink(hanyaKartu);
+// Jalankan enhance untuk semua kategori kecuali materi
+setTimeout(function(){
+enhanceDocLinkCards();
+}, 50);
+};
+
+/* ---------- Tutup modal saat tekan ESC ---------- */
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+const linkModal = document.getElementById('link-modal');
+if (linkModal && linkModal.classList.contains('show')) closeLinkModal();
+const pickerModal = document.getElementById('link-picker-modal');
+if (pickerModal && pickerModal.classList.contains('show')) closeLinkPicker();
+}
+});
+
+/* ---------- Tutup modal saat klik di luar ---------- */
+document.addEventListener('click', function(e) {
+const linkModal = document.getElementById('link-modal');
+if (linkModal && linkModal.classList.contains('show')) {
+if (e.target === linkModal) closeLinkModal();
+}
+const pickerModal = document.getElementById('link-picker-modal');
+if (pickerModal && pickerModal.classList.contains('show')) {
+if (e.target === pickerModal) closeLinkPicker();
+}
+}, true);
+
+/* ---------- Jalankan saat load ---------- */
+document.addEventListener('DOMContentLoaded', function(){
+setTimeout(function(){
+enhanceDocLinkCards();
+}, 600);
+console.log('✅ Patch Link Permanen Dokumen (kecuali Materi) berhasil dimuat');
+});
+})();
+</script>
+<!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - END ========== -->
 </body>
 </html>
