@@ -999,6 +999,174 @@ margin: 0 auto;
   letter-spacing:.03em !important;
 }
 </style>
+<!-- ========== MATERI PERMANEN - CSS ========== -->
+<style>
+.materi-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100004; padding: 20px; overflow-y: auto;
+}
+.materi-modal.show { display: flex; }
+.materi-modal-box {
+  background: #fff; border-radius: 20px; max-width: 800px; width: 100%;
+  max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+  animation: materiPop 0.35s cubic-bezier(.22,1,.36,1);
+}
+@keyframes materiPop {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.materi-modal-header {
+  background: linear-gradient(135deg, #c2410c, #9a3412);
+  color: #fff; padding: 20px 24px;
+}
+.materi-modal-header h3 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
+  margin-bottom: 4px; font-weight: 700;
+}
+.materi-modal-header p { font-size: 0.85rem; opacity: 0.9; }
+.materi-tabs {
+  display: flex; background: #fff7ed; border-bottom: 2px solid #fed7aa;
+  overflow-x: auto; scrollbar-width: thin;
+}
+.materi-tab {
+  flex: 1; min-width: 100px; padding: 14px 16px; border: none; background: transparent;
+  font-size: 0.88rem; font-weight: 700; color: #7c2d12; cursor: pointer;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
+}
+.materi-tab:hover { background: rgba(194,65,12,0.08); }
+.materi-tab.active {
+  color: #c2410c; border-bottom-color: #ea580c;
+  background: #fff;
+}
+.materi-tab .tab-count {
+  background: rgba(194,65,12,0.15); color: #9a3412;
+  padding: 2px 8px; border-radius: 100px; font-size: 0.72rem;
+}
+.materi-tab.active .tab-count {
+  background: #ea580c; color: #fff;
+}
+.materi-panel {
+  display: none; padding: 20px 24px; flex: 1; overflow-y: auto;
+  background: #fff;
+}
+.materi-panel.active { display: block; }
+.materi-panel-title {
+  font-size: 0.95rem; font-weight: 700; color: #7c2d12;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.materi-link-list { display: flex; flex-direction: column; gap: 8px; }
+.materi-link-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 1px solid #fed7aa; border-radius: 10px;
+  transition: all 0.2s ease;
+}
+.materi-link-item:hover {
+  border-color: #fb923c; transform: translateX(3px);
+  box-shadow: 0 4px 12px rgba(194,65,12,0.1);
+}
+.materi-link-num {
+  background: #ea580c; color: #fff; min-width: 28px; height: 28px;
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+}
+.materi-link-url {
+  flex: 1; font-size: 0.82rem; color: #7c2d12;
+  font-family: Consolas, Monaco, monospace;
+  word-break: break-all; cursor: pointer;
+  text-decoration: none; line-height: 1.4;
+}
+.materi-link-url:hover { color: #c2410c; text-decoration: underline; }
+.materi-link-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.materi-btn-icon {
+  width: 30px; height: 30px; border-radius: 8px; border: none;
+  cursor: pointer; font-size: 0.85rem; display: flex;
+  align-items: center; justify-content: center;
+  transition: all 0.2s ease;
+}
+.materi-btn-icon.open { background: #10b981; color: #fff; }
+.materi-btn-icon.open:hover { background: #059669; transform: scale(1.1); }
+.materi-btn-icon.del { background: #ef4444; color: #fff; }
+.materi-btn-icon.del:hover { background: #dc2626; transform: scale(1.1); }
+.materi-empty {
+  text-align: center; padding: 30px 20px; color: #9a3412;
+  background: #fff7ed; border: 2px dashed #fed7aa; border-radius: 12px;
+}
+.materi-empty-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.6; }
+.materi-empty-text { font-size: 0.88rem; font-weight: 600; }
+.materi-add-section {
+  margin-top: 16px; padding-top: 16px; border-top: 1px dashed #fed7aa;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.materi-input-wrap {
+  flex: 1; min-width: 200px; display: flex; gap: 6px;
+}
+.materi-input-wrap input {
+  flex: 1; padding: 10px 14px; border: 2px solid #fed7aa;
+  border-radius: 10px; font-size: 0.85rem; outline: none;
+  font-family: inherit; transition: all 0.2s ease;
+}
+.materi-input-wrap input:focus {
+  border-color: #ea580c; box-shadow: 0 0 0 3px rgba(234,88,12,0.12);
+}
+.materi-btn-add {
+  background: linear-gradient(135deg, #c2410c, #9a3412);
+  color: #fff; border: none; padding: 10px 18px; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
+}
+.materi-btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(194,65,12,0.3); }
+.materi-modal-footer {
+  padding: 14px 24px; background: #fff7ed;
+  border-top: 1px solid #fed7aa; display: flex;
+  justify-content: space-between; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.materi-footer-info { font-size: 0.78rem; color: #9a3412; font-weight: 600; }
+.materi-btn-close {
+  background: #f1f5f9; color: #7c2d12; border: none;
+  padding: 10px 20px; border-radius: 10px; font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: all 0.2s ease;
+  font-family: inherit;
+}
+.materi-btn-close:hover { background: #e2e8f0; }
+/* Badge di kartu materi */
+.a56-materi-badges {
+  display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0;
+}
+.a56-materi-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 100px;
+  font-size: 0.7rem; font-weight: 700;
+  background: #fff7ed; border: 1px solid #fed7aa; color: #7c2d12;
+}
+.a56-materi-badge.has-link {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-color: #f59e0b; color: #92400e;
+}
+.a56-btn-materi {
+  width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff; border: none; padding: 10px; border-radius: 10px;
+  font-weight: 700; cursor: pointer; font-size: 0.85rem;
+  margin-top: 8px; transition: all 0.3s ease; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.a56-btn-materi:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(245,158,11,0.35); }
+@media (max-width: 600px) {
+  .materi-modal-box { max-height: 95vh; border-radius: 14px; }
+  .materi-tab { font-size: 0.78rem; padding: 12px 10px; min-width: 80px; }
+  .materi-panel { padding: 14px; }
+  .materi-link-item { padding: 8px 10px; }
+  .materi-link-url { font-size: 0.75rem; }
+}
+</style>
+<!-- ========== MATERI PERMANEN - CSS [END] ========== -->
 </head>
 <body class="protected">
 <div id="reading-progress" aria-hidden="true"></div>
@@ -4944,5 +5112,852 @@ document.addEventListener("DOMContentLoaded", function(){
 })();
 </script>
 <!-- ========== PATCH: ADMINISTRASI BK56 - FILTER KATEGORI AUTO-HIDE [END] ========== -->
+ <!-- ========== MATERI PERMANEN - MODAL ========== -->
+<div class="materi-modal" id="materi-modal" role="dialog" aria-modal="true">
+  <div class="materi-modal-box">
+    <div class="materi-modal-header">
+      <h3 id="materi-modal-title">📚 Kelola Link Materi</h3>
+      <p id="materi-modal-subtitle">Tambahkan link materi PPT, PDF, DOC, dan Video</p>
+    </div>
+    <div class="materi-tabs" role="tablist">
+      <button class="materi-tab active" data-type="ppt" onclick="switchMateriTab('ppt', this)">
+        📊 PPT <span class="tab-count" id="count-ppt">0</span>
+      </button>
+      <button class="materi-tab" data-type="pdf" onclick="switchMateriTab('pdf', this)">
+        📄 PDF <span class="tab-count" id="count-pdf">0</span>
+      </button>
+      <button class="materi-tab" data-type="doc" onclick="switchMateriTab('doc', this)">
+        📝 DOC <span class="tab-count" id="count-doc">0</span>
+      </button>
+      <button class="materi-tab" data-type="video" onclick="switchMateriTab('video', this)">
+        🎬 Video <span class="tab-count" id="count-video">0</span>
+      </button>
+    </div>
+    <div class="materi-panel active" id="panel-ppt"></div>
+    <div class="materi-panel" id="panel-pdf"></div>
+    <div class="materi-panel" id="panel-doc"></div>
+    <div class="materi-panel" id="panel-video"></div>
+    <div class="materi-modal-footer">
+      <div class="materi-footer-info">💾 Link tersimpan permanen di browser ini</div>
+      <button class="materi-btn-close" onclick="closeMateriModal()">✖ Tutup</button>
+    </div>
+  </div>
+</div>
+<!-- ========== MATERI PERMANEN - MODAL [END] ========== -->
+ <!-- ========== MATERI PERMANEN - JAVASCRIPT ========== -->
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+* KONFIGURASI MATERI PERMANEN
+* - Data disimpan di localStorage (key: 'bk56_materi_links')
+* - Format: { "kelas_guru_materiIdx": { ppt:[], pdf:[], doc:[], video:[] } }
+* - Link TIDAK akan hilang walau refresh / tutup browser
+* - Link hanya hilang jika dihapus manual oleh user
+============================================================ */
+const MATERI_KEY = 'bk56_materi_links';
+let currentMateriEdit = null;
+let currentMateriType = 'ppt';
+
+/* ---------- Helper: Load/Save localStorage ---------- */
+function loadMateriLinks() {
+  try {
+    const raw = localStorage.getItem(MATERI_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+function saveMateriLinks(data) {
+  try { localStorage.setItem(MATERI_KEY, JSON.stringify(data)); }
+  catch(e) { showToast('❌ Gagal menyimpan: ' + e.message, 'error'); }
+}
+function getMateriData(kelas, guru, materiIdx) {
+  const all = loadMateriLinks();
+  const key = kelas + '_' + guru + '_' + materiIdx;
+  return all[key] || { ppt: [], pdf: [], doc: [], video: [] };
+}
+function setMateriData(kelas, guru, materiIdx, data) {
+  const all = loadMateriLinks();
+  const key = kelas + '_' + guru + '_' + materiIdx;
+  all[key] = data;
+  saveMateriLinks(all);
+}
+
+/* ---------- Hitung index materi (0,1,2,...) untuk guru tertentu ---------- */
+function getMateriIndex(kelas, guru, docIdx) {
+  // Hitung urutan materi ke-berapa untuk guru ini
+  let idx = 0;
+  for (let i = 0; i < DOCS.length; i++) {
+    const d = DOCS[i];
+    if (d.kelas === kelas && d.guru === guru && d.kat === 'materi') {
+      if (i === docIdx) return idx;
+      idx++;
+    }
+  }
+  return -1;
+}
+
+/* ---------- Hitung total link per tipe untuk badge ---------- */
+function countLinksByType(kelas, guru, materiIdx) {
+  const data = getMateriData(kelas, guru, materiIdx);
+  return {
+    ppt: data.ppt.length,
+    pdf: data.pdf.length,
+    doc: data.doc.length,
+    video: data.video.length,
+    total: data.ppt.length + data.pdf.length + data.doc.length + data.video.length
+  };
+}
+
+/* ---------- Buka modal materi ---------- */
+window.openMateriModal = function(docIdx) {
+  const doc = DOCS[docIdx];
+  if (!doc || doc.kat !== 'materi') return;
+  const materiIdx = getMateriIndex(doc.kelas, doc.guru, docIdx);
+  if (materiIdx < 0) return;
+  const guru = GURU[doc.guru];
+  currentMateriEdit = {
+    kelas: doc.kelas,
+    guru: doc.guru,
+    materiIdx: materiIdx,
+    materiNama: doc.nama,
+    guruNama: guru.nama
+  };
+  currentMateriType = 'ppt';
+  // Reset tab aktif
+  document.querySelectorAll('.materi-tab').forEach(function(t){
+    t.classList.toggle('active', t.dataset.type === 'ppt');
+  });
+  document.querySelectorAll('.materi-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-ppt');
+  });
+  // Update header
+  document.getElementById('materi-modal-title').textContent =
+    '📚 ' + doc.nama + ' — ' + KELAS[doc.kelas];
+  document.getElementById('materi-modal-subtitle').textContent =
+    'Guru BK: ' + guru.nama + ' • Kelola link materi (PPT, PDF, DOC, Video)';
+  renderMateriModal();
+  updateMateriCounts();
+  document.getElementById('materi-modal').classList.add('show');
+};
+
+window.closeMateriModal = function() {
+  document.getElementById('materi-modal').classList.remove('show');
+  currentMateriEdit = null;
+  // Refresh kartu agar badge update
+  render(true);
+};
+
+/* ---------- Switch tab ---------- */
+window.switchMateriTab = function(type, btn) {
+  currentMateriType = type;
+  document.querySelectorAll('.materi-tab').forEach(function(t){
+    t.classList.toggle('active', t === btn);
+  });
+  document.querySelectorAll('.materi-panel').forEach(function(p){
+    p.classList.toggle('active', p.id === 'panel-' + type);
+  });
+};
+
+/* ---------- Render panel materi ---------- */
+function renderMateriModal() {
+  if (!currentMateriEdit) return;
+  const { kelas, guru, materiIdx } = currentMateriEdit;
+  const data = getMateriData(kelas, guru, materiIdx);
+  const types = ['ppt', 'pdf', 'doc', 'video'];
+  const icons = { ppt: '📊', pdf: '📄', doc: '📝', video: '🎬' };
+  const labels = { ppt: 'PowerPoint', pdf: 'PDF Document', doc: 'Word Document', video: 'Video Pembelajaran' };
+  types.forEach(function(type){
+    const panel = document.getElementById('panel-' + type);
+    if (!panel) return;
+    const list = data[type] || [];
+    let html = '<div class="materi-panel-title">' + icons[type] + ' ' + labels[type] +
+      ' <span style="font-size:0.78rem;color:#9a3412;font-weight:500;">(' + list.length + ' link)</span></div>';
+    if (list.length === 0) {
+      html += '<div class="materi-empty">' +
+        '<div class="materi-empty-icon">' + icons[type] + '</div>' +
+        '<div class="materi-empty-text">Belum ada link ' + labels[type] + '</div>' +
+        '<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Tambahkan link di bawah ini</div>' +
+        '</div>';
+    } else {
+      html += '<div class="materi-link-list">';
+      list.forEach(function(url, i){
+        const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
+        html += '<div class="materi-link-item">' +
+          '<div class="materi-link-num">' + (i+1) + '</div>' +
+          '<a class="materi-link-url" href="' + esc(url) + '" target="_blank" rel="noopener" title="' + esc(url) + '">' + esc(displayUrl) + '</a>' +
+          '<div class="materi-link-actions">' +
+          '<button class="materi-btn-icon open" onclick="openMateriLink(' + i + ',\'' + type + '\')" title="Buka link">🔗</button>' +
+          '<button class="materi-btn-icon del" onclick="removeMateriLink(' + i + ',\'' + type + '\')" title="Hapus link">🗑️</button>' +
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+    // Input tambah link
+    html += '<div class="materi-add-section">' +
+      '<div class="materi-input-wrap">' +
+      '<input type="text" id="input-' + type + '" placeholder="Tempel URL ' + labels[type] + ' di sini..." onkeypress="if(event.key===\'Enter\') addMateriLink(\'' + type + '\')">' +
+      '</div>' +
+      '<button class="materi-btn-add" onclick="addMateriLink(\'' + type + '\')">➕ Tambah Link</button>' +
+      '</div>';
+    panel.innerHTML = html;
+  });
+}
+
+/* ---------- Update counter di tab ---------- */
+function updateMateriCounts() {
+  if (!currentMateriEdit) return;
+  const { kelas, guru, materiIdx } = currentMateriEdit;
+  const data = getMateriData(kelas, guru, materiIdx);
+  ['ppt','pdf','doc','video'].forEach(function(type){
+    const el = document.getElementById('count-' + type);
+    if (el) el.textContent = (data[type] || []).length;
+  });
+}
+
+/* ---------- Tambah link ---------- */
+window.addMateriLink = function(type) {
+  if (!currentMateriEdit) return;
+  const input = document.getElementById('input-' + type);
+  if (!input) return;
+  const url = input.value.trim();
+  if (!url) { showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
+  // Validasi sederhana
+  let finalUrl = url;
+  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+    finalUrl = 'https://' + url;
+  }
+  const { kelas, guru, materiIdx } = currentMateriEdit;
+  const data = getMateriData(kelas, guru, materiIdx);
+  if (!data[type]) data[type] = [];
+  data[type].push(finalUrl);
+  setMateriData(kelas, guru, materiIdx, data);
+  input.value = '';
+  renderMateriModal();
+  updateMateriCounts();
+  showToast('✅ Link ' + type.toUpperCase() + ' berhasil ditambahkan!', 'success');
+};
+
+/* ---------- Hapus link ---------- */
+window.removeMateriLink = function(idx, type) {
+  if (!currentMateriEdit) return;
+  if (!confirm('🗑️ Yakin ingin menghapus link ini?\nLink akan hilang permanen.')) return;
+  const { kelas, guru, materiIdx } = currentMateriEdit;
+  const data = getMateriData(kelas, guru, materiIdx);
+  if (data[type] && data[type][idx] !== undefined) {
+    data[type].splice(idx, 1);
+    setMateriData(kelas, guru, materiIdx, data);
+    renderMateriModal();
+    updateMateriCounts();
+    showToast('🗑️ Link berhasil dihapus', 'info');
+  }
+};
+
+/* ---------- Buka link ---------- */
+window.openMateriLink = function(idx, type) {
+  if (!currentMateriEdit) return;
+  const { kelas, guru, materiIdx } = currentMateriEdit;
+  const data = getMateriData(kelas, guru, materiIdx);
+  const url = data[type] && data[type][idx];
+  if (!url) { showToast('⚠️ Link tidak valid', 'error'); return; }
+  window.open(url, '_blank', 'noopener,noreferrer');
+};
+
+/* ============================================================
+* OVERRIDE FUNGSI render() — Tambahkan badge materi di kartu
+============================================================ */
+const _origRenderMateri = window.render;
+window.render = function(hanyaKartu) {
+  // Panggil render asli dulu
+  _origRenderMateri(hanyaKartu);
+  // Jika sedang di tab materi, tambahkan badge & tombol kelola
+  if (filterKat === 'materi' || filterKat === 'all') {
+    enhanceMateriCards();
+  }
+};
+
+function enhanceMateriCards() {
+  const cards = document.querySelectorAll('#grid-dokumen .a56-card');
+  cards.forEach(function(card){
+    // Cek apakah kartu ini adalah materi
+    const pathEl = card.querySelector('.a56-path');
+    if (!pathEl) return;
+    const pathText = pathEl.textContent || '';
+    if (!/Materi/i.test(pathText)) return;
+    // Jangan tambahkan 2x
+    if (card.querySelector('.a56-materi-badges')) return;
+    // Cari docIdx dari tombol buka
+    const btn = card.querySelector('.a56-btn');
+    if (!btn) return;
+    const onclickAttr = btn.getAttribute('onclick') || '';
+    const match = onclickAttr.match(/bukaDoc\((\d+)\)/);
+    if (!match) return;
+    const docIdx = parseInt(match[1]);
+    const doc = DOCS[docIdx];
+    if (!doc || doc.kat !== 'materi') return;
+    const materiIdx = getMateriIndex(doc.kelas, doc.guru, docIdx);
+    if (materiIdx < 0) return;
+    const counts = countLinksByType(doc.kelas, doc.guru, materiIdx);
+    // Buat badges
+    const badges = document.createElement('div');
+    badges.className = 'a56-materi-badges';
+    badges.innerHTML =
+      '<span class="a56-materi-badge ' + (counts.ppt>0?'has-link':'') + '">📊 PPT: ' + counts.ppt + '</span>' +
+      '<span class="a56-materi-badge ' + (counts.pdf>0?'has-link':'') + '">📄 PDF: ' + counts.pdf + '</span>' +
+      '<span class="a56-materi-badge ' + (counts.doc>0?'has-link':'') + '">📝 DOC: ' + counts.doc + '</span>' +
+      '<span class="a56-materi-badge ' + (counts.video>0?'has-link':'') + '">🎬 Video: ' + counts.video + '</span>';
+    // Sisipkan sebelum tombol buka
+    btn.parentNode.insertBefore(badges, btn);
+    // Ubah tombol buka menjadi "Kelola Link Materi"
+    btn.outerHTML = '<button class="a56-btn-materi" onclick="openMateriModal(' + docIdx + ')">📚 Kelola Link Materi' +
+      (counts.total > 0 ? ' (' + counts.total + ')' : '') + '</button>';
+  });
+}
+
+/* ---------- Tutup modal saat tekan ESC ---------- */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('materi-modal');
+    if (modal && modal.classList.contains('show')) {
+      closeMateriModal();
+    }
+  }
+});
+
+/* ---------- Tutup modal saat klik di luar ---------- */
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('materi-modal');
+  if (modal && modal.classList.contains('show')) {
+    if (e.target === modal) closeMateriModal();
+  }
+}, true);
+
+})();
+</script>
+<!-- ========== MATERI PERMANEN - JAVASCRIPT [END] ========== -->
+ <!-- ========== PATCH: MATERI BUKA LANGSUNG FINAL - START ========== -->
+<style>
+/* ===== MODAL PICKER LINK MATERI ===== */
+.materi-picker-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100005; padding: 20px; overflow-y: auto;
+}
+.materi-picker-modal.show { display: flex; }
+.materi-picker-box {
+  background: #fff; border-radius: 20px; max-width: 700px; width: 100%;
+  max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+  animation: pickerPop 0.35s cubic-bezier(.22,1,.36,1);
+}
+@keyframes pickerPop {
+  from { opacity: 0; transform: translateY(40px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.materi-picker-header {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff; padding: 20px 24px;
+}
+.materi-picker-header h3 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
+  margin-bottom: 4px; font-weight: 700;
+}
+.materi-picker-header p { font-size: 0.85rem; opacity: 0.9; }
+.materi-picker-tabs {
+  display: flex; background: #ecfdf5; border-bottom: 2px solid #a7f3d0;
+  overflow-x: auto; scrollbar-width: thin;
+}
+.materi-picker-tab {
+  flex: 1; min-width: 90px; padding: 12px 14px; border: none; background: transparent;
+  font-size: 0.85rem; font-weight: 700; color: #065f46; cursor: pointer;
+  border-bottom: 3px solid transparent; margin-bottom: -2px;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
+}
+.materi-picker-tab:hover { background: rgba(16,185,129,0.1); }
+.materi-picker-tab.active {
+  color: #059669; border-bottom-color: #10b981; background: #fff;
+}
+.materi-picker-tab .pkr-count {
+  background: rgba(16,185,129,0.2); color: #065f46;
+  padding: 2px 8px; border-radius: 100px; font-size: 0.7rem;
+}
+.materi-picker-tab.active .pkr-count {
+  background: #10b981; color: #fff;
+}
+.materi-picker-panel {
+  display: none; padding: 18px 22px; flex: 1; overflow-y: auto;
+  background: #fff;
+}
+.materi-picker-panel.active { display: block; }
+.materi-picker-list { display: flex; flex-direction: column; gap: 8px; }
+.materi-picker-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 2px solid #a7f3d0; border-radius: 12px;
+  transition: all 0.2s ease; cursor: pointer;
+}
+.materi-picker-item:hover {
+  border-color: #10b981; transform: translateX(4px);
+  box-shadow: 0 4px 14px rgba(16,185,129,0.2);
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+}
+.materi-picker-item:active { transform: scale(0.98); }
+.pkr-num {
+  background: #10b981; color: #fff; min-width: 32px; height: 32px;
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.82rem; font-weight: 700; flex-shrink: 0;
+}
+.pkr-info { flex: 1; min-width: 0; }
+.pkr-name {
+  font-size: 0.85rem; color: #065f46; font-weight: 700;
+  margin-bottom: 2px; word-break: break-word; line-height: 1.3;
+}
+.pkr-url {
+  font-size: 0.72rem; color: #047857; font-family: Consolas, Monaco, monospace;
+  word-break: break-all; opacity: 0.8; line-height: 1.3;
+  overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+.pkr-open-icon {
+  background: #10b981; color: #fff; width: 36px; height: 36px;
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; flex-shrink: 0; transition: all 0.2s ease;
+}
+.materi-picker-item:hover .pkr-open-icon {
+  background: #059669; transform: scale(1.1) rotate(-5deg);
+}
+.materi-picker-empty {
+  text-align: center; padding: 30px 20px; color: #065f46;
+  background: #ecfdf5; border: 2px dashed #a7f3d0; border-radius: 12px;
+}
+.materi-picker-empty-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.6; }
+.materi-picker-footer {
+  padding: 14px 22px; background: #ecfdf5;
+  border-top: 1px solid #a7f3d0; display: flex;
+  justify-content: space-between; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.materi-picker-info { font-size: 0.78rem; color: #065f46; font-weight: 600; }
+.materi-picker-btn-close {
+  background: #f1f5f9; color: #065f46; border: none;
+  padding: 10px 20px; border-radius: 10px; font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: all 0.2s ease;
+  font-family: inherit;
+}
+.materi-picker-btn-close:hover { background: #e2e8f0; }
+/* ===== TOMBOL BUKA MATERI DI KARTU ===== */
+.a56-btn-materi-open-final {
+  width: 100%; background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff; border: none; padding: 12px 14px; border-radius: 12px;
+  font-weight: 700; cursor: pointer; font-size: 0.9rem;
+  margin-top: 8px; transition: all 0.3s ease; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(16,185,129,0.3);
+}
+.a56-btn-materi-open-final:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(16,185,129,0.45);
+  filter: brightness(1.08);
+}
+.a56-btn-materi-open-final:active { transform: scale(0.98); }
+.a56-btn-materi-open-final .btn-icon {
+  font-size: 1.1rem; transition: transform 0.3s ease;
+}
+.a56-btn-materi-open-final:hover .btn-icon {
+  transform: translateX(3px) scale(1.15);
+}
+.a56-btn-materi-open-final.empty-link {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
+  box-shadow: 0 4px 14px rgba(100,116,139,0.3);
+}
+.a56-materi-actions-final {
+  display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px;
+}
+/* ===== NOTIFIKASI SAAT BUKA MATERI ===== */
+.materi-open-toast {
+  position: fixed; top: 100px; left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff; padding: 14px 24px; border-radius: 100px;
+  font-size: 14px; font-weight: 600; box-shadow: 0 12px 32px rgba(16,185,129,0.4);
+  z-index: 100006; opacity: 0; transition: all 0.4s ease;
+  pointer-events: none; display: flex; align-items: center; gap: 10px;
+}
+.materi-open-toast.show {
+  opacity: 1; transform: translateX(-50%) translateY(0);
+}
+@media (max-width: 600px) {
+  .materi-picker-box { max-height: 92vh; border-radius: 14px; }
+  .materi-picker-tab { font-size: 0.75rem; padding: 10px 8px; min-width: 70px; }
+  .materi-picker-panel { padding: 12px; }
+  .materi-picker-item { padding: 10px 12px; }
+  .pkr-name { font-size: 0.8rem; }
+  .pkr-url { font-size: 0.68rem; }
+  .a56-btn-materi-open-final { font-size: 0.82rem; padding: 10px 12px; }
+}
+</style>
+
+<!-- Modal Picker Link Materi -->
+<div class="materi-picker-modal" id="materi-picker-modal" role="dialog" aria-modal="true">
+  <div class="materi-picker-box">
+    <div class="materi-picker-header">
+      <h3 id="picker-modal-title">📂 Pilih Link Materi</h3>
+      <p id="picker-modal-subtitle">Klik link yang ingin dibuka</p>
+    </div>
+    <div class="materi-picker-tabs" role="tablist" id="picker-tabs"></div>
+    <div id="picker-panels-container"></div>
+    <div class="materi-picker-footer">
+      <div class="materi-picker-info">🎯 Klik link untuk membuka di halaman ini</div>
+      <button class="materi-picker-btn-close" onclick="closeMateriPicker()">✖ Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Notifikasi Buka Materi -->
+<div class="materi-open-toast" id="materi-open-toast">📂 Membuka materi...</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+* PATCH FINAL: BUKA MATERI DENGAN TARGET _self
+* - Tombol "Buka Materi" yang jelas di kartu
+* - Link dibuka dengan target="_self" (di tab yang sama)
+* - Modal picker jika ada banyak link
+* - Notifikasi visual saat membuka
+============================================================ */
+
+let currentPickerEdit = null;
+let currentPickerType = 'ppt';
+
+/* ---------- Helper: escape HTML ---------- */
+function escP(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+/* ---------- Helper: ekstrak nama file dari URL ---------- */
+function getFileNameP(url){
+  try {
+    var clean = url.split('?')[0].split('#')[0];
+    var parts = clean.split('/');
+    var last = parts[parts.length - 1];
+    if (last && last.length > 0 && last.length < 80) {
+      return decodeURIComponent(last);
+    }
+    var match = url.match(/^https?:\/\/([^\/]+)/i);
+    if (match) return match[1];
+    return 'Link Materi';
+  } catch(e) {
+    return 'Link Materi';
+  }
+}
+
+/* ---------- Helper: hitung total link ---------- */
+function getTotalLinks(data){
+  return (data.ppt||[]).length + (data.pdf||[]).length + (data.doc||[]).length + (data.video||[]).length;
+}
+
+/* ---------- Helper: cari link pertama yang tersedia ---------- */
+function getFirstLink(data){
+  var types = ['ppt','pdf','doc','video'];
+  for (var i = 0; i < types.length; i++) {
+    if (data[types[i]] && data[types[i]].length > 0) {
+      return { type: types[i], url: data[types[i]][0], idx: 0 };
+    }
+  }
+  return null;
+}
+
+/* ============================================================
+* FUNGSI UTAMA: BUKA MATERI (dipanggil dari tombol kartu)
+============================================================ */
+window.openMateriFinal = function(docIdx){
+  var doc = DOCS[docIdx];
+  if (!doc || doc.kat !== 'materi') return;
+  var materiIdx = (typeof getMateriIndex === 'function') ? getMateriIndex(doc.kelas, doc.guru, docIdx) : -1;
+  if (materiIdx < 0) return;
+  var data = (typeof getMateriData === 'function') ? getMateriData(doc.kelas, doc.guru, materiIdx) : {ppt:[],pdf:[],doc:[],video:[]};
+  var total = getTotalLinks(data);
+
+  if (total === 0) {
+    if (typeof showToast === 'function') {
+      showToast('⚠️ Belum ada link materi. Klik ⚙️ Kelola untuk menambah.', 'error');
+    }
+    return;
+  }
+
+  // Jika hanya 1 link total → buka langsung
+  if (total === 1) {
+    var first = getFirstLink(data);
+    if (first) {
+      bukaMateriLinkSelf(first.url, first.type);
+      return;
+    }
+  }
+
+  // Jika banyak link → buka modal picker
+  currentPickerEdit = {
+    kelas: doc.kelas,
+    guru: doc.guru,
+    materiIdx: materiIdx,
+    materiNama: doc.nama,
+    data: data
+  };
+  renderPickerModal();
+  document.getElementById('materi-picker-modal').classList.add('show');
+};
+
+/* ============================================================
+* BUKA LINK MATERI DENGAN TARGET _self
+============================================================ */
+window.bukaMateriLinkSelf = function(url, type){
+  if (!url) {
+    if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
+    return;
+  }
+  // Tampilkan notifikasi
+  showMateriOpenToast(type);
+  // Buka dengan target _self
+  setTimeout(function(){
+    window.location.href = url;
+  }, 300);
+};
+
+/* ---------- Buka link dari picker (target _self) ---------- */
+window.bukaMateriFromPicker = function(type, idx){
+  if (!currentPickerEdit) return;
+  var data = currentPickerEdit.data;
+  var url = data[type] && data[type][idx];
+  if (!url) {
+    if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
+    return;
+  }
+  closeMateriPicker();
+  bukaMateriLinkSelf(url, type);
+};
+
+/* ---------- Render modal picker ---------- */
+function renderPickerModal(){
+  if (!currentPickerEdit) return;
+  var data = currentPickerEdit.data;
+  var doc = DOCS.find(function(d){ return d.kelas === currentPickerEdit.kelas && d.guru === currentPickerEdit.guru && d.kat === 'materi'; });
+
+  // Update header
+  document.getElementById('picker-modal-title').textContent = '📂 ' + currentPickerEdit.materiNama;
+  document.getElementById('picker-modal-subtitle').textContent = 'Pilih link materi yang ingin dibuka (dibuka di halaman ini)';
+
+  // Build tabs
+  var types = [
+    {key:'ppt', icon:'📊', label:'PPT'},
+    {key:'pdf', icon:'📄', label:'PDF'},
+    {key:'doc', icon:'📝', label:'DOC'},
+    {key:'video', icon:'🎬', label:'Video'}
+  ];
+
+  var tabsHtml = '';
+  var panelsHtml = '';
+  var firstActiveType = null;
+
+  types.forEach(function(t, i){
+    var list = data[t.key] || [];
+    var cnt = list.length;
+    var isActive = false;
+    if (cnt > 0 && !firstActiveType) {
+      isActive = true;
+      firstActiveType = t.key;
+    }
+    tabsHtml += '<button class="materi-picker-tab' + (isActive?' active':'') + '" ' +
+      'data-type="' + t.key + '" ' +
+      'onclick="switchPickerTab(\'' + t.key + '\',this)" ' +
+      (cnt === 0 ? 'style="opacity:0.4;cursor:not-allowed;" disabled' : '') +
+      '>' + t.icon + ' ' + t.label + ' <span class="pkr-count">' + cnt + '</span></button>';
+
+    var panelHtml = '<div class="materi-picker-panel' + (isActive?' active':'') + '" id="picker-panel-' + t.key + '">';
+    if (cnt === 0) {
+      panelHtml += '<div class="materi-picker-empty">' +
+        '<div class="materi-picker-empty-icon">' + t.icon + '</div>' +
+        '<div style="font-weight:600;">Belum ada link ' + t.label + '</div>' +
+        '<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Klik ⚙️ Kelola untuk menambah link</div>' +
+        '</div>';
+    } else {
+      panelHtml += '<div class="materi-picker-list">';
+      list.forEach(function(url, idx){
+        var fileName = getFileNameP(url);
+        panelHtml += '<div class="materi-picker-item" onclick="bukaMateriFromPicker(\'' + t.key + '\',' + idx + ')" title="Klik untuk membuka: ' + escP(url) + '">' +
+          '<div class="pkr-num">' + (idx+1) + '</div>' +
+          '<div class="pkr-info">' +
+          '<div class="pkr-name">' + escP(fileName) + '</div>' +
+          '<div class="pkr-url">' + escP(url) + '</div>' +
+          '</div>' +
+          '<div class="pkr-open-icon">↗</div>' +
+          '</div>';
+      });
+      panelHtml += '</div>';
+    }
+    panelHtml += '</div>';
+    panelsHtml += panelHtml;
+  });
+
+  document.getElementById('picker-tabs').innerHTML = tabsHtml;
+  document.getElementById('picker-panels-container').innerHTML = panelsHtml;
+}
+
+/* ---------- Switch tab picker ---------- */
+window.switchPickerTab = function(type, btn){
+  if (btn.disabled) return;
+  currentPickerType = type;
+  document.querySelectorAll('.materi-picker-tab').forEach(function(t){ t.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.materi-picker-panel').forEach(function(p){ p.classList.remove('active'); });
+  var panel = document.getElementById('picker-panel-' + type);
+  if (panel) panel.classList.add('active');
+};
+
+/* ---------- Tutup picker ---------- */
+window.closeMateriPicker = function(){
+  document.getElementById('materi-picker-modal').classList.remove('show');
+  currentPickerEdit = null;
+};
+
+/* ---------- Toast notifikasi buka materi ---------- */
+function showMateriOpenToast(type){
+  var toast = document.getElementById('materi-open-toast');
+  if (!toast) return;
+  var icons = { ppt:'📊', pdf:'📄', doc:'📝', video:'🎬' };
+  var labels = { ppt:'PPT', pdf:'PDF', doc:'DOC', video:'Video' };
+  toast.innerHTML = (icons[type]||'📂') + ' Membuka materi ' + (labels[type]||'') + '...';
+  toast.classList.add('show');
+  setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+}
+
+/* ============================================================
+* OVERRIDE enhanceMateriCards - Tambahkan tombol "Buka Materi" final
+============================================================ */
+var _origEnhanceFinal = window._enhanceMateriCards || function(){};
+
+window._enhanceMateriCards = function(){
+  // Panggil yang asli dulu
+  if (typeof _origEnhanceFinal === 'function' && _origEnhanceFinal !== window._enhanceMateriCards) {
+    try { _origEnhanceFinal(); } catch(e) {}
+  }
+
+  var cards = document.querySelectorAll('#grid-dokumen .a56-card');
+  cards.forEach(function(card){
+    var pathEl = card.querySelector('.a56-path');
+    if (!pathEl) return;
+    var pathText = pathEl.textContent || '';
+    if (!/Materi/i.test(pathText)) return;
+
+    // Jangan tambahkan 2x
+    if (card.querySelector('.a56-btn-materi-open-final')) return;
+
+    // Cari docIdx
+    var btn = card.querySelector('.a56-btn, .a56-btn-materi-open, .a56-btn-materi');
+    if (!btn) return;
+    var onclickAttr = btn.getAttribute('onclick') || '';
+    var match = onclickAttr.match(/(?:bukaDoc|openMateriModal|openMateriViewer)\((\d+)\)/);
+    if (!match) return;
+    var docIdx = parseInt(match[1]);
+    var doc = DOCS[docIdx];
+    if (!doc || doc.kat !== 'materi') return;
+
+    var materiIdx = (typeof getMateriIndex === 'function') ? getMateriIndex(doc.kelas, doc.guru, docIdx) : -1;
+    if (materiIdx < 0) return;
+
+    var data = (typeof getMateriData === 'function') ? getMateriData(doc.kelas, doc.guru, materiIdx) : {ppt:[],pdf:[],doc:[],video:[]};
+    var total = getTotalLinks(data);
+
+    // Cari container tombol lama
+    var oldBtn = card.querySelector('.a56-btn-materi-open, .a56-btn-materi, .a56-materi-actions, .a56-btn');
+    if (!oldBtn) return;
+
+    // Jika sudah ada wrapper actions-final, skip
+    if (card.querySelector('.a56-materi-actions-final')) return;
+
+    // Buat wrapper baru
+    var actionsWrap = document.createElement('div');
+    actionsWrap.className = 'a56-materi-actions-final';
+
+    // Tombol "Buka Materi" (utama)
+    var btnOpen = document.createElement('button');
+    btnOpen.className = 'a56-btn-materi-open-final' + (total === 0 ? ' empty-link' : '');
+    btnOpen.onclick = function(){ openMateriFinal(docIdx); };
+    if (total === 0) {
+      btnOpen.innerHTML = '<span class="btn-icon">⚠️</span> Belum Ada Link Materi';
+      btnOpen.title = 'Klik untuk menambah link materi';
+    } else if (total === 1) {
+      btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Materi <span style="font-size:0.75rem;opacity:0.9;">(1 link)</span>';
+      btnOpen.title = 'Klik untuk membuka materi di halaman ini';
+    } else {
+      btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Materi <span style="font-size:0.75rem;opacity:0.9;">(' + total + ' link)</span>';
+      btnOpen.title = 'Klik untuk memilih link materi yang ingin dibuka';
+    }
+
+    // Tombol "Kelola"
+    var btnManage = document.createElement('button');
+    btnManage.className = 'a56-btn-materi-manage';
+    btnManage.onclick = function(){ openMateriModal(docIdx); };
+    btnManage.title = 'Kelola link materi';
+    btnManage.innerHTML = '⚙️';
+
+    actionsWrap.appendChild(btnOpen);
+    actionsWrap.appendChild(btnManage);
+
+    // Ganti tombol lama
+    var parent = oldBtn.parentNode;
+    if (oldBtn.classList.contains('a56-materi-actions')) {
+      parent.replaceChild(actionsWrap, oldBtn);
+    } else {
+      parent.replaceChild(actionsWrap, oldBtn);
+    }
+  });
+};
+
+/* ============================================================
+* OVERRIDE render() agar enhanceMateriCards dipanggil
+============================================================ */
+var _origRenderFinal = window.render;
+window.render = function(hanyaKartu){
+  if (typeof _origRenderFinal === 'function') _origRenderFinal(hanyaKartu);
+  if (filterKat === 'materi' || filterKat === 'all') {
+    if (typeof window._enhanceMateriCards === 'function') window._enhanceMateriCards();
+  }
+};
+
+/* ---------- Tutup picker saat tekan ESC ---------- */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var modal = document.getElementById('materi-picker-modal');
+    if (modal && modal.classList.contains('show')) {
+      closeMateriPicker();
+    }
+  }
+});
+
+/* ---------- Tutup picker saat klik di luar ---------- */
+document.addEventListener('click', function(e) {
+  var modal = document.getElementById('materi-picker-modal');
+  if (modal && modal.classList.contains('show')) {
+    if (e.target === modal) closeMateriPicker();
+  }
+}, true);
+
+/* ============================================================
+* Jalankan sekali saat load
+============================================================ */
+document.addEventListener('DOMContentLoaded', function(){
+  setTimeout(function(){
+    if (typeof filterKat !== 'undefined' && (filterKat === 'materi' || filterKat === 'all')) {
+      if (typeof window._enhanceMateriCards === 'function') window._enhanceMateriCards();
+    }
+  }, 400);
+});
+
+})();
+</script>
+<!-- ========== PATCH: MATERI BUKA LANGSUNG FINAL - END ========== -->
 </body>
 </html>
