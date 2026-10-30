@@ -6393,5 +6393,299 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 <!-- ========== VIDEO PERMANEN - JAVASCRIPT [END] ========== -->
+ <!-- ========== PATCH: PASSWORD PROTEKSI ADMINISTRASI BK56 - START ========== -->
+<style>
+.pw-modal-adminbk56 {
+  position: fixed; inset: 0;
+  background: rgba(11,30,84,0.75);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10001; padding: 20px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.pw-modal-adminbk56.show { opacity: 1; pointer-events: auto; }
+.pw-modal-adminbk56 .pw-modal-box {
+  background: var(--surface, #fff);
+  padding: 32px 24px;
+  border-radius: 28px;
+  box-shadow: 0 24px 48px rgba(15,23,42,0.16);
+  text-align: center;
+  max-width: 420px; width: 100%;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+.pw-modal-adminbk56.show .pw-modal-box { transform: scale(1); }
+.pw-modal-adminbk56 .pw-icon { font-size: 56px; margin-bottom: 12px; }
+.pw-modal-adminbk56 h3 {
+  color: #0b1e54; font-size: 22px; margin-bottom: 8px;
+  font-weight: 700; font-family: 'Space Grotesk', sans-serif;
+}
+.pw-modal-adminbk56 .pw-desc {
+  color: #64748b; font-size: 14px; margin-bottom: 20px; line-height: 1.5;
+}
+.pw-modal-adminbk56 input {
+  width: 100%; padding: 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  font-size: 15px; outline: none;
+  transition: all 0.2s ease;
+  text-align: center; letter-spacing: 2px;
+  font-family: inherit;
+}
+.pw-modal-adminbk56 input:focus {
+  border-color: #1a369c;
+  box-shadow: 0 0 0 4px rgba(26,54,156,0.12);
+}
+.pw-modal-adminbk56 .pw-actions {
+  display: flex; gap: 10px; margin-top: 16px;
+}
+.pw-modal-adminbk56 .pw-btn {
+  flex: 1; padding: 12px; border: none;
+  border-radius: 14px; font-size: 14px;
+  font-weight: 600; cursor: pointer;
+  transition: all 0.2s ease; font-family: inherit;
+}
+.pw-modal-adminbk56 .pw-btn.primary {
+  background: linear-gradient(135deg, #0b1e54 0%, #1a369c 100%);
+  color: white;
+}
+.pw-modal-adminbk56 .pw-btn.primary:hover { filter: brightness(1.15); }
+.pw-modal-adminbk56 .pw-btn.secondary {
+  background: #f1f5f9; color: #0b1e54;
+}
+.pw-modal-adminbk56 .pw-btn.secondary:hover { background: #e2e8f0; }
+.pw-modal-adminbk56 .pw-error {
+  color: #ef4444; font-size: 13px; margin-top: 12px;
+  font-weight: 600; display: none;
+}
+.pw-modal-adminbk56 .pw-hint {
+  margin-top: 14px; font-size: 12px; color: #64748b;
+  background: #f8fafc; padding: 10px;
+  border-radius: 8px; border: 1px dashed #e2e8f0;
+}
+</style>
+
+<div class="pw-modal-adminbk56" id="adminbk56-pw-modal" role="dialog" aria-modal="true">
+  <div class="pw-modal-box">
+    <div class="pw-icon">🔐</div>
+    <h3>Akses Terproteksi</h3>
+    <p class="pw-desc">Halaman <strong>Administrasi BK56</strong> memerlukan password khusus. Silakan masukkan password untuk melanjutkan.</p>
+    <input type="password" id="adminbk56-pw-input" placeholder="Password administrasi..." onkeypress="if(event.key==='Enter') verifyAdminBK56Password()" autocomplete="off">
+    <div class="pw-actions">
+      <button class="pw-btn secondary" onclick="closeAdminBK56Modal()">Batal</button>
+      <button class="pw-btn primary" onclick="verifyAdminBK56Password()">🔓 Buka Akses</button>
+    </div>
+    <p class="pw-error" id="adminbk56-pw-error">❌ Password salah!</p>
+    <div class="pw-hint">💡 Password diberikan oleh Administrator BK SMPN 56 Jakarta</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  /* ============================================================
+   * PATCH: PASSWORD PROTEKSI ADMINISTRASI BK56
+   * - Default password: @bk56admin#
+   * - Bisa diubah lewat Master Panel (disimpan di localStorage)
+   * - Status akses disimpan di sessionStorage (hilang saat tab ditutup)
+   * - Tidak mengubah fungsi lain yang sudah ada
+   ============================================================ */
+
+  const ADMINBK56_SESSION_KEY = 'bk_adminbk56_access';
+  const ADMINBK56_CUSTOM_HASH_KEY = 'bk_adminbk56_hash';
+  const ADMINBK56_DEFAULT_PASSWORD = '@bk56admin#';
+
+  let _adminBK56DefaultHash = null;
+  let _adminBK56PendingResolve = null;
+
+  /* ---------- Hitung hash default (sekali saja) ---------- */
+  async function getAdminBK56DefaultHash() {
+    if (_adminBK56DefaultHash) return _adminBK56DefaultHash;
+    if (typeof sha256 !== 'function') {
+      // Fallback jika sha256 belum tersedia
+      return null;
+    }
+    _adminBK56DefaultHash = await sha256(ADMINBK56_DEFAULT_PASSWORD);
+    return _adminBK56DefaultHash;
+  }
+
+  /* ---------- Ambil hash aktif (custom atau default) ---------- */
+  async function getActiveAdminBK56Hash() {
+    // Cek custom hash dari localStorage (jika admin pernah mengubah via master panel)
+    try {
+      const custom = localStorage.getItem(ADMINBK56_CUSTOM_HASH_KEY);
+      if (custom && custom.length > 0) return custom;
+    } catch(e) {}
+    // Fallback ke default
+    return await getAdminBK56DefaultHash();
+  }
+
+  /* ---------- Buka modal password ---------- */
+  window.openAdminBK56Modal = function() {
+    const modal = document.getElementById('adminbk56-pw-modal');
+    if (!modal) return;
+    const input = document.getElementById('adminbk56-pw-input');
+    const error = document.getElementById('adminbk56-pw-error');
+    if (input) input.value = '';
+    if (error) error.style.display = 'none';
+    modal.classList.add('show');
+    setTimeout(function(){ if (input) input.focus(); }, 300);
+  };
+
+  /* ---------- Tutup modal ---------- */
+  window.closeAdminBK56Modal = function() {
+    const modal = document.getElementById('adminbk56-pw-modal');
+    if (modal) modal.classList.remove('show');
+    // Jika ada promise pending, batalkan
+    if (_adminBK56PendingResolve) {
+      _adminBK56PendingResolve(false);
+      _adminBK56PendingResolve = null;
+    }
+  };
+
+  /* ---------- Verifikasi password ---------- */
+  window.verifyAdminBK56Password = async function() {
+    const input = document.getElementById('adminbk56-pw-input');
+    const error = document.getElementById('adminbk56-pw-error');
+    if (!input || typeof sha256 !== 'function') return;
+
+    const value = input.value;
+    if (!value) {
+      if (error) {
+        error.textContent = '⚠️ Password tidak boleh kosong';
+        error.style.display = 'block';
+      }
+      return;
+    }
+
+    const hash = await sha256(value);
+    const activeHash = await getActiveAdminBK56Hash();
+
+    if (hash === activeHash) {
+      // Password benar → simpan akses & lanjutkan
+      try { sessionStorage.setItem(ADMINBK56_SESSION_KEY, 'granted'); } catch(e) {}
+      const modal = document.getElementById('adminbk56-pw-modal');
+      if (modal) modal.classList.remove('show');
+      if (typeof showToast === 'function') {
+        showToast('✅ Akses Administrasi BK56 dibuka!', 'success');
+      }
+      // Resolve promise jika ada
+      if (_adminBK56PendingResolve) {
+        _adminBK56PendingResolve(true);
+        _adminBK56PendingResolve = null;
+      }
+      // Lanjutkan navigasi ke adminbk56
+      if (typeof _origGoBK56 === 'function') _origGoBK56('adminbk56');
+    } else {
+      // Password salah
+      if (error) {
+        error.textContent = '❌ Password salah!';
+        error.style.display = 'block';
+      }
+      input.value = '';
+      input.focus();
+      setTimeout(function(){ if (error) error.style.display = 'none'; }, 3000);
+    }
+  };
+
+  /* ---------- Override fungsi go() untuk intersep adminbk56 ---------- */
+  const _origGoBK56 = window.go;
+  window.go = function(id) {
+    if (id === 'adminbk56') {
+      // Cek apakah sudah punya akses di sesi ini
+      let hasAccess = false;
+      try { hasAccess = sessionStorage.getItem(ADMINBK56_SESSION_KEY) === 'granted'; } catch(e) {}
+
+      if (hasAccess) {
+        // Sudah punya akses → langsung buka
+        _origGoBK56(id);
+        return;
+      }
+
+      // Belum punya akses → minta password dulu
+      // Tampilkan modal, tunggu verifikasi
+      openAdminBK56Modal();
+      return;
+    }
+    // Untuk halaman lain → jalankan normal
+    _origGoBK56(id);
+  };
+
+  /* ---------- Tutup modal saat tekan ESC ---------- */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('adminbk56-pw-modal');
+      if (modal && modal.classList.contains('show')) {
+        closeAdminBK56Modal();
+      }
+    }
+  });
+
+  /* ---------- Tutup modal saat klik di luar box ---------- */
+  document.addEventListener('click', function(e) {
+    const modal = document.getElementById('adminbk56-pw-modal');
+    if (modal && modal.classList.contains('show')) {
+      if (e.target === modal) closeAdminBK56Modal();
+    }
+  }, true);
+
+  /* ---------- Precompute default hash saat load ---------- */
+  document.addEventListener('DOMContentLoaded', function() {
+    getAdminBK56DefaultHash();
+  });
+
+  /* ============================================================
+   * INTEGRASI DENGAN MASTER PANEL (Opsional)
+   * Menambahkan opsi ubah password adminbk56 di Master Panel
+   * agar admin bisa mengganti password tanpa edit HTML.
+   ============================================================ */
+  const _origSaveNewPasswords = window.saveNewPasswords;
+  window.saveNewPasswords = async function() {
+    // Panggil fungsi asli dulu
+    if (typeof _origSaveNewPasswords === 'function') {
+      await _origSaveNewPasswords();
+    }
+  };
+
+  /* ---------- Helper: Ubah password adminbk56 (bisa dipanggil dari console/master) ---------- */
+  window.changeAdminBK56Password = async function(newPassword) {
+    if (!newPassword || newPassword.length < 4) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Password minimal 4 karakter', 'error');
+      }
+      return false;
+    }
+    if (typeof sha256 !== 'function') return false;
+    const hash = await sha256(newPassword);
+    try {
+      localStorage.setItem(ADMINBK56_CUSTOM_HASH_KEY, hash);
+      if (typeof showToast === 'function') {
+        showToast('🔑 Password Administrasi BK56 berhasil diubah!', 'success');
+      }
+      return true;
+    } catch(e) {
+      if (typeof showToast === 'function') {
+        showToast('❌ Gagal menyimpan: ' + e.message, 'error');
+      }
+      return false;
+    }
+  };
+
+  /* ---------- Helper: Reset password adminbk56 ke default ---------- */
+  window.resetAdminBK56Password = function() {
+    try {
+      localStorage.removeItem(ADMINBK56_CUSTOM_HASH_KEY);
+      if (typeof showToast === 'function') {
+        showToast('🔄 Password Administrasi BK56 direset ke default', 'info');
+      }
+      return true;
+    } catch(e) { return false; }
+  };
+
+  console.log('✅ Patch Password Proteksi Administrasi BK56 berhasil dimuat');
+})();
+</script>
+<!-- ========== PATCH: PASSWORD PROTEKSI ADMINISTRASI BK56 - END ========== -->
 </body>
 </html>
