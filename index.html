@@ -5959,5 +5959,439 @@ document.addEventListener('DOMContentLoaded', function(){
 })();
 </script>
 <!-- ========== PATCH: MATERI BUKA LANGSUNG FINAL - END ========== -->
+ <!-- ========== VIDEO PERMANEN - CSS ========== -->
+<style>
+.video-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100004; padding: 20px; overflow-y: auto;
+}
+.video-modal.show { display: flex; }
+.video-modal-box {
+  background: #fff; border-radius: 20px; max-width: 800px; width: 100%;
+  max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+  animation: videoPop 0.35s cubic-bezier(.22,1,.36,1);
+}
+@keyframes videoPop {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.video-modal-header {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: #fff; padding: 20px 24px;
+}
+.video-modal-header h3 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
+  margin-bottom: 4px; font-weight: 700;
+}
+.video-modal-header p { font-size: 0.85rem; opacity: 0.9; }
+.video-panel {
+  padding: 20px 24px; flex: 1; overflow-y: auto; background: #fff;
+}
+.video-panel-title {
+  font-size: 0.95rem; font-weight: 700; color: #7c3aed;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.video-link-list { display: flex; flex-direction: column; gap: 8px; }
+.video-link-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
+  border: 1px solid #e9d5ff; border-radius: 10px;
+  transition: all 0.2s ease;
+}
+.video-link-item:hover {
+  border-color: #c084fc; transform: translateX(3px);
+  box-shadow: 0 4px 12px rgba(168,85,247,0.15);
+}
+.video-link-num {
+  background: #a855f7; color: #fff; min-width: 28px; height: 28px;
+  border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+}
+.video-link-url {
+  flex: 1; font-size: 0.82rem; color: #7c3aed;
+  font-family: Consolas, Monaco, monospace;
+  word-break: break-all; cursor: pointer;
+  text-decoration: none; line-height: 1.4;
+}
+.video-link-url:hover { color: #a855f7; text-decoration: underline; }
+.video-link-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.video-btn-icon {
+  width: 30px; height: 30px; border-radius: 8px; border: none;
+  cursor: pointer; font-size: 0.85rem; display: flex;
+  align-items: center; justify-content: center;
+  transition: all 0.2s ease;
+}
+.video-btn-icon.open { background: #10b981; color: #fff; }
+.video-btn-icon.open:hover { background: #059669; transform: scale(1.1); }
+.video-btn-icon.del { background: #ef4444; color: #fff; }
+.video-btn-icon.del:hover { background: #dc2626; transform: scale(1.1); }
+.video-empty {
+  text-align: center; padding: 30px 20px; color: #7c3aed;
+  background: #faf5ff; border: 2px dashed #e9d5ff; border-radius: 12px;
+}
+.video-empty-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.6; }
+.video-empty-text { font-size: 0.88rem; font-weight: 600; }
+.video-add-section {
+  margin-top: 16px; padding-top: 16px; border-top: 1px dashed #e9d5ff;
+  display: flex; gap: 8px; flex-wrap: wrap;
+}
+.video-input-wrap {
+  flex: 1; min-width: 200px; display: flex; gap: 6px;
+}
+.video-input-wrap input {
+  flex: 1; padding: 10px 14px; border: 2px solid #e9d5ff;
+  border-radius: 10px; font-size: 0.85rem; outline: none;
+  font-family: inherit; transition: all 0.2s ease;
+}
+.video-input-wrap input:focus {
+  border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168,85,247,0.12);
+}
+.video-btn-add {
+  background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: #fff; border: none; padding: 10px 18px; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
+}
+.video-btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(168,85,247,0.3); }
+.video-modal-footer {
+  padding: 14px 24px; background: #faf5ff;
+  border-top: 1px solid #e9d5ff; display: flex;
+  justify-content: space-between; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.video-footer-info { font-size: 0.78rem; color: #7c3aed; font-weight: 600; }
+.video-btn-close {
+  background: #f1f5f9; color: #7c3aed; border: none;
+  padding: 10px 20px; border-radius: 10px; font-size: 0.85rem;
+  font-weight: 700; cursor: pointer; transition: all 0.2s ease;
+  font-family: inherit;
+}
+.video-btn-close:hover { background: #e2e8f0; }
+/* Badge di kartu video */
+.a56-video-badges {
+  display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0;
+}
+.a56-video-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 100px;
+  font-size: 0.7rem; font-weight: 700;
+  background: #faf5ff; border: 1px solid #e9d5ff; color: #7c3aed;
+}
+.a56-video-badge.has-link {
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  border-color: #c084fc; color: #6b21a8;
+}
+.a56-btn-video {
+  width: 100%; background: linear-gradient(135deg, #a855f7, #7c3aed);
+  color: #fff; border: none; padding: 10px; border-radius: 10px;
+  font-weight: 700; cursor: pointer; font-size: 0.85rem;
+  margin-top: 8px; transition: all 0.3s ease; font-family: inherit;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.a56-btn-video:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(168,85,247,0.35); }
+/* Link video di bawah judul di halaman Video */
+.page.v .link-box .video-link-display {
+  display: block; font-size: 0.72rem; color: #a855f7;
+  font-family: Consolas, Monaco, monospace;
+  word-break: break-all; margin-top: 4px; opacity: 0.85;
+  max-height: 32px; overflow: hidden; text-overflow: ellipsis;
+}
+.page.v .link-box .video-link-display.has-link {
+  opacity: 1; color: #7c3aed; font-weight: 600;
+}
+@media (max-width: 600px) {
+  .video-modal-box { max-height: 95vh; border-radius: 14px; }
+  .video-panel { padding: 14px; }
+  .video-link-item { padding: 8px 10px; }
+  .video-link-url { font-size: 0.75rem; }
+}
+</style>
+<!-- ========== VIDEO PERMANEN - CSS [END] ========== -->
+
+<!-- ========== VIDEO PERMANEN - MODAL ========== -->
+<div class="video-modal" id="video-modal" role="dialog" aria-modal="true">
+  <div class="video-modal-box">
+    <div class="video-modal-header">
+      <h3 id="video-modal-title">🎬 Kelola Link Video</h3>
+      <p id="video-modal-subtitle">Tambahkan link video pembelajaran (YouTube, Google Drive, dll)</p>
+    </div>
+    <div class="video-panel" id="video-panel"></div>
+    <div class="video-modal-footer">
+      <div class="video-footer-info">💾 Link tersimpan permanen di browser ini</div>
+      <button class="video-btn-close" onclick="closeVideoModal()">✖ Tutup</button>
+    </div>
+  </div>
+</div>
+<!-- ========== VIDEO PERMANEN - MODAL [END] ========== -->
+
+<!-- ========== VIDEO PERMANEN - JAVASCRIPT ========== -->
+<script>
+(function(){
+  "use strict";
+  /* ============================================================
+   * KONFIGURASI VIDEO PERMANEN
+   * - Data disimpan di localStorage (key: 'bk56_video_links')
+   * - Format: { "videoIdx": ["url1", "url2", ...] }
+   * - Link TIDAK akan hilang walau refresh / tutup browser
+   * - Link hanya hilang jika dihapus manual oleh user
+   ============================================================ */
+  const VIDEO_KEY = 'bk56_video_links';
+  let currentVideoEdit = null;
+
+  /* ---------- Helper: Load/Save localStorage ---------- */
+  function loadVideoLinks() {
+    try {
+      const raw = localStorage.getItem(VIDEO_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e) { return {}; }
+  }
+  function saveVideoLinks(data) {
+    try { localStorage.setItem(VIDEO_KEY, JSON.stringify(data)); }
+    catch(e) { showToast('❌ Gagal menyimpan: ' + e.message, 'error'); }
+  }
+  function getVideoData(videoIdx) {
+    const all = loadVideoLinks();
+    return all[videoIdx] || [];
+  }
+  function setVideoData(videoIdx, data) {
+    const all = loadVideoLinks();
+    all[videoIdx] = data;
+    saveVideoLinks(all);
+  }
+
+  /* ---------- Buka modal video ---------- */
+  window.openVideoModal = function(videoIdx) {
+    const list = getVideoData(videoIdx);
+    currentVideoEdit = {
+      videoIdx: videoIdx,
+      videoNama: 'Video ' + (videoIdx + 1)
+    };
+    document.getElementById('video-modal-title').textContent =
+      '🎬 ' + currentVideoEdit.videoNama + ' — Kelola Link Video';
+    document.getElementById('video-modal-subtitle').textContent =
+      'Tambahkan link video pembelajaran (YouTube, Google Drive, dll) • ' + list.length + ' link tersimpan';
+    renderVideoModal();
+    document.getElementById('video-modal').classList.add('show');
+  };
+
+  window.closeVideoModal = function() {
+    document.getElementById('video-modal').classList.remove('show');
+    currentVideoEdit = null;
+    // Refresh halaman video agar badge update
+    refreshVideoPage();
+  };
+
+  /* ---------- Render panel video ---------- */
+  function renderVideoModal() {
+    if (!currentVideoEdit) return;
+    const panel = document.getElementById('video-panel');
+    const list = getVideoData(currentVideoEdit.videoIdx);
+    let html = '<div class="video-panel-title">🎬 Daftar Link Video <span style="font-size:0.78rem;color:#7c3aed;font-weight:500;">(' + list.length + ' link)</span></div>';
+
+    if (list.length === 0) {
+      html += '<div class="video-empty">' +
+              '<div class="video-empty-icon">🎬</div>' +
+              '<div class="video-empty-text">Belum ada link video</div>' +
+              '<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Tambahkan link di bawah ini</div>' +
+              '</div>';
+    } else {
+      html += '<div class="video-link-list">';
+      list.forEach(function(url, i){
+        const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
+        html += '<div class="video-link-item">' +
+                '<div class="video-link-num">' + (i+1) + '</div>' +
+                '<a class="video-link-url" href="' + esc(url) + '" target="_blank" rel="noopener" title="' + esc(url) + '">' + esc(displayUrl) + '</a>' +
+                '<div class="video-link-actions">' +
+                '<button class="video-btn-icon open" onclick="openVideoLink(' + i + ')" title="Buka link"></button>' +
+                '<button class="video-btn-icon del" onclick="removeVideoLink(' + i + ')" title="Hapus link">️</button>' +
+                '</div></div>';
+      });
+      html += '</div>';
+    }
+
+    // Input tambah link
+    html += '<div class="video-add-section">' +
+            '<div class="video-input-wrap">' +
+            '<input type="text" id="input-video" placeholder="Tempel URL video di sini (YouTube, Google Drive, dll)..." onkeypress="if(event.key===\'Enter\') addVideoLink()">' +
+            '</div>' +
+            '<button class="video-btn-add" onclick="addVideoLink()">➕ Tambah Link</button>' +
+            '</div>';
+
+    panel.innerHTML = html;
+  }
+
+  /* ---------- Tambah link ---------- */
+  window.addVideoLink = function() {
+    if (!currentVideoEdit) return;
+    const input = document.getElementById('input-video');
+    if (!input) return;
+    const url = input.value.trim();
+    if (!url) { showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
+
+    let finalUrl = url;
+    if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+      finalUrl = 'https://' + url;
+    }
+
+    const data = getVideoData(currentVideoEdit.videoIdx);
+    data.push(finalUrl);
+    setVideoData(currentVideoEdit.videoIdx, data);
+    input.value = '';
+    renderVideoModal();
+    showToast('✅ Link video berhasil ditambahkan!', 'success');
+  };
+
+  /* ---------- Hapus link ---------- */
+  window.removeVideoLink = function(idx) {
+    if (!currentVideoEdit) return;
+    if (!confirm('️ Yakin ingin menghapus link ini?\nLink akan hilang permanen.')) return;
+    const data = getVideoData(currentVideoEdit.videoIdx);
+    if (data[idx] !== undefined) {
+      data.splice(idx, 1);
+      setVideoData(currentVideoEdit.videoIdx, data);
+      renderVideoModal();
+      showToast('🗑️ Link berhasil dihapus', 'info');
+    }
+  };
+
+  /* ---------- Buka link ---------- */
+  window.openVideoLink = function(idx) {
+    if (!currentVideoEdit) return;
+    const data = getVideoData(currentVideoEdit.videoIdx);
+    const url = data[idx];
+    if (!url) { showToast('⚠️ Link tidak valid', 'error'); return; }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  /* ---------- Buka video langsung dari halaman (tanpa modal) ---------- */
+  window.bukaVideoLangsung = function(videoIdx) {
+    const data = getVideoData(videoIdx);
+    if (data.length === 0) {
+      showToast('⚠️ Belum ada link video. Klik ️ Kelola untuk menambah.', 'error');
+      return;
+    }
+    // Jika hanya 1 link, buka langsung
+    if (data.length === 1) {
+      window.open(data[0], '_blank', 'noopener,noreferrer');
+      showToast('🎬 Membuka video...', 'success');
+      return;
+    }
+    // Jika banyak link, buka modal
+    openVideoModal(videoIdx);
+  };
+
+  /* ---------- Helper escape HTML ---------- */
+  function esc(s){
+    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  }
+
+  /* ---------- Refresh halaman video untuk update badge ---------- */
+  function refreshVideoPage() {
+    const videoPage = document.getElementById('video');
+    if (!videoPage || !videoPage.classList.contains('active')) return;
+    enhanceVideoCards();
+  }
+
+  /* ============================================================
+   * ENHANCE VIDEO CARDS - Tambahkan badge & tombol di kartu video
+   ============================================================ */
+  function enhanceVideoCards() {
+    const videoPage = document.getElementById('video');
+    if (!videoPage) return;
+    const cards = videoPage.querySelectorAll('.link-box');
+    cards.forEach(function(card, idx){
+      // Jangan tambahkan 2x
+      if (card.querySelector('.a56-video-badges')) return;
+
+      const linkEl = card.querySelector('a');
+      if (!linkEl) return;
+
+      const data = getVideoData(idx);
+      const count = data.length;
+
+      // Buat badge jumlah link
+      const badges = document.createElement('div');
+      badges.className = 'a56-video-badges';
+      badges.innerHTML = '<span class="a56-video-badge ' + (count>0?'has-link':'') + '">🎬 Video: ' + count + ' link</span>';
+
+      // Sisipkan badge di dalam link-text
+      const linkText = card.querySelector('.link-text');
+      if (linkText) {
+        linkText.appendChild(badges);
+
+        // Tampilkan link pertama di bawah judul
+        if (count > 0) {
+          const linkDisplay = document.createElement('span');
+          linkDisplay.className = 'video-link-display has-link';
+          const firstUrl = data[0];
+          const displayUrl = firstUrl.length > 50 ? firstUrl.substring(0, 47) + '...' : firstUrl;
+          linkDisplay.textContent = '🔗 ' + displayUrl;
+          linkDisplay.title = firstUrl;
+          linkText.appendChild(linkDisplay);
+        }
+      }
+
+      // Ubah tombol "Tonton" menjadi "Kelola Link Video"
+      const arrowIcon = card.querySelector('.arrow-icon');
+      if (arrowIcon) {
+        arrowIcon.outerHTML = '<button class="a56-btn-video" onclick="openVideoModal(' + idx + ')" style="width:auto;padding:8px 14px;font-size:0.78rem;margin:0;">⚙️ Kelola</button>';
+      }
+
+      // Tambahkan tombol "Buka Video" jika ada link
+      if (count > 0) {
+        const btnBuka = document.createElement('button');
+        btnBuka.className = 'a56-btn-video';
+        btnBuka.onclick = function(){ bukaVideoLangsung(idx); };
+        btnBuka.innerHTML = '🎬 Buka Video' + (count > 1 ? ' (' + count + ')' : '');
+        card.appendChild(btnBuka);
+      }
+    });
+  }
+
+  /* ============================================================
+   * OBSERVER: Jalankan enhance saat halaman video aktif
+   ============================================================ */
+  const origGo = window.go;
+  window.go = function(id) {
+    if (typeof origGo === 'function') origGo(id);
+    if (id === 'video') {
+      setTimeout(enhanceVideoCards, 100);
+    }
+  };
+
+  /* ---------- Tutup modal saat tekan ESC ---------- */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('video-modal');
+      if (modal && modal.classList.contains('show')) {
+        closeVideoModal();
+      }
+    }
+  });
+
+  /* ---------- Tutup modal saat klik di luar ---------- */
+  document.addEventListener('click', function(e) {
+    const modal = document.getElementById('video-modal');
+    if (modal && modal.classList.contains('show')) {
+      if (e.target === modal) closeVideoModal();
+    }
+  }, true);
+
+  /* ---------- Jalankan saat halaman video sudah aktif ---------- */
+  document.addEventListener('DOMContentLoaded', function(){
+    const videoPage = document.getElementById('video');
+    if (videoPage && videoPage.classList.contains('active')) {
+      setTimeout(enhanceVideoCards, 300);
+    }
+  });
+
+  console.log('✅ Patch Video Permanen berhasil dimuat');
+})();
+</script>
+<!-- ========== VIDEO PERMANEN - JAVASCRIPT [END] ========== -->
 </body>
 </html>
