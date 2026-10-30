@@ -7649,5 +7649,1059 @@ console.log('✅ Patch Link Permanen Dokumen (kecuali Materi) berhasil dimuat');
 })();
 </script>
 <!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - END ========== -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH FINAL: SIMPAN PERMANEN KE HTML + TARGET _self ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== TOMBOL SIMPAN PERMANEN DI HEADER ===== */
+.a56-save-permanent-wrap {
+  max-width: 1280px; margin: 0 auto; padding: 0 1.5rem;
+  display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;
+  margin-top: -1rem; margin-bottom: 1rem; position: relative; z-index: 5;
+}
+.a56-save-permanent-btn {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff; border: none; padding: 11px 20px; border-radius: 100px;
+  font-size: 0.85rem; font-weight: 700; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 6px 18px rgba(5,150,105,0.35);
+  transition: all 0.3s ease; font-family: inherit;
+}
+.a56-save-permanent-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(5,150,105,0.45);
+  filter: brightness(1.08);
+}
+.a56-save-permanent-btn.export {
+  background: linear-gradient(135deg, #1e40af, #1e3a8a);
+  box-shadow: 0 6px 18px rgba(30,64,175,0.35);
+}
+.a56-save-permanent-btn.export:hover {
+  box-shadow: 0 10px 26px rgba(30,64,175,0.45);
+}
+.a56-save-permanent-btn.reset {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  box-shadow: 0 6px 18px rgba(220,38,38,0.3);
+}
+.a56-save-permanent-btn.reset:hover {
+  box-shadow: 0 10px 26px rgba(220,38,38,0.4);
+}
+
+/* ===== MODAL KONFIRMASI SIMPAN ===== */
+.a56-confirm-modal {
+  position: fixed; inset: 0;
+  background: rgba(11,30,84,0.85);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100009; padding: 20px;
+}
+.a56-confirm-modal.show { display: flex; }
+.a56-confirm-box {
+  background: #fff; border-radius: 20px; max-width: 560px; width: 100%;
+  max-height: 90vh; overflow-y: auto;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.4);
+  animation: a56Pop 0.35s cubic-bezier(.22,1,.36,1);
+}
+@keyframes a56Pop {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.a56-confirm-header {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff; padding: 22px 24px;
+  border-radius: 20px 20px 0 0;
+}
+.a56-confirm-header h3 {
+  font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
+  font-weight: 700; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.a56-confirm-header p { font-size: 0.85rem; opacity: 0.9; }
+.a56-confirm-body { padding: 22px 24px; }
+.a56-confirm-info {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid #10b981;
+  color: #065f46; padding: 14px 16px; border-radius: 10px;
+  font-size: 0.85rem; line-height: 1.5; margin-bottom: 16px;
+}
+.a56-confirm-info strong { color: #047857; }
+.a56-confirm-info ol { margin: 8px 0 0 20px; }
+.a56-confirm-info ol li { margin-bottom: 4px; }
+.a56-confirm-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin-bottom: 16px;
+}
+.a56-confirm-stat {
+  background: #f8fafc; border: 1px solid #e2e8f0;
+  padding: 12px; border-radius: 10px; text-align: center;
+}
+.a56-confirm-stat .num {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem; font-weight: 700; color: #059669;
+  display: block;
+}
+.a56-confirm-stat .label {
+  font-size: 0.72rem; color: #64748b; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.a56-confirm-actions {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.a56-confirm-btn {
+  flex: 1; min-width: 140px;
+  padding: 12px 18px; border: none; border-radius: 10px;
+  font-size: 0.88rem; font-weight: 700; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.25s ease; font-family: inherit;
+}
+.a56-confirm-btn.primary {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff; box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+}
+.a56-confirm-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(5,150,105,0.4);
+}
+.a56-confirm-btn.secondary {
+  background: #f1f5f9; color: #475569;
+}
+.a56-confirm-btn.secondary:hover { background: #e2e8f0; }
+.a56-confirm-status {
+  padding: 10px; border-radius: 8px; font-size: 0.82rem;
+  font-weight: 600; text-align: center; margin-top: 12px;
+  display: none;
+}
+.a56-confirm-status.success {
+  display: block; background: #ecfdf5; color: #059669;
+  border: 1px solid #a7f3d0;
+}
+.a56-confirm-status.error {
+  display: block; background: #fef2f2; color: #dc2626;
+  border: 1px solid #fecaca;
+}
+@media (max-width: 600px) {
+  .a56-save-permanent-wrap { padding: 0 1rem; justify-content: center; }
+  .a56-save-permanent-btn { font-size: 0.78rem; padding: 9px 14px; }
+  .a56-confirm-stats { grid-template-columns: 1fr; }
+  .a56-confirm-actions { flex-direction: column; }
+  .a56-confirm-btn { width: 100%; }
+}
+</style>
+
+<!-- ===== TOMBOL SIMPAN PERMANEN (disisipkan via JS ke header Administrasi) ===== -->
+
+<!-- ===== MODAL KONFIRMASI ===== -->
+<div class="a56-confirm-modal" id="a56-confirm-modal" role="dialog" aria-modal="true">
+  <div class="a56-confirm-box">
+    <div class="a56-confirm-header">
+      <h3>💾 Simpan Link Permanen ke HTML</h3>
+      <p>Export semua link ke file HTML untuk upload ke GitHub</p>
+    </div>
+    <div class="a56-confirm-body">
+      <div class="a56-confirm-info">
+        <strong>📋 Cara Kerja:</strong>
+        <ol>
+          <li>Sistem mengambil semua link dari browser ini</li>
+          <li>Menulisnya langsung ke dalam file HTML</li>
+          <li>Download file HTML baru yang sudah ter-update</li>
+          <li><strong>Upload file baru ke GitHub</strong> → link jadi permanen!</li>
+        </ol>
+      </div>
+      <div class="a56-confirm-stats" id="a56-confirm-stats"></div>
+      <div class="a56-confirm-actions">
+        <button class="a56-confirm-btn primary" onclick="a56DoExportHTML()">
+          ⬇️ Download HTML Baru
+        </button>
+        <button class="a56-confirm-btn secondary" onclick="a56CloseConfirm()">
+          ✖ Batal
+        </button>
+      </div>
+      <div class="a56-confirm-status" id="a56-confirm-status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH FINAL: SIMPAN PERMANEN KE HTML + TARGET _self
+*
+* FITUR:
+* 1. Tombol "💾 Simpan Permanen" di header Administrasi BK56
+* 2. Export semua link (materi, dokumen, video) ke file HTML
+* 3. Link menjadi PERMANEN saat file di-upload ke GitHub
+* 4. SEMUA link buka dengan target="_self" (di halaman yang sama)
+*
+* CARA KERJA:
+* - Link disimpan di localStorage (per-browser)
+* - Tombol "Simpan Permanen" → export ke HTML → download
+* - Upload file HTML baru ke GitHub → link jadi permanen di semua device
+================================================================ */
+
+/* ================================================================
+* 🔧 HELPER FUNCTIONS
+================================================================ */
+function a56EscStr(s) {
+  return JSON.stringify(String(s == null ? '' : s));
+}
+
+/* ================================================================
+* 📊 HITUNG STATISTIK LINK
+================================================================ */
+function a56CountAllLinks() {
+  let materiCount = 0, docCount = 0, videoCount = 0;
+  let materiWithLinks = 0, docWithLinks = 0, videoWithLinks = 0;
+
+  // Hitung link materi
+  try {
+    const materiRaw = localStorage.getItem('bk56_materi_links');
+    if (materiRaw) {
+      const materiData = JSON.parse(materiRaw);
+      for (const key in materiData) {
+        const d = materiData[key];
+        const total = (d.ppt||[]).length + (d.pdf||[]).length + (d.doc||[]).length + (d.video||[]).length;
+        materiCount += total;
+        if (total > 0) materiWithLinks++;
+      }
+    }
+  } catch(e) {}
+
+  // Hitung link dokumen
+  try {
+    const docRaw = localStorage.getItem('bk56_doc_links');
+    if (docRaw) {
+      const docData = JSON.parse(docRaw);
+      for (const key in docData) {
+        const arr = docData[key] || [];
+        docCount += arr.length;
+        if (arr.length > 0) docWithLinks++;
+      }
+    }
+  } catch(e) {}
+
+  // Hitung link video
+  try {
+    const videoRaw = localStorage.getItem('bk56_video_links');
+    if (videoRaw) {
+      const videoData = JSON.parse(videoRaw);
+      for (const key in videoData) {
+        const arr = videoData[key] || [];
+        videoCount += arr.length;
+        if (arr.length > 0) videoWithLinks++;
+      }
+    }
+  } catch(e) {}
+
+  return {
+    materi: materiCount, materiWithLinks: materiWithLinks,
+    doc: docCount, docWithLinks: docWithLinks,
+    video: videoCount, videoWithLinks: videoWithLinks,
+    total: materiCount + docCount + videoCount
+  };
+}
+
+/* ================================================================
+* 🔄 SYNC: localStorage → array DOCS (memory)
+* Link dari localStorage ditulis ke properti "links" di DOCS
+================================================================ */
+function a56SyncLinksToDocs() {
+  if (typeof DOCS === 'undefined') return;
+
+  // Sync link dokumen (bk56_doc_links)
+  try {
+    const docRaw = localStorage.getItem('bk56_doc_links');
+    if (docRaw) {
+      const docData = JSON.parse(docRaw);
+      for (const idxStr in docData) {
+        const idx = parseInt(idxStr);
+        if (DOCS[idx]) {
+          const arr = docData[idxStr] || [];
+          // Simpan ke properti links[]
+          if (!DOCS[idx].links) DOCS[idx].links = [];
+          // Merge, hindari duplikat
+          arr.forEach(url => {
+            if (url && DOCS[idx].links.indexOf(url) === -1) {
+              DOCS[idx].links.push(url);
+            }
+          });
+          // Jika link utama kosong tapi ada links, pakai links[0] sebagai link
+          if ((!DOCS[idx].link || DOCS[idx].link === '') && DOCS[idx].links.length > 0) {
+            DOCS[idx].link = DOCS[idx].links[0];
+          }
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Sync link video (bk56_video_links)
+  try {
+    const videoRaw = localStorage.getItem('bk56_video_links');
+    if (videoRaw) {
+      const videoData = JSON.parse(videoRaw);
+      for (const idxStr in videoData) {
+        const idx = parseInt(idxStr);
+        if (DOCS[idx]) {
+          const arr = videoData[idxStr] || [];
+          if (!DOCS[idx].videoLinks) DOCS[idx].videoLinks = [];
+          arr.forEach(url => {
+            if (url && DOCS[idx].videoLinks.indexOf(url) === -1) {
+              DOCS[idx].videoLinks.push(url);
+            }
+          });
+        }
+      }
+    }
+  } catch(e) {}
+
+  // Sync link materi (bk56_materi_links) - format: "kelas_guru_materiIdx"
+  try {
+    const materiRaw = localStorage.getItem('bk56_materi_links');
+    if (materiRaw) {
+      const materiData = JSON.parse(materiRaw);
+      // Cari semua dokumen kategori 'materi'
+      let materiCounterPerGuru = {};
+      DOCS.forEach((d, idx) => {
+        if (d.kat === 'materi') {
+          const key = d.kelas + '_' + d.guru;
+          if (!materiCounterPerGuru[key]) materiCounterPerGuru[key] = 0;
+          const materiKey = key + '_' + materiCounterPerGuru[key];
+          if (materiData[materiKey]) {
+            const md = materiData[materiKey];
+            const allLinks = [].concat(md.ppt||[], md.pdf||[], md.doc||[], md.video||[]);
+            if (!DOCS[idx].materiLinks) DOCS[idx].materiLinks = {};
+            DOCS[idx].materiLinks = {
+              ppt: md.ppt || [],
+              pdf: md.pdf || [],
+              doc: md.doc || [],
+              video: md.video || []
+            };
+            // Gabung semua ke links
+            if (!DOCS[idx].links) DOCS[idx].links = [];
+            allLinks.forEach(url => {
+              if (url && DOCS[idx].links.indexOf(url) === -1) {
+                DOCS[idx].links.push(url);
+              }
+            });
+          }
+          materiCounterPerGuru[key]++;
+        }
+      });
+    }
+  } catch(e) {}
+}
+
+/* ================================================================
+* 📝 SERIALIZE: array DOCS → string JavaScript
+================================================================ */
+function a56SerializeDocs() {
+  if (typeof DOCS === 'undefined') return '';
+  let result = 'const DOCS = [];\n';
+  result += 'function D(kelas,guru,kat,nama,link,links,videoLinks,materiLinks){ DOCS.push({kelas:kelas,guru:guru,kat:kat,nama:nama,link:link||"",links:links||[],videoLinks:videoLinks||[],materiLinks:materiLinks||null}); }\n';
+
+  DOCS.forEach(d => {
+    const links = d.links || [];
+    const videoLinks = d.videoLinks || [];
+    const materiLinks = d.materiLinks || null;
+    const mainLink = d.link || (links.length > 0 ? links[0] : '');
+
+    result += 'D(' +
+      a56EscStr(d.kelas) + ',' +
+      a56EscStr(d.guru) + ',' +
+      a56EscStr(d.kat) + ',' +
+      a56EscStr(d.nama) + ',' +
+      a56EscStr(mainLink) + ',' +
+      JSON.stringify(links) + ',' +
+      JSON.stringify(videoLinks) + ',' +
+      (materiLinks ? JSON.stringify(materiLinks) : 'null') +
+      ');\n';
+  });
+
+  return result;
+}
+
+/* ================================================================
+* 🔀 REPLACE DOCS di HTML
+================================================================ */
+function a56ReplaceDocsInHTML(html, newDocsStr) {
+  // Cari dari "const DOCS = [];" sampai "const KAT = {"
+  const startMarker = 'const DOCS = [];';
+  const endMarker = 'const KAT = {';
+
+  const startIdx = html.indexOf(startMarker);
+  const endIdx = html.indexOf(endMarker);
+
+  if (startIdx === -1 || endIdx === -1) {
+    console.error('❌ Tidak dapat menemukan marker DOCS di HTML');
+    return null;
+  }
+
+  return html.substring(0, startIdx) + newDocsStr + '\n' + html.substring(endIdx);
+}
+
+/* ================================================================
+* 📥 DOWNLOAD HTML
+================================================================ */
+function a56DownloadHTML(html, filename) {
+  try {
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    return true;
+  } catch(e) {
+    console.error('❌ Gagal download:', e);
+    return false;
+  }
+}
+
+/* ================================================================
+* 🎯 FUNGSI UTAMA: EXPORT HTML
+================================================================ */
+window.a56OpenConfirm = function() {
+  // Sync dulu
+  a56SyncLinksToDocs();
+
+  // Hitung statistik
+  const stats = a56CountAllLinks();
+  const statsEl = document.getElementById('a56-confirm-stats');
+  if (statsEl) {
+    statsEl.innerHTML =
+      '<div class="a56-confirm-stat"><span class="num">' + stats.materi + '</span><span class="label">📚 Link Materi</span></div>' +
+      '<div class="a56-confirm-stat"><span class="num">' + stats.doc + '</span><span class="label">📄 Link Dokumen</span></div>' +
+      '<div class="a56-confirm-stat"><span class="num">' + stats.video + '</span><span class="label">🎬 Link Video</span></div>';
+  }
+
+  document.getElementById('a56-confirm-status').className = 'a56-confirm-status';
+  document.getElementById('a56-confirm-status').textContent = '';
+  document.getElementById('a56-confirm-modal').classList.add('show');
+};
+
+window.a56CloseConfirm = function() {
+  document.getElementById('a56-confirm-modal').classList.remove('show');
+};
+
+window.a56DoExportHTML = function() {
+  const statusEl = document.getElementById('a56-confirm-status');
+
+  try {
+    // 1. Sync links ke DOCS
+    a56SyncLinksToDocs();
+
+    // 2. Ambil HTML asli
+    // Prioritas: dari localStorage (jika ada), atau dari document
+    let html = localStorage.getItem('bk_custom_html');
+    if (!html) {
+      html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    }
+
+    // 3. Serialize DOCS yang sudah di-update
+    const newDocsStr = a56SerializeDocs();
+
+    // 4. Replace DOCS di HTML
+    const newHTML = a56ReplaceDocsInHTML(html, newDocsStr);
+    if (!newHTML) {
+      statusEl.className = 'a56-confirm-status error';
+      statusEl.textContent = '❌ Gagal: tidak dapat menemukan bagian DOCS di HTML';
+      return;
+    }
+
+    // 5. Download
+    const timestamp = new Date().toISOString().slice(0,16).replace(/[:T]/g,'-');
+    const filename = 'index-' + timestamp + '.html';
+    const success = a56DownloadHTML(newHTML, filename);
+
+    if (success) {
+      const stats = a56CountAllLinks();
+      statusEl.className = 'a56-confirm-status success';
+      statusEl.innerHTML = '✅ File "' + filename + '" berhasil didownload!<br>' +
+        '<small style="font-weight:500;opacity:0.85;">Total ' + stats.total + ' link tersimpan permanen. Upload file ini ke GitHub.</small>';
+
+      if (typeof showToast === 'function') {
+        showToast('✅ HTML berhasil diexport! Upload ke GitHub.', 'success');
+      }
+
+      // Tutup modal otomatis setelah 4 detik
+      setTimeout(function() {
+        a56CloseConfirm();
+      }, 5000);
+    } else {
+      statusEl.className = 'a56-confirm-status error';
+      statusEl.textContent = '❌ Gagal mendownload file';
+    }
+  } catch(e) {
+    console.error('❌ Export error:', e);
+    statusEl.className = 'a56-confirm-status error';
+    statusEl.textContent = '❌ Error: ' + e.message;
+  }
+};
+
+/* ================================================================
+* 🎯 TARGET _self: Override semua fungsi buka link
+================================================================ */
+function a56PatchTargetSelf() {
+  // 1. Override bukaDoc (dokumen utama)
+  if (typeof window.bukaDoc === 'function') {
+    const _origBukaDoc = window.bukaDoc;
+    window.bukaDoc = function(idx) {
+      const link = DOCS[idx].link;
+      if (!link || link.trim() === '') {
+        if (typeof showToast === 'function') showToast('⚠️ Link belum diisi.', 'error');
+        return;
+      }
+      let url = link;
+      if (!link.startsWith('http://') && !link.startsWith('https://')) url = 'https://' + link;
+      // 🔑 TARGET _self
+      if (typeof showToast === 'function') showToast('📂 Membuka dokumen...', 'success');
+      setTimeout(function() { window.location.href = url; }, 200);
+    };
+  }
+
+  // 2. Override openMateriLink (link di modal materi)
+  if (typeof window.openMateriLink === 'function') {
+    window.openMateriLink = function(idx, type) {
+      if (typeof currentMateriEdit === 'undefined' || !currentMateriEdit) return;
+      const { kelas, guru, materiIdx } = currentMateriEdit;
+      const data = (typeof getMateriData === 'function') ? getMateriData(kelas, guru, materiIdx) : {ppt:[],pdf:[],doc:[],video:[]};
+      const url = data[type] && data[type][idx];
+      if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+      // 🔑 TARGET _self
+      if (typeof showToast === 'function') showToast('📂 Membuka materi...', 'success');
+      setTimeout(function() { window.location.href = url; }, 200);
+    };
+  }
+
+  // 3. Override openDocLink (link di modal dokumen)
+  if (typeof window.openDocLink === 'function') {
+    window.openDocLink = function(idx) {
+      if (typeof currentLinkEdit === 'undefined' || !currentLinkEdit) return;
+      const data = (typeof getDocLinkData === 'function') ? getDocLinkData(currentLinkEdit.docIdx) : [];
+      const url = data[idx];
+      if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+      // 🔑 TARGET _self
+      if (typeof showToast === 'function') showToast('📂 Membuka dokumen...', 'success');
+      setTimeout(function() { window.location.href = url; }, 200);
+    };
+  }
+
+  // 4. Override openVideoLink (link di modal video)
+  if (typeof window.openVideoLink === 'function') {
+    window.openVideoLink = function(idx) {
+      if (typeof currentVideoEdit === 'undefined' || !currentVideoEdit) return;
+      const data = (typeof getVideoData === 'function') ? getVideoData(currentVideoEdit.videoIdx) : [];
+      const url = data[idx];
+      if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+      // 🔑 TARGET _self
+      if (typeof showToast === 'function') showToast('🎬 Membuka video...', 'success');
+      setTimeout(function() { window.location.href = url; }, 200);
+    };
+  }
+
+  // 5. Override bukaVideoLangsung
+  if (typeof window.bukaVideoLangsung === 'function') {
+    window.bukaVideoLangsung = function(videoIdx) {
+      const data = (typeof getVideoData === 'function') ? getVideoData(videoIdx) : [];
+      if (data.length === 0) {
+        if (typeof showToast === 'function') showToast('⚠️ Belum ada link video.', 'error');
+        return;
+      }
+      if (data.length === 1) {
+        // 🔑 TARGET _self
+        if (typeof showToast === 'function') showToast('🎬 Membuka video...', 'success');
+        setTimeout(function() { window.location.href = data[0]; }, 200);
+        return;
+      }
+      if (typeof openVideoModal === 'function') openVideoModal(videoIdx);
+    };
+  }
+
+  console.log('✅ Semua fungsi buka link sudah di-patch ke target="_self"');
+}
+
+/* ================================================================
+* 🎨 SISIPKAN TOMBOL SIMPAN PERMANEN ke header Administrasi BK56
+================================================================ */
+function a56InjectSaveButton() {
+  const header = document.querySelector('.a56-header-content');
+  if (!header) return;
+  // Jangan inject 2x
+  if (document.getElementById('a56-save-wrap')) return;
+
+  const wrap = document.createElement('div');
+  wrap.id = 'a56-save-wrap';
+  wrap.className = 'a56-save-permanent-wrap';
+  wrap.innerHTML =
+    '<button class="a56-save-permanent-btn" onclick="a56OpenConfirm()" title="Export semua link ke file HTML untuk upload ke GitHub">' +
+    '<span>💾</span> Simpan Permanen ke HTML' +
+    '</button>';
+
+  // Sisipkan setelah stats-bar
+  const statsBar = header.querySelector('.a56-stats-bar');
+  if (statsBar && statsBar.parentNode === header) {
+    statsBar.parentNode.insertBefore(wrap, statsBar.nextSibling);
+  } else {
+    header.appendChild(wrap);
+  }
+}
+
+/* ================================================================
+* 🔗 Tutup modal dengan ESC & klik di luar
+================================================================ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('a56-confirm-modal');
+    if (modal && modal.classList.contains('show')) a56CloseConfirm();
+  }
+});
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('a56-confirm-modal');
+  if (modal && modal.classList.contains('show')) {
+    if (e.target === modal) a56CloseConfirm();
+  }
+}, true);
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+document.addEventListener('DOMContentLoaded', function() {
+  // 1. Inject tombol simpan permanen
+  setTimeout(a56InjectSaveButton, 500);
+
+  // 2. Sync links dari localStorage ke DOCS
+  setTimeout(a56SyncLinksToDocs, 300);
+
+  // 3. Patch semua fungsi buka link ke target _self
+  setTimeout(a56PatchTargetSelf, 400);
+
+  console.log('✅ Patch FINAL: Simpan Permanen + Target _self berhasil dimuat');
+  console.log('💾 Klik tombol "Simpan Permanen ke HTML" untuk export link ke file');
+  console.log('🎯 Semua link sekarang buka di halaman yang sama (target="_self")');
+});
+
+// Fallback jika DOMContentLoaded sudah terlanjur lewat
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(function() {
+    a56InjectSaveButton();
+    a56SyncLinksToDocs();
+    a56PatchTargetSelf();
+  }, 500);
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH FINAL: SIMPAN PERMANEN + TARGET _self - END ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: SIMPAN PERMANEN - HIDDEN + 3x KLIK ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== TOMBOL SIMPAN PERMANEN: DEFAULT TERSEMBUNYI ===== */
+.a56-save-permanent-wrap {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-20px);
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(.22,1,.36,1);
+  max-height: 0;
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+.a56-save-permanent-wrap.revealed {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+  max-height: 120px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  animation: revealBtn 0.6s cubic-bezier(.22,1,.36,1);
+}
+@keyframes revealBtn {
+  0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+  60% { opacity: 1; transform: translateY(5px) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ===== HINT VISUAL: AREA KOSONG BISA DIKLIK 3x ===== */
+.a56-container {
+  position: relative;
+  cursor: default;
+}
+.a56-container.clickable-hint {
+  cursor: pointer;
+}
+.a56-container.clickable-hint:hover {
+  /* subtle hint - tidak mengganggu */
+}
+
+/* ===== INDICATOR KLIK (muncul saat klik 1x, 2x) ===== */
+.a56-click-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(5,150,105,0.35);
+  z-index: 100010;
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.a56-click-indicator.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+.a56-click-indicator .click-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fbbf24;
+  box-shadow: 0 0 8px #fbbf24;
+  animation: pulseDot 1s infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.3); }
+}
+
+/* ===== RIPPLE EFFECT saat klik di area kosong ===== */
+.a56-click-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(5,150,105,0.25) 0%, transparent 70%);
+  pointer-events: none;
+  transform: scale(0);
+  animation: rippleExpand 0.8s ease-out forwards;
+  z-index: 1;
+}
+@keyframes rippleExpand {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
+}
+
+/* ===== NOTIFIKASI BERHASIL REVEAL ===== */
+.a56-reveal-toast {
+  position: fixed;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #fff;
+  padding: 14px 24px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 12px 32px rgba(5,150,105,0.4);
+  z-index: 100011;
+  opacity: 0;
+  transition: all 0.4s ease;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.a56-reveal-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ===== TOMBOL TUTUP (X) di samping tombol simpan ===== */
+.a56-save-hide-btn {
+  background: rgba(220,38,38,0.1);
+  color: #dc2626;
+  border: 1px solid rgba(220,38,38,0.3);
+  padding: 9px 14px;
+  border-radius: 100px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+.a56-save-hide-btn:hover {
+  background: rgba(220,38,38,0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220,38,38,0.2);
+}
+
+@media (max-width: 600px) {
+  .a56-click-indicator {
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+    font-size: 0.75rem;
+    padding: 8px 14px;
+  }
+}
+</style>
+
+<!-- Indikator klik -->
+<div class="a56-click-indicator" id="a56-click-indicator">
+  <span class="click-dot"></span>
+  <span id="a56-click-text">Klik 2x lagi untuk membuka fitur admin</span>
+</div>
+
+<!-- Toast reveal -->
+<div class="a56-reveal-toast" id="a56-reveal-toast">
+  ✅ Fitur Simpan Permanen berhasil dibuka!
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: SIMPAN PERMANEN - HIDDEN + 3x KLIK DI AREA KOSONG
+*
+* FITUR:
+* 1. Tombol "Simpan Permanen" default TERSEMBUNYI
+* 2. Muncul setelah klik 3x di area kosong Administrasi BK56
+* 3. Ada indikator visual saat klik 1x, 2x
+* 4. Ripple effect saat klik
+* 5. Tombol bisa disembunyikan lagi via tombol X
+*
+* AREA KOSONG = area di .a56-container yang BUKAN elemen interaktif
+================================================================ */
+
+let a56ClickCount = 0;
+let a56ClickTimer = null;
+const A56_CLICK_THRESHOLD = 3;
+const A56_CLICK_TIMEOUT = 1200; // ms antara klik
+let a56Revealed = false;
+
+/* ================================================================
+* 🔍 CEK APAKAH KLIK DI "AREA KOSONG"
+* (bukan di tombol, link, card, chip, input, dll)
+================================================================ */
+function isAreaKosong(target) {
+  // Jika klik di elemen interaktif → BUKAN area kosong
+  const interactiveSelectors = [
+    'button', 'a', 'input', 'select', 'textarea',
+    '.a56-card', '.a56-chip', '.a56-tab-btn',
+    '.a56-btn', '.a56-btn-materi', '.a56-btn-materi-open-final',
+    '.a56-btn-link-open', '.a56-btn-video',
+    '.a56-materi-badges', '.a56-video-badges', '.a56-link-badges',
+    '.a56-guru-badge', '.a56-link-embedded',
+    '.a56-save-permanent-btn', '.a56-save-hide-btn',
+    '.a56-info-tip', '.a56-panel-header',
+    '.a56-filter', '.a56-count-info',
+    '.a56-empty', '.a56-footer',
+    '[onclick]', '[role="button"]',
+    'label', '.materi-modal', '.video-modal',
+    '.link-modal', '.adm56-login-modal', '.adm56-admin-modal'
+  ];
+  
+  for (let i = 0; i < interactiveSelectors.length; i++) {
+    if (target.closest(interactiveSelectors[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/* ================================================================
+* 🎯 PROSESS KLIK DI AREA KOSONG
+================================================================ */
+function handleAreaKosongClick(e) {
+  if (a56Revealed) return; // sudah terbuka, tidak perlu hitung lagi
+  
+  const container = document.querySelector('.a56-container');
+  if (!container) return;
+  
+  // Cek apakah klik di area kosong
+  if (!isAreaKosong(e.target)) {
+    // Reset counter jika klik di elemen interaktif
+    a56ClickCount = 0;
+    clearTimeout(a56ClickTimer);
+    hideClickIndicator();
+    return;
+  }
+  
+  // Tambahkan ripple effect
+  createRipple(e, container);
+  
+  // Increment counter
+  a56ClickCount++;
+  
+  // Tampilkan indikator
+  showClickIndicator(a56ClickCount);
+  
+  // Reset timer
+  clearTimeout(a56ClickTimer);
+  a56ClickTimer = setTimeout(function() {
+    a56ClickCount = 0;
+    hideClickIndicator();
+  }, A56_CLICK_TIMEOUT);
+  
+  // Cek threshold
+  if (a56ClickCount >= A56_CLICK_THRESHOLD) {
+    a56ClickCount = 0;
+    clearTimeout(a56ClickTimer);
+    hideClickIndicator();
+    revealSaveButton();
+  }
+}
+
+/* ================================================================
+* 💫 RIPPLE EFFECT
+================================================================ */
+function createRipple(e, container) {
+  const rect = container.getBoundingClientRect();
+  const ripple = document.createElement('div');
+  ripple.className = 'a56-click-ripple';
+  const size = 60;
+  ripple.style.width = size + 'px';
+  ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  container.appendChild(ripple);
+  setTimeout(function() {
+    if (ripple.parentNode) ripple.parentNode.removeChild(ripple);
+  }, 800);
+}
+
+/* ================================================================
+* 📢 INDIKATOR KLIK (muncul di pojok kanan atas)
+================================================================ */
+function showClickIndicator(count) {
+  const indicator = document.getElementById('a56-click-indicator');
+  const text = document.getElementById('a56-click-text');
+  if (!indicator || !text) return;
+  
+  const remaining = A56_CLICK_THRESHOLD - count;
+  if (remaining <= 0) {
+    text.textContent = '✅ Fitur admin dibuka!';
+  } else if (remaining === 1) {
+    text.textContent = 'Klik 1x lagi untuk membuka fitur admin';
+  } else {
+    text.textContent = 'Klik ' + remaining + 'x lagi untuk membuka fitur admin';
+  }
+  
+  indicator.classList.add('show');
+}
+
+function hideClickIndicator() {
+  const indicator = document.getElementById('a56-click-indicator');
+  if (indicator) indicator.classList.remove('show');
+}
+
+/* ================================================================
+* 🎉 REVEAL TOMBOL SIMPAN PERMANEN
+================================================================ */
+function revealSaveButton() {
+  const wrap = document.querySelector('.a56-save-permanent-wrap');
+  if (!wrap) {
+    if (typeof showToast === 'function') {
+      showToast('⚠️ Tombol Simpan Permanen belum tersedia', 'error');
+    }
+    return;
+  }
+  
+  // Tambahkan tombol "X" untuk menyembunyikan lagi
+  if (!wrap.querySelector('.a56-save-hide-btn')) {
+    const hideBtn = document.createElement('button');
+    hideBtn.className = 'a56-save-hide-btn';
+    hideBtn.innerHTML = '✖ Sembunyikan';
+    hideBtn.title = 'Sembunyikan tombol ini lagi';
+    hideBtn.onclick = function(e) {
+      e.stopPropagation();
+      hideSaveButton();
+    };
+    wrap.appendChild(hideBtn);
+  }
+  
+  wrap.classList.add('revealed');
+  a56Revealed = true;
+  
+  // Tampilkan toast
+  const toast = document.getElementById('a56-reveal-toast');
+  if (toast) {
+    toast.classList.add('show');
+    setTimeout(function() {
+      toast.classList.remove('show');
+    }, 3000);
+  }
+  
+  if (typeof showToast === 'function') {
+    showToast('✅ Fitur Simpan Permanen dibuka!', 'success');
+  }
+  
+  // Scroll ke tombol
+  setTimeout(function() {
+    wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+}
+
+/* ================================================================
+* 🙈 SEMBUNYIKAN LAGI TOMBOL
+================================================================ */
+function hideSaveButton() {
+  const wrap = document.querySelector('.a56-save-permanent-wrap');
+  if (!wrap) return;
+  
+  wrap.classList.remove('revealed');
+  a56Revealed = false;
+  
+  if (typeof showToast === 'function') {
+    showToast('🙈 Tombol Simpan Permanen disembunyikan', 'info');
+  }
+}
+
+/* ================================================================
+* 🚀 INISIALISASI
+================================================================ */
+function initHiddenSaveButton() {
+  const container = document.querySelector('.a56-container');
+  if (!container) {
+    // Retry jika belum ada
+    setTimeout(initHiddenSaveButton, 500);
+    return;
+  }
+  
+  // Tambahkan event listener untuk klik di area kosong
+  container.addEventListener('click', handleAreaKosongClick, true);
+  
+  // Tambahkan class hint (opsional - untuk styling)
+  container.classList.add('clickable-hint');
+  
+  console.log('✅ Patch Hidden Save Button berhasil dimuat');
+  console.log('💡 Klik 3x di area kosong Administrasi BK56 untuk membuka tombol Simpan Permanen');
+}
+
+// Jalankan saat DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initHiddenSaveButton);
+} else {
+  initHiddenSaveButton();
+}
+
+// Expose ke global (untuk debugging)
+window.a56RevealSaveButton = revealSaveButton;
+window.a56HideSaveButton = hideSaveButton;
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: SIMPAN PERMANEN - HIDDEN + 3x KLIK - END ========== -->
+<!-- ================================================================ -->
 </body>
 </html>
