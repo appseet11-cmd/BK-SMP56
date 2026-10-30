@@ -7650,348 +7650,301 @@ console.log('✅ Patch Link Permanen Dokumen (kecuali Materi) berhasil dimuat');
 </script>
 <!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - END ========== -->
 <!-- ================================================================ -->
-<!-- ========== PATCH: BK56 APPS SCRIPT INTEGRATION - START ========== -->
+<!-- ========== PATCH: APPS SCRIPT AUTO-SYNC - START ========== -->
 <!-- ================================================================ -->
 <script>
 (function(){
 "use strict";
 
 /* ================================================================
- * KONFIGURASI
- * ================================================================ */
-const BK56_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec"; // ← GANTI INI
-
-// Fallback ke localStorage jika Apps Script gagal
-const BK56_FALLBACK_KEY = 'bk56_doc_links_fallback';
-const BK56_CACHE_KEY = 'bk56_doc_links_cache';
-const BK56_CACHE_TTL = 5 * 60 * 1000; // 5 menit
+* KONFIGURASI APPS SCRIPT
+* GANTI URL DI BAWAH INI DENGAN URL APPS SCRIPT ANDA
+=============================================================== */
+const BK56_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
 
 /* ================================================================
- * HELPER: Cek apakah Apps Script tersedia
- * ================================================================ */
-function isAppsScriptConfigured() {
+* HELPER: Cek apakah Apps Script sudah dikonfigurasi
+=============================================================== */
+function isAppsScriptReady() {
   return BK56_APPS_SCRIPT_URL && 
          BK56_APPS_SCRIPT_URL !== 'PASTE_URL_APPS_SCRIPT_DI_SINI' &&
          BK56_APPS_SCRIPT_URL.startsWith('https://script.google.com/');
 }
 
 /* ================================================================
- * HELPER: Fetch dengan timeout
- * ================================================================ */
-async function fetchWithTimeout(url, options = {}, timeout = 10000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  
-  try {
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal
-    });
-    clearTimeout(id);
-    return response;
-  } catch(err) {
-    clearTimeout(id);
-    throw err;
-  }
-}
-
-/* ================================================================
- * API: Ambil semua link dari Apps Script
- * ================================================================ */
-async function bk56FetchAllLinks() {
-  if (!isAppsScriptConfigured()) {
+* HELPER: Kirim data ke Apps Script
+=============================================================== */
+async function sendToAppsScript(action, data) {
+  if (!isAppsScriptReady()) {
     console.warn('bk56: Apps Script URL belum dikonfigurasi');
-    return null;
+    return { success: false, error: 'URL belum dikonfigurasi' };
   }
   
   try {
-    const url = BK56_APPS_SCRIPT_URL + '?action=getAll&_=' + Date.now();
-    const response = await fetchWithTimeout(url, { method: 'GET' });
-    
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      // Simpan ke cache
-      localStorage.setItem(BK56_CACHE_KEY, JSON.stringify({
-        data: result.data,
-        timestamp: Date.now()
-      }));
-      return result.data;
-    }
-    
-    throw new Error(result.error || 'Unknown error');
-  } catch(err) {
-    console.error('bk56: gagal fetch dari Apps Script', err);
-    
-    // Fallback ke cache
-    const cached = localStorage.getItem(BK56_CACHE_KEY);
-    if (cached) {
-      try {
-        const cacheData = JSON.parse(cached);
-        if (Date.now() - cacheData.timestamp < BK56_CACHE_TTL * 10) {
-          console.log('bk56: menggunakan data dari cache');
-          return cacheData.data;
-        }
-      } catch(e) {}
-    }
-    
-    // Fallback ke localStorage
-    const fallback = localStorage.getItem(BK56_FALLBACK_KEY);
-    if (fallback) {
-      try {
-        console.log('bk56: menggunakan data dari localStorage fallback');
-        return JSON.parse(fallback);
-      } catch(e) {}
-    }
-    
-    return null;
-  }
-}
-
-/* ================================================================
- * API: Ambil link berdasarkan docIdx
- * ================================================================ */
-async function bk56FetchLinksByDoc(docIdx) {
-  if (!isAppsScriptConfigured()) return null;
-  
-  try {
-    const url = BK56_APPS_SCRIPT_URL + '?action=getByDoc&docIdx=' + docIdx;
-    const response = await fetchWithTimeout(url, { method: 'GET' });
-    
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    
-    const result = await response.json();
-    return result.success ? result.data : null;
-  } catch(err) {
-    console.error('bk56: gagal fetch by doc', err);
-    return null;
-  }
-}
-
-/* ================================================================
- * API: Tambah link baru
- * ================================================================ */
-async function bk56AddLink(linkData) {
-  if (!isAppsScriptConfigured()) {
-    // Fallback ke localStorage
-    return bk56FallbackAddLink(linkData);
-  }
-  
-  try {
-    const response = await fetchWithTimeout(BK56_APPS_SCRIPT_URL, {
+    const response = await fetch(BK56_APPS_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({
-        action: 'addLink',
-        ...linkData
+        action: action,
+        ...data
       })
-    }, 15000);
+    });
     
-    if (!response.ok) throw new Error('HTTP ' + response.status);
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      // Simpan juga ke localStorage sebagai backup
-      bk56FallbackAddLink(linkData);
-      
-      // Invalidasi cache
-      localStorage.removeItem(BK56_CACHE_KEY);
-      
-      return { success: true, message: 'Link berhasil disimpan ke database' };
-    }
-    
-    throw new Error(result.error || 'Gagal menyimpan');
+    // Karena mode: 'no-cors', kita tidak bisa baca response
+    // Tapi kita asumsikan berhasil jika tidak ada error
+    console.log('bk56: terkirim ke Apps Script', action, data);
+    return { success: true };
   } catch(err) {
-    console.error('bk56: gagal add link ke Apps Script', err);
-    
-    // Fallback ke localStorage
-    const fallbackResult = bk56FallbackAddLink(linkData);
-    if (fallbackResult.success) {
-      return { 
-        success: true, 
-        message: '⚠️ Link disimpan di browser (database offline). Akan sync saat online.',
-        fallback: true
-      };
-    }
-    
+    console.error('bk56: gagal kirim ke Apps Script', err);
     return { success: false, error: err.message };
   }
 }
 
 /* ================================================================
- * API: Hapus link
- * ================================================================ */
-async function bk56DeleteLink(timestamp) {
-  if (!isAppsScriptConfigured()) {
-    return bk56FallbackDeleteLink(timestamp);
+* OVERRIDE: addDocLink - Kirim ke Apps Script
+=============================================================== */
+const _origAddDocLink = window.addDocLink;
+window.addDocLink = function() {
+  // Panggil fungsi asli (simpan ke localStorage)
+  if (typeof _origAddDocLink === 'function') _origAddDocLink();
+  
+  // Kirim ke Apps Script
+  if (currentLinkEdit && isAppsScriptReady()) {
+    const doc = DOCS[currentLinkEdit.docIdx];
+    const input = document.getElementById('input-doc-link');
+    if (input && input.value.trim()) {
+      sendToAppsScript('addLink', {
+        docIdx: currentLinkEdit.docIdx,
+        kelas: doc.kelas,
+        guru: doc.guru,
+        kat: doc.kat,
+        nama: doc.nama,
+        type: 'document',
+        url: input.value.trim(),
+        addedBy: 'auto-sync'
+      });
+    }
+  }
+};
+
+/* ================================================================
+* OVERRIDE: removeDocLink - Hapus dari Apps Script
+=============================================================== */
+const _origRemoveDocLink = window.removeDocLink;
+window.removeDocLink = function(idx) {
+  // Kirim ke Apps Script dulu (sebelum dihapus dari localStorage)
+  if (currentLinkEdit && isAppsScriptReady()) {
+    const data = getDocLinkData(currentLinkEdit.docIdx);
+    if (data[idx]) {
+      sendToAppsScript('deleteLink', {
+        docIdx: currentLinkEdit.docIdx,
+        url: data[idx],
+        timestamp: new Date().toISOString()
+      });
+    }
   }
   
+  // Panggil fungsi asli (hapus dari localStorage)
+  if (typeof _origRemoveDocLink === 'function') _origRemoveDocLink(idx);
+};
+
+/* ================================================================
+* OVERRIDE: addVideoLink - Kirim ke Apps Script
+=============================================================== */
+const _origAddVideoLink = window.addVideoLink;
+window.addVideoLink = function() {
+  // Panggil fungsi asli
+  if (typeof _origAddVideoLink === 'function') _origAddVideoLink();
+  
+  // Kirim ke Apps Script
+  if (currentVideoEdit && isAppsScriptReady()) {
+    const input = document.getElementById('input-video');
+    if (input && input.value.trim()) {
+      sendToAppsScript('addLink', {
+        docIdx: 'video_' + currentVideoEdit.videoIdx,
+        kelas: 'video',
+        guru: 'system',
+        kat: 'video',
+        nama: 'Video ' + (currentVideoEdit.videoIdx + 1),
+        type: 'video',
+        url: input.value.trim(),
+        addedBy: 'auto-sync'
+      });
+    }
+  }
+};
+
+/* ================================================================
+* OVERRIDE: removeVideoLink - Hapus dari Apps Script
+=============================================================== */
+const _origRemoveVideoLink = window.removeVideoLink;
+window.removeVideoLink = function(idx) {
+  // Kirim ke Apps Script
+  if (currentVideoEdit && isAppsScriptReady()) {
+    const data = getVideoData(currentVideoEdit.videoIdx);
+    if (data[idx]) {
+      sendToAppsScript('deleteLink', {
+        docIdx: 'video_' + currentVideoEdit.videoIdx,
+        url: data[idx],
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+  
+  // Panggil fungsi asli
+  if (typeof _origRemoveVideoLink === 'function') _origRemoveVideoLink(idx);
+};
+
+/* ================================================================
+* OVERRIDE: addMateriLink - Kirim ke Apps Script
+=============================================================== */
+const _origAddMateriLink = window.addMateriLink;
+window.addMateriLink = function(type) {
+  // Panggil fungsi asli
+  if (typeof _origAddMateriLink === 'function') _origAddMateriLink(type);
+  
+  // Kirim ke Apps Script
+  if (currentMateriEdit && isAppsScriptReady()) {
+    const input = document.getElementById('input-' + type);
+    if (input && input.value.trim()) {
+      const doc = DOCS.find(d => 
+        d.kelas === currentMateriEdit.kelas && 
+        d.guru === currentMateriEdit.guru && 
+        d.kat === 'materi'
+      );
+      if (doc) {
+        sendToAppsScript('addLink', {
+          docIdx: 'materi_' + currentMateriEdit.kelas + '_' + currentMateriEdit.guru + '_' + currentMateriEdit.materiIdx,
+          kelas: currentMateriEdit.kelas,
+          guru: currentMateriEdit.guru,
+          kat: 'materi',
+          nama: doc.nama + ' [' + type.toUpperCase() + ']',
+          type: type,
+          url: input.value.trim(),
+          addedBy: 'auto-sync'
+        });
+      }
+    }
+  }
+};
+
+/* ================================================================
+* OVERRIDE: removeMateriLink - Hapus dari Apps Script
+=============================================================== */
+const _origRemoveMateriLink = window.removeMateriLink;
+window.removeMateriLink = function(idx, type) {
+  // Kirim ke Apps Script
+  if (currentMateriEdit && isAppsScriptReady()) {
+    const data = getMateriData(currentMateriEdit.kelas, currentMateriEdit.guru, currentMateriEdit.materiIdx);
+    if (data[type] && data[type][idx]) {
+      sendToAppsScript('deleteLink', {
+        docIdx: 'materi_' + currentMateriEdit.kelas + '_' + currentMateriEdit.guru + '_' + currentMateriEdit.materiIdx,
+        url: data[type][idx],
+        timestamp: new Date().toISOString()
+      });
+    }
+  }
+  
+  // Panggil fungsi asli
+  if (typeof _origRemoveMateriLink === 'function') _origRemoveMateriLink(idx, type);
+};
+
+/* ================================================================
+* LOAD DATA DARI APPS SCRIPT SAAT HALAMAN DIBUKA
+=============================================================== */
+async function loadLinksFromAppsScript() {
+  if (!isAppsScriptReady()) return;
+  
   try {
-    const response = await fetchWithTimeout(BK56_APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'deleteLink',
-        timestamp: timestamp
-      })
-    }, 15000);
-    
+    const response = await fetch(BK56_APPS_SCRIPT_URL + '?action=getAll&_=' + Date.now());
     if (!response.ok) throw new Error('HTTP ' + response.status);
     
     const result = await response.json();
     
-    if (result.success) {
-      bk56FallbackDeleteLink(timestamp);
-      localStorage.removeItem(BK56_CACHE_KEY);
-      return { success: true };
-    }
-    
-    throw new Error(result.error || 'Gagal menghapus');
-  } catch(err) {
-    console.error('bk56: gagal delete link', err);
-    return bk56FallbackDeleteLink(timestamp);
-  }
-}
-
-/* ================================================================
- * FALLBACK: localStorage (jika Apps Script offline)
- * ================================================================ */
-function bk56FallbackAddLink(linkData) {
-  try {
-    let data = JSON.parse(localStorage.getItem(BK56_FALLBACK_KEY) || '{}');
-    const key = linkData.docIdx;
-    
-    if (!data[key]) data[key] = [];
-    
-    data[key].push({
-      timestamp: new Date().toISOString(),
-      url: linkData.url,
-      type: linkData.type || 'general',
-      addedBy: linkData.addedBy || 'local'
-    });
-    
-    localStorage.setItem(BK56_FALLBACK_KEY, JSON.stringify(data));
-    return { success: true, fallback: true };
-  } catch(e) {
-    return { success: false, error: e.message };
-  }
-}
-
-function bk56FallbackDeleteLink(timestamp) {
-  try {
-    let data = JSON.parse(localStorage.getItem(BK56_FALLBACK_KEY) || '{}');
-    
-    for (const key in data) {
-      data[key] = data[key].filter(link => link.timestamp !== timestamp);
-    }
-    
-    localStorage.setItem(BK56_FALLBACK_KEY, JSON.stringify(data));
-    return { success: true };
-  } catch(e) {
-    return { success: false, error: e.message };
-  }
-}
-
-/* ================================================================
- * SYNC: Sinkronisasi localStorage ke Apps Script (saat online)
- * ================================================================ */
-async function bk56SyncPendingLinks() {
-  if (!isAppsScriptConfigured()) return;
-  
-  const fallback = localStorage.getItem(BK56_FALLBACK_KEY);
-  if (!fallback) return;
-  
-  try {
-    const data = JSON.parse(fallback);
-    const linksToSync = [];
-    
-    for (const docIdx in data) {
-      data[docIdx].forEach(link => {
-        if (link.addedBy === 'local') {
-          linksToSync.push({
-            docIdx: docIdx,
-            url: link.url,
-            type: link.type,
-            addedBy: 'sync'
-          });
+    if (result.success && result.data && result.data.length > 0) {
+      console.log('bk56: memuat ' + result.data.length + ' link dari Apps Script');
+      
+      // Proses setiap link
+      result.data.forEach(link => {
+        if (link.kat === 'video') {
+          // Simpan ke video localStorage
+          const videoIdx = parseInt(link.docIdx.replace('video_', ''));
+          if (!isNaN(videoIdx)) {
+            const all = loadVideoLinks();
+            if (!all[videoIdx]) all[videoIdx] = [];
+            if (!all[videoIdx].includes(link.url)) {
+              all[videoIdx].push(link.url);
+            }
+            saveVideoLinks(all);
+          }
+        } else if (link.kat === 'materi') {
+          // Simpan ke materi localStorage
+          const parts = link.docIdx.replace('materi_', '').split('_');
+          if (parts.length === 3) {
+            const [kelas, guru, materiIdx] = parts;
+            const all = loadMateriLinks();
+            const key = kelas + '_' + guru + '_' + materiIdx;
+            if (!all[key]) all[key] = { ppt: [], pdf: [], doc: [], video: [] };
+            if (!all[key][link.type]) all[key][link.type] = [];
+            if (!all[key][link.type].includes(link.url)) {
+              all[key][link.type].push(link.url);
+            }
+            saveMateriLinks(all);
+          }
+        } else {
+          // Simpan ke docLinks localStorage
+          const docIdx = parseInt(link.docIdx);
+          if (!isNaN(docIdx)) {
+            const all = loadDocLinks();
+            if (!all[docIdx]) all[docIdx] = [];
+            if (!all[docIdx].includes(link.url)) {
+              all[docIdx].push(link.url);
+            }
+            saveDocLinks(all);
+          }
         }
       });
-    }
-    
-    if (linksToSync.length === 0) return;
-    
-    const response = await fetchWithTimeout(BK56_APPS_SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({
-        action: 'bulkAdd',
-        links: linksToSync
-      })
-    });
-    
-    if (response.ok) {
-      const result = await response.json();
-      if (result.success) {
-        // Hapus dari fallback setelah sync berhasil
-        localStorage.removeItem(BK56_FALLBACK_KEY);
-        console.log('bk56: sync berhasil, ' + linksToSync.length + ' link diupload');
-        
-        if (typeof showToast === 'function') {
-          showToast('✅ ' + linksToSync.length + ' link berhasil disinkronkan ke database', 'success');
-        }
+      
+      // Tampilkan notifikasi
+      if (typeof showToast === 'function') {
+        showToast('✅ ' + result.data.length + ' link dimuat dari database', 'success');
       }
+      
+      // Refresh UI
+      setTimeout(function() {
+        if (typeof render === 'function') render(true);
+        if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
+        if (typeof enhanceVideoCards === 'function') enhanceVideoCards();
+      }, 500);
     }
   } catch(err) {
-    console.warn('bk56: sync gagal, akan dicoba lagi nanti', err);
+    console.warn('bk56: gagal load dari Apps Script', err);
   }
 }
 
 /* ================================================================
- * EXPORT KE WINDOW (agar bisa dipanggil dari kode lain)
- * ================================================================ */
-window.BK56_API = {
-  fetchAll: bk56FetchAllLinks,
-  fetchByDoc: bk56FetchLinksByDoc,
-  addLink: bk56AddLink,
-  deleteLink: bk56DeleteLink,
-  sync: bk56SyncPendingLinks,
-  isConfigured: isAppsScriptConfigured
-};
-
-/* ================================================================
- * INIT: Jalankan saat halaman dimuat
- * ================================================================ */
-document.addEventListener('DOMContentLoaded', async function() {
-  if (!isAppsScriptConfigured()) {
-    console.warn('bk56: Apps Script belum dikonfigurasi. Menggunakan localStorage saja.');
-    return;
+* JALANKAN SAAT HALAMAN DIMUAT
+=============================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+  if (isAppsScriptReady()) {
+    console.log('✅ Apps Script integration aktif');
+    console.log('📡 URL:', BK56_APPS_SCRIPT_URL);
+    
+    // Load data dari Apps Script setelah 2 detik
+    setTimeout(loadLinksFromAppsScript, 2000);
+  } else {
+    console.warn('⚠️ Apps Script URL belum dikonfigurasi');
+    console.log('💡 Buka file index.html, cari "BK56_APPS_SCRIPT_URL", lalu paste URL Apps Script Anda');
   }
-  
-  console.log('✅ BK56 Apps Script Integration aktif');
-  console.log('📡 URL:', BK56_APPS_SCRIPT_URL);
-  
-  // Test koneksi
-  try {
-    const url = BK56_APPS_SCRIPT_URL + '?action=ping';
-    const response = await fetch(url);
-    if (response.ok) {
-      console.log('✅ Koneksi ke Apps Script berhasil');
-    }
-  } catch(err) {
-    console.warn('⚠️ Koneksi ke Apps Script gagal, menggunakan fallback');
-  }
-  
-  // Sync pending links setelah 3 detik
-  setTimeout(bk56SyncPendingLinks, 3000);
-  
-  // Auto sync setiap 5 menit
-  setInterval(bk56SyncPendingLinks, 5 * 60 * 1000);
 });
 
 })();
 </script>
 <!-- ================================================================ -->
-<!-- ========== PATCH: BK56 APPS SCRIPT INTEGRATION - END ========== -->
+<!-- ========== PATCH: APPS SCRIPT AUTO-SYNC - END ========== -->
 <!-- ================================================================ -->
 </body>
 </html>
