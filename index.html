@@ -7649,5 +7649,349 @@ console.log('✅ Patch Link Permanen Dokumen (kecuali Materi) berhasil dimuat');
 })();
 </script>
 <!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - END ========== -->
+<!-- ================================================================ -->
+<!-- ========== PATCH: BK56 APPS SCRIPT INTEGRATION - START ========== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+
+/* ================================================================
+ * KONFIGURASI
+ * ================================================================ */
+const BK56_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec"; // ← GANTI INI
+
+// Fallback ke localStorage jika Apps Script gagal
+const BK56_FALLBACK_KEY = 'bk56_doc_links_fallback';
+const BK56_CACHE_KEY = 'bk56_doc_links_cache';
+const BK56_CACHE_TTL = 5 * 60 * 1000; // 5 menit
+
+/* ================================================================
+ * HELPER: Cek apakah Apps Script tersedia
+ * ================================================================ */
+function isAppsScriptConfigured() {
+  return BK56_APPS_SCRIPT_URL && 
+         BK56_APPS_SCRIPT_URL !== 'PASTE_URL_APPS_SCRIPT_DI_SINI' &&
+         BK56_APPS_SCRIPT_URL.startsWith('https://script.google.com/');
+}
+
+/* ================================================================
+ * HELPER: Fetch dengan timeout
+ * ================================================================ */
+async function fetchWithTimeout(url, options = {}, timeout = 10000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
+  } catch(err) {
+    clearTimeout(id);
+    throw err;
+  }
+}
+
+/* ================================================================
+ * API: Ambil semua link dari Apps Script
+ * ================================================================ */
+async function bk56FetchAllLinks() {
+  if (!isAppsScriptConfigured()) {
+    console.warn('bk56: Apps Script URL belum dikonfigurasi');
+    return null;
+  }
+  
+  try {
+    const url = BK56_APPS_SCRIPT_URL + '?action=getAll&_=' + Date.now();
+    const response = await fetchWithTimeout(url, { method: 'GET' });
+    
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Simpan ke cache
+      localStorage.setItem(BK56_CACHE_KEY, JSON.stringify({
+        data: result.data,
+        timestamp: Date.now()
+      }));
+      return result.data;
+    }
+    
+    throw new Error(result.error || 'Unknown error');
+  } catch(err) {
+    console.error('bk56: gagal fetch dari Apps Script', err);
+    
+    // Fallback ke cache
+    const cached = localStorage.getItem(BK56_CACHE_KEY);
+    if (cached) {
+      try {
+        const cacheData = JSON.parse(cached);
+        if (Date.now() - cacheData.timestamp < BK56_CACHE_TTL * 10) {
+          console.log('bk56: menggunakan data dari cache');
+          return cacheData.data;
+        }
+      } catch(e) {}
+    }
+    
+    // Fallback ke localStorage
+    const fallback = localStorage.getItem(BK56_FALLBACK_KEY);
+    if (fallback) {
+      try {
+        console.log('bk56: menggunakan data dari localStorage fallback');
+        return JSON.parse(fallback);
+      } catch(e) {}
+    }
+    
+    return null;
+  }
+}
+
+/* ================================================================
+ * API: Ambil link berdasarkan docIdx
+ * ================================================================ */
+async function bk56FetchLinksByDoc(docIdx) {
+  if (!isAppsScriptConfigured()) return null;
+  
+  try {
+    const url = BK56_APPS_SCRIPT_URL + '?action=getByDoc&docIdx=' + docIdx;
+    const response = await fetchWithTimeout(url, { method: 'GET' });
+    
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    
+    const result = await response.json();
+    return result.success ? result.data : null;
+  } catch(err) {
+    console.error('bk56: gagal fetch by doc', err);
+    return null;
+  }
+}
+
+/* ================================================================
+ * API: Tambah link baru
+ * ================================================================ */
+async function bk56AddLink(linkData) {
+  if (!isAppsScriptConfigured()) {
+    // Fallback ke localStorage
+    return bk56FallbackAddLink(linkData);
+  }
+  
+  try {
+    const response = await fetchWithTimeout(BK56_APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addLink',
+        ...linkData
+      })
+    }, 15000);
+    
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      // Simpan juga ke localStorage sebagai backup
+      bk56FallbackAddLink(linkData);
+      
+      // Invalidasi cache
+      localStorage.removeItem(BK56_CACHE_KEY);
+      
+      return { success: true, message: 'Link berhasil disimpan ke database' };
+    }
+    
+    throw new Error(result.error || 'Gagal menyimpan');
+  } catch(err) {
+    console.error('bk56: gagal add link ke Apps Script', err);
+    
+    // Fallback ke localStorage
+    const fallbackResult = bk56FallbackAddLink(linkData);
+    if (fallbackResult.success) {
+      return { 
+        success: true, 
+        message: '⚠️ Link disimpan di browser (database offline). Akan sync saat online.',
+        fallback: true
+      };
+    }
+    
+    return { success: false, error: err.message };
+  }
+}
+
+/* ================================================================
+ * API: Hapus link
+ * ================================================================ */
+async function bk56DeleteLink(timestamp) {
+  if (!isAppsScriptConfigured()) {
+    return bk56FallbackDeleteLink(timestamp);
+  }
+  
+  try {
+    const response = await fetchWithTimeout(BK56_APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'deleteLink',
+        timestamp: timestamp
+      })
+    }, 15000);
+    
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      bk56FallbackDeleteLink(timestamp);
+      localStorage.removeItem(BK56_CACHE_KEY);
+      return { success: true };
+    }
+    
+    throw new Error(result.error || 'Gagal menghapus');
+  } catch(err) {
+    console.error('bk56: gagal delete link', err);
+    return bk56FallbackDeleteLink(timestamp);
+  }
+}
+
+/* ================================================================
+ * FALLBACK: localStorage (jika Apps Script offline)
+ * ================================================================ */
+function bk56FallbackAddLink(linkData) {
+  try {
+    let data = JSON.parse(localStorage.getItem(BK56_FALLBACK_KEY) || '{}');
+    const key = linkData.docIdx;
+    
+    if (!data[key]) data[key] = [];
+    
+    data[key].push({
+      timestamp: new Date().toISOString(),
+      url: linkData.url,
+      type: linkData.type || 'general',
+      addedBy: linkData.addedBy || 'local'
+    });
+    
+    localStorage.setItem(BK56_FALLBACK_KEY, JSON.stringify(data));
+    return { success: true, fallback: true };
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+}
+
+function bk56FallbackDeleteLink(timestamp) {
+  try {
+    let data = JSON.parse(localStorage.getItem(BK56_FALLBACK_KEY) || '{}');
+    
+    for (const key in data) {
+      data[key] = data[key].filter(link => link.timestamp !== timestamp);
+    }
+    
+    localStorage.setItem(BK56_FALLBACK_KEY, JSON.stringify(data));
+    return { success: true };
+  } catch(e) {
+    return { success: false, error: e.message };
+  }
+}
+
+/* ================================================================
+ * SYNC: Sinkronisasi localStorage ke Apps Script (saat online)
+ * ================================================================ */
+async function bk56SyncPendingLinks() {
+  if (!isAppsScriptConfigured()) return;
+  
+  const fallback = localStorage.getItem(BK56_FALLBACK_KEY);
+  if (!fallback) return;
+  
+  try {
+    const data = JSON.parse(fallback);
+    const linksToSync = [];
+    
+    for (const docIdx in data) {
+      data[docIdx].forEach(link => {
+        if (link.addedBy === 'local') {
+          linksToSync.push({
+            docIdx: docIdx,
+            url: link.url,
+            type: link.type,
+            addedBy: 'sync'
+          });
+        }
+      });
+    }
+    
+    if (linksToSync.length === 0) return;
+    
+    const response = await fetchWithTimeout(BK56_APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'bulkAdd',
+        links: linksToSync
+      })
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      if (result.success) {
+        // Hapus dari fallback setelah sync berhasil
+        localStorage.removeItem(BK56_FALLBACK_KEY);
+        console.log('bk56: sync berhasil, ' + linksToSync.length + ' link diupload');
+        
+        if (typeof showToast === 'function') {
+          showToast('✅ ' + linksToSync.length + ' link berhasil disinkronkan ke database', 'success');
+        }
+      }
+    }
+  } catch(err) {
+    console.warn('bk56: sync gagal, akan dicoba lagi nanti', err);
+  }
+}
+
+/* ================================================================
+ * EXPORT KE WINDOW (agar bisa dipanggil dari kode lain)
+ * ================================================================ */
+window.BK56_API = {
+  fetchAll: bk56FetchAllLinks,
+  fetchByDoc: bk56FetchLinksByDoc,
+  addLink: bk56AddLink,
+  deleteLink: bk56DeleteLink,
+  sync: bk56SyncPendingLinks,
+  isConfigured: isAppsScriptConfigured
+};
+
+/* ================================================================
+ * INIT: Jalankan saat halaman dimuat
+ * ================================================================ */
+document.addEventListener('DOMContentLoaded', async function() {
+  if (!isAppsScriptConfigured()) {
+    console.warn('bk56: Apps Script belum dikonfigurasi. Menggunakan localStorage saja.');
+    return;
+  }
+  
+  console.log('✅ BK56 Apps Script Integration aktif');
+  console.log('📡 URL:', BK56_APPS_SCRIPT_URL);
+  
+  // Test koneksi
+  try {
+    const url = BK56_APPS_SCRIPT_URL + '?action=ping';
+    const response = await fetch(url);
+    if (response.ok) {
+      console.log('✅ Koneksi ke Apps Script berhasil');
+    }
+  } catch(err) {
+    console.warn('⚠️ Koneksi ke Apps Script gagal, menggunakan fallback');
+  }
+  
+  // Sync pending links setelah 3 detik
+  setTimeout(bk56SyncPendingLinks, 3000);
+  
+  // Auto sync setiap 5 menit
+  setInterval(bk56SyncPendingLinks, 5 * 60 * 1000);
+});
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: BK56 APPS SCRIPT INTEGRATION - END ========== -->
+<!-- ================================================================ -->
 </body>
 </html>
