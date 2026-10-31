@@ -7653,60 +7653,86 @@ setTimeout(syncAllLinksToAPI, 3000);
 <!-- ========== PATCH: APPS SCRIPT SYNC v3 (FIXED) - END ========== -->
 <!-- ================================================================ -->
 <!-- ================================================================ -->
-<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS (FINAL) ========== -->
+<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS (FINAL v2) ========== -->
 <!-- ================================================================ -->
 <script>
 (function(){
 "use strict";
 const BK56_RESTORE_API_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
+
 async function autoRestoreLinks() {
-if (!BK56_RESTORE_API_URL || !BK56_RESTORE_API_URL.startsWith('https://script.google.com/')) { console.warn("bk56: URL Apps Script belum dikonfigurasi untuk auto-restore."); return; }
-const docLinksStr = localStorage.getItem('bk56_doc_links');
-const isDocEmpty = !docLinksStr || docLinksStr === '{}' || docLinksStr === 'null';
-if (!isDocEmpty) {
-try { const localData = JSON.parse(docLinksStr); updateDocsArray(localData); } catch(e) {}
-return;
+    if (!BK56_RESTORE_API_URL || !BK56_RESTORE_API_URL.startsWith('https://script.google.com/')) {
+        console.warn("bk56: URL Apps Script belum dikonfigurasi.");
+        return;
+    }
+
+    const docLinksStr = localStorage.getItem('bk56_doc_links');
+    const isDocEmpty = !docLinksStr || docLinksStr === '{}' || docLinksStr === 'null';
+    
+    if (!isDocEmpty) {
+        try {
+            const localData = JSON.parse(docLinksStr);
+            let updated = 0;
+            for (const idx in localData) {
+                const dIdx = parseInt(idx);
+                if (!isNaN(dIdx) && typeof DOCS !== 'undefined' && DOCS[dIdx] && localData[idx].length > 0) {
+                    DOCS[dIdx].link = localData[idx][0];
+                    updated++;
+                }
+            }
+            if (updated > 0) {
+                console.log("bk56: ✅ Array DOCS diupdate dengan " + updated + " link dari localStorage.");
+                if (typeof render === 'function') render(true);
+                if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
+            }
+        } catch(e) {}
+        return;
+    }
+
+    console.log("bk56: 🔄 LocalStorage kosong. Memulihkan data dari Google Sheets...");
+    try {
+        const res = await fetch(BK56_RESTORE_API_URL + '?action=getAll&_=' + Date.now());
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const result = await res.json();
+        
+        if (result.success && result.data && result.data.length > 0) {
+            let docLinks = {};
+            let restoredCount = 0;
+            
+            result.data.forEach(item => {
+                const dIdx = parseInt(item.docIdx);
+                if (!isNaN(dIdx) && typeof DOCS !== 'undefined' && DOCS[dIdx]) {
+                    if (!docLinks[dIdx]) docLinks[dIdx] = [];
+                    if (!docLinks[dIdx].includes(item.url)) {
+                        docLinks[dIdx].push(item.url);
+                        restoredCount++;
+                    }
+                    DOCS[dIdx].link = item.url;
+                }
+            });
+            
+            localStorage.setItem('bk56_doc_links', JSON.stringify(docLinks));
+            console.log("✅ bk56: Berhasil memulihkan " + restoredCount + " link dari Sheets!");
+            
+            if (typeof showToast === 'function') {
+                showToast('🔄 Data link dipulihkan otomatis (' + restoredCount + ' link)', 'success');
+            }
+            
+            setTimeout(() => {
+                if (typeof render === 'function') render(true);
+                if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
+            }, 500);
+        }
+    } catch (err) {
+        console.error("bk56: Gagal memulihkan data dari Sheets", err);
+    }
 }
-console.log("bk56: 🔄 LocalStorage kosong. Memulihkan data dari Google Sheets...");
-try {
-const res = await fetch(BK56_RESTORE_API_URL + '?action=getAll&_=' + Date.now());
-if (!res.ok) throw new Error('HTTP ' + res.status);
-const result = await res.json();
-if (result.success && result.data && result.data.length > 0) {
-let docLinks = {};
-let restoredCount = 0;
-result.data.forEach(item => {
-const dIdx = parseInt(item.docIdx);
-if (!isNaN(dIdx) && DOCS[dIdx]) {
-if (!docLinks[dIdx]) docLinks[dIdx] = [];
-if (!docLinks[dIdx].includes(item.url)) { docLinks[dIdx].push(item.url); restoredCount++; }
-DOCS[dIdx].link = item.url;
-}
-});
-localStorage.setItem('bk56_doc_links', JSON.stringify(docLinks));
-console.log("✅ bk56: Berhasil memulihkan " + restoredCount + " link dari Sheets!");
-if (typeof showToast === 'function') showToast('🔄 Data link dipulihkan otomatis dari database (' + restoredCount + ' link)', 'success');
-else alert('🔄 Data link dipulihkan otomatis dari database (' + restoredCount + ' link)');
-setTimeout(() => { if (typeof render === 'function') render(true); if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards(); }, 500);
-}
-} catch (err) { console.error("bk56: Gagal memulihkan data dari Sheets", err); }
-}
-function updateDocsArray(localData) {
-if (!localData || typeof localData !== 'object') return;
-let updated = 0;
-for (const idx in localData) {
-const dIdx = parseInt(idx);
-if (!isNaN(dIdx) && DOCS[dIdx] && localData[idx].length > 0) { DOCS[dIdx].link = localData[idx][0]; updated++; }
-}
-if (updated > 0) {
-console.log("bk56: ✅ Array DOCS diupdate dengan " + updated + " link dari localStorage.");
-setTimeout(() => { if (typeof render === 'function') render(true); if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards(); }, 300);
-}
-}
-document.addEventListener('DOMContentLoaded', function() { setTimeout(autoRestoreLinks, 1500); });
+
+// Jalankan langsung tanpa menunggu DOMContentLoaded (karena script ada di bawah)
+setTimeout(autoRestoreLinks, 1000);
 })();
 </script>
-<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS (FINAL) - END ========== -->
+<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS (FINAL v2) - END ========== -->
 <!-- ================================================================ -->
 </body>
 </html>
