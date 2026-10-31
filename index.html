@@ -7419,35 +7419,65 @@ panel.innerHTML = html;
 }
 
 /* ---------- Tambah link ---------- */
+/* ---------- Tambah link ---------- */
 window.addDocLink = function() {
-if (!currentLinkEdit) return;
-const input = document.getElementById('input-doc-link');
-if (!input) return;
-const url = input.value.trim();
-if (!url) { if (typeof showToast === 'function') showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
-let finalUrl = url;
-if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
-finalUrl = 'https://' + url;
-}
-const data = getDocLinkData(currentLinkEdit.docIdx);
-data.push(finalUrl);
-setDocLinkData(currentLinkEdit.docIdx, data);
-input.value = '';
-renderLinkModal();
-if (typeof showToast === 'function') showToast('✅ Link dokumen berhasil ditambahkan!', 'success');
+  if (!currentLinkEdit) return;
+  const input = document.getElementById('input-doc-link');
+  if (!input) return;
+  const url = input.value.trim();
+  if (!url) { if (typeof showToast === 'function') showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
+  let finalUrl = url;
+  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+    finalUrl = 'https://' + url;
+  }
+  
+  // 1. Simpan ke localStorage (agar UI langsung update)
+  const data = getDocLinkData(currentLinkEdit.docIdx);
+  data.push(finalUrl);
+  setDocLinkData(currentLinkEdit.docIdx, data);
+  
+  // 2. ✅ KIRIM KE APPS SCRIPT (Agar terekap di Spreadsheet)
+  if (typeof window.bk56AddLinkToAPI === 'function') {
+    const doc = DOCS[currentLinkEdit.docIdx];
+    if (doc) {
+      window.bk56AddLinkToAPI(currentLinkEdit.docIdx, finalUrl);
+    }
+  }
+  
+  input.value = '';
+  renderLinkModal();
+  if (typeof showToast === 'function') showToast('✅ Link berhasil ditambahkan & disinkronkan ke Sheets!', 'success');
 };
 
 /* ---------- Hapus link ---------- */
-window.removeDocLink = function(idx) {
-if (!currentLinkEdit) return;
-if (!confirm('🗑️ Yakin ingin menghapus link ini?\nLink akan hilang permanen.')) return;
-const data = getDocLinkData(currentLinkEdit.docIdx);
-if (data[idx] !== undefined) {
-data.splice(idx, 1);
-setDocLinkData(currentLinkEdit.docIdx, data);
-renderLinkModal();
-if (typeof showToast === 'function') showToast('🗑️ Link berhasil dihapus', 'info');
-}
+window.addDocLink = function() {
+  if (!currentLinkEdit) return;
+  const input = document.getElementById('input-doc-link');
+  if (!input) return;
+  const url = input.value.trim();
+  if (!url) { 
+    if (typeof showToast === 'function') showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); 
+    input.focus(); 
+    return; 
+  }
+  let finalUrl = url;
+  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+    finalUrl = 'https://' + url;
+  }
+
+  // 1. Simpan ke localStorage (agar UI langsung update)
+  const data = getDocLinkData(currentLinkEdit.docIdx);
+  data.push(finalUrl);
+  setDocLinkData(currentLinkEdit.docIdx, data);
+
+  // 2. ✅ KIRIM KE APPS SCRIPT (FIX UTAMA AGA TEREKAP)
+  if (typeof window.bk56AddLinkToAPI === 'function') {
+    window.bk56AddLinkToAPI(currentLinkEdit.docIdx, finalUrl);
+  }
+
+  input.value = '';
+  renderLinkModal();
+  if (typeof showToast === 'function') showToast('✅ Link berhasil ditambahkan & disinkronkan ke Sheets!', 'success');
 };
 
 /* ---------- Buka link ---------- */
