@@ -7650,301 +7650,269 @@ console.log('✅ Patch Link Permanen Dokumen (kecuali Materi) berhasil dimuat');
 </script>
 <!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - END ========== -->
 <!-- ================================================================ -->
-<!-- ========== PATCH: APPS SCRIPT AUTO-SYNC - START ========== -->
+<!-- ========== PATCH: APPS SCRIPT SYNC v3 (FIXED) - START ========== -->
 <!-- ================================================================ -->
 <script>
 (function(){
 "use strict";
 
 /* ================================================================
-* KONFIGURASI APPS SCRIPT
-* GANTI URL DI BAWAH INI DENGAN URL APPS SCRIPT ANDA
+* KONFIGURASI
+* ⚠️ GANTI URL DI BAWAH DENGAN URL APPS SCRIPT BARU ANDA
 =============================================================== */
-const BK56_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
+const BK56_API_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
 
 /* ================================================================
 * HELPER: Cek apakah Apps Script sudah dikonfigurasi
 =============================================================== */
-function isAppsScriptReady() {
-  return BK56_APPS_SCRIPT_URL && 
-         BK56_APPS_SCRIPT_URL !== 'PASTE_URL_APPS_SCRIPT_DI_SINI' &&
-         BK56_APPS_SCRIPT_URL.startsWith('https://script.google.com/');
+function isAPIReady() {
+  return BK56_API_URL && 
+         BK56_API_URL !== 'PASTE_URL_APPS_SCRIPT_BARU_DI_SINI' &&
+         BK56_API_URL.startsWith('https://script.google.com/');
 }
 
 /* ================================================================
-* HELPER: Kirim data ke Apps Script
+* HELPER: Kirim data ke Apps Script (FIXED - no-cors compatible)
+* Menggunakan text/plain agar tidak di-block browser
 =============================================================== */
-async function sendToAppsScript(action, data) {
-  if (!isAppsScriptReady()) {
+function sendToAPI(action, data) {
+  if (!isAPIReady()) {
     console.warn('bk56: Apps Script URL belum dikonfigurasi');
-    return { success: false, error: 'URL belum dikonfigurasi' };
+    return Promise.resolve({ success: false, error: 'URL belum dikonfigurasi' });
   }
   
-  try {
-    const response = await fetch(BK56_APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        action: action,
-        ...data
-      })
-    });
-    
-    // Karena mode: 'no-cors', kita tidak bisa baca response
-    // Tapi kita asumsikan berhasil jika tidak ada error
-    console.log('bk56: terkirim ke Apps Script', action, data);
+  // Gabungkan action ke dalam data
+  const payload = Object.assign({}, data, { action: action });
+  
+  // Kirim sebagai text/plain (no-cors compatible)
+  return fetch(BK56_API_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: {
+      'Content-Type': 'text/plain;charset=utf-8'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    console.log('bk56: ✅ terkirim ke Apps Script', action, payload);
     return { success: true };
-  } catch(err) {
-    console.error('bk56: gagal kirim ke Apps Script', err);
+  })
+  .catch(function(err) {
+    console.error('bk56: ❌ gagal kirim', err);
     return { success: false, error: err.message };
-  }
+  });
 }
 
 /* ================================================================
-* OVERRIDE: addDocLink - Kirim ke Apps Script
+* FUNGSI: Sync semua link dari DOCS ke Apps Script
 =============================================================== */
-const _origAddDocLink = window.addDocLink;
-window.addDocLink = function() {
-  // Panggil fungsi asli (simpan ke localStorage)
-  if (typeof _origAddDocLink === 'function') _origAddDocLink();
+function syncAllLinksToAPI() {
+  if (!isAPIReady()) return;
+  if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return;
   
-  // Kirim ke Apps Script
-  if (currentLinkEdit && isAppsScriptReady()) {
-    const doc = DOCS[currentLinkEdit.docIdx];
-    const input = document.getElementById('input-doc-link');
-    if (input && input.value.trim()) {
-      sendToAppsScript('addLink', {
-        docIdx: currentLinkEdit.docIdx,
+  console.log('bk56: 🔄 memulai sync', DOCS.length, 'dokumen');
+  
+  let sentCount = 0;
+  
+  DOCS.forEach(function(doc, idx) {
+    // Hanya kirim jika link tidak kosong
+    if (doc.link && doc.link.trim() !== '') {
+      sendToAPI('addLink', {
+        docIdx: String(idx),
         kelas: doc.kelas,
         guru: doc.guru,
         kat: doc.kat,
         nama: doc.nama,
         type: 'document',
-        url: input.value.trim(),
+        url: doc.link,
         addedBy: 'auto-sync'
       });
+      
+      sentCount++;
     }
-  }
-};
-
-/* ================================================================
-* OVERRIDE: removeDocLink - Hapus dari Apps Script
-=============================================================== */
-const _origRemoveDocLink = window.removeDocLink;
-window.removeDocLink = function(idx) {
-  // Kirim ke Apps Script dulu (sebelum dihapus dari localStorage)
-  if (currentLinkEdit && isAppsScriptReady()) {
-    const data = getDocLinkData(currentLinkEdit.docIdx);
-    if (data[idx]) {
-      sendToAppsScript('deleteLink', {
-        docIdx: currentLinkEdit.docIdx,
-        url: data[idx],
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
+  });
   
-  // Panggil fungsi asli (hapus dari localStorage)
-  if (typeof _origRemoveDocLink === 'function') _origRemoveDocLink(idx);
-};
-
-/* ================================================================
-* OVERRIDE: addVideoLink - Kirim ke Apps Script
-=============================================================== */
-const _origAddVideoLink = window.addVideoLink;
-window.addVideoLink = function() {
-  // Panggil fungsi asli
-  if (typeof _origAddVideoLink === 'function') _origAddVideoLink();
+  console.log('bk56: ✅ sync selesai, ' + sentCount + ' link terkirim');
   
-  // Kirim ke Apps Script
-  if (currentVideoEdit && isAppsScriptReady()) {
-    const input = document.getElementById('input-video');
-    if (input && input.value.trim()) {
-      sendToAppsScript('addLink', {
-        docIdx: 'video_' + currentVideoEdit.videoIdx,
-        kelas: 'video',
-        guru: 'system',
-        kat: 'video',
-        nama: 'Video ' + (currentVideoEdit.videoIdx + 1),
-        type: 'video',
-        url: input.value.trim(),
-        addedBy: 'auto-sync'
-      });
-    }
+  if (typeof showToast === 'function' && sentCount > 0) {
+    showToast('📡 ' + sentCount + ' link disinkronkan ke database', 'success');
   }
-};
+}
 
 /* ================================================================
-* OVERRIDE: removeVideoLink - Hapus dari Apps Script
+* FUNGSI: Load data dari Apps Script dan isi link yang kosong
 =============================================================== */
-const _origRemoveVideoLink = window.removeVideoLink;
-window.removeVideoLink = function(idx) {
-  // Kirim ke Apps Script
-  if (currentVideoEdit && isAppsScriptReady()) {
-    const data = getVideoData(currentVideoEdit.videoIdx);
-    if (data[idx]) {
-      sendToAppsScript('deleteLink', {
-        docIdx: 'video_' + currentVideoEdit.videoIdx,
-        url: data[idx],
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-  
-  // Panggil fungsi asli
-  if (typeof _origRemoveVideoLink === 'function') _origRemoveVideoLink(idx);
-};
-
-/* ================================================================
-* OVERRIDE: addMateriLink - Kirim ke Apps Script
-=============================================================== */
-const _origAddMateriLink = window.addMateriLink;
-window.addMateriLink = function(type) {
-  // Panggil fungsi asli
-  if (typeof _origAddMateriLink === 'function') _origAddMateriLink(type);
-  
-  // Kirim ke Apps Script
-  if (currentMateriEdit && isAppsScriptReady()) {
-    const input = document.getElementById('input-' + type);
-    if (input && input.value.trim()) {
-      const doc = DOCS.find(d => 
-        d.kelas === currentMateriEdit.kelas && 
-        d.guru === currentMateriEdit.guru && 
-        d.kat === 'materi'
-      );
-      if (doc) {
-        sendToAppsScript('addLink', {
-          docIdx: 'materi_' + currentMateriEdit.kelas + '_' + currentMateriEdit.guru + '_' + currentMateriEdit.materiIdx,
-          kelas: currentMateriEdit.kelas,
-          guru: currentMateriEdit.guru,
-          kat: 'materi',
-          nama: doc.nama + ' [' + type.toUpperCase() + ']',
-          type: type,
-          url: input.value.trim(),
-          addedBy: 'auto-sync'
-        });
-      }
-    }
-  }
-};
-
-/* ================================================================
-* OVERRIDE: removeMateriLink - Hapus dari Apps Script
-=============================================================== */
-const _origRemoveMateriLink = window.removeMateriLink;
-window.removeMateriLink = function(idx, type) {
-  // Kirim ke Apps Script
-  if (currentMateriEdit && isAppsScriptReady()) {
-    const data = getMateriData(currentMateriEdit.kelas, currentMateriEdit.guru, currentMateriEdit.materiIdx);
-    if (data[type] && data[type][idx]) {
-      sendToAppsScript('deleteLink', {
-        docIdx: 'materi_' + currentMateriEdit.kelas + '_' + currentMateriEdit.guru + '_' + currentMateriEdit.materiIdx,
-        url: data[type][idx],
-        timestamp: new Date().toISOString()
-      });
-    }
-  }
-  
-  // Panggil fungsi asli
-  if (typeof _origRemoveMateriLink === 'function') _origRemoveMateriLink(idx, type);
-};
-
-/* ================================================================
-* LOAD DATA DARI APPS SCRIPT SAAT HALAMAN DIBUKA
-=============================================================== */
-async function loadLinksFromAppsScript() {
-  if (!isAppsScriptReady()) return;
+async function loadLinksFromAPI() {
+  if (!isAPIReady()) return;
+  if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return;
   
   try {
-    const response = await fetch(BK56_APPS_SCRIPT_URL + '?action=getAll&_=' + Date.now());
+    const response = await fetch(BK56_API_URL + '?action=getAll&_=' + Date.now());
     if (!response.ok) throw new Error('HTTP ' + response.status);
     
     const result = await response.json();
     
     if (result.success && result.data && result.data.length > 0) {
-      console.log('bk56: memuat ' + result.data.length + ' link dari Apps Script');
+      console.log('bk56: 📥 memuat ' + result.data.length + ' link dari Apps Script');
       
-      // Proses setiap link
-      result.data.forEach(link => {
-        if (link.kat === 'video') {
-          // Simpan ke video localStorage
-          const videoIdx = parseInt(link.docIdx.replace('video_', ''));
-          if (!isNaN(videoIdx)) {
-            const all = loadVideoLinks();
-            if (!all[videoIdx]) all[videoIdx] = [];
-            if (!all[videoIdx].includes(link.url)) {
-              all[videoIdx].push(link.url);
-            }
-            saveVideoLinks(all);
-          }
-        } else if (link.kat === 'materi') {
-          // Simpan ke materi localStorage
-          const parts = link.docIdx.replace('materi_', '').split('_');
-          if (parts.length === 3) {
-            const [kelas, guru, materiIdx] = parts;
-            const all = loadMateriLinks();
-            const key = kelas + '_' + guru + '_' + materiIdx;
-            if (!all[key]) all[key] = { ppt: [], pdf: [], doc: [], video: [] };
-            if (!all[key][link.type]) all[key][link.type] = [];
-            if (!all[key][link.type].includes(link.url)) {
-              all[key][link.type].push(link.url);
-            }
-            saveMateriLinks(all);
-          }
-        } else {
-          // Simpan ke docLinks localStorage
-          const docIdx = parseInt(link.docIdx);
-          if (!isNaN(docIdx)) {
-            const all = loadDocLinks();
-            if (!all[docIdx]) all[docIdx] = [];
-            if (!all[docIdx].includes(link.url)) {
-              all[docIdx].push(link.url);
-            }
-            saveDocLinks(all);
+      let filledCount = 0;
+      
+      result.data.forEach(function(link) {
+        const docIdx = parseInt(link.docIdx);
+        if (!isNaN(docIdx) && DOCS[docIdx]) {
+          // Hanya isi jika link di HTML masih kosong
+          if (!DOCS[docIdx].link || DOCS[docIdx].link.trim() === '') {
+            DOCS[docIdx].link = link.url;
+            filledCount++;
           }
         }
       });
       
-      // Tampilkan notifikasi
-      if (typeof showToast === 'function') {
-        showToast('✅ ' + result.data.length + ' link dimuat dari database', 'success');
+      if (filledCount > 0) {
+        console.log('bk56: ✅ ' + filledCount + ' link kosong terisi dari database');
+        if (typeof showToast === 'function') {
+          showToast('🔄 ' + filledCount + ' link dipulihkan dari database', 'info');
+        }
+        // Refresh UI
+        setTimeout(function() {
+          if (typeof render === 'function') render(true);
+        }, 500);
       }
-      
-      // Refresh UI
-      setTimeout(function() {
-        if (typeof render === 'function') render(true);
-        if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
-        if (typeof enhanceVideoCards === 'function') enhanceVideoCards();
-      }, 500);
     }
   } catch(err) {
-    console.warn('bk56: gagal load dari Apps Script', err);
+    console.warn('bk56: ⚠️ gagal load dari Apps Script', err);
   }
 }
+
+/* ================================================================
+* FUNGSI: Tambah link baru via UI (untuk admin)
+=============================================================== */
+window.bk56AddLinkToAPI = function(docIdx, url) {
+  if (!isAPIReady()) return;
+  if (typeof DOCS === 'undefined') return;
+  
+  const doc = DOCS[docIdx];
+  if (!doc) return;
+  
+  sendToAPI('addLink', {
+    docIdx: String(docIdx),
+    kelas: doc.kelas,
+    guru: doc.guru,
+    kat: doc.kat,
+    nama: doc.nama,
+    type: 'document',
+    url: url,
+    addedBy: 'manual-add'
+  });
+  
+  // Update array DOCS juga
+  DOCS[docIdx].link = url;
+};
+
+/* ================================================================
+* FUNGSI: Hapus link via UI
+=============================================================== */
+window.bk56DeleteLinkFromAPI = function(docIdx) {
+  if (!isAPIReady()) return;
+  
+  const doc = DOCS[docIdx];
+  if (!doc) return;
+  
+  sendToAPI('deleteLink', {
+    docIdx: String(docIdx),
+    url: doc.link,
+    timestamp: new Date().toISOString()
+  });
+  
+  // Update array DOCS juga
+  DOCS[docIdx].link = '';
+};
+
+/* ================================================================
+* FUNGSI: Sync manual (dipanggil dari tombol di panel admin)
+=============================================================== */
+window.bk56ManualSync = function() {
+  if (!isAPIReady()) {
+    if (typeof showToast === 'function') {
+      showToast('⚠️ Apps Script URL belum dikonfigurasi', 'error');
+    }
+    return;
+  }
+  
+  if (typeof showToast === 'function') {
+    showToast('📡 Memulai sinkronisasi...', 'info');
+  }
+  
+  syncAllLinksToAPI();
+};
+
+/* ================================================================
+* FUNGSI: Test koneksi ke Apps Script
+=============================================================== */
+window.bk56TestConnection = async function() {
+  if (!isAPIReady()) {
+    console.error('bk56: ❌ URL belum dikonfigurasi');
+    return;
+  }
+  
+  console.log('bk56: 🧪 testing koneksi ke Apps Script...');
+  
+  try {
+    const response = await fetch(BK56_API_URL + '?action=ping&_=' + Date.now());
+    const result = await response.json();
+    
+    if (result.status === 'ok') {
+      console.log('bk56: ✅ Koneksi berhasil!', result);
+      if (typeof showToast === 'function') {
+        showToast('✅ Koneksi Apps Script berhasil!', 'success');
+      }
+    } else {
+      console.warn('bk56: ⚠️ Response tidak sesuai', result);
+    }
+  } catch(err) {
+    console.error('bk56: ❌ Koneksi gagal', err);
+    if (typeof showToast === 'function') {
+      showToast('❌ Koneksi Apps Script gagal: ' + err.message, 'error');
+    }
+  }
+};
 
 /* ================================================================
 * JALANKAN SAAT HALAMAN DIMUAT
 =============================================================== */
 document.addEventListener('DOMContentLoaded', function() {
-  if (isAppsScriptReady()) {
-    console.log('✅ Apps Script integration aktif');
-    console.log('📡 URL:', BK56_APPS_SCRIPT_URL);
-    
-    // Load data dari Apps Script setelah 2 detik
-    setTimeout(loadLinksFromAppsScript, 2000);
-  } else {
+  if (!isAPIReady()) {
     console.warn('⚠️ Apps Script URL belum dikonfigurasi');
-    console.log('💡 Buka file index.html, cari "BK56_APPS_SCRIPT_URL", lalu paste URL Apps Script Anda');
+    console.log('💡 Buka file index.html, cari "BK56_API_URL", lalu paste URL Apps Script Anda');
+    return;
   }
+  
+  console.log('✅ Apps Script integration v3 aktif');
+  console.log('📡 URL:', BK56_API_URL);
+  
+  // 1. Test koneksi dulu
+  fetch(BK56_API_URL + '?action=ping&_=' + Date.now())
+    .then(r => r.json())
+    .then(result => {
+      if (result.status === 'ok') {
+        console.log('✅ Koneksi ke Apps Script berhasil');
+      } else {
+        console.warn('⚠️ Response Apps Script:', result);
+      }
+    })
+    .catch(err => console.warn('⚠️ Koneksi Apps Script gagal:', err));
+  
+  // 2. Load data dari Apps Script (isi link yang kosong) - setelah 1 detik
+  setTimeout(loadLinksFromAPI, 1000);
+  
+  // 3. Sync semua link ke Apps Script - setelah 3 detik
+  setTimeout(syncAllLinksToAPI, 3000);
 });
 
 })();
 </script>
 <!-- ================================================================ -->
-<!-- ========== PATCH: APPS SCRIPT AUTO-SYNC - END ========== -->
+<!-- ========== PATCH: APPS SCRIPT SYNC v3 (FIXED) - END ========== -->
 <!-- ================================================================ -->
 </body>
 </html>
