@@ -7917,5 +7917,122 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- ================================================================ -->
 <!-- ========== PATCH: APPS SCRIPT SYNC v3 (FIXED) - END ========== -->
 <!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS - START ========== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+
+/* ================================================================
+* KONFIGURASI
+* ⚠️ GANTI URL DI BAWAH INI DENGAN URL APPS SCRIPT ANDA
+=============================================================== */
+const BK56_RESTORE_API_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
+
+/* ================================================================
+* FUNGSI: Cek & Pulihkan Data dari Google Sheets
+=============================================================== */
+async function autoRestoreLinksFromSheet() {
+    // 1. Validasi URL
+    if (!BK56_RESTORE_API_URL || BK56_RESTORE_API_URL === "PASTE_URL_APPS_SCRIPT_DI_SINI") {
+        console.warn("bk56: URL Apps Script belum dikonfigurasi untuk auto-restore.");
+        return;
+    }
+
+    // 2. Cek apakah localStorage benar-benar kosong (habis di-clear)
+    const isDocEmpty = !localStorage.getItem('bk56_doc_links') || localStorage.getItem('bk56_doc_links') === '{}';
+    const isMateriEmpty = !localStorage.getItem('bk56_materi_links') || localStorage.getItem('bk56_materi_links') === '{}';
+    const isVideoEmpty = !localStorage.getItem('bk56_video_links') || localStorage.getItem('bk56_video_links') === '{}';
+
+    // 3. Jika SEMUA kosong, lakukan restore dari Sheets
+    if (isDocEmpty && isMateriEmpty && isVideoEmpty) {
+        console.log("bk56: 🔄 LocalStorage terdeteksi kosong. Memulihkan data dari Google Sheets...");
+        
+        try {
+            const res = await fetch(BK56_RESTORE_API_URL + '?action=getAll&_=' + Date.now());
+            const result = await res.json();
+
+            if (result.success && result.data && result.data.length > 0) {
+                let docLinks = {};
+                let materiLinks = {};
+                let videoLinks = {};
+
+                // 4. Susun ulang data ke format localStorage
+                result.data.forEach(item => {
+                    if (item.kat === 'video') {
+                        const vIdx = item.docIdx.replace('video_', '');
+                        if (!videoLinks[vIdx]) videoLinks[vIdx] = [];
+                        if (!videoLinks[vIdx].includes(item.url)) videoLinks[vIdx].push(item.url);
+                        
+                    } else if (item.kat === 'materi') {
+                        const docIdxNum = parseInt(item.docIdx);
+                        const doc = DOCS[docIdxNum];
+                        if (doc && doc.kat === 'materi') {
+                            // Hitung ulang index materi
+                            let mIdx = 0;
+                            for (let i = 0; i <= docIdxNum; i++) {
+                                if (DOCS[i].kelas === doc.kelas && DOCS[i].guru === doc.guru && DOCS[i].kat === 'materi') {
+                                    if (i === docIdxNum) break;
+                                    mIdx++;
+                                }
+            }
+                            const key = doc.kelas + '_' + doc.guru + '_' + mIdx;
+                            if (!materiLinks[key]) materiLinks[key] = { ppt: [], pdf: [], doc: [], video: [] };
+                            const type = item.type || 'ppt';
+                            if (!materiLinks[key][type]) materiLinks[key][type] = [];
+                            if (!materiLinks[key][type].includes(item.url)) {
+                                materiLinks[key][type].push(item.url);
+                            }
+                        }
+                    } else {
+                        // Dokumen biasa (rpl, kasus, analisis, dll)
+                        const dIdx = parseInt(item.docIdx);
+                        if (!isNaN(dIdx)) {
+                            if (!docLinks[dIdx]) docLinks[dIdx] = [];
+                            if (!docLinks[dIdx].includes(item.url)) {
+                                docLinks[dIdx].push(item.url);
+                            }
+                        }
+                    }
+                });
+
+                // 5. Simpan kembali ke localStorage
+                localStorage.setItem('bk56_doc_links', JSON.stringify(docLinks));
+                localStorage.setItem('bk56_materi_links', JSON.stringify(materiLinks));
+                localStorage.setItem('bk56_video_links', JSON.stringify(videoLinks));
+
+                console.log("✅ bk56: Data berhasil dipulihkan dari Google Sheets!");
+                
+                // 6. Tampilkan notifikasi ke user
+                if (typeof showToast === 'function') {
+                    showToast('🔄 Data link dipulihkan otomatis dari database (Clear Browser terdeteksi)', 'success');
+                }
+
+                // 7. Refresh UI agar badge hijau muncul kembali
+                setTimeout(() => {
+                    if (typeof render === 'function') render(true);
+                    if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
+                    if (typeof refreshVideoPage === 'function') refreshVideoPage();
+                }, 500);
+            }
+        } catch (err) {
+            console.error("bk56: Gagal memulihkan data dari Sheets", err);
+        }
+    }
+}
+
+/* ================================================================
+* JALANKAN SAAT HALAMAN DIMUAT
+=============================================================== */
+document.addEventListener('DOMContentLoaded', function() {
+    // Tunggu 1.5 detik agar semua script dasar selesai dimuat, lalu cek restore
+    setTimeout(autoRestoreLinksFromSheet, 1500);
+});
+
+})();
+</script>
+<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS - END ========== -->
+<!-- ================================================================ -->
 </body>
 </html>
