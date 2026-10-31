@@ -7976,7 +7976,7 @@ async function autoRestoreLinksFromSheet() {
                                     if (i === docIdxNum) break;
                                     mIdx++;
                                 }
-            }
+                            }
                             const key = doc.kelas + '_' + doc.guru + '_' + mIdx;
                             if (!materiLinks[key]) materiLinks[key] = { ppt: [], pdf: [], doc: [], video: [] };
                             const type = item.type || 'ppt';
@@ -7992,6 +7992,12 @@ async function autoRestoreLinksFromSheet() {
                             if (!docLinks[dIdx]) docLinks[dIdx] = [];
                             if (!docLinks[dIdx].includes(item.url)) {
                                 docLinks[dIdx].push(item.url);
+                            }
+                            
+                            // ✅ FIX: Update array DOCS agar indikator jadi hijau
+                            if (DOCS[dIdx]) {
+                                DOCS[dIdx].link = item.url;
+                                console.log("bk56: ✅ DOCS[" + dIdx + "].link diupdate: " + item.url);
                             }
                         }
                     }
