@@ -7927,31 +7927,31 @@ document.addEventListener('DOMContentLoaded', function() {
 /* ================================================================
 * KONFIGURASI
 * ⚠️ WAJIB: Ganti URL di bawah ini dengan URL Apps Script Anda
+* (Harus SAMA PERSIS dengan URL di patch Apps Script v3 Anda)
 =============================================================== */
 const BK56_RESTORE_API_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
 
 /* ================================================================
-* FUNGSI UTAMA: Cek & Pulihkan Data
+* FUNGSI UTAMA: Cek & Pulihkan Data dari Google Sheets
 =============================================================== */
 async function autoRestoreLinks() {
     // 1. Validasi URL
-    if (!BK56_RESTORE_API_URL || BK56_RESTORE_API_URL === "PASTE_URL_APPS_SCRIPT_ANDA_DI_SINI") {
-        console.warn("bk56: URL Apps Script belum dikonfigurasi.");
+    if (!BK56_RESTORE_API_URL || !BK56_RESTORE_API_URL.startsWith('https://script.google.com/')) {
+        console.warn("bk56: URL Apps Script belum dikonfigurasi untuk auto-restore.");
         return;
     }
 
-    // 2. Cek apakah localStorage kosong (habis di-clear)
+    // 2. Cek apakah localStorage benar-benar kosong (habis di-clear)
     const docLinksStr = localStorage.getItem('bk56_doc_links');
     const isDocEmpty = !docLinksStr || docLinksStr === '{}' || docLinksStr === 'null';
     
-    // Jika data masih ada di localStorage, kita tetap sync ke array DOCS agar aman
+    // Jika data masih ada di localStorage, kita tetap pastikan array DOCS terupdate
     if (!isDocEmpty) {
-        console.log("bk56: Data lokal ditemukan, memastikan array DOCS terupdate...");
         try {
             const localData = JSON.parse(docLinksStr);
             updateDocsArray(localData);
         } catch(e) {}
-        return; // Tidak perlu fetch dari internet jika data lokal ada
+        return; // Tidak perlu fetch dari internet jika data lokal masih ada
     }
 
     // 3. Jika kosong, tarik dari Google Sheets
@@ -7964,58 +7964,36 @@ async function autoRestoreLinks() {
 
         if (result.success && result.data && result.data.length > 0) {
             let docLinks = {};
-            let materiLinks = {};
-            let videoLinks = {};
             let restoredCount = 0;
 
-            // 4. Susun ulang data
+            // 4. Susun ulang data dan update array DOCS
             result.data.forEach(item => {
-                if (item.kat === 'video') {
-                    const vIdx = item.docIdx.replace('video_', '');
-                    if (!videoLinks[vIdx]) videoLinks[vIdx] = [];
-                    if (!videoLinks[vIdx].includes(item.url)) {
-                        videoLinks[vIdx].push(item.url);
+                const dIdx = parseInt(item.docIdx);
+                if (!isNaN(dIdx) && DOCS[dIdx]) {
+                    if (!docLinks[dIdx]) docLinks[dIdx] = [];
+                    if (!docLinks[dIdx].includes(item.url)) {
+                        docLinks[dIdx].push(item.url);
                         restoredCount++;
                     }
-                } else if (item.kat === 'materi') {
-                    // Logic materi (simplified)
-                    const docIdxNum = parseInt(item.docIdx);
-                    if (!isNaN(docIdxNum) && DOCS[docIdxNum]) {
-                        // Update langsung ke DOCS untuk materi
-                        // (Asumsi materi disimpan di field khusus atau dihandle terpisah)
-                    }
-                } else {
-                    // Dokumen biasa
-                    const dIdx = parseInt(item.docIdx);
-                    if (!isNaN(dIdx)) {
-                        if (!docLinks[dIdx]) docLinks[dIdx] = [];
-                        if (!docLinks[dIdx].includes(item.url)) {
-                            docLinks[dIdx].push(item.url);
-                            restoredCount++;
-                        }
-                        
-                        // ✅ KRITIS: Update array DOCS agar UI jadi hijau
-                        if (DOCS[dIdx]) {
-                            DOCS[dIdx].link = item.url;
-                        }
-                    }
+                    
+                    // ✅ KRITIS: Update array DOCS agar UI jadi hijau & link bisa dibuka
+                    DOCS[dIdx].link = item.url;
                 }
             });
 
-            // 5. Simpan ke localStorage
+            // 5. Simpan kembali ke localStorage
             localStorage.setItem('bk56_doc_links', JSON.stringify(docLinks));
-            if (Object.keys(videoLinks).length > 0) localStorage.setItem('bk56_video_links', JSON.stringify(videoLinks));
 
             console.log("✅ bk56: Berhasil memulihkan " + restoredCount + " link dari Sheets!");
             
-            // 6. Notifikasi
+            // 6. Notifikasi ke user
             if (typeof showToast === 'function') {
                 showToast('🔄 Data link dipulihkan otomatis dari database (' + restoredCount + ' link)', 'success');
             } else {
                 alert('🔄 Data link dipulihkan otomatis dari database (' + restoredCount + ' link)');
             }
 
-            // 7. Refresh UI
+            // 7. Refresh UI agar badge hijau muncul kembali
             setTimeout(() => {
                 if (typeof render === 'function') render(true);
                 if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
@@ -8027,7 +8005,7 @@ async function autoRestoreLinks() {
 }
 
 /* ================================================================
-* HELPER: Update array DOCS dari data lokal
+* HELPER: Update array DOCS dari data lokal (jika belum di-clear)
 =============================================================== */
 function updateDocsArray(localData) {
     if (!localData || typeof localData !== 'object') return;
@@ -8035,7 +8013,7 @@ function updateDocsArray(localData) {
     for (const idx in localData) {
         const dIdx = parseInt(idx);
         if (!isNaN(dIdx) && DOCS[dIdx] && localData[idx].length > 0) {
-            // Ambil link pertama sebagai link utama
+            // Ambil link pertama sebagai link utama untuk array DOCS
             DOCS[dIdx].link = localData[idx][0];
             updated++;
         }
@@ -8053,7 +8031,7 @@ function updateDocsArray(localData) {
 * JALANKAN SAAT HALAMAN DIMUAT
 =============================================================== */
 document.addEventListener('DOMContentLoaded', function() {
-    // Tunggu 1.5 detik agar script dasar selesai
+    // Tunggu 1.5 detik agar script dasar selesai dimuat
     setTimeout(autoRestoreLinks, 1500);
 });
 
