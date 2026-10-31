@@ -5333,2406 +5333,349 @@ function updateMateriCounts() {
     if (el) el.textContent = (data[type] || []).length;
   });
 }
-
 /* ---------- Tambah link ---------- */
-window.addMateriLink = function(type) {
-  if (!currentMateriEdit) return;
-  const input = document.getElementById('input-' + type);
+window.addDocLink = function() {
+  if (!currentLinkEdit) return;
+  const input = document.getElementById('input-doc-link');
   if (!input) return;
   const url = input.value.trim();
-  if (!url) { showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
-  // Validasi sederhana
+  if (!url) { if (typeof showToast === 'function') showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
   let finalUrl = url;
-  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
-    finalUrl = 'https://' + url;
+  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) { finalUrl = 'https://' + url; }
+  const data = getDocLinkData(currentLinkEdit.docIdx);
+  data.push(finalUrl);
+  setDocLinkData(currentLinkEdit.docIdx, data);
+  if (typeof window.bk56AddLinkToAPI === 'function') {
+    const doc = DOCS[currentLinkEdit.docIdx];
+    if (doc) window.bk56AddLinkToAPI(currentLinkEdit.docIdx, finalUrl);
   }
-  const { kelas, guru, materiIdx } = currentMateriEdit;
-  const data = getMateriData(kelas, guru, materiIdx);
-  if (!data[type]) data[type] = [];
-  data[type].push(finalUrl);
-  setMateriData(kelas, guru, materiIdx, data);
   input.value = '';
-  renderMateriModal();
-  updateMateriCounts();
-  showToast('✅ Link ' + type.toUpperCase() + ' berhasil ditambahkan!', 'success');
+  renderLinkModal();
+  if (typeof showToast === 'function') showToast('✅ Link berhasil ditambahkan & disinkronkan ke Sheets!', 'success');
 };
-
 /* ---------- Hapus link ---------- */
-window.removeMateriLink = function(idx, type) {
-  if (!currentMateriEdit) return;
-  if (!confirm('🗑️ Yakin ingin menghapus link ini?\nLink akan hilang permanen.')) return;
-  const { kelas, guru, materiIdx } = currentMateriEdit;
-  const data = getMateriData(kelas, guru, materiIdx);
-  if (data[type] && data[type][idx] !== undefined) {
-    data[type].splice(idx, 1);
-    setMateriData(kelas, guru, materiIdx, data);
-    renderMateriModal();
-    updateMateriCounts();
-    showToast('🗑️ Link berhasil dihapus', 'info');
+window.removeDocLink = function(idx) {
+  if (!currentLinkEdit) return;
+  if (!confirm('🗑️ Yakin ingin menghapus link ini?\nLink akan hilang permanen dari database.')) return;
+  const data = getDocLinkData(currentLinkEdit.docIdx);
+  const urlToDelete = data[idx];
+  if (urlToDelete !== undefined) {
+    data.splice(idx, 1);
+    setDocLinkData(currentLinkEdit.docIdx, data);
+    if (typeof window.bk56DeleteLinkFromAPI === 'function') {
+      const doc = DOCS[currentLinkEdit.docIdx];
+      if (doc) window.bk56DeleteLinkFromAPI(currentLinkEdit.docIdx, urlToDelete);
+    }
+    renderLinkModal();
+    if (typeof showToast === 'function') showToast('🗑️ Link berhasil dihapus dari database', 'info');
   }
 };
-
 /* ---------- Buka link ---------- */
-window.openMateriLink = function(idx, type) {
-  if (!currentMateriEdit) return;
-  const { kelas, guru, materiIdx } = currentMateriEdit;
-  const data = getMateriData(kelas, guru, materiIdx);
-  const url = data[type] && data[type][idx];
-  if (!url) { showToast('⚠️ Link tidak valid', 'error'); return; }
+window.openDocLink = function(idx) {
+  if (!currentLinkEdit) return;
+  const data = getDocLinkData(currentLinkEdit.docIdx);
+  const url = data[idx];
+  if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
   window.open(url, '_blank', 'noopener,noreferrer');
 };
-
 /* ============================================================
-* OVERRIDE FUNGSI render() — Tambahkan badge materi di kartu
+* BUKA LINK DOKUMEN (dari kartu) - target _self
 ============================================================ */
-const _origRenderMateri = window.render;
-window.render = function(hanyaKartu) {
-  // Panggil render asli dulu
-  _origRenderMateri(hanyaKartu);
-  // Jika sedang di tab materi, tambahkan badge & tombol kelola
-  if (filterKat === 'materi' || filterKat === 'all') {
-    enhanceMateriCards();
-  }
+window.openDocLinkFinal = function(docIdx) {
+  const doc = DOCS[docIdx];
+  if (!doc) return;
+  if (doc.kat === 'materi') { if (typeof openMateriFinal === 'function') openMateriFinal(docIdx); return; }
+  const data = getDocLinkData(docIdx);
+  const total = data.length;
+  if (total === 0) { if (typeof showToast === 'function') showToast('⚠️ Belum ada link dokumen. Klik ⚙️ Kelola untuk menambah.', 'error'); return; }
+  if (total === 1) { bukaDocLinkSelf(data[0]); return; }
+  currentPickerEdit = { docIdx: docIdx, docNama: doc.nama, data: data };
+  renderLinkPicker();
+  document.getElementById('link-picker-modal').classList.add('show');
 };
-
-function enhanceMateriCards() {
+window.bukaDocLinkSelf = function(url) {
+  if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+  showLinkOpenToast();
+  setTimeout(function(){ window.location.href = url; }, 300);
+};
+window.bukaDocFromPicker = function(idx) {
+  if (!currentPickerEdit) return;
+  const url = currentPickerEdit.data[idx];
+  if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
+  closeLinkPicker();
+  bukaDocLinkSelf(url);
+};
+function renderLinkPicker() {
+  if (!currentPickerEdit) return;
+  const panel = document.getElementById('link-picker-panel');
+  const data = currentPickerEdit.data;
+  document.getElementById('picker-modal-title').textContent = '📂 ' + currentPickerEdit.docNama;
+  document.getElementById('picker-modal-subtitle').textContent = 'Pilih link dokumen yang ingin dibuka (' + data.length + ' link)';
+  let html = '<div class="link-picker-list">';
+  data.forEach(function(url, idx){
+    const fileName = getLinkFileName(url);
+    html += '<div class="link-picker-item" onclick="bukaDocFromPicker(' + idx + ')" title="Klik untuk membuka: ' + escLink(url) + '">' +
+      '<div class="pkr-num">' + (idx+1) + '</div>' +
+      '<div class="pkr-info"><div class="pkr-name">' + escLink(fileName) + '</div><div class="pkr-url">' + escLink(url) + '</div></div>' +
+      '<div class="pkr-open-icon">↗</div></div>';
+  });
+  html += '</div>';
+  panel.innerHTML = html;
+}
+window.closeLinkPicker = function() {
+  document.getElementById('link-picker-modal').classList.remove('show');
+  currentPickerEdit = null;
+};
+function showLinkOpenToast() {
+  const toast = document.getElementById('link-open-toast');
+  if (!toast) return;
+  toast.innerHTML = '📂 Membuka dokumen...';
+  toast.classList.add('show');
+  setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+}
+/* ============================================================
+* ENHANCE KARTU DOKUMEN
+============================================================ */
+function enhanceDocLinkCards() {
   const cards = document.querySelectorAll('#grid-dokumen .a56-card');
   cards.forEach(function(card){
-    // Cek apakah kartu ini adalah materi
-    const pathEl = card.querySelector('.a56-path');
-    if (!pathEl) return;
-    const pathText = pathEl.textContent || '';
-    if (!/Materi/i.test(pathText)) return;
-    // Jangan tambahkan 2x
-    if (card.querySelector('.a56-materi-badges')) return;
-    // Cari docIdx dari tombol buka
-    const btn = card.querySelector('.a56-btn');
+    if (card.querySelector('.a56-btn-link-open')) return;
+    const btn = card.querySelector('.a56-btn, .a56-btn-materi, .a56-btn-materi-open-final');
     if (!btn) return;
     const onclickAttr = btn.getAttribute('onclick') || '';
     const match = onclickAttr.match(/bukaDoc\((\d+)\)/);
     if (!match) return;
     const docIdx = parseInt(match[1]);
     const doc = DOCS[docIdx];
-    if (!doc || doc.kat !== 'materi') return;
-    const materiIdx = getMateriIndex(doc.kelas, doc.guru, docIdx);
-    if (materiIdx < 0) return;
-    const counts = countLinksByType(doc.kelas, doc.guru, materiIdx);
-    // Buat badges
-    const badges = document.createElement('div');
-    badges.className = 'a56-materi-badges';
-    badges.innerHTML =
-      '<span class="a56-materi-badge ' + (counts.ppt>0?'has-link':'') + '">📊 PPT: ' + counts.ppt + '</span>' +
-      '<span class="a56-materi-badge ' + (counts.pdf>0?'has-link':'') + '">📄 PDF: ' + counts.pdf + '</span>' +
-      '<span class="a56-materi-badge ' + (counts.doc>0?'has-link':'') + '">📝 DOC: ' + counts.doc + '</span>' +
-      '<span class="a56-materi-badge ' + (counts.video>0?'has-link':'') + '">🎬 Video: ' + counts.video + '</span>';
-    // Sisipkan sebelum tombol buka
-    btn.parentNode.insertBefore(badges, btn);
-    // Ubah tombol buka menjadi "Kelola Link Materi"
-    btn.outerHTML = '<button class="a56-btn-materi" onclick="openMateriModal(' + docIdx + ')">📚 Kelola Link Materi' +
-      (counts.total > 0 ? ' (' + counts.total + ')' : '') + '</button>';
-  });
-}
-
-/* ---------- Tutup modal saat tekan ESC ---------- */
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    const modal = document.getElementById('materi-modal');
-    if (modal && modal.classList.contains('show')) {
-      closeMateriModal();
-    }
-  }
-});
-
-/* ---------- Tutup modal saat klik di luar ---------- */
-document.addEventListener('click', function(e) {
-  const modal = document.getElementById('materi-modal');
-  if (modal && modal.classList.contains('show')) {
-    if (e.target === modal) closeMateriModal();
-  }
-}, true);
-
-})();
-</script>
-<!-- ========== MATERI PERMANEN - JAVASCRIPT [END] ========== -->
- <!-- ========== PATCH: MATERI BUKA LANGSUNG FINAL - START ========== -->
-<style>
-/* ===== MODAL PICKER LINK MATERI ===== */
-.materi-picker-modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  display: none; align-items: center; justify-content: center;
-  z-index: 100005; padding: 20px; overflow-y: auto;
-}
-.materi-picker-modal.show { display: flex; }
-.materi-picker-box {
-  background: #fff; border-radius: 20px; max-width: 700px; width: 100%;
-  max-height: 85vh; overflow: hidden; display: flex; flex-direction: column;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-  animation: pickerPop 0.35s cubic-bezier(.22,1,.36,1);
-}
-@keyframes pickerPop {
-  from { opacity: 0; transform: translateY(40px) scale(0.9); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.materi-picker-header {
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff; padding: 20px 24px;
-}
-.materi-picker-header h3 {
-  font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
-  margin-bottom: 4px; font-weight: 700;
-}
-.materi-picker-header p { font-size: 0.85rem; opacity: 0.9; }
-.materi-picker-tabs {
-  display: flex; background: #ecfdf5; border-bottom: 2px solid #a7f3d0;
-  overflow-x: auto; scrollbar-width: thin;
-}
-.materi-picker-tab {
-  flex: 1; min-width: 90px; padding: 12px 14px; border: none; background: transparent;
-  font-size: 0.85rem; font-weight: 700; color: #065f46; cursor: pointer;
-  border-bottom: 3px solid transparent; margin-bottom: -2px;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
-}
-.materi-picker-tab:hover { background: rgba(16,185,129,0.1); }
-.materi-picker-tab.active {
-  color: #059669; border-bottom-color: #10b981; background: #fff;
-}
-.materi-picker-tab .pkr-count {
-  background: rgba(16,185,129,0.2); color: #065f46;
-  padding: 2px 8px; border-radius: 100px; font-size: 0.7rem;
-}
-.materi-picker-tab.active .pkr-count {
-  background: #10b981; color: #fff;
-}
-.materi-picker-panel {
-  display: none; padding: 18px 22px; flex: 1; overflow-y: auto;
-  background: #fff;
-}
-.materi-picker-panel.active { display: block; }
-.materi-picker-list { display: flex; flex-direction: column; gap: 8px; }
-.materi-picker-item {
-  display: flex; align-items: center; gap: 12px; padding: 12px 16px;
-  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-  border: 2px solid #a7f3d0; border-radius: 12px;
-  transition: all 0.2s ease; cursor: pointer;
-}
-.materi-picker-item:hover {
-  border-color: #10b981; transform: translateX(4px);
-  box-shadow: 0 4px 14px rgba(16,185,129,0.2);
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-}
-.materi-picker-item:active { transform: scale(0.98); }
-.pkr-num {
-  background: #10b981; color: #fff; min-width: 32px; height: 32px;
-  border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  font-size: 0.82rem; font-weight: 700; flex-shrink: 0;
-}
-.pkr-info { flex: 1; min-width: 0; }
-.pkr-name {
-  font-size: 0.85rem; color: #065f46; font-weight: 700;
-  margin-bottom: 2px; word-break: break-word; line-height: 1.3;
-}
-.pkr-url {
-  font-size: 0.72rem; color: #047857; font-family: Consolas, Monaco, monospace;
-  word-break: break-all; opacity: 0.8; line-height: 1.3;
-  overflow: hidden; text-overflow: ellipsis;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-}
-.pkr-open-icon {
-  background: #10b981; color: #fff; width: 36px; height: 36px;
-  border-radius: 10px; display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; flex-shrink: 0; transition: all 0.2s ease;
-}
-.materi-picker-item:hover .pkr-open-icon {
-  background: #059669; transform: scale(1.1) rotate(-5deg);
-}
-.materi-picker-empty {
-  text-align: center; padding: 30px 20px; color: #065f46;
-  background: #ecfdf5; border: 2px dashed #a7f3d0; border-radius: 12px;
-}
-.materi-picker-empty-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.6; }
-.materi-picker-footer {
-  padding: 14px 22px; background: #ecfdf5;
-  border-top: 1px solid #a7f3d0; display: flex;
-  justify-content: space-between; align-items: center; gap: 10px;
-  flex-wrap: wrap;
-}
-.materi-picker-info { font-size: 0.78rem; color: #065f46; font-weight: 600; }
-.materi-picker-btn-close {
-  background: #f1f5f9; color: #065f46; border: none;
-  padding: 10px 20px; border-radius: 10px; font-size: 0.85rem;
-  font-weight: 700; cursor: pointer; transition: all 0.2s ease;
-  font-family: inherit;
-}
-.materi-picker-btn-close:hover { background: #e2e8f0; }
-/* ===== TOMBOL BUKA MATERI DI KARTU ===== */
-.a56-btn-materi-open-final {
-  width: 100%; background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff; border: none; padding: 12px 14px; border-radius: 12px;
-  font-weight: 700; cursor: pointer; font-size: 0.9rem;
-  margin-top: 8px; transition: all 0.3s ease; font-family: inherit;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  box-shadow: 0 4px 14px rgba(16,185,129,0.3);
-}
-.a56-btn-materi-open-final:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 22px rgba(16,185,129,0.45);
-  filter: brightness(1.08);
-}
-.a56-btn-materi-open-final:active { transform: scale(0.98); }
-.a56-btn-materi-open-final .btn-icon {
-  font-size: 1.1rem; transition: transform 0.3s ease;
-}
-.a56-btn-materi-open-final:hover .btn-icon {
-  transform: translateX(3px) scale(1.15);
-}
-.a56-btn-materi-open-final.empty-link {
-  background: linear-gradient(135deg, #94a3b8, #64748b);
-  box-shadow: 0 4px 14px rgba(100,116,139,0.3);
-}
-.a56-materi-actions-final {
-  display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 8px;
-}
-/* ===== NOTIFIKASI SAAT BUKA MATERI ===== */
-.materi-open-toast {
-  position: fixed; top: 100px; left: 50%;
-  transform: translateX(-50%) translateY(-100px);
-  background: linear-gradient(135deg, #10b981, #059669);
-  color: #fff; padding: 14px 24px; border-radius: 100px;
-  font-size: 14px; font-weight: 600; box-shadow: 0 12px 32px rgba(16,185,129,0.4);
-  z-index: 100006; opacity: 0; transition: all 0.4s ease;
-  pointer-events: none; display: flex; align-items: center; gap: 10px;
-}
-.materi-open-toast.show {
-  opacity: 1; transform: translateX(-50%) translateY(0);
-}
-@media (max-width: 600px) {
-  .materi-picker-box { max-height: 92vh; border-radius: 14px; }
-  .materi-picker-tab { font-size: 0.75rem; padding: 10px 8px; min-width: 70px; }
-  .materi-picker-panel { padding: 12px; }
-  .materi-picker-item { padding: 10px 12px; }
-  .pkr-name { font-size: 0.8rem; }
-  .pkr-url { font-size: 0.68rem; }
-  .a56-btn-materi-open-final { font-size: 0.82rem; padding: 10px 12px; }
-}
-</style>
-
-<!-- Modal Picker Link Materi -->
-<div class="materi-picker-modal" id="materi-picker-modal" role="dialog" aria-modal="true">
-  <div class="materi-picker-box">
-    <div class="materi-picker-header">
-      <h3 id="picker-modal-title">📂 Pilih Link Materi</h3>
-      <p id="picker-modal-subtitle">Klik link yang ingin dibuka</p>
-    </div>
-    <div class="materi-picker-tabs" role="tablist" id="picker-tabs"></div>
-    <div id="picker-panels-container"></div>
-    <div class="materi-picker-footer">
-      <div class="materi-picker-info">🎯 Klik link untuk membuka di halaman ini</div>
-      <button class="materi-picker-btn-close" onclick="closeMateriPicker()">✖ Tutup</button>
-    </div>
-  </div>
-</div>
-
-<!-- Toast Notifikasi Buka Materi -->
-<div class="materi-open-toast" id="materi-open-toast">📂 Membuka materi...</div>
-
-<script>
-(function(){
-"use strict";
-
-/* ============================================================
-* PATCH FINAL: BUKA MATERI DENGAN TARGET _self
-* - Tombol "Buka Materi" yang jelas di kartu
-* - Link dibuka dengan target="_self" (di tab yang sama)
-* - Modal picker jika ada banyak link
-* - Notifikasi visual saat membuka
-============================================================ */
-
-let currentPickerEdit = null;
-let currentPickerType = 'ppt';
-
-/* ---------- Helper: escape HTML ---------- */
-function escP(s){
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-
-/* ---------- Helper: ekstrak nama file dari URL ---------- */
-function getFileNameP(url){
-  try {
-    var clean = url.split('?')[0].split('#')[0];
-    var parts = clean.split('/');
-    var last = parts[parts.length - 1];
-    if (last && last.length > 0 && last.length < 80) {
-      return decodeURIComponent(last);
-    }
-    var match = url.match(/^https?:\/\/([^\/]+)/i);
-    if (match) return match[1];
-    return 'Link Materi';
-  } catch(e) {
-    return 'Link Materi';
-  }
-}
-
-/* ---------- Helper: hitung total link ---------- */
-function getTotalLinks(data){
-  return (data.ppt||[]).length + (data.pdf||[]).length + (data.doc||[]).length + (data.video||[]).length;
-}
-
-/* ---------- Helper: cari link pertama yang tersedia ---------- */
-function getFirstLink(data){
-  var types = ['ppt','pdf','doc','video'];
-  for (var i = 0; i < types.length; i++) {
-    if (data[types[i]] && data[types[i]].length > 0) {
-      return { type: types[i], url: data[types[i]][0], idx: 0 };
-    }
-  }
-  return null;
-}
-
-/* ============================================================
-* FUNGSI UTAMA: BUKA MATERI (dipanggil dari tombol kartu)
-============================================================ */
-window.openMateriFinal = function(docIdx){
-  var doc = DOCS[docIdx];
-  if (!doc || doc.kat !== 'materi') return;
-  var materiIdx = (typeof getMateriIndex === 'function') ? getMateriIndex(doc.kelas, doc.guru, docIdx) : -1;
-  if (materiIdx < 0) return;
-  var data = (typeof getMateriData === 'function') ? getMateriData(doc.kelas, doc.guru, materiIdx) : {ppt:[],pdf:[],doc:[],video:[]};
-  var total = getTotalLinks(data);
-
-  if (total === 0) {
-    if (typeof showToast === 'function') {
-      showToast('⚠️ Belum ada link materi. Klik ⚙️ Kelola untuk menambah.', 'error');
-    }
-    return;
-  }
-
-  // Jika hanya 1 link total → buka langsung
-  if (total === 1) {
-    var first = getFirstLink(data);
-    if (first) {
-      bukaMateriLinkSelf(first.url, first.type);
-      return;
-    }
-  }
-
-  // Jika banyak link → buka modal picker
-  currentPickerEdit = {
-    kelas: doc.kelas,
-    guru: doc.guru,
-    materiIdx: materiIdx,
-    materiNama: doc.nama,
-    data: data
-  };
-  renderPickerModal();
-  document.getElementById('materi-picker-modal').classList.add('show');
-};
-
-/* ============================================================
-* BUKA LINK MATERI DENGAN TARGET _self
-============================================================ */
-window.bukaMateriLinkSelf = function(url, type){
-  if (!url) {
-    if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
-    return;
-  }
-  // Tampilkan notifikasi
-  showMateriOpenToast(type);
-  // Buka dengan target _self
-  setTimeout(function(){
-    window.location.href = url;
-  }, 300);
-};
-
-/* ---------- Buka link dari picker (target _self) ---------- */
-window.bukaMateriFromPicker = function(type, idx){
-  if (!currentPickerEdit) return;
-  var data = currentPickerEdit.data;
-  var url = data[type] && data[type][idx];
-  if (!url) {
-    if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
-    return;
-  }
-  closeMateriPicker();
-  bukaMateriLinkSelf(url, type);
-};
-
-/* ---------- Render modal picker ---------- */
-function renderPickerModal(){
-  if (!currentPickerEdit) return;
-  var data = currentPickerEdit.data;
-  var doc = DOCS.find(function(d){ return d.kelas === currentPickerEdit.kelas && d.guru === currentPickerEdit.guru && d.kat === 'materi'; });
-
-  // Update header
-  document.getElementById('picker-modal-title').textContent = '📂 ' + currentPickerEdit.materiNama;
-  document.getElementById('picker-modal-subtitle').textContent = 'Pilih link materi yang ingin dibuka (dibuka di halaman ini)';
-
-  // Build tabs
-  var types = [
-    {key:'ppt', icon:'📊', label:'PPT'},
-    {key:'pdf', icon:'📄', label:'PDF'},
-    {key:'doc', icon:'📝', label:'DOC'},
-    {key:'video', icon:'🎬', label:'Video'}
-  ];
-
-  var tabsHtml = '';
-  var panelsHtml = '';
-  var firstActiveType = null;
-
-  types.forEach(function(t, i){
-    var list = data[t.key] || [];
-    var cnt = list.length;
-    var isActive = false;
-    if (cnt > 0 && !firstActiveType) {
-      isActive = true;
-      firstActiveType = t.key;
-    }
-    tabsHtml += '<button class="materi-picker-tab' + (isActive?' active':'') + '" ' +
-      'data-type="' + t.key + '" ' +
-      'onclick="switchPickerTab(\'' + t.key + '\',this)" ' +
-      (cnt === 0 ? 'style="opacity:0.4;cursor:not-allowed;" disabled' : '') +
-      '>' + t.icon + ' ' + t.label + ' <span class="pkr-count">' + cnt + '</span></button>';
-
-    var panelHtml = '<div class="materi-picker-panel' + (isActive?' active':'') + '" id="picker-panel-' + t.key + '">';
-    if (cnt === 0) {
-      panelHtml += '<div class="materi-picker-empty">' +
-        '<div class="materi-picker-empty-icon">' + t.icon + '</div>' +
-        '<div style="font-weight:600;">Belum ada link ' + t.label + '</div>' +
-        '<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Klik ⚙️ Kelola untuk menambah link</div>' +
-        '</div>';
-    } else {
-      panelHtml += '<div class="materi-picker-list">';
-      list.forEach(function(url, idx){
-        var fileName = getFileNameP(url);
-        panelHtml += '<div class="materi-picker-item" onclick="bukaMateriFromPicker(\'' + t.key + '\',' + idx + ')" title="Klik untuk membuka: ' + escP(url) + '">' +
-          '<div class="pkr-num">' + (idx+1) + '</div>' +
-          '<div class="pkr-info">' +
-          '<div class="pkr-name">' + escP(fileName) + '</div>' +
-          '<div class="pkr-url">' + escP(url) + '</div>' +
-          '</div>' +
-          '<div class="pkr-open-icon">↗</div>' +
-          '</div>';
-      });
-      panelHtml += '</div>';
-    }
-    panelHtml += '</div>';
-    panelsHtml += panelHtml;
-  });
-
-  document.getElementById('picker-tabs').innerHTML = tabsHtml;
-  document.getElementById('picker-panels-container').innerHTML = panelsHtml;
-}
-
-/* ---------- Switch tab picker ---------- */
-window.switchPickerTab = function(type, btn){
-  if (btn.disabled) return;
-  currentPickerType = type;
-  document.querySelectorAll('.materi-picker-tab').forEach(function(t){ t.classList.remove('active'); });
-  btn.classList.add('active');
-  document.querySelectorAll('.materi-picker-panel').forEach(function(p){ p.classList.remove('active'); });
-  var panel = document.getElementById('picker-panel-' + type);
-  if (panel) panel.classList.add('active');
-};
-
-/* ---------- Tutup picker ---------- */
-window.closeMateriPicker = function(){
-  document.getElementById('materi-picker-modal').classList.remove('show');
-  currentPickerEdit = null;
-};
-
-/* ---------- Toast notifikasi buka materi ---------- */
-function showMateriOpenToast(type){
-  var toast = document.getElementById('materi-open-toast');
-  if (!toast) return;
-  var icons = { ppt:'📊', pdf:'📄', doc:'📝', video:'🎬' };
-  var labels = { ppt:'PPT', pdf:'PDF', doc:'DOC', video:'Video' };
-  toast.innerHTML = (icons[type]||'📂') + ' Membuka materi ' + (labels[type]||'') + '...';
-  toast.classList.add('show');
-  setTimeout(function(){ toast.classList.remove('show'); }, 2500);
-}
-
-/* ============================================================
-* OVERRIDE enhanceMateriCards - Tambahkan tombol "Buka Materi" final
-============================================================ */
-var _origEnhanceFinal = window._enhanceMateriCards || function(){};
-
-window._enhanceMateriCards = function(){
-  // Panggil yang asli dulu
-  if (typeof _origEnhanceFinal === 'function' && _origEnhanceFinal !== window._enhanceMateriCards) {
-    try { _origEnhanceFinal(); } catch(e) {}
-  }
-
-  var cards = document.querySelectorAll('#grid-dokumen .a56-card');
-  cards.forEach(function(card){
-    var pathEl = card.querySelector('.a56-path');
-    if (!pathEl) return;
-    var pathText = pathEl.textContent || '';
-    if (!/Materi/i.test(pathText)) return;
-
-    // Jangan tambahkan 2x
-    if (card.querySelector('.a56-btn-materi-open-final')) return;
-
-    // Cari docIdx
-    var btn = card.querySelector('.a56-btn, .a56-btn-materi-open, .a56-btn-materi');
-    if (!btn) return;
-    var onclickAttr = btn.getAttribute('onclick') || '';
-    var match = onclickAttr.match(/(?:bukaDoc|openMateriModal|openMateriViewer)\((\d+)\)/);
-    if (!match) return;
-    var docIdx = parseInt(match[1]);
-    var doc = DOCS[docIdx];
-    if (!doc || doc.kat !== 'materi') return;
-
-    var materiIdx = (typeof getMateriIndex === 'function') ? getMateriIndex(doc.kelas, doc.guru, docIdx) : -1;
-    if (materiIdx < 0) return;
-
-    var data = (typeof getMateriData === 'function') ? getMateriData(doc.kelas, doc.guru, materiIdx) : {ppt:[],pdf:[],doc:[],video:[]};
-    var total = getTotalLinks(data);
-
-    // Cari container tombol lama
-    var oldBtn = card.querySelector('.a56-btn-materi-open, .a56-btn-materi, .a56-materi-actions, .a56-btn');
-    if (!oldBtn) return;
-
-    // Jika sudah ada wrapper actions-final, skip
-    if (card.querySelector('.a56-materi-actions-final')) return;
-
-    // Buat wrapper baru
-    var actionsWrap = document.createElement('div');
-    actionsWrap.className = 'a56-materi-actions-final';
-
-    // Tombol "Buka Materi" (utama)
-    var btnOpen = document.createElement('button');
-    btnOpen.className = 'a56-btn-materi-open-final' + (total === 0 ? ' empty-link' : '');
-    btnOpen.onclick = function(){ openMateriFinal(docIdx); };
-    if (total === 0) {
-      btnOpen.innerHTML = '<span class="btn-icon">⚠️</span> Belum Ada Link Materi';
-      btnOpen.title = 'Klik untuk menambah link materi';
-    } else if (total === 1) {
-      btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Materi <span style="font-size:0.75rem;opacity:0.9;">(1 link)</span>';
-      btnOpen.title = 'Klik untuk membuka materi di halaman ini';
-    } else {
-      btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Materi <span style="font-size:0.75rem;opacity:0.9;">(' + total + ' link)</span>';
-      btnOpen.title = 'Klik untuk memilih link materi yang ingin dibuka';
-    }
-
-    // Tombol "Kelola"
-    var btnManage = document.createElement('button');
-    btnManage.className = 'a56-btn-materi-manage';
-    btnManage.onclick = function(){ openMateriModal(docIdx); };
-    btnManage.title = 'Kelola link materi';
+    if (!doc || doc.kat === 'materi') return;
+    const data = getDocLinkData(docIdx);
+    const total = data.length;
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'a56-link-actions-wrap';
+    const btnOpen = document.createElement('button');
+    btnOpen.className = 'a56-btn-link-open' + (total === 0 ? ' empty-link' : '');
+    btnOpen.onclick = function(){ openDocLinkFinal(docIdx); };
+    if (total === 0) { btnOpen.innerHTML = '<span class="btn-icon">⚠️</span> Belum Ada Link Dokumen'; btnOpen.title = 'Klik untuk menambah link dokumen'; }
+    else if (total === 1) { btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Dokumen <span style="font-size:0.75rem;opacity:0.9;">(1 link)</span>'; btnOpen.title = 'Klik untuk membuka dokumen'; }
+    else { btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Dokumen <span style="font-size:0.75rem;opacity:0.9;">(' + total + ' link)</span>'; btnOpen.title = 'Klik untuk memilih link dokumen'; }
+    const btnManage = document.createElement('button');
+    btnManage.className = 'a56-btn-link-manage-small';
+    btnManage.onclick = function(){ openLinkModal(docIdx); };
+    btnManage.title = 'Kelola link dokumen';
     btnManage.innerHTML = '⚙️';
-
     actionsWrap.appendChild(btnOpen);
     actionsWrap.appendChild(btnManage);
-
-    // Ganti tombol lama
-    var parent = oldBtn.parentNode;
-    if (oldBtn.classList.contains('a56-materi-actions')) {
-      parent.replaceChild(actionsWrap, oldBtn);
-    } else {
-      parent.replaceChild(actionsWrap, oldBtn);
-    }
-  });
-};
-
-/* ============================================================
-* OVERRIDE render() agar enhanceMateriCards dipanggil
-============================================================ */
-var _origRenderFinal = window.render;
-window.render = function(hanyaKartu){
-  if (typeof _origRenderFinal === 'function') _origRenderFinal(hanyaKartu);
-  if (filterKat === 'materi' || filterKat === 'all') {
-    if (typeof window._enhanceMateriCards === 'function') window._enhanceMateriCards();
-  }
-};
-
-/* ---------- Tutup picker saat tekan ESC ---------- */
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    var modal = document.getElementById('materi-picker-modal');
-    if (modal && modal.classList.contains('show')) {
-      closeMateriPicker();
-    }
-  }
-});
-
-/* ---------- Tutup picker saat klik di luar ---------- */
-document.addEventListener('click', function(e) {
-  var modal = document.getElementById('materi-picker-modal');
-  if (modal && modal.classList.contains('show')) {
-    if (e.target === modal) closeMateriPicker();
-  }
-}, true);
-
-/* ============================================================
-* Jalankan sekali saat load
-============================================================ */
-document.addEventListener('DOMContentLoaded', function(){
-  setTimeout(function(){
-    if (typeof filterKat !== 'undefined' && (filterKat === 'materi' || filterKat === 'all')) {
-      if (typeof window._enhanceMateriCards === 'function') window._enhanceMateriCards();
-    }
-  }, 400);
-});
-
-})();
-</script>
-<!-- ========== PATCH: MATERI BUKA LANGSUNG FINAL - END ========== -->
- <!-- ========== VIDEO PERMANEN - CSS ========== -->
-<style>
-.video-modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-  display: none; align-items: center; justify-content: center;
-  z-index: 100004; padding: 20px; overflow-y: auto;
-}
-.video-modal.show { display: flex; }
-.video-modal-box {
-  background: #fff; border-radius: 20px; max-width: 800px; width: 100%;
-  max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-  animation: videoPop 0.35s cubic-bezier(.22,1,.36,1);
-}
-@keyframes videoPop {
-  from { opacity: 0; transform: translateY(30px) scale(0.95); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.video-modal-header {
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
-  color: #fff; padding: 20px 24px;
-}
-.video-modal-header h3 {
-  font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem;
-  margin-bottom: 4px; font-weight: 700;
-}
-.video-modal-header p { font-size: 0.85rem; opacity: 0.9; }
-.video-panel {
-  padding: 20px 24px; flex: 1; overflow-y: auto; background: #fff;
-}
-.video-panel-title {
-  font-size: 0.95rem; font-weight: 700; color: #7c3aed;
-  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
-}
-.video-link-list { display: flex; flex-direction: column; gap: 8px; }
-.video-link-item {
-  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
-  background: linear-gradient(135deg, #faf5ff, #f3e8ff);
-  border: 1px solid #e9d5ff; border-radius: 10px;
-  transition: all 0.2s ease;
-}
-.video-link-item:hover {
-  border-color: #c084fc; transform: translateX(3px);
-  box-shadow: 0 4px 12px rgba(168,85,247,0.15);
-}
-.video-link-num {
-  background: #a855f7; color: #fff; min-width: 28px; height: 28px;
-  border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
-}
-.video-link-url {
-  flex: 1; font-size: 0.82rem; color: #7c3aed;
-  font-family: Consolas, Monaco, monospace;
-  word-break: break-all; cursor: pointer;
-  text-decoration: none; line-height: 1.4;
-}
-.video-link-url:hover { color: #a855f7; text-decoration: underline; }
-.video-link-actions { display: flex; gap: 6px; flex-shrink: 0; }
-.video-btn-icon {
-  width: 30px; height: 30px; border-radius: 8px; border: none;
-  cursor: pointer; font-size: 0.85rem; display: flex;
-  align-items: center; justify-content: center;
-  transition: all 0.2s ease;
-}
-.video-btn-icon.open { background: #10b981; color: #fff; }
-.video-btn-icon.open:hover { background: #059669; transform: scale(1.1); }
-.video-btn-icon.del { background: #ef4444; color: #fff; }
-.video-btn-icon.del:hover { background: #dc2626; transform: scale(1.1); }
-.video-empty {
-  text-align: center; padding: 30px 20px; color: #7c3aed;
-  background: #faf5ff; border: 2px dashed #e9d5ff; border-radius: 12px;
-}
-.video-empty-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.6; }
-.video-empty-text { font-size: 0.88rem; font-weight: 600; }
-.video-add-section {
-  margin-top: 16px; padding-top: 16px; border-top: 1px dashed #e9d5ff;
-  display: flex; gap: 8px; flex-wrap: wrap;
-}
-.video-input-wrap {
-  flex: 1; min-width: 200px; display: flex; gap: 6px;
-}
-.video-input-wrap input {
-  flex: 1; padding: 10px 14px; border: 2px solid #e9d5ff;
-  border-radius: 10px; font-size: 0.85rem; outline: none;
-  font-family: inherit; transition: all 0.2s ease;
-}
-.video-input-wrap input:focus {
-  border-color: #a855f7; box-shadow: 0 0 0 3px rgba(168,85,247,0.12);
-}
-.video-btn-add {
-  background: linear-gradient(135deg, #a855f7, #7c3aed);
-  color: #fff; border: none; padding: 10px 18px; border-radius: 10px;
-  font-size: 0.85rem; font-weight: 700; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 6px;
-  transition: all 0.2s ease; font-family: inherit; white-space: nowrap;
-}
-.video-btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(168,85,247,0.3); }
-.video-modal-footer {
-  padding: 14px 24px; background: #faf5ff;
-  border-top: 1px solid #e9d5ff; display: flex;
-  justify-content: space-between; align-items: center; gap: 10px;
-  flex-wrap: wrap;
-}
-.video-footer-info { font-size: 0.78rem; color: #7c3aed; font-weight: 600; }
-.video-btn-close {
-  background: #f1f5f9; color: #7c3aed; border: none;
-  padding: 10px 20px; border-radius: 10px; font-size: 0.85rem;
-  font-weight: 700; cursor: pointer; transition: all 0.2s ease;
-  font-family: inherit;
-}
-.video-btn-close:hover { background: #e2e8f0; }
-/* Badge di kartu video */
-.a56-video-badges {
-  display: flex; flex-wrap: wrap; gap: 5px; margin: 8px 0;
-}
-.a56-video-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  padding: 3px 9px; border-radius: 100px;
-  font-size: 0.7rem; font-weight: 700;
-  background: #faf5ff; border: 1px solid #e9d5ff; color: #7c3aed;
-}
-.a56-video-badge.has-link {
-  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
-  border-color: #c084fc; color: #6b21a8;
-}
-.a56-btn-video {
-  width: 100%; background: linear-gradient(135deg, #a855f7, #7c3aed);
-  color: #fff; border: none; padding: 10px; border-radius: 10px;
-  font-weight: 700; cursor: pointer; font-size: 0.85rem;
-  margin-top: 8px; transition: all 0.3s ease; font-family: inherit;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.a56-btn-video:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(168,85,247,0.35); }
-/* Link video di bawah judul di halaman Video */
-.page.v .link-box .video-link-display {
-  display: block; font-size: 0.72rem; color: #a855f7;
-  font-family: Consolas, Monaco, monospace;
-  word-break: break-all; margin-top: 4px; opacity: 0.85;
-  max-height: 32px; overflow: hidden; text-overflow: ellipsis;
-}
-.page.v .link-box .video-link-display.has-link {
-  opacity: 1; color: #7c3aed; font-weight: 600;
-}
-@media (max-width: 600px) {
-  .video-modal-box { max-height: 95vh; border-radius: 14px; }
-  .video-panel { padding: 14px; }
-  .video-link-item { padding: 8px 10px; }
-  .video-link-url { font-size: 0.75rem; }
-}
-</style>
-<!-- ========== VIDEO PERMANEN - CSS [END] ========== -->
-
-<!-- ========== VIDEO PERMANEN - MODAL ========== -->
-<div class="video-modal" id="video-modal" role="dialog" aria-modal="true">
-  <div class="video-modal-box">
-    <div class="video-modal-header">
-      <h3 id="video-modal-title">🎬 Kelola Link Video</h3>
-      <p id="video-modal-subtitle">Tambahkan link video pembelajaran (YouTube, Google Drive, dll)</p>
-    </div>
-    <div class="video-panel" id="video-panel"></div>
-    <div class="video-modal-footer">
-      <div class="video-footer-info">💾 Link tersimpan permanen di browser ini</div>
-      <button class="video-btn-close" onclick="closeVideoModal()">✖ Tutup</button>
-    </div>
-  </div>
-</div>
-<!-- ========== VIDEO PERMANEN - MODAL [END] ========== -->
-
-<!-- ========== VIDEO PERMANEN - JAVASCRIPT ========== -->
-<script>
-(function(){
-  "use strict";
-  /* ============================================================
-   * KONFIGURASI VIDEO PERMANEN
-   * - Data disimpan di localStorage (key: 'bk56_video_links')
-   * - Format: { "videoIdx": ["url1", "url2", ...] }
-   * - Link TIDAK akan hilang walau refresh / tutup browser
-   * - Link hanya hilang jika dihapus manual oleh user
-   ============================================================ */
-  const VIDEO_KEY = 'bk56_video_links';
-  let currentVideoEdit = null;
-
-  /* ---------- Helper: Load/Save localStorage ---------- */
-  function loadVideoLinks() {
-  try {
-    const raw = localStorage.getItem(VIDEO_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed && Object.keys(parsed).length > 0) return parsed;
-    }
-    // ✅ FALLBACK: Load dari embedded JSON di HTML
-    const embedded = document.getElementById('bk56-embedded-data');
-    if (embedded) {
-      try {
-        const allData = JSON.parse(embedded.textContent);
-        if (allData.video && Object.keys(allData.video).length > 0) {
-          localStorage.setItem(VIDEO_KEY, JSON.stringify(allData.video));
-          if (typeof showToast === 'function') {
-            showToast('🔄 Data video dipulihkan dari backup HTML', 'info');
-          }
-          return allData.video;
-        }
-      } catch(e) { console.warn('bk56: gagal load embedded video', e); }
-    }
-    return {};
-  } catch(e) { return {}; }
-}
-  function saveVideoLinks(data) {
-    try { localStorage.setItem(VIDEO_KEY, JSON.stringify(data)); }
-    catch(e) { showToast('❌ Gagal menyimpan: ' + e.message, 'error'); }
-  }
-  function getVideoData(videoIdx) {
-    const all = loadVideoLinks();
-    return all[videoIdx] || [];
-  }
-  function setVideoData(videoIdx, data) {
-    const all = loadVideoLinks();
-    all[videoIdx] = data;
-    saveVideoLinks(all);
-  }
-
-  /* ---------- Buka modal video ---------- */
-  window.openVideoModal = function(videoIdx) {
-    const list = getVideoData(videoIdx);
-    currentVideoEdit = {
-      videoIdx: videoIdx,
-      videoNama: 'Video ' + (videoIdx + 1)
-    };
-    document.getElementById('video-modal-title').textContent =
-      '🎬 ' + currentVideoEdit.videoNama + ' — Kelola Link Video';
-    document.getElementById('video-modal-subtitle').textContent =
-      'Tambahkan link video pembelajaran (YouTube, Google Drive, dll) • ' + list.length + ' link tersimpan';
-    renderVideoModal();
-    document.getElementById('video-modal').classList.add('show');
-  };
-
-  window.closeVideoModal = function() {
-    document.getElementById('video-modal').classList.remove('show');
-    currentVideoEdit = null;
-    // Refresh halaman video agar badge update
-    refreshVideoPage();
-  };
-
-  /* ---------- Render panel video ---------- */
-  function renderVideoModal() {
-    if (!currentVideoEdit) return;
-    const panel = document.getElementById('video-panel');
-    const list = getVideoData(currentVideoEdit.videoIdx);
-    let html = '<div class="video-panel-title">🎬 Daftar Link Video <span style="font-size:0.78rem;color:#7c3aed;font-weight:500;">(' + list.length + ' link)</span></div>';
-
-    if (list.length === 0) {
-      html += '<div class="video-empty">' +
-              '<div class="video-empty-icon">🎬</div>' +
-              '<div class="video-empty-text">Belum ada link video</div>' +
-              '<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Tambahkan link di bawah ini</div>' +
-              '</div>';
-    } else {
-      html += '<div class="video-link-list">';
-      list.forEach(function(url, i){
-        const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
-        html += '<div class="video-link-item">' +
-                '<div class="video-link-num">' + (i+1) + '</div>' +
-                '<a class="video-link-url" href="' + esc(url) + '" target="_blank" rel="noopener" title="' + esc(url) + '">' + esc(displayUrl) + '</a>' +
-                '<div class="video-link-actions">' +
-                '<button class="video-btn-icon open" onclick="openVideoLink(' + i + ')" title="Buka link"></button>' +
-                '<button class="video-btn-icon del" onclick="removeVideoLink(' + i + ')" title="Hapus link">️</button>' +
-                '</div></div>';
-      });
-      html += '</div>';
-    }
-
-    // Input tambah link
-    html += '<div class="video-add-section">' +
-            '<div class="video-input-wrap">' +
-            '<input type="text" id="input-video" placeholder="Tempel URL video di sini (YouTube, Google Drive, dll)..." onkeypress="if(event.key===\'Enter\') addVideoLink()">' +
-            '</div>' +
-            '<button class="video-btn-add" onclick="addVideoLink()">➕ Tambah Link</button>' +
-            '</div>';
-
-    panel.innerHTML = html;
-  }
-
-  /* ---------- Tambah link ---------- */
-  window.addVideoLink = function() {
-    if (!currentVideoEdit) return;
-    const input = document.getElementById('input-video');
-    if (!input) return;
-    const url = input.value.trim();
-    if (!url) { showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
-
-    let finalUrl = url;
-    if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
-      finalUrl = 'https://' + url;
-    }
-
-    const data = getVideoData(currentVideoEdit.videoIdx);
-    data.push(finalUrl);
-    setVideoData(currentVideoEdit.videoIdx, data);
-    input.value = '';
-    renderVideoModal();
-    showToast('✅ Link video berhasil ditambahkan!', 'success');
-  };
-
-  /* ---------- Hapus link ---------- */
-  window.removeVideoLink = function(idx) {
-    if (!currentVideoEdit) return;
-    if (!confirm('️ Yakin ingin menghapus link ini?\nLink akan hilang permanen.')) return;
-    const data = getVideoData(currentVideoEdit.videoIdx);
-    if (data[idx] !== undefined) {
-      data.splice(idx, 1);
-      setVideoData(currentVideoEdit.videoIdx, data);
-      renderVideoModal();
-      showToast('🗑️ Link berhasil dihapus', 'info');
-    }
-  };
-
-  /* ---------- Buka link ---------- */
-  window.openVideoLink = function(idx) {
-    if (!currentVideoEdit) return;
-    const data = getVideoData(currentVideoEdit.videoIdx);
-    const url = data[idx];
-    if (!url) { showToast('⚠️ Link tidak valid', 'error'); return; }
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
-
-  /* ---------- Buka video langsung dari halaman (tanpa modal) ---------- */
-  window.bukaVideoLangsung = function(videoIdx) {
-    const data = getVideoData(videoIdx);
-    if (data.length === 0) {
-      showToast('⚠️ Belum ada link video. Klik ️ Kelola untuk menambah.', 'error');
-      return;
-    }
-    // Jika hanya 1 link, buka langsung
-    if (data.length === 1) {
-      window.open(data[0], '_blank', 'noopener,noreferrer');
-      showToast('🎬 Membuka video...', 'success');
-      return;
-    }
-    // Jika banyak link, buka modal
-    openVideoModal(videoIdx);
-  };
-
-  /* ---------- Helper escape HTML ---------- */
-  function esc(s){
-    return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-  }
-
-  /* ---------- Refresh halaman video untuk update badge ---------- */
-  function refreshVideoPage() {
-    const videoPage = document.getElementById('video');
-    if (!videoPage || !videoPage.classList.contains('active')) return;
-    enhanceVideoCards();
-  }
-
-  /* ============================================================
-   * ENHANCE VIDEO CARDS - Tambahkan badge & tombol di kartu video
-   ============================================================ */
-  function enhanceVideoCards() {
-    const videoPage = document.getElementById('video');
-    if (!videoPage) return;
-    const cards = videoPage.querySelectorAll('.link-box');
-    cards.forEach(function(card, idx){
-      // Jangan tambahkan 2x
-      if (card.querySelector('.a56-video-badges')) return;
-
-      const linkEl = card.querySelector('a');
-      if (!linkEl) return;
-
-      const data = getVideoData(idx);
-      const count = data.length;
-
-      // Buat badge jumlah link
+    if (total > 0) {
       const badges = document.createElement('div');
-      badges.className = 'a56-video-badges';
-      badges.innerHTML = '<span class="a56-video-badge ' + (count>0?'has-link':'') + '">🎬 Video: ' + count + ' link</span>';
-
-      // Sisipkan badge di dalam link-text
-      const linkText = card.querySelector('.link-text');
-      if (linkText) {
-        linkText.appendChild(badges);
-
-        // Tampilkan link pertama di bawah judul
-        if (count > 0) {
-          const linkDisplay = document.createElement('span');
-          linkDisplay.className = 'video-link-display has-link';
-          const firstUrl = data[0];
-          const displayUrl = firstUrl.length > 50 ? firstUrl.substring(0, 47) + '...' : firstUrl;
-          linkDisplay.textContent = '🔗 ' + displayUrl;
-          linkDisplay.title = firstUrl;
-          linkText.appendChild(linkDisplay);
-        }
-      }
-
-      // Ubah tombol "Tonton" menjadi "Kelola Link Video"
-      const arrowIcon = card.querySelector('.arrow-icon');
-      if (arrowIcon) {
-        arrowIcon.outerHTML = '<button class="a56-btn-video" onclick="openVideoModal(' + idx + ')" style="width:auto;padding:8px 14px;font-size:0.78rem;margin:0;">⚙️ Kelola</button>';
-      }
-
-      // Tambahkan tombol "Buka Video" jika ada link
-      if (count > 0) {
-        const btnBuka = document.createElement('button');
-        btnBuka.className = 'a56-btn-video';
-        btnBuka.onclick = function(){ bukaVideoLangsung(idx); };
-        btnBuka.innerHTML = '🎬 Buka Video' + (count > 1 ? ' (' + count + ')' : '');
-        card.appendChild(btnBuka);
-      }
-    });
-  }
-
-  /* ============================================================
-   * OBSERVER: Jalankan enhance saat halaman video aktif
-   ============================================================ */
-  const origGo = window.go;
-  window.go = function(id) {
-    if (typeof origGo === 'function') origGo(id);
-    if (id === 'video') {
-      setTimeout(enhanceVideoCards, 100);
+      badges.className = 'a56-link-badges';
+      badges.innerHTML = '<span class="a56-link-badge has-link">🔗 Link: ' + total + '</span>';
+      btn.parentNode.insertBefore(badges, btn);
     }
-  };
-
-  /* ---------- Tutup modal saat tekan ESC ---------- */
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      const modal = document.getElementById('video-modal');
-      if (modal && modal.classList.contains('show')) {
-        closeVideoModal();
-      }
-    }
+    const parent = btn.parentNode;
+    parent.replaceChild(actionsWrap, btn);
   });
-
-  /* ---------- Tutup modal saat klik di luar ---------- */
-  document.addEventListener('click', function(e) {
-    const modal = document.getElementById('video-modal');
-    if (modal && modal.classList.contains('show')) {
-      if (e.target === modal) closeVideoModal();
-    }
-  }, true);
-
-  /* ---------- Jalankan saat halaman video sudah aktif ---------- */
-  document.addEventListener('DOMContentLoaded', function(){
-    const videoPage = document.getElementById('video');
-    if (videoPage && videoPage.classList.contains('active')) {
-      setTimeout(enhanceVideoCards, 300);
-    }
-  });
-
-  console.log('✅ Patch Video Permanen berhasil dimuat');
-})();
-</script>
-<!-- ========== VIDEO PERMANEN - JAVASCRIPT [END] ========== -->
- <!-- ================================================================ -->
-<!-- ================================================================ -->
-<!-- ========== PATCH: LOGIN ADMINISTRASI BK56 v3 - START ========== -->
-<!-- ================================================================ -->
-<style>
-/* ===== MODAL LOGIN ADMIN BK56 ===== */
-.adm56-login-modal {
-position: fixed; inset: 0;
-background: rgba(11, 30, 84, 0.85);
-backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-display: none; align-items: center; justify-content: center;
-z-index: 100007; padding: 20px; overflow-y: auto;
-}
-.adm56-login-modal.show { display: flex; }
-.adm56-login-box {
-background: #fff; border-radius: 22px; max-width: 460px; width: 100%;
-max-height: 92vh; overflow-y: auto;
-box-shadow: 0 30px 70px rgba(0,0,0,0.4);
-animation: adm56Pop 0.4s cubic-bezier(.22,1,.36,1);
-}
-@keyframes adm56Pop {
-from { opacity: 0; transform: translateY(40px) scale(0.92); }
-to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-.adm56-login-header {
-background: linear-gradient(135deg, #c2410c, #9a3412 50%, #431407);
-color: #fff; padding: 28px 24px; text-align: center;
-border-radius: 22px 22px 0 0; position: relative; overflow: hidden;
-}
-.adm56-login-header::before {
-content: ''; position: absolute; inset: 0;
-background: radial-gradient(circle at 20% 30%, rgba(253,186,116,.2), transparent 40%),
-radial-gradient(circle at 80% 70%, rgba(251,146,60,.2), transparent 40%);
-}
-.adm56-login-header .adm56-lock-icon {
-font-size: 3rem; margin-bottom: 8px; position: relative; z-index: 2;
-filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
-}
-.adm56-login-header h3 {
-font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem;
-font-weight: 700; margin-bottom: 4px; position: relative; z-index: 2;
-}
-.adm56-login-header p {
-font-size: 0.85rem; opacity: 0.9; position: relative; z-index: 2;
-}
-.adm56-login-body { padding: 24px; }
-.adm56-login-body label {
-display: block; font-size: 0.82rem; font-weight: 700;
-color: #7c2d12; margin-bottom: 6px; letter-spacing: 0.03em;
-}
-.adm56-login-body input {
-width: 100%; padding: 12px 14px; border: 2px solid #fed7aa;
-border-radius: 10px; font-size: 0.92rem; outline: none;
-font-family: inherit; transition: all 0.2s ease; margin-bottom: 14px;
-background: #fff;
-}
-.adm56-login-body input:focus {
-border-color: #ea580c;
-box-shadow: 0 0 0 4px rgba(234,88,12,0.12);
-}
-.adm56-login-btn {
-width: 100%; background: linear-gradient(135deg, #c2410c, #9a3412);
-color: #fff; border: none; padding: 13px; border-radius: 10px;
-font-size: 0.95rem; font-weight: 700; cursor: pointer;
-transition: all 0.25s ease; font-family: inherit;
-display: flex; align-items: center; justify-content: center; gap: 8px;
-box-shadow: 0 4px 14px rgba(194,65,12,0.3);
-}
-.adm56-login-btn:hover {
-transform: translateY(-2px);
-box-shadow: 0 8px 22px rgba(194,65,12,0.4);
-}
-.adm56-login-error {
-background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
-padding: 10px 12px; border-radius: 8px; font-size: 0.82rem;
-font-weight: 600; margin-bottom: 12px; display: none;
-text-align: center;
-}
-.adm56-login-error.show { display: block; animation: adm56Shake 0.4s; }
-@keyframes adm56Shake {
-0%, 100% { transform: translateX(0); }
-25% { transform: translateX(-6px); }
-75% { transform: translateX(6px); }
-}
-.adm56-login-footer {
-padding: 14px 24px; background: #fff7ed;
-border-top: 1px solid #fed7aa;
-display: flex; justify-content: space-between; align-items: center;
-border-radius: 0 0 22px 22px;
-}
-.adm56-login-footer small {
-font-size: 0.72rem; color: #9a3412; opacity: 0.8;
-}
-.adm56-admin-trigger {
-background: transparent; border: none; color: #c2410c;
-font-size: 0.78rem; font-weight: 700; cursor: pointer;
-padding: 4px 10px; border-radius: 6px;
-transition: all 0.2s ease; font-family: inherit;
-}
-.adm56-admin-trigger:hover { background: rgba(194,65,12,0.1); }
-/* ===== MODAL ADMIN KELOLA USER ===== */
-.adm56-admin-modal {
-position: fixed; inset: 0;
-background: rgba(11, 30, 84, 0.9);
-backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-display: none; align-items: center; justify-content: center;
-z-index: 100008; padding: 20px; overflow-y: auto;
-}
-.adm56-admin-modal.show { display: flex; }
-.adm56-admin-box {
-background: #fff; border-radius: 22px; max-width: 680px; width: 100%;
-max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;
-box-shadow: 0 30px 70px rgba(0,0,0,0.45);
-animation: adm56Pop 0.4s cubic-bezier(.22,1,.36,1);
-}
-.adm56-admin-header {
-background: linear-gradient(135deg, #431407, #7c2d12);
-color: #fff; padding: 22px 24px;
-display: flex; justify-content: space-between; align-items: center;
-flex-wrap: wrap; gap: 10px;
-}
-.adm56-admin-header h3 {
-font-family: 'Space Grotesk', sans-serif; font-size: 1.15rem;
-font-weight: 700; display: flex; align-items: center; gap: 8px;
-}
-.adm56-admin-close {
-background: rgba(255,255,255,0.15); color: #fff; border: none;
-width: 36px; height: 36px; border-radius: 10px; cursor: pointer;
-font-size: 1rem; transition: all 0.2s ease;
-}
-.adm56-admin-close:hover { background: rgba(255,255,255,0.25); transform: rotate(90deg); }
-.adm56-admin-body {
-padding: 22px 24px; overflow-y: auto; flex: 1;
-}
-.adm56-section-title {
-font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem;
-font-weight: 700; color: #7c2d12; margin: 18px 0 12px;
-padding: 10px 14px; background: linear-gradient(135deg, #fff7ed, #ffedd5);
-border-left: 4px solid #ea580c; border-radius: 8px;
-display: flex; align-items: center; gap: 8px;
-}
-.adm56-section-title:first-child { margin-top: 0; }
-.adm56-form-grid {
-display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-}
-.adm56-form-grid.full { grid-template-columns: 1fr; }
-.adm56-form-grid label {
-font-size: 0.78rem; font-weight: 700; color: #7c2d12;
-margin-bottom: 4px; display: block;
-}
-.adm56-form-grid input, .adm56-form-grid select {
-width: 100%; padding: 10px 12px; border: 2px solid #fed7aa;
-border-radius: 8px; font-size: 0.85rem; outline: none;
-font-family: inherit; transition: all 0.2s ease;
-}
-.adm56-form-grid input:focus, .adm56-form-grid select:focus {
-border-color: #ea580c;
-box-shadow: 0 0 0 3px rgba(234,88,12,0.12);
-}
-.adm56-add-btn {
-width: 100%; margin-top: 12px;
-background: linear-gradient(135deg, #10b981, #059669);
-color: #fff; border: none; padding: 12px; border-radius: 10px;
-font-size: 0.88rem; font-weight: 700; cursor: pointer;
-transition: all 0.25s ease; font-family: inherit;
-display: flex; align-items: center; justify-content: center; gap: 8px;
-box-shadow: 0 4px 14px rgba(16,185,129,0.3);
-}
-.adm56-add-btn:hover {
-transform: translateY(-2px);
-box-shadow: 0 8px 22px rgba(16,185,129,0.4);
-}
-.adm56-user-list {
-display: flex; flex-direction: column; gap: 8px; margin-top: 8px;
-}
-.adm56-user-item {
-display: flex; align-items: center; gap: 12px;
-padding: 12px 14px; background: #fff7ed;
-border: 1px solid #fed7aa; border-radius: 10px;
-transition: all 0.2s ease;
-}
-.adm56-user-item:hover {
-border-color: #fb923c; transform: translateX(3px);
-box-shadow: 0 4px 12px rgba(194,65,12,0.1);
-}
-.adm56-user-avatar {
-width: 40px; height: 40px; border-radius: 10px;
-background: linear-gradient(135deg, #c2410c, #9a3412);
-color: #fff; display: flex; align-items: center; justify-content: center;
-font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
-}
-.adm56-user-info { flex: 1; min-width: 0; }
-.adm56-user-name {
-font-size: 0.88rem; font-weight: 700; color: #7c2d12;
-margin-bottom: 2px;
-}
-.adm56-user-meta {
-font-size: 0.72rem; color: #9a3412; opacity: 0.85;
-display: flex; gap: 8px; flex-wrap: wrap;
-}
-.adm56-user-meta span {
-background: rgba(194,65,12,0.1); padding: 2px 8px;
-border-radius: 100px; font-weight: 600;
-}
-.adm56-user-badge-default {
-background: #fef3c7 !important; color: #92400e !important;
-border: 1px solid #fde68a;
-}
-.adm56-user-del {
-background: #fee2e2; color: #dc2626; border: none;
-width: 34px; height: 34px; border-radius: 8px; cursor: pointer;
-font-size: 0.9rem; transition: all 0.2s ease; flex-shrink: 0;
-}
-.adm56-user-del:hover { background: #fecaca; transform: scale(1.1); }
-.adm56-user-del:disabled {
-opacity: 0.3; cursor: not-allowed; transform: none;
-}
-.adm56-admin-status {
-padding: 10px; border-radius: 8px; font-size: 0.82rem;
-font-weight: 600; text-align: center; margin-top: 12px;
-display: none;
-}
-.adm56-admin-status.success {
-display: block; background: #ecfdf5; color: #059669;
-border: 1px solid #a7f3d0;
-}
-.adm56-admin-status.error {
-display: block; background: #fef2f2; color: #dc2626;
-border: 1px solid #fecaca;
-}
-.adm56-admin-pw-gate {
-padding: 24px; text-align: center;
-}
-.adm56-admin-pw-gate h4 {
-font-family: 'Space Grotesk', sans-serif; font-size: 1rem;
-color: #7c2d12; margin-bottom: 8px;
-}
-.adm56-admin-pw-gate p {
-font-size: 0.82rem; color: #9a3412; margin-bottom: 14px;
-}
-.adm56-admin-pw-gate input {
-width: 100%; max-width: 320px; padding: 12px 14px;
-border: 2px solid #fed7aa; border-radius: 10px;
-font-size: 0.92rem; outline: none; text-align: center;
-letter-spacing: 2px; font-family: inherit;
-}
-.adm56-admin-pw-gate input:focus {
-border-color: #ea580c;
-box-shadow: 0 0 0 4px rgba(234,88,12,0.12);
-}
-.adm56-admin-pw-gate button {
-margin-top: 12px; padding: 11px 24px;
-background: linear-gradient(135deg, #c2410c, #9a3412);
-color: #fff; border: none; border-radius: 10px;
-font-size: 0.88rem; font-weight: 700; cursor: pointer;
-font-family: inherit; transition: all 0.2s ease;
-}
-.adm56-admin-pw-gate button:hover {
-transform: translateY(-2px);
-box-shadow: 0 6px 18px rgba(194,65,12,0.35);
-}
-/* ===== INFO SESSION DI MODAL LOGIN ===== */
-.adm56-session-info {
-background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-border: 1px solid #10b981;
-color: #065f46; padding: 10px 12px; border-radius: 8px;
-font-size: 0.78rem; font-weight: 600; margin-bottom: 12px;
-display: flex; align-items: flex-start; gap: 8px;
-text-align: left;
-}
-.adm56-session-info .info-icon { font-size: 1.2rem; flex-shrink: 0; }
-.adm56-session-info .info-text { line-height: 1.4; }
-.adm56-session-info .info-text strong { color: #047857; }
-.adm56-session-info .info-text small {
-display: block; font-size: 0.7rem; font-weight: 500;
-color: #065f46; opacity: 0.85; margin-top: 2px;
-}
-/* ===== TOMBOL LOGOUT ===== */
-.adm56-logout-btn {
-background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
-padding: 8px 14px; border-radius: 8px; font-size: 0.78rem;
-font-weight: 700; cursor: pointer; transition: all 0.2s ease;
-font-family: inherit; display: inline-flex; align-items: center; gap: 6px;
-margin-top: 10px;
-}
-.adm56-logout-btn:hover {
-background: #fee2e2; transform: translateY(-1px);
-box-shadow: 0 4px 12px rgba(220,38,38,0.2);
-}
-@media (max-width: 600px) {
-.adm56-form-grid { grid-template-columns: 1fr; }
-.adm56-login-box, .adm56-admin-box { border-radius: 16px; }
-.adm56-login-header { border-radius: 16px 16px 0 0; }
-}
-</style>
-<!-- ===== MODAL LOGIN ADMINISTRASI BK56 ===== -->
-<div class="adm56-login-modal" id="adm56-login-modal" role="dialog" aria-modal="true">
-<div class="adm56-login-box">
-<div class="adm56-login-header">
-<div class="adm56-lock-icon">🔐</div>
-<h3>Administrasi BK 56</h3>
-<p>Masuk dengan akun Guru BK / Kepala Sekolah</p>
-</div>
-<div class="adm56-login-body">
-<div class="adm56-session-info">
-<span class="info-icon">✅</span>
-<span class="info-text">
-<strong>Sesi login aktif selama tab browser terbuka.</strong>
-<small>Tidak perlu login ulang saat refresh. Password hanya diminta saat tab ditutup atau pertama kali dibuka.</small>
-</span>
-</div>
-<div class="adm56-login-error" id="adm56-login-error">
-❌ Username atau password salah!
-</div>
-<label for="adm56-username"> Username</label>
-<input type="text" id="adm56-username" placeholder="Contoh: putra" autocomplete="off">
-<label for="adm56-password">🔑 Password</label>
-<input type="password" id="adm56-password" placeholder="Masukkan password..." autocomplete="off">
-<button class="adm56-login-btn" onclick="adm56DoLogin()">
-🔓 Masuk ke Administrasi
-</button>
-</div>
-<div class="adm56-login-footer">
-<small>💡 Klik "Admin" 2x untuk panel admin</small>
-<button class="adm56-admin-trigger" id="adm56-admin-trigger" title="Panel Admin (klik 2x)">
-⚙️ Admin
-</button>
-</div>
-</div>
-</div>
-<!-- ===== MODAL ADMIN KELOLA USER ===== -->
-<div class="adm56-admin-modal" id="adm56-admin-modal" role="dialog" aria-modal="true">
-<div class="adm56-admin-box">
-<div class="adm56-admin-header">
-<h3>⚙️ Panel Admin — Kelola User</h3>
-<button class="adm56-admin-close" onclick="adm56CloseAdmin()">✖</button>
-</div>
-<div class="adm56-admin-body" id="adm56-admin-body">
-<!-- Gate password admin -->
-<div class="adm56-admin-pw-gate" id="adm56-admin-gate">
-<h4>🔐 Verifikasi Password Admin</h4>
-<p>Masukkan password administrator untuk melanjutkan</p>
-<input type="password" id="adm56-admin-pw" placeholder="Password admin..." autocomplete="off">
-<br>
-<button onclick="adm56VerifyAdminPw()">🔓 Buka Panel</button>
-<div class="adm56-login-error" id="adm56-admin-pw-error" style="margin-top:12px;max-width:320px;margin-left:auto;margin-right:auto;">
-❌ Password admin salah!
-</div>
-</div>
-<!-- Panel utama -->
-<div id="adm56-admin-panel" style="display:none;">
-<div class="adm56-section-title">➕ Tambah User Baru</div>
-<div class="adm56-form-grid">
-<div>
-<label>Username</label>
-<input type="text" id="adm56-new-username" placeholder="Contoh: bujoko">
-</div>
-<div>
-<label>Password</label>
-<input type="text" id="adm56-new-password" placeholder="Contoh: bujo123">
-</div>
-</div>
-<div class="adm56-form-grid" style="margin-top:10px;">
-<div>
-<label>Nama Lengkap</label>
-<input type="text" id="adm56-new-nama" placeholder="Contoh: Budi Joko, S.Pd">
-</div>
-<div>
-<label>Role / Jabatan</label>
-<select id="adm56-new-role">
-<option value="Guru BK">Guru BK</option>
-<option value="Kepala Sekolah">Kepala Sekolah</option>
-<option value="Wakil Kepala Sekolah">Wakil Kepala Sekolah</option>
-<option value="Staff TU">Staff TU</option>
-<option value="Administrator">Administrator</option>
-</select>
-</div>
-</div>
-<button class="adm56-add-btn" onclick="adm56AddUser()">
-➕ Tambahkan User Baru
-</button>
-<div class="adm56-admin-status" id="adm56-admin-status"></div>
-<div class="adm56-section-title"> Daftar User Terdaftar</div>
-<div class="adm56-user-list" id="adm56-user-list"></div>
-</div>
-</div>
-</div>
-</div>
-<script>
-(function(){
-"use strict";
-/* ================================================================
-* PATCH v3: LOGIN ADMINISTRASI BK56
-* ATURAN BARU:
-* - ✅ TIDAK PERLU PASSWORD saat REFRESH (sessionStorage)
-* - ❌ WAJIB PASSWORD saat tab ditutup / pertama kali dibuka
-* - Session hilang otomatis saat tab/browser ditutup
-* - 5 user default + admin password @bk56admin#
-* - User custom tersimpan di localStorage (persistent)
-* - Password di-hash SHA-256
-================================================================ */
-const ADM56_STORAGE_KEY = 'bk56_admin_users';
-const ADM56_ADMIN_PW_HASH_KEY = 'bk56_admin_master_hash';
-const ADM56_SESSION_KEY = 'bk56_admin_session'; // ← KUNCI BARU: sessionStorage
-const ADM56_DEFAULT_USERS = {
-'palupi':   { password: 'palupi6676',  nama: 'Sotya Palupi, S.Pd, MM',           role: 'Guru BK' },
-'halaliah': { password: 'halaliah67',  nama: 'Halaliah, S.Pd',                   role: 'Guru BK' },
-'wahyuni':  { password: 'wahyuni80',   nama: 'Siti Wahyuni, S.Pd',               role: 'Guru BK' },
-'putri':    { password: 'putri96',     nama: 'Rizqi Putri Sholihatin, S.Pd',     role: 'Guru BK' },
-'kepsek':   { password: 'kepsek3356',  nama: 'Kepala Sekolah',                   role: 'Kepala Sekolah' }
-};
-const ADM56_DEFAULT_ADMIN_PW = '@bk56admin#';
-let adm56Users = {};
-let adm56AdminHash = '';
-let adm56AdminVerified = false;
-/* ================================================================
-* 🔑 STATUS LOGIN — sessionStorage (bertahan saat refresh, hilang saat tab ditutup)
-================================================================ */
-function adm56IsLoggedIn() {
-try {
-const sess = sessionStorage.getItem(ADM56_SESSION_KEY);
-if (!sess) return false;
-const data = JSON.parse(sess);
-return data && data.loggedIn === true && data.username;
-} catch(e) { return false; }
-}
-function adm56GetLoggedInUser() {
-try {
-const sess = sessionStorage.getItem(ADM56_SESSION_KEY);
-if (!sess) return null;
-const data = JSON.parse(sess);
-return data ? data.username : null;
-} catch(e) { return null; }
-}
-function adm56SetLogin(username) {
-try {
-sessionStorage.setItem(ADM56_SESSION_KEY, JSON.stringify({
-loggedIn: true,
-username: username,
-loginTime: new Date().toISOString()
-}));
-} catch(e) { console.warn('adm56: gagal simpan session', e); }
-}
-function adm56ClearLogin() {
-try { sessionStorage.removeItem(ADM56_SESSION_KEY); } catch(e) {}
-}
-/* ================================================================
-* 🔢 KLIK ADMIN — CUKUP 2x KLIK
-================================================================ */
-let adm56AdminClickCount = 0;
-let adm56AdminClickTimer = null;
-const ADM56_ADMIN_CLICK_THRESHOLD = 2;
-const ADM56_ADMIN_CLICK_TIMEOUT = 1500;
-/* ---------- Hash SHA-256 ---------- */
-async function adm56HashPw(pw) {
-if (typeof sha256 === 'function') return await sha256(pw);
-const msgBuffer = new TextEncoder().encode(pw);
-const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-const hashArray = Array.from(new Uint8Array(hashBuffer));
-return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-/* ---------- Init: load user ---------- */
-async function adm56InitUsers() {
-for (const uname in ADM56_DEFAULT_USERS) {
-const u = ADM56_DEFAULT_USERS[uname];
-adm56Users[uname] = {
-passHash: await adm56HashPw(u.password),
-nama: u.nama,
-role: u.role,
-isDefault: true
-};
-}
-try {
-const raw = localStorage.getItem(ADM56_STORAGE_KEY);
-if (raw) {
-const custom = JSON.parse(raw);
-for (const uname in custom) {
-if (!adm56Users[uname]) adm56Users[uname] = custom[uname];
-}
-}
-} catch(e) { console.warn('adm56: gagal load custom users', e); }
-try {
-const savedHash = localStorage.getItem(ADM56_ADMIN_PW_HASH_KEY);
-if (savedHash) {
-adm56AdminHash = savedHash;
-} else {
-adm56AdminHash = await adm56HashPw(ADM56_DEFAULT_ADMIN_PW);
-localStorage.setItem(ADM56_ADMIN_PW_HASH_KEY, adm56AdminHash);
-}
-} catch(e) {
-adm56AdminHash = await adm56HashPw(ADM56_DEFAULT_ADMIN_PW);
-}
-}
-/* ---------- Save custom users ---------- */
-function adm56SaveCustomUsers() {
-const custom = {};
-for (const uname in adm56Users) {
-if (!adm56Users[uname].isDefault) custom[uname] = adm56Users[uname];
-}
-try {
-localStorage.setItem(ADM56_STORAGE_KEY, JSON.stringify(custom));
-} catch(e) {
-if (typeof showToast === 'function') showToast('❌ Gagal menyimpan user', 'error');
-}
-}
-/* ---------- Buka modal login ---------- */
-window.adm56OpenLogin = function() {
-// ✅ CEK sessionStorage: jika sudah login → langsung buka halaman
-if (adm56IsLoggedIn()) {
-if (typeof go === 'function') go('adminbk56');
-return;
-}
-//  Belum login → tampilkan modal
-document.getElementById('adm56-username').value = '';
-document.getElementById('adm56-password').value = '';
-const err = document.getElementById('adm56-login-error');
-err.classList.remove('show');
-document.getElementById('adm56-login-modal').classList.add('show');
-setTimeout(() => document.getElementById('adm56-username').focus(), 300);
-};
-/* ---------- Tutup modal login ---------- */
-window.adm56CloseLogin = function() {
-document.getElementById('adm56-login-modal').classList.remove('show');
-};
-/* ---------- Proses login ---------- */
-window.adm56DoLogin = async function() {
-const uname = document.getElementById('adm56-username').value.trim().toLowerCase();
-const pw = document.getElementById('adm56-password').value;
-const err = document.getElementById('adm56-login-error');
-if (!uname || !pw) {
-err.textContent = '⚠️ Username dan password wajib diisi!';
-err.classList.add('show');
-return;
-}
-const user = adm56Users[uname];
-if (!user) {
-err.textContent = '❌ Username tidak ditemukan!';
-err.classList.add('show');
-return;
-}
-const inputHash = await adm56HashPw(pw);
-if (inputHash !== user.passHash) {
-err.textContent = '❌ Password salah!';
-err.classList.add('show');
-return;
-}
-// ✅ Login berhasil — simpan ke sessionStorage (bertahan saat refresh)
-adm56SetLogin(uname);
-adm56CloseLogin();
-if (typeof showToast === 'function') {
-showToast('✅ Selamat datang, ' + user.nama + '!', 'success');
-}
-setTimeout(() => {
-if (typeof go === 'function') go('adminbk56');
-}, 300);
-};
-/* ---------- Logout manual ---------- */
-window.adm56Logout = function() {
-if (!confirm('🚪 Yakin ingin keluar dari Administrasi BK?\nAnda harus login ulang untuk masuk kembali.')) return;
-adm56ClearLogin();
-if (typeof showToast === 'function') showToast(' Anda telah logout', 'info');
-// Kembali ke beranda
-if (typeof go === 'function') go('home');
-};
-/* ---------- Panel Admin: trigger dengan klik 2x ---------- */
-function adm56SetupAdminTrigger() {
-const trigger = document.getElementById('adm56-admin-trigger');
-if (!trigger) return;
-trigger.addEventListener('click', function(e) {
-e.preventDefault();
-adm56AdminClickCount++;
-clearTimeout(adm56AdminClickTimer);
-adm56AdminClickTimer = setTimeout(() => { adm56AdminClickCount = 0; }, ADM56_ADMIN_CLICK_TIMEOUT);
-if (adm56AdminClickCount >= ADM56_ADMIN_CLICK_THRESHOLD) {
-adm56AdminClickCount = 0;
-adm56OpenAdmin();
-}
-});
-}
-/* ---------- Buka modal admin ---------- */
-window.adm56OpenAdmin = function() {
-document.getElementById('adm56-admin-pw').value = '';
-document.getElementById('adm56-admin-pw-error').classList.remove('show');
-document.getElementById('adm56-admin-gate').style.display = 'block';
-document.getElementById('adm56-admin-panel').style.display = 'none';
-adm56AdminVerified = false;
-document.getElementById('adm56-admin-modal').classList.add('show');
-setTimeout(() => document.getElementById('adm56-admin-pw').focus(), 300);
-};
-/* ---------- Tutup modal admin ---------- */
-window.adm56CloseAdmin = function() {
-document.getElementById('adm56-admin-modal').classList.remove('show');
-};
-/* ---------- Verifikasi password admin ---------- */
-window.adm56VerifyAdminPw = async function() {
-const pw = document.getElementById('adm56-admin-pw').value;
-const err = document.getElementById('adm56-admin-pw-error');
-const hash = await adm56HashPw(pw);
-if (hash !== adm56AdminHash) {
-err.classList.add('show');
-document.getElementById('adm56-admin-pw').value = '';
-setTimeout(() => err.classList.remove('show'), 3000);
-return;
-}
-adm56AdminVerified = true;
-document.getElementById('adm56-admin-gate').style.display = 'none';
-document.getElementById('adm56-admin-panel').style.display = 'block';
-adm56RenderUserList();
-};
-/* ---------- Render daftar user ---------- */
-function adm56RenderUserList() {
-const list = document.getElementById('adm56-user-list');
-if (!list) return;
-let html = '';
-const unames = Object.keys(adm56Users);
-unames.forEach(uname => {
-const u = adm56Users[uname];
-const initial = (u.nama || uname).charAt(0).toUpperCase();
-const defaultBadge = u.isDefault
-? '<span class="adm56-user-meta"><span class="adm56-user-badge-default">🔒 Default</span></span>'
-: '';
-const delDisabled = u.isDefault ? 'disabled title="User default tidak bisa dihapus"' : '';
-html += '<div class="adm56-user-item">' +
-'<div class="adm56-user-avatar">' + initial + '</div>' +
-'<div class="adm56-user-info">' +
-'<div class="adm56-user-name">' + escAdm56(u.nama) + '</div>' +
-'<div class="adm56-user-meta">' +
-'<span>👤 ' + escAdm56(uname) + '</span>' +
-'<span> ' + escAdm56(u.role) + '</span>' +
-'</div>' +
-defaultBadge +
-'</div>' +
-'<button class="adm56-user-del" onclick="adm56DeleteUser(\'' + escAdm56(uname) + '\')" ' + delDisabled + '>🗑️</button>' +
-'</div>';
-});
-if (unames.length === 0) {
-html = '<div style="text-align:center;padding:20px;color:#9a3412;">Belum ada user terdaftar</div>';
-}
-list.innerHTML = html;
-}
-function escAdm56(s) {
-return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-/* ---------- Tambah user baru ---------- */
-window.adm56AddUser = async function() {
-const uname = document.getElementById('adm56-new-username').value.trim().toLowerCase();
-const pw = document.getElementById('adm56-new-password').value;
-const nama = document.getElementById('adm56-new-nama').value.trim();
-const role = document.getElementById('adm56-new-role').value;
-const status = document.getElementById('adm56-admin-status');
-if (!uname || !pw || !nama) {
-status.className = 'adm56-admin-status error';
-status.textContent = '⚠️ Username, password, dan nama wajib diisi!';
-return;
-}
-if (uname.length < 3) {
-status.className = 'adm56-admin-status error';
-status.textContent = '⚠️ Username minimal 3 karakter!';
-return;
-}
-if (pw.length < 4) {
-status.className = 'adm56-admin-status error';
-status.textContent = '⚠️ Password minimal 4 karakter!';
-return;
-}
-if (adm56Users[uname]) {
-status.className = 'adm56-admin-status error';
-status.textContent = '⚠️ Username "' + uname + '" sudah digunakan!';
-return;
-}
-const passHash = await adm56HashPw(pw);
-adm56Users[uname] = {
-passHash: passHash,
-nama: nama,
-role: role,
-isDefault: false
-};
-adm56SaveCustomUsers();
-adm56RenderUserList();
-document.getElementById('adm56-new-username').value = '';
-document.getElementById('adm56-new-password').value = '';
-document.getElementById('adm56-new-nama').value = '';
-status.className = 'adm56-admin-status success';
-status.textContent = '✅ User "' + uname + '" berhasil ditambahkan!';
-if (typeof showToast === 'function') {
-showToast('✅ User baru ditambahkan!', 'success');
-}
-setTimeout(() => { status.className = 'adm56-admin-status'; }, 3500);
-};
-/* ---------- Hapus user ---------- */
-window.adm56DeleteUser = function(uname) {
-const u = adm56Users[uname];
-if (!u) return;
-if (u.isDefault) {
-if (typeof showToast === 'function') showToast('️ User default tidak bisa dihapus', 'error');
-return;
-}
-if (!confirm('️ Hapus user "' + uname + '" (' + u.nama + ')?\nTindakan ini tidak bisa dibatalkan.')) return;
-delete adm56Users[uname];
-adm56SaveCustomUsers();
-adm56RenderUserList();
-if (typeof showToast === 'function') showToast('🗑️ User "' + uname + '" dihapus', 'info');
-};
-/* ================================================================
-* OVERRIDE: Intercept fungsi go('adminbk56')
-* - Cek sessionStorage: jika sudah login → langsung buka
-* - Jika belum login → tampilkan modal login
-================================================================ */
-const _origGoAdm56 = window.go;
-window.go = function(id) {
-if (id === 'adminbk56') {
-if (!adm56IsLoggedIn()) {
-adm56OpenLogin();
-return;
-}
-}
-if (typeof _origGoAdm56 === 'function') _origGoAdm56(id);
-};
-/* ================================================================
-* Override onclick pada feature-card fc-admin di beranda
-================================================================ */
-function adm56PatchFeatureCard() {
-const cards = document.querySelectorAll('.feature-card.fc-admin');
-cards.forEach(card => {
-card.setAttribute('onclick', 'adm56OpenLogin()');
-});
-const navBtns = document.querySelectorAll('.nav-btn');
-navBtns.forEach(btn => {
-const onclickAttr = btn.getAttribute('onclick') || '';
-if (onclickAttr.includes("go('adminbk56')")) {
-btn.setAttribute('onclick', 'adm56OpenLogin()');
-}
-});
-}
-/* ---------- Enter key ---------- */
-function adm56SetupEnterKeys() {
-const pwInput = document.getElementById('adm56-password');
-if (pwInput) {
-pwInput.addEventListener('keypress', function(e) {
-if (e.key === 'Enter') adm56DoLogin();
-});
-}
-const adminPw = document.getElementById('adm56-admin-pw');
-if (adminPw) {
-adminPw.addEventListener('keypress', function(e) {
-if (e.key === 'Enter') adm56VerifyAdminPw();
-});
-}
-}
-/* ---------- ESC untuk tutup modal ---------- */
-document.addEventListener('keydown', function(e) {
-if (e.key === 'Escape') {
-const loginModal = document.getElementById('adm56-login-modal');
-if (loginModal && loginModal.classList.contains('show')) adm56CloseLogin();
-const adminModal = document.getElementById('adm56-admin-modal');
-if (adminModal && adminModal.classList.contains('show')) adm56CloseAdmin();
-}
-});
-/* ---------- Klik di luar untuk tutup modal ---------- */
-document.addEventListener('click', function(e) {
-const loginModal = document.getElementById('adm56-login-modal');
-if (loginModal && e.target === loginModal) adm56CloseLogin();
-const adminModal = document.getElementById('adm56-admin-modal');
-if (adminModal && e.target === adminModal) adm56CloseAdmin();
-}, true);
-/* ---------- Init ---------- */
-document.addEventListener('DOMContentLoaded', async function() {
-await adm56InitUsers();
-adm56SetupAdminTrigger();
-adm56SetupEnterKeys();
-setTimeout(adm56PatchFeatureCard, 500);
-console.log('✅ Patch Login Administrasi BK56 v3 berhasil dimuat');
-console.log(' Session login: sessionStorage (bertahan saat refresh, hilang saat tab ditutup)');
-console.log('️ Klik tombol Admin: 2x untuk membuka panel');
-console.log('👥 User default:', Object.keys(ADM56_DEFAULT_USERS).join(', '));
-});
-})();
-</script>
-<!-- ================================================================ -->
-<!-- ========== PATCH: LOGIN ADMINISTRASI BK56 v3 - END ========== -->
-<!-- ================================================================ -->
- <!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - CSS ========== -->
-<style>
-.link-modal{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:100004;padding:20px;overflow-y:auto}
-.link-modal.show{display:flex}
-.link-modal-box{background:#fff;border-radius:20px;max-width:800px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(0,0,0,0.3);animation:linkPop 0.35s cubic-bezier(.22,1,.36,1)}
-@keyframes linkPop{from{opacity:0;transform:translateY(30px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
-.link-modal-header{background:linear-gradient(135deg,#059669,#047857);color:#fff;padding:20px 24px}
-.link-modal-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin-bottom:4px;font-weight:700}
-.link-modal-header p{font-size:0.85rem;opacity:0.9}
-.link-panel{padding:20px 24px;flex:1;overflow-y:auto;background:#fff}
-.link-panel-title{font-size:0.95rem;font-weight:700;color:#047857;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.link-list{display:flex;flex-direction:column;gap:8px}
-.link-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:1px solid #a7f3d0;border-radius:10px;transition:all 0.2s ease}
-.link-item:hover{border-color:#10b981;transform:translateX(3px);box-shadow:0 4px 12px rgba(16,185,129,0.15)}
-.link-num{background:#10b981;color:#fff;min-width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:700;flex-shrink:0}
-.link-url{flex:1;font-size:0.82rem;color:#047857;font-family:Consolas,Monaco,monospace;word-break:break-all;cursor:pointer;text-decoration:none;line-height:1.4}
-.link-url:hover{color:#059669;text-decoration:underline}
-.link-actions{display:flex;gap:6px;flex-shrink:0}
-.link-btn-icon{width:30px;height:30px;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s ease}
-.link-btn-icon.open{background:#10b981;color:#fff}
-.link-btn-icon.open:hover{background:#059669;transform:scale(1.1)}
-.link-btn-icon.del{background:#ef4444;color:#fff}
-.link-btn-icon.del:hover{background:#dc2626;transform:scale(1.1)}
-.link-empty{text-align:center;padding:30px 20px;color:#047857;background:#ecfdf5;border:2px dashed #a7f3d0;border-radius:12px}
-.link-empty-icon{font-size:2.5rem;margin-bottom:8px;opacity:0.6}
-.link-empty-text{font-size:0.88rem;font-weight:600}
-.link-add-section{margin-top:16px;padding-top:16px;border-top:1px dashed #a7f3d0;display:flex;gap:8px;flex-wrap:wrap}
-.link-input-wrap{flex:1;min-width:200px;display:flex;gap:6px}
-.link-input-wrap input{flex:1;padding:10px 14px;border:2px solid #a7f3d0;border-radius:10px;font-size:0.85rem;outline:none;font-family:inherit;transition:all 0.2s ease}
-.link-input-wrap input:focus{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.12)}
-.link-btn-add{background:linear-gradient(135deg,#059669,#047857);color:#fff;border:none;padding:10px 18px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s ease;font-family:inherit;white-space:nowrap}
-.link-btn-add:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(16,185,129,0.3)}
-.link-modal-footer{padding:14px 24px;background:#ecfdf5;border-top:1px solid #a7f3d0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.link-footer-info{font-size:0.78rem;color:#047857;font-weight:600}
-.link-btn-close{background:#f1f5f9;color:#047857;border:none;padding:10px 20px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s ease;font-family:inherit}
-.link-btn-close:hover{background:#e2e8f0}
-.a56-link-badges{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}
-.a56-link-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:0.7rem;font-weight:700;background:#ecfdf5;border:1px solid #a7f3d0;color:#047857}
-.a56-link-badge.has-link{background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-color:#10b981;color:#065f46}
-.a56-btn-link-open{width:100%;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;padding:12px 14px;border-radius:12px;font-weight:700;cursor:pointer;font-size:0.9rem;margin-top:8px;transition:all 0.3s ease;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(16,185,129,0.3)}
-.a56-btn-link-open:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,185,129,0.45);filter:brightness(1.08)}
-.a56-btn-link-open.empty-link{background:linear-gradient(135deg,#94a3b8,#64748b);box-shadow:0 4px 14px rgba(100,116,139,0.3)}
-.a56-link-actions-wrap{display:grid;grid-template-columns:1fr 44px;gap:8px;margin-top:8px}
-.a56-btn-link-manage-small{background:#f1f5f9;color:#047857;border:none;width:44px;height:44px;border-radius:10px;cursor:pointer;font-size:1.1rem;transition:all 0.2s ease;display:flex;align-items:center;justify-content:center}
-.a56-btn-link-manage-small:hover{background:#e2e8f0;transform:scale(1.05)}
-.link-open-toast{position:fixed;top:100px;left:50%;transform:translateX(-50%) translateY(-100px);background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:14px 24px;border-radius:100px;font-size:14px;font-weight:600;box-shadow:0 12px 32px rgba(16,185,129,0.4);z-index:100006;opacity:0;transition:all 0.4s ease;pointer-events:none;display:flex;align-items:center;gap:10px}
-.link-open-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.link-picker-modal{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:100005;padding:20px;overflow-y:auto}
-.link-picker-modal.show{display:flex}
-.link-picker-box{background:#fff;border-radius:20px;max-width:700px;width:100%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(0,0,0,0.4);animation:pickerPop 0.35s cubic-bezier(.22,1,.36,1)}
-@keyframes pickerPop{from{opacity:0;transform:translateY(40px) scale(0.9)}to{opacity:1;transform:translateY(0) scale(1)}}
-.link-picker-header{background:linear-gradient(135deg,#10b981,#059669);color:#fff;padding:20px 24px}
-.link-picker-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin-bottom:4px;font-weight:700}
-.link-picker-header p{font-size:0.85rem;opacity:0.9}
-.link-picker-panel{padding:18px 22px;flex:1;overflow-y:auto;background:#fff}
-.link-picker-list{display:flex;flex-direction:column;gap:8px}
-.link-picker-item{display:flex;align-items:center;gap:12px;padding:12px 16px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid #a7f3d0;border-radius:12px;transition:all 0.2s ease;cursor:pointer}
-.link-picker-item:hover{border-color:#10b981;transform:translateX(4px);box-shadow:0 4px 14px rgba(16,185,129,0.2);background:linear-gradient(135deg,#d1fae5,#a7f3d0)}
-.link-picker-item:active{transform:scale(0.98)}
-.pkr-num{background:#10b981;color:#fff;min-width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:700;flex-shrink:0}
-.pkr-info{flex:1;min-width:0}
-.pkr-name{font-size:0.85rem;color:#065f46;font-weight:700;margin-bottom:2px;word-break:break-word;line-height:1.3}
-.pkr-url{font-size:0.72rem;color:#047857;font-family:Consolas,Monaco,monospace;word-break:break-all;opacity:0.8;line-height:1.3;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.pkr-open-icon{background:#10b981;color:#fff;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:all 0.2s ease}
-.link-picker-item:hover .pkr-open-icon{background:#059669;transform:scale(1.1) rotate(-5deg)}
-.link-picker-footer{padding:14px 22px;background:#ecfdf5;border-top:1px solid #a7f3d0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.link-picker-info{font-size:0.78rem;color:#065f46;font-weight:600}
-.link-picker-btn-close{background:#f1f5f9;color:#065f46;border:none;padding:10px 20px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s ease;font-family:inherit}
-.link-picker-btn-close:hover{background:#e2e8f0}
-@media (max-width:600px){
-.link-modal-box,.link-picker-box{max-height:95vh;border-radius:14px}
-.link-panel,.link-picker-panel{padding:14px}
-.link-item,.link-picker-item{padding:8px 10px}
-.link-url,.pkr-url{font-size:0.72rem}
-.a56-btn-link-open{font-size:0.82rem;padding:10px 12px}
-}
-</style>
-<!-- ========== LINK PERMANEN DOKUMEN - MODAL ========== -->
-<div class="link-modal" id="link-modal" role="dialog" aria-modal="true">
-<div class="link-modal-box">
-<div class="link-modal-header">
-<h3 id="link-modal-title">🔗 Kelola Link Dokumen</h3>
-<p id="link-modal-subtitle">Tambahkan link dokumen yang tersimpan permanen</p>
-</div>
-<div class="link-panel" id="link-panel"></div>
-<div class="link-modal-footer">
-<div class="link-footer-info">💾 Link tersimpan permanen di browser ini</div>
-<button class="link-btn-close" onclick="closeLinkModal()">✖ Tutup</button>
-</div>
-</div>
-</div>
-<!-- ========== LINK PICKER MODAL ========== -->
-<div class="link-picker-modal" id="link-picker-modal" role="dialog" aria-modal="true">
-<div class="link-picker-box">
-<div class="link-picker-header">
-<h3 id="picker-modal-title">📂 Pilih Link Dokumen</h3>
-<p id="picker-modal-subtitle">Klik link yang ingin dibuka</p>
-</div>
-<div class="link-picker-panel" id="link-picker-panel"></div>
-<div class="link-picker-footer">
-<div class="link-picker-info">🎯 Klik link untuk membuka di tab baru</div>
-<button class="link-picker-btn-close" onclick="closeLinkPicker()">✖ Tutup</button>
-</div>
-</div>
-</div>
-<!-- Toast Notifikasi -->
-<div class="link-open-toast" id="link-open-toast">📂 Membuka dokumen...</div>
-<!-- ========== LINK PERMANEN DOKUMEN - JAVASCRIPT (DENGAN PERBAIKAN) ========== -->
-<script>
-(function(){
-"use strict";
-const DOC_LINK_KEY = 'bk56_doc_links';
-let currentLinkEdit = null;
-let currentPickerEdit = null;
-function loadDocLinks() {
-try { const raw = localStorage.getItem(DOC_LINK_KEY); return raw ? JSON.parse(raw) : {}; } catch(e) { return {}; }
-}
-function saveDocLinks(data) {
-try { localStorage.setItem(DOC_LINK_KEY, JSON.stringify(data)); }
-catch(e) { if (typeof showToast === 'function') showToast('❌ Gagal menyimpan: ' + e.message, 'error'); }
-}
-function getDocLinkData(docIdx) { const all = loadDocLinks(); return all[docIdx] || []; }
-function setDocLinkData(docIdx, data) { const all = loadDocLinks(); all[docIdx] = data; saveDocLinks(all); }
-function escLink(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function getLinkFileName(url){
-try {
-var clean = url.split('?')[0].split('#')[0];
-var parts = clean.split('/');
-var last = parts[parts.length - 1];
-if (last && last.length > 0 && last.length < 80) return decodeURIComponent(last);
-var match = url.match(/^https?:\/\/([^\/]+)/i);
-if (match) return match[1];
-return 'Link Dokumen';
-} catch(e) { return 'Link Dokumen'; }
-}
-window.openLinkModal = function(docIdx) {
-const doc = DOCS[docIdx];
-if (!doc) return;
-if (doc.kat === 'materi') { if (typeof openMateriModal === 'function') openMateriModal(docIdx); return; }
-const list = getDocLinkData(docIdx);
-const guru = GURU[doc.guru];
-currentLinkEdit = { docIdx: docIdx, docNama: doc.nama, docKat: doc.kat, kelas: doc.kelas, guruNama: guru.nama };
-document.getElementById('link-modal-title').textContent = '🔗 ' + doc.nama + ' — ' + KELAS[doc.kelas];
-document.getElementById('link-modal-subtitle').textContent = 'Guru BK: ' + guru.nama + ' • ' + (KAT[doc.kat] ? KAT[doc.kat][1] : doc.kat) + ' • ' + list.length + ' link tersimpan';
-renderLinkModal();
-document.getElementById('link-modal').classList.add('show');
-};
-window.closeLinkModal = function() {
-document.getElementById('link-modal').classList.remove('show');
-currentLinkEdit = null;
-if (typeof render === 'function') render(true);
-};
-function renderLinkModal() {
-if (!currentLinkEdit) return;
-const panel = document.getElementById('link-panel');
-const list = getDocLinkData(currentLinkEdit.docIdx);
-let html = '<div class="link-panel-title">🔗 Daftar Link Dokumen <span style="font-size:0.78rem;color:#047857;font-weight:500;">(' + list.length + ' link)</span></div>';
-if (list.length === 0) {
-html += '<div class="link-empty"><div class="link-empty-icon">🔗</div><div class="link-empty-text">Belum ada link dokumen</div><div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Tambahkan link di bawah ini</div></div>';
-} else {
-html += '<div class="link-list">';
-list.forEach(function(url, i){
-const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
-html += '<div class="link-item"><div class="link-num">' + (i+1) + '</div><a class="link-url" href="' + escLink(url) + '" target="_blank" rel="noopener" title="' + escLink(url) + '">' + escLink(displayUrl) + '</a><div class="link-actions"><button class="link-btn-icon open" onclick="openDocLink(' + i + ')" title="Buka link">🔗</button><button class="link-btn-icon del" onclick="removeDocLink(' + i + ')" title="Hapus link">🗑️</button></div></div>';
-});
-html += '</div>';
-}
-html += '<div class="link-add-section"><div class="link-input-wrap"><input type="text" id="input-doc-link" placeholder="Tempel URL dokumen di sini (Google Drive, PDF, DOC, dll)..." onkeypress="if(event.key===\'Enter\') addDocLink()"></div><button class="link-btn-add" onclick="addDocLink()">➕ Tambah Link</button></div>';
-panel.innerHTML = html;
-}
-/* ============================================================
-* ✅ PERBAIKAN: addDocLink - HANYA 1 DEFINISI, terhubung ke Apps Script
-============================================================ */
-window.addDocLink = function() {
-if (!currentLinkEdit) return;
-const input = document.getElementById('input-doc-link');
-if (!input) return;
-const url = input.value.trim();
-if (!url) { if (typeof showToast === 'function') showToast('⚠️ Masukkan URL terlebih dahulu', 'error'); input.focus(); return; }
-let finalUrl = url;
-if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) { finalUrl = 'https://' + url; }
-// 1. Simpan ke localStorage
-const data = getDocLinkData(currentLinkEdit.docIdx);
-data.push(finalUrl);
-setDocLinkData(currentLinkEdit.docIdx, data);
-// 2. ✅ KIRIM KE APPS SCRIPT
-if (typeof window.bk56AddLinkToAPI === 'function') {
-const doc = DOCS[currentLinkEdit.docIdx];
-if (doc) window.bk56AddLinkToAPI(currentLinkEdit.docIdx, finalUrl);
-}
-input.value = '';
-renderLinkModal();
-if (typeof showToast === 'function') showToast('✅ Link berhasil ditambahkan & disinkronkan ke Sheets!', 'success');
-};
-/* ============================================================
-* ✅ PERBAIKAN: removeDocLink - terhubung ke Apps Script
-============================================================ */
-window.removeDocLink = function(idx) {
-if (!currentLinkEdit) return;
-if (!confirm('🗑️ Yakin ingin menghapus link ini?\nLink akan hilang permanen dari database.')) return;
-const data = getDocLinkData(currentLinkEdit.docIdx);
-const urlToDelete = data[idx];
-if (urlToDelete !== undefined) {
-// 1. Hapus dari localStorage
-data.splice(idx, 1);
-setDocLinkData(currentLinkEdit.docIdx, data);
-// 2. ✅ KIRIM PERINTAH HAPUS KE APPS SCRIPT
-if (typeof window.bk56DeleteLinkFromAPI === 'function') {
-const doc = DOCS[currentLinkEdit.docIdx];
-if (doc) window.bk56DeleteLinkFromAPI(currentLinkEdit.docIdx, urlToDelete);
-}
-renderLinkModal();
-if (typeof showToast === 'function') showToast('🗑️ Link berhasil dihapus dari database', 'info');
-}
-};
-window.openDocLink = function(idx) {
-if (!currentLinkEdit) return;
-const data = getDocLinkData(currentLinkEdit.docIdx);
-const url = data[idx];
-if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
-window.open(url, '_blank', 'noopener,noreferrer');
-};
-window.openDocLinkFinal = function(docIdx) {
-const doc = DOCS[docIdx];
-if (!doc) return;
-if (doc.kat === 'materi') { if (typeof openMateriFinal === 'function') openMateriFinal(docIdx); return; }
-const data = getDocLinkData(docIdx);
-const total = data.length;
-if (total === 0) { if (typeof showToast === 'function') showToast('⚠️ Belum ada link dokumen. Klik ⚙️ Kelola untuk menambah.', 'error'); return; }
-if (total === 1) { bukaDocLinkSelf(data[0]); return; }
-currentPickerEdit = { docIdx: docIdx, docNama: doc.nama, data: data };
-renderLinkPicker();
-document.getElementById('link-picker-modal').classList.add('show');
-};
-window.bukaDocLinkSelf = function(url) {
-if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
-showLinkOpenToast();
-setTimeout(function(){ window.location.href = url; }, 300);
-};
-window.bukaDocFromPicker = function(idx) {
-if (!currentPickerEdit) return;
-const url = currentPickerEdit.data[idx];
-if (!url) { if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error'); return; }
-closeLinkPicker();
-bukaDocLinkSelf(url);
-};
-function renderLinkPicker() {
-if (!currentPickerEdit) return;
-const panel = document.getElementById('link-picker-panel');
-const data = currentPickerEdit.data;
-document.getElementById('picker-modal-title').textContent = '📂 ' + currentPickerEdit.docNama;
-document.getElementById('picker-modal-subtitle').textContent = 'Pilih link dokumen yang ingin dibuka (' + data.length + ' link)';
-let html = '<div class="link-picker-list">';
-data.forEach(function(url, idx){
-const fileName = getLinkFileName(url);
-html += '<div class="link-picker-item" onclick="bukaDocFromPicker(' + idx + ')" title="Klik untuk membuka: ' + escLink(url) + '"><div class="pkr-num">' + (idx+1) + '</div><div class="pkr-info"><div class="pkr-name">' + escLink(fileName) + '</div><div class="pkr-url">' + escLink(url) + '</div></div><div class="pkr-open-icon">↗</div></div>';
-});
-html += '</div>';
-panel.innerHTML = html;
-}
-window.closeLinkPicker = function() {
-document.getElementById('link-picker-modal').classList.remove('show');
-currentPickerEdit = null;
-};
-function showLinkOpenToast() {
-const toast = document.getElementById('link-open-toast');
-if (!toast) return;
-toast.innerHTML = '📂 Membuka dokumen...';
-toast.classList.add('show');
-setTimeout(function(){ toast.classList.remove('show'); }, 2500);
-}
-function enhanceDocLinkCards() {
-const cards = document.querySelectorAll('#grid-dokumen .a56-card');
-cards.forEach(function(card){
-if (card.querySelector('.a56-btn-link-open')) return;
-const btn = card.querySelector('.a56-btn, .a56-btn-materi, .a56-btn-materi-open-final');
-if (!btn) return;
-const onclickAttr = btn.getAttribute('onclick') || '';
-const match = onclickAttr.match(/bukaDoc\((\d+)\)/);
-if (!match) return;
-const docIdx = parseInt(match[1]);
-const doc = DOCS[docIdx];
-if (!doc) return;
-if (doc.kat === 'materi') return;
-const data = getDocLinkData(docIdx);
-const total = data.length;
-const actionsWrap = document.createElement('div');
-actionsWrap.className = 'a56-link-actions-wrap';
-const btnOpen = document.createElement('button');
-btnOpen.className = 'a56-btn-link-open' + (total === 0 ? ' empty-link' : '');
-btnOpen.onclick = function(){ openDocLinkFinal(docIdx); };
-if (total === 0) { btnOpen.innerHTML = '<span class="btn-icon">⚠️</span> Belum Ada Link Dokumen'; btnOpen.title = 'Klik untuk menambah link dokumen'; }
-else if (total === 1) { btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Dokumen <span style="font-size:0.75rem;opacity:0.9;">(1 link)</span>'; btnOpen.title = 'Klik untuk membuka dokumen'; }
-else { btnOpen.innerHTML = '<span class="btn-icon">📂</span> Buka Dokumen <span style="font-size:0.75rem;opacity:0.9;">(' + total + ' link)</span>'; btnOpen.title = 'Klik untuk memilih link dokumen'; }
-const btnManage = document.createElement('button');
-btnManage.className = 'a56-btn-link-manage-small';
-btnManage.onclick = function(){ openLinkModal(docIdx); };
-btnManage.title = 'Kelola link dokumen';
-btnManage.innerHTML = '⚙️';
-actionsWrap.appendChild(btnOpen);
-actionsWrap.appendChild(btnManage);
-if (total > 0) {
-const badges = document.createElement('div');
-badges.className = 'a56-link-badges';
-badges.innerHTML = '<span class="a56-link-badge has-link">🔗 Link: ' + total + '</span>';
-btn.parentNode.insertBefore(badges, btn);
-}
-const parent = btn.parentNode;
-parent.replaceChild(actionsWrap, btn);
-});
 }
 const _origRenderLink = window.render;
 window.render = function(hanyaKartu){
-if (typeof _origRenderLink === 'function') _origRenderLink(hanyaKartu);
-setTimeout(function(){ enhanceDocLinkCards(); }, 50);
+  if (typeof _origRenderLink === 'function') _origRenderLink(hanyaKartu);
+  setTimeout(function(){ enhanceDocLinkCards(); }, 50);
 };
 document.addEventListener('keydown', function(e) {
-if (e.key === 'Escape') {
-const linkModal = document.getElementById('link-modal');
-if (linkModal && linkModal.classList.contains('show')) closeLinkModal();
-const pickerModal = document.getElementById('link-picker-modal');
-if (pickerModal && pickerModal.classList.contains('show')) closeLinkPicker();
-}
+  if (e.key === 'Escape') {
+    const linkModal = document.getElementById('link-modal');
+    if (linkModal && linkModal.classList.contains('show')) closeLinkModal();
+    const pickerModal = document.getElementById('link-picker-modal');
+    if (pickerModal && pickerModal.classList.contains('show')) closeLinkPicker();
+  }
 });
 document.addEventListener('click', function(e) {
-const linkModal = document.getElementById('link-modal');
-if (linkModal && linkModal.classList.contains('show')) { if (e.target === linkModal) closeLinkModal(); }
-const pickerModal = document.getElementById('link-picker-modal');
-if (pickerModal && pickerModal.classList.contains('show')) { if (e.target === pickerModal) closeLinkPicker(); }
+  const linkModal = document.getElementById('link-modal');
+  if (linkModal && linkModal.classList.contains('show')) { if (e.target === linkModal) closeLinkModal(); }
+  const pickerModal = document.getElementById('link-picker-modal');
+  if (pickerModal && pickerModal.classList.contains('show')) { if (e.target === pickerModal) closeLinkPicker(); }
 }, true);
 document.addEventListener('DOMContentLoaded', function(){
-setTimeout(function(){ enhanceDocLinkCards(); }, 600);
-console.log('✅ Patch Link Permanen Dokumen (kecuali Materi) berhasil dimuat');
+  setTimeout(function(){ enhanceDocLinkCards(); }, 600);
+  console.log('✅ Patch Link Permanen Dokumen berhasil dimuat');
 });
 })();
 </script>
 <!-- ========== LINK PERMANEN DOKUMEN (KECUALI MATERI) - END ========== -->
+
 <!-- ================================================================ -->
-<!-- ========== PATCH: APPS SCRIPT SYNC v3 (FIXED) - START ========== -->
+<!-- ========== PATCH: APPS SCRIPT + AUTO-RESTORE (FINAL CLEAN) ========== -->
 <!-- ================================================================ -->
 <script>
 (function(){
 "use strict";
 const BK56_API_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
+
 function isAPIReady() {
-return BK56_API_URL && BK56_API_URL !== 'PASTE_URL_APPS_SCRIPT_BARU_DI_SINI' && BK56_API_URL.startsWith('https://script.google.com/');
+  return BK56_API_URL && BK56_API_URL.startsWith('https://script.google.com/');
 }
+
 function sendToAPI(action, data) {
-if (!isAPIReady()) { console.warn('bk56: Apps Script URL belum dikonfigurasi'); return Promise.resolve({ success: false, error: 'URL belum dikonfigurasi' }); }
-const payload = Object.assign({}, data, { action: action });
-return fetch(BK56_API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) })
-.then(function() { console.log('bk56: ✅ terkirim ke Apps Script', action, payload); return { success: true }; })
-.catch(function(err) { console.error('bk56: ❌ gagal kirim', err); return { success: false, error: err.message }; });
+  if (!isAPIReady()) { console.warn('bk56: URL belum dikonfigurasi'); return Promise.resolve({ success: false }); }
+  const payload = Object.assign({}, data, { action: action });
+  return fetch(BK56_API_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  }).then(function() {
+    console.log('bk56: ✅ terkirim ke Apps Script', action);
+    return { success: true };
+  }).catch(function(err) {
+    console.error('bk56: ❌ gagal kirim', err);
+    return { success: false, error: err.message };
+  });
 }
+
 function syncAllLinksToAPI() {
-if (!isAPIReady()) return;
-if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return;
-console.log('bk56: 🔄 memulai sync', DOCS.length, 'dokumen');
-let sentCount = 0;
-DOCS.forEach(function(doc, idx) {
-if (doc.link && doc.link.trim() !== '') {
-sendToAPI('addLink', { docIdx: String(idx), kelas: doc.kelas, guru: doc.guru, kat: doc.kat, nama: doc.nama, type: 'document', url: doc.link, addedBy: 'auto-sync' });
-sentCount++;
+  if (!isAPIReady()) return;
+  if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return;
+  console.log('bk56: 🔄 memulai sync', DOCS.length, 'dokumen');
+  let sentCount = 0;
+  DOCS.forEach(function(doc, idx) {
+    if (doc.link && doc.link.trim() !== '') {
+      sendToAPI('addLink', {
+        docIdx: String(idx), kelas: doc.kelas, guru: doc.guru, kat: doc.kat,
+        nama: doc.nama, type: 'document', url: doc.link, addedBy: 'auto-sync'
+      });
+      sentCount++;
+    }
+  });
+  console.log('bk56: ✅ sync selesai, ' + sentCount + ' link terkirim');
+  if (typeof showToast === 'function' && sentCount > 0) showToast('📡 ' + sentCount + ' link disinkronkan ke database', 'success');
 }
-});
-console.log('bk56: ✅ sync selesai, ' + sentCount + ' link terkirim');
-if (typeof showToast === 'function' && sentCount > 0) showToast('📡 ' + sentCount + ' link disinkronkan ke database', 'success');
-}
+
 async function loadLinksFromAPI() {
-if (!isAPIReady()) return;
-if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return;
-try {
-const response = await fetch(BK56_API_URL + '?action=getAll&_=' + Date.now());
-if (!response.ok) throw new Error('HTTP ' + response.status);
-const result = await response.json();
-if (result.success && result.data && result.data.length > 0) {
-console.log('bk56: 📥 memuat ' + result.data.length + ' link dari Apps Script');
-let filledCount = 0;
-result.data.forEach(function(link) {
-const docIdx = parseInt(link.docIdx);
-if (!isNaN(docIdx) && DOCS[docIdx]) {
-if (!DOCS[docIdx].link || DOCS[docIdx].link.trim() === '') { DOCS[docIdx].link = link.url; filledCount++; }
-}
-});
-if (filledCount > 0) {
-console.log('bk56: ✅ ' + filledCount + ' link kosong terisi dari database');
-if (typeof showToast === 'function') showToast('🔄 ' + filledCount + ' link dipulihkan dari database', 'info');
-setTimeout(function() { if (typeof render === 'function') render(true); }, 500);
-}
-}
-} catch(err) { console.warn('bk56: ⚠️ gagal load dari Apps Script', err); }
-}
-/* ============================================================
-* ✅ PERBAIKAN: bk56AddLinkToAPI - kirim ke Apps Script
-============================================================ */
-window.bk56AddLinkToAPI = function(docIdx, url) {
-if (!isAPIReady()) return;
-if (typeof DOCS === 'undefined') return;
-const doc = DOCS[docIdx];
-if (!doc) return;
-sendToAPI('addLink', { docIdx: String(docIdx), kelas: doc.kelas, guru: doc.guru, kat: doc.kat, nama: doc.nama, type: 'document', url: url, addedBy: 'manual-add' });
-DOCS[docIdx].link = url;
-};
-/* ============================================================
-* ✅ PERBAIKAN: bk56DeleteLinkFromAPI - terima parameter URL
-============================================================ */
-window.bk56DeleteLinkFromAPI = function(docIdx, urlToDelete) {
-if (!isAPIReady()) return;
-const doc = DOCS[docIdx];
-if (!doc) return;
-sendToAPI('deleteLink', { docIdx: String(docIdx), url: urlToDelete || doc.link, timestamp: new Date().toISOString() });
-if (doc.link === (urlToDelete || doc.link)) DOCS[docIdx].link = '';
-};
-window.bk56ManualSync = function() {
-if (!isAPIReady()) { if (typeof showToast === 'function') showToast('⚠️ Apps Script URL belum dikonfigurasi', 'error'); return; }
-if (typeof showToast === 'function') showToast('📡 Memulai sinkronisasi...', 'info');
-syncAllLinksToAPI();
-};
-window.bk56TestConnection = async function() {
-if (!isAPIReady()) { console.error('bk56: ❌ URL belum dikonfigurasi'); return; }
-console.log('bk56: 🧪 testing koneksi ke Apps Script...');
-try {
-const response = await fetch(BK56_API_URL + '?action=ping&_=' + Date.now());
-const result = await response.json();
-if (result.status === 'ok') { console.log('bk56: ✅ Koneksi berhasil!', result); if (typeof showToast === 'function') showToast('✅ Koneksi Apps Script berhasil!', 'success'); }
-else { console.warn('bk56: ⚠️ Response tidak sesuai', result); }
-} catch(err) { console.error('bk56: ❌ Koneksi gagal', err); if (typeof showToast === 'function') showToast('❌ Koneksi Apps Script gagal: ' + err.message, 'error'); }
-};
-document.addEventListener('DOMContentLoaded', function() {
-if (!isAPIReady()) { console.warn('⚠️ Apps Script URL belum dikonfigurasi'); return; }
-console.log('✅ Apps Script integration v3 aktif');
-console.log('📡 URL:', BK56_API_URL);
-fetch(BK56_API_URL + '?action=ping&_=' + Date.now()).then(r => r.json()).then(result => { if (result.status === 'ok') console.log('✅ Koneksi ke Apps Script berhasil'); else console.warn('⚠️ Response Apps Script:', result); }).catch(err => console.warn('⚠️ Koneksi Apps Script gagal:', err));
-setTimeout(loadLinksFromAPI, 1000);
-setTimeout(syncAllLinksToAPI, 3000);
-});
-})();
-</script>
-<!-- ================================================================ -->
-<!-- ========== PATCH: APPS SCRIPT SYNC v3 (FIXED) - END ========== -->
-<!-- ================================================================ -->
-<!-- ================================================================ -->
-<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS (FINAL v2) ========== -->
-<!-- ================================================================ -->
-<script>
-(function(){
-"use strict";
-const BK56_RESTORE_API_URL = "https://script.google.com/macros/s/AKfycbytsMgTGW6hTn5tTqi4yBcp31_SE9BWaMcoaMk6z9zBLDyFeID28XgAC2NnHNaEnguh/exec";
-
-async function autoRestoreLinks() {
-    if (!BK56_RESTORE_API_URL || !BK56_RESTORE_API_URL.startsWith('https://script.google.com/')) {
-        console.warn("bk56: URL Apps Script belum dikonfigurasi.");
-        return;
-    }
-
-    const docLinksStr = localStorage.getItem('bk56_doc_links');
-    const isDocEmpty = !docLinksStr || docLinksStr === '{}' || docLinksStr === 'null';
-    
-    if (!isDocEmpty) {
-        try {
-            const localData = JSON.parse(docLinksStr);
-            let updated = 0;
-            for (const idx in localData) {
-                const dIdx = parseInt(idx);
-                if (!isNaN(dIdx) && typeof DOCS !== 'undefined' && DOCS[dIdx] && localData[idx].length > 0) {
-                    DOCS[dIdx].link = localData[idx][0];
-                    updated++;
-                }
-            }
-            if (updated > 0) {
-                console.log("bk56: ✅ Array DOCS diupdate dengan " + updated + " link dari localStorage.");
-                if (typeof render === 'function') render(true);
-                if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
-            }
-        } catch(e) {}
-        return;
-    }
-
-    console.log("bk56: 🔄 LocalStorage kosong. Memulihkan data dari Google Sheets...");
-    try {
-        const res = await fetch(BK56_RESTORE_API_URL + '?action=getAll&_=' + Date.now());
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const result = await res.json();
-        
-        if (result.success && result.data && result.data.length > 0) {
-            let docLinks = {};
-            let restoredCount = 0;
-            
-            result.data.forEach(item => {
-                const dIdx = parseInt(item.docIdx);
-                if (!isNaN(dIdx) && typeof DOCS !== 'undefined' && DOCS[dIdx]) {
-                    if (!docLinks[dIdx]) docLinks[dIdx] = [];
-                    if (!docLinks[dIdx].includes(item.url)) {
-                        docLinks[dIdx].push(item.url);
-                        restoredCount++;
-                    }
-                    DOCS[dIdx].link = item.url;
-                }
-            });
-            
-            localStorage.setItem('bk56_doc_links', JSON.stringify(docLinks));
-            console.log("✅ bk56: Berhasil memulihkan " + restoredCount + " link dari Sheets!");
-            
-            if (typeof showToast === 'function') {
-                showToast('🔄 Data link dipulihkan otomatis (' + restoredCount + ' link)', 'success');
-            }
-            
-            setTimeout(() => {
-                if (typeof render === 'function') render(true);
-                if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
-            }, 500);
+  if (!isAPIReady()) return;
+  if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return;
+  try {
+    const response = await fetch(BK56_API_URL + '?action=getAll&_=' + Date.now());
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const result = await response.json();
+    if (result.success && result.data && result.data.length > 0) {
+      console.log('bk56: 📥 memuat ' + result.data.length + ' link dari Apps Script');
+      let filledCount = 0;
+      result.data.forEach(function(link) {
+        const docIdx = parseInt(link.docIdx);
+        if (!isNaN(docIdx) && DOCS[docIdx]) {
+          if (!DOCS[docIdx].link || DOCS[docIdx].link.trim() === '') { DOCS[docIdx].link = link.url; filledCount++; }
         }
-    } catch (err) {
-        console.error("bk56: Gagal memulihkan data dari Sheets", err);
+      });
+      if (filledCount > 0) {
+        console.log('bk56: ✅ ' + filledCount + ' link kosong terisi dari database');
+        if (typeof showToast === 'function') showToast('🔄 ' + filledCount + ' link dipulihkan dari database', 'info');
+        setTimeout(function() { if (typeof render === 'function') render(true); }, 500);
+      }
     }
+  } catch(err) { console.warn('bk56: ⚠️ gagal load dari Apps Script', err); }
 }
 
-// Jalankan langsung tanpa menunggu DOMContentLoaded (karena script ada di bawah)
-setTimeout(autoRestoreLinks, 1000);
+window.bk56AddLinkToAPI = function(docIdx, url) {
+  if (!isAPIReady()) return;
+  if (typeof DOCS === 'undefined') return;
+  const doc = DOCS[docIdx];
+  if (!doc) return;
+  sendToAPI('addLink', {
+    docIdx: String(docIdx), kelas: doc.kelas, guru: doc.guru, kat: doc.kat,
+    nama: doc.nama, type: 'document', url: url, addedBy: 'manual-add'
+  });
+  DOCS[docIdx].link = url;
+};
+
+window.bk56DeleteLinkFromAPI = function(docIdx, urlToDelete) {
+  if (!isAPIReady()) return;
+  const doc = DOCS[docIdx];
+  if (!doc) return;
+  sendToAPI('deleteLink', {
+    docIdx: String(docIdx), url: urlToDelete || doc.link, timestamp: new Date().toISOString()
+  });
+  if (doc.link === (urlToDelete || doc.link)) DOCS[docIdx].link = '';
+};
+
+window.bk56ManualSync = function() {
+  if (!isAPIReady()) { if (typeof showToast === 'function') showToast('⚠️ Apps Script URL belum dikonfigurasi', 'error'); return; }
+  if (typeof showToast === 'function') showToast('📡 Memulai sinkronisasi...', 'info');
+  syncAllLinksToAPI();
+};
+
+window.bk56TestConnection = async function() {
+  if (!isAPIReady()) { console.error('bk56: ❌ URL belum dikonfigurasi'); return; }
+  try {
+    const response = await fetch(BK56_API_URL + '?action=ping&_=' + Date.now());
+    const result = await response.json();
+    if (result.status === 'ok') { console.log('bk56: ✅ Koneksi berhasil!'); if (typeof showToast === 'function') showToast('✅ Koneksi Apps Script berhasil!', 'success'); }
+  } catch(err) { console.error('bk56: ❌ Koneksi gagal', err); }
+};
+
+/* ================================================================
+* AUTO-RESTORE: Pulihkan data saat localStorage kosong
+=============================================================== */
+async function autoRestoreLinks() {
+  if (!isAPIReady()) { console.warn("bk56: URL belum dikonfigurasi."); return; }
+  const docLinksStr = localStorage.getItem('bk56_doc_links');
+  const isDocEmpty = !docLinksStr || docLinksStr === '{}' || docLinksStr === 'null';
+  if (!isDocEmpty) {
+    try {
+      const localData = JSON.parse(docLinksStr);
+      let updated = 0;
+      for (const idx in localData) {
+        const dIdx = parseInt(idx);
+        if (!isNaN(dIdx) && typeof DOCS !== 'undefined' && DOCS[dIdx] && localData[idx].length > 0) {
+          DOCS[dIdx].link = localData[idx][0]; updated++;
+        }
+      }
+      if (updated > 0) {
+        console.log("bk56: ✅ Array DOCS diupdate dengan " + updated + " link dari localStorage.");
+        if (typeof render === 'function') render(true);
+        if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards();
+      }
+    } catch(e) {}
+    return;
+  }
+  console.log("bk56: 🔄 LocalStorage kosong. Memulihkan data dari Google Sheets...");
+  try {
+    const res = await fetch(BK56_API_URL + '?action=getAll&_=' + Date.now());
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const result = await res.json();
+    if (result.success && result.data && result.data.length > 0) {
+      let docLinks = {};
+      let restoredCount = 0;
+      result.data.forEach(item => {
+        const dIdx = parseInt(item.docIdx);
+        if (!isNaN(dIdx) && DOCS[dIdx]) {
+          if (!docLinks[dIdx]) docLinks[dIdx] = [];
+          if (!docLinks[dIdx].includes(item.url)) { docLinks[dIdx].push(item.url); restoredCount++; }
+          DOCS[dIdx].link = item.url;
+        }
+      });
+      localStorage.setItem('bk56_doc_links', JSON.stringify(docLinks));
+      console.log("✅ bk56: Berhasil memulihkan " + restoredCount + " link dari Sheets!");
+      if (typeof showToast === 'function') showToast('🔄 Data link dipulihkan otomatis (' + restoredCount + ' link)', 'success');
+      setTimeout(() => { if (typeof render === 'function') render(true); if (typeof enhanceDocLinkCards === 'function') enhanceDocLinkCards(); }, 500);
+    }
+  } catch (err) { console.error("bk56: Gagal memulihkan data dari Sheets", err); }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  if (!isAPIReady()) { console.warn('⚠️ Apps Script URL belum dikonfigurasi'); return; }
+  console.log('✅ Apps Script integration aktif');
+  console.log('📡 URL:', BK56_API_URL);
+  fetch(BK56_API_URL + '?action=ping&_=' + Date.now()).then(r => r.json()).then(result => {
+    if (result.status === 'ok') console.log('✅ Koneksi ke Apps Script berhasil');
+  }).catch(err => console.warn('⚠️ Koneksi Apps Script gagal:', err));
+  setTimeout(loadLinksFromAPI, 1000);
+  setTimeout(syncAllLinksToAPI, 3000);
+  setTimeout(autoRestoreLinks, 1500);
+});
 })();
 </script>
-<!-- ========== PATCH: AUTO-RESTORE LINK DARI SHEETS (FINAL v2) - END ========== -->
+<!-- ================================================================ -->
+<!-- ========== PATCH: APPS SCRIPT + AUTO-RESTORE (FINAL CLEAN) - END ========== -->
 <!-- ================================================================ -->
 </body>
 </html>
+
