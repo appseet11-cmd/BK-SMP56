@@ -1,0 +1,371 @@
+
+---
+
+## 📁 **FILE 3: `test-backend.html`** (File Testing Backend)
+
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Backend - Tag Video Pembelajaran</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: #fff;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .body {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 24px;
+        }
+        .section h3 {
+            color: #7c3aed;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .input-group {
+            margin-bottom: 12px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #475569;
+        }
+        .input-group input,
+        .input-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e9d5ff;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .input-group input:focus,
+        .input-group textarea:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168,85,247,0.1);
+        }
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(124,58,237,0.35);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+        }
+        .btn-info {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+        }
+        .result {
+            background: #faf5ff;
+            border: 2px solid #e9d5ff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .result pre {
+            font-family: 'Consolas', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .status {
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 12px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .status.success {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+        .status.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .status.info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test Backend Tag Video</h1>
+            <p>Testing koneksi dan fungsi backend Google Apps Script</p>
+        </div>
+        
+        <div class="body">
+            <!-- Konfigurasi URL -->
+            <div class="section">
+                <h3>🔗 Konfigurasi Backend URL</h3>
+                <div class="input-group">
+                    <label>URL Apps Script Web App:</label>
+                    <input type="text" id="backendUrl" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+                </div>
+                <button class="btn btn-primary" onclick="testConnection()">🔌 Test Koneksi</button>
+            </div>
+
+            <!-- Test GET -->
+            <div class="section">
+                <h3>📥 Test GET - Ambil Data</h3>
+                <button class="btn btn-info" onclick="testGet()">📊 Ambil Semua Data</button>
+            </div>
+
+            <!-- Test ADD -->
+            <div class="section">
+                <h3>➕ Test ADD - Tambah Link</h3>
+                <div class="input-group">
+                    <label>Tag:</label>
+                    <input type="text" id="addTag" value="mengenal-diri" placeholder="mengenal-diri">
+                </div>
+                <div class="input-group">
+                    <label>Judul Video:</label>
+                    <input type="text" id="addJudul" value="Video Test" placeholder="Judul video">
+                </div>
+                <div class="input-group">
+                    <label>URL Video:</label>
+                    <input type="text" id="addUrl" placeholder="https://youtube.com/watch?v=xxx">
+                </div>
+                <button class="btn btn-success" onclick="testAdd()">➕ Tambah Link</button>
+            </div>
+
+            <!-- Test DELETE -->
+            <div class="section">
+                <h3>🗑️ Test DELETE - Hapus Link</h3>
+                <div class="input-group">
+                    <label>URL yang akan dihapus:</label>
+                    <input type="text" id="deleteUrl" placeholder="https://youtube.com/watch?v=xxx">
+                </div>
+                <button class="btn btn-danger" onclick="testDelete()">🗑️ Hapus by URL</button>
+            </div>
+
+            <!-- Result -->
+            <div class="section">
+                <h3>📋 Hasil Test</h3>
+                <div id="status" class="status info">Menunggu test...</div>
+                <div class="result">
+                    <pre id="result">Hasil akan muncul di sini...</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showStatus(msg, type) {
+            const el = document.getElementById('status');
+            el.textContent = msg;
+            el.className = 'status ' + type;
+        }
+
+        function showResult(data) {
+            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+        }
+
+        function getBackendUrl() {
+            const url = document.getElementById('backendUrl').value.trim();
+            if (!url) {
+                showStatus('⚠️ URL backend belum diisi!', 'error');
+                return null;
+            }
+            return url;
+        }
+
+        async function testConnection() {
+            const url = getBackendUrl();
+            if (!url) return;
+
+            showStatus('🔌 Menguji koneksi...', 'info');
+            
+            try {
+                const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+                const json = await res.json();
+                
+                if (json.success) {
+                    showStatus('✅ Koneksi berhasil! ' + (json.count || 0) + ' data di sheet.', 'success');
+                    showResult(json);
+                } else {
+                    showStatus('❌ Response tidak valid', 'error');
+                    showResult(json);
+                }
+            } catch (e) {
+                showStatus('❌ Gagal koneksi: ' + e.message, 'error');
+                showResult({ error: e.message });
+            }
+        }
+
+        async function testGet() {
+            const url = getBackendUrl();
+            if (!url) return;
+
+            showStatus('📥 Mengambil data...', 'info');
+            
+            try {
+                const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+                const json = await res.json();
+                
+                showStatus('✅ Data berhasil diambil: ' + (json.count || 0) + ' link', 'success');
+                showResult(json);
+            } catch (e) {
+                showStatus('❌ Gagal: ' + e.message, 'error');
+                showResult({ error: e.message });
+            }
+        }
+
+        async function testAdd() {
+            const url = getBackendUrl();
+            if (!url) return;
+
+            const tag = document.getElementById('addTag').value.trim();
+            const judul = document.getElementById('addJudul').value.trim();
+            const videoUrl = document.getElementById('addUrl').value.trim();
+
+            if (!videoUrl) {
+                showStatus('⚠️ URL video wajib diisi!', 'error');
+                return;
+            }
+
+            showStatus('➕ Menambahkan link...', 'info');
+            
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'add',
+                        tag: tag,
+                        judul: judul,
+                        url: videoUrl,
+                        keterangan: 'Test dari test-backend.html'
+                    })
+                });
+                const json = await res.json();
+                
+                if (json.success) {
+                    showStatus('✅ Link berhasil ditambahkan! ID: ' + json.id, 'success');
+                } else {
+                    showStatus('❌ Gagal: ' + json.message, 'error');
+                }
+                showResult(json);
+            } catch (e) {
+                showStatus('❌ Gagal: ' + e.message, 'error');
+                showResult({ error: e.message });
+            }
+        }
+
+        async function testDelete() {
+            const url = getBackendUrl();
+            if (!url) return;
+
+            const videoUrl = document.getElementById('deleteUrl').value.trim();
+
+            if (!videoUrl) {
+                showStatus('⚠️ URL wajib diisi!', 'error');
+                return;
+            }
+
+            if (!confirm('🗑️ Yakin ingin menghapus link ini?\n' + videoUrl)) return;
+
+            showStatus('🗑️ Menghapus link...', 'info');
+            
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'deleteByUrl',
+                        url: videoUrl
+                    })
+                });
+                const json = await res.json();
+                
+                if (json.success) {
+                    showStatus('✅ Link berhasil dihapus!', 'success');
+                } else {
+                    showStatus('❌ Gagal: ' + json.message, 'error');
+                }
+                showResult(json);
+            } catch (e) {
+                showStatus('❌ Gagal: ' + e.message, 'error');
+                showResult({ error: e.message });
+            }
+        }
+
+        // Load URL dari localStorage jika ada
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedUrl = localStorage.getItem('vtag_backend_url');
+            if (savedUrl) {
+                document.getElementById('backendUrl').value = savedUrl;
+                showStatus('✅ URL backend dimuat dari localStorage', 'success');
+            }
+        });
+    </script>
+</body>
+</html>
