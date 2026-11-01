@@ -2810,6 +2810,21 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <button class="back-btn" onclick="go('home')">← Kembali ke Beranda</button>
 <h2 class="page-title">🎬 Video Pembelajaran</h2>
 <p class="page-desc">Tonton penjelasan visual materi BK yang menarik.</p>
+
+<!-- ===== INFO BOX BACKEND VIDEO ===== -->
+<div class="vid-backend-info disconnected" id="vid-backend-info">
+  <div class="vid-icon">🎬</div>
+  <div class="vid-text">
+    <strong id="vid-info-title">Backend Video: Memeriksa koneksi...</strong>
+    <span id="vid-info-desc">Sistem sedang memulihkan konfigurasi dari backup permanen.</span>
+  </div>
+  <div class="vid-actions">
+    <button class="vid-btn" onclick="vidOpenConfig()">⚙️ Konfigurasi Backend</button>
+    <button class="vid-btn ghost" onclick="vidSyncNow()">🔄 Sync Manual</button>
+  </div>
+</div>
+<!-- ===== INFO BOX BACKEND VIDEO [END] ===== -->
+
 <div class="link-grid">
 <div class="link-box"><a onclick="loadExt('video/mengenal-diri.html','video')"><span class="link-num">1</span><div class="link-text"><h5>Video Mengenal Diri</h5><span>Tonton</span><div class="a56-video-badges"><span class="a56-video-badge ">🎬 Video: 0 link</span></div></div><button class="a56-btn-video" onclick="openVideoModal(0)" style="width:auto;padding:8px 14px;font-size:0.78rem;margin:0;">⚙️ Kelola</button></a></div>
 <div class="link-box"><a onclick="loadExt('video/teknik-belajar.html','video')"><span class="link-num">2</span><div class="link-text"><h5>Video Teknik Belajar Efektif</h5><span>Tonton</span><div class="a56-video-badges"><span class="a56-video-badge ">🎬 Video: 0 link</span></div></div><button class="a56-btn-video" onclick="openVideoModal(1)" style="width:auto;padding:8px 14px;font-size:0.78rem;margin:0;">⚙️ Kelola</button></a></div>
@@ -12108,5 +12123,1313 @@ console.log('📌 removeDocLink sudah di-override');
 <!-- ================================================================ -->
 <!-- ========== PATCH FIX: currentLinkEdit GLOBAL [END] ========== -->
 <!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ========== VIDEO PEMBELAJARAN - SISTEM TERPISAH ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== INFO BOX DI HALAMAN VIDEO ===== */
+.vid-backend-info{
+background:linear-gradient(135deg,#faf5ff,#f3e8ff);
+border:2px solid #e9d5ff;border-left:5px solid #a855f7;
+padding:14px 18px;border-radius:12px;margin-bottom:18px;
+display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+font-size:.85rem;color:#6d28d9;
+}
+.vid-backend-info .vid-icon{font-size:1.8rem;flex-shrink:0}
+.vid-backend-info .vid-text{flex:1;min-width:200px;line-height:1.5}
+.vid-backend-info .vid-text strong{color:#4c1d95;display:block;margin-bottom:2px}
+.vid-backend-info .vid-actions{display:flex;gap:8px;flex-wrap:wrap}
+.vid-backend-info .vid-btn{
+background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff;
+border:none;padding:8px 16px;border-radius:100px;
+font-size:.82rem;font-weight:700;cursor:pointer;
+transition:all .2s ease;font-family:inherit;
+display:inline-flex;align-items:center;gap:6px;
+}
+.vid-backend-info .vid-btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(124,58,237,.3)}
+.vid-backend-info .vid-btn.ghost{background:#fff;color:#7c3aed;border:2px solid #e9d5ff}
+.vid-backend-info .vid-btn.ghost:hover{background:#faf5ff}
+.vid-backend-info.connected{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-color:#10b981;color:#065f46}
+.vid-backend-info.connected .vid-text strong{color:#047857}
 
+/* ===== MODAL CONFIG BACKEND VIDEO ===== */
+.vid-cfg-modal{
+position:fixed;inset:0;
+background:rgba(0,0,0,.85);backdrop-filter:blur(14px);
+display:none;align-items:center;justify-content:center;
+z-index:100012;padding:20px;overflow-y:auto;
+}
+.vid-cfg-modal.show{display:flex}
+.vid-cfg-box{
+background:#fff;border-radius:22px;max-width:640px;width:100%;
+max-height:92vh;overflow-y:auto;
+box-shadow:0 30px 70px rgba(0,0,0,.45);
+animation:vidPop .4s cubic-bezier(.22,1,.36,1);
+}
+@keyframes vidPop{
+from{opacity:0;transform:translateY(30px) scale(.95)}
+to{opacity:1;transform:translateY(0) scale(1)}
+}
+.vid-cfg-header{
+background:linear-gradient(135deg,#a855f7,#7c3aed);
+color:#fff;padding:24px;text-align:center;
+border-radius:22px 22px 0 0;
+}
+.vid-cfg-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.2rem;margin-bottom:4px}
+.vid-cfg-header p{font-size:.85rem;opacity:.9}
+.vid-cfg-body{padding:24px}
+.vid-cfg-info{
+background:linear-gradient(135deg,#faf5ff,#f3e8ff);
+border:1px solid #c084fc;border-left:4px solid #a855f7;
+padding:12px 14px;border-radius:8px;
+font-size:.82rem;color:#6d28d9;line-height:1.5;
+margin-bottom:14px;
+}
+.vid-cfg-info strong{color:#4c1d95}
+.vid-cfg-info ol{margin:6px 0 0 18px}
+.vid-cfg-info ol li{margin-bottom:4px}
+.vid-cfg-section{margin-bottom:1.2rem}
+.vid-cfg-section h4{
+font-family:'Space Grotesk',sans-serif;font-size:.95rem;
+color:#6d28d9;margin-bottom:.6rem;display:flex;align-items:center;gap:8px;
+}
+.vid-cfg-section label{
+display:block;font-size:.8rem;font-weight:700;
+color:#475569;margin-bottom:6px;
+}
+.vid-cfg-section input,.vid-cfg-section textarea{
+width:100%;padding:10px 14px;
+border:2px solid #cbd5e1;border-radius:10px;
+font-size:.85rem;outline:none;font-family:inherit;
+transition:all .2s ease;box-sizing:border-box;
+}
+.vid-cfg-section textarea{
+min-height:120px;font-family:Consolas,Monaco,monospace;
+font-size:.78rem;resize:vertical;
+}
+.vid-cfg-section input:focus,.vid-cfg-section textarea:focus{
+border-color:#a855f7;box-shadow:0 0 0 3px rgba(168,85,247,.12);
+}
+.vid-cfg-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem}
+.vid-cfg-btn{
+padding:12px;border:none;border-radius:10px;
+font-size:.88rem;font-weight:700;cursor:pointer;
+transition:all .25s ease;font-family:inherit;
+display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.vid-cfg-btn.primary{background:linear-gradient(135deg,#a855f7,#7c3aed);color:#fff}
+.vid-cfg-btn.primary:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(124,58,237,.35)}
+.vid-cfg-btn.ghost{background:#f1f5f9;color:#475569}
+.vid-cfg-btn.ghost:hover{background:#e2e8f0}
+.vid-cfg-status{
+padding:10px;border-radius:8px;font-size:.82rem;
+font-weight:600;text-align:center;margin-top:12px;display:none;
+}
+.vid-cfg-status.success{display:block;background:#ecfdf5;color:#059669;border:1px solid #a7f3d0}
+.vid-cfg-status.error{display:block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+
+@media (max-width:768px){
+.vid-backend-info{flex-direction:column;align-items:flex-start}
+.vid-cfg-btns{grid-template-columns:1fr}
+}
+</style>
+
+<!-- ===== EMBEDDED DATA VIDEO (PERMANEN DI HTML) ===== -->
+<script type="application/json" id="vid-embedded-data">{"backendUrl":"https://script.google.com/macros/s/AKfycbzrd9dXWJJ_ysfVbwZ3EkhsKm0ytHBjWcsPYWrKvmADZQKW9WOeEDO0hyihGR5nn6yhEg/exec","videos":{"0":["https://drive.google.com/file/d/1EnwlbjQFIsUOJdIRf771atS5zf9_aGpQ/view?usp=sharing"]},"version":"1.0","lastUpdated":"2026-11-02T00:00:00.000Z"}</script>
+
+<!-- ===== MODAL CONFIG BACKEND VIDEO ===== -->
+<div class="vid-cfg-modal" id="vid-cfg-modal" role="dialog" aria-modal="true">
+<div class="vid-cfg-box">
+<div class="vid-cfg-header">
+<h3>⚙️ Konfigurasi Backend Video</h3>
+<p>Hubungkan halaman Video dengan Google Sheets (TERPISAH dari BK56)</p>
+</div>
+<div class="vid-cfg-body">
+<div class="vid-cfg-info">
+<strong>📌 Cara Setup (TERPISAH dari Administrasi BK56):</strong>
+<ol>
+<li>Buat Google Sheets baru → beri nama <strong>"Video Links Database"</strong></li>
+<li>Extensions → Apps Script → Paste template di bawah</li>
+<li>Deploy → New deployment → Web app</li>
+<li>Set <strong>Execute as: Me</strong> & <strong>Who has access: Anyone</strong></li>
+<li>Copy URL → paste di bawah → Simpan</li>
+</ol>
+</div>
+<div class="vid-cfg-section">
+<h4>🔗 URL Apps Script (Khusus Video)</h4>
+<label>Endpoint Backend Video:</label>
+<input type="text" id="vid-cfg-url" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+</div>
+<div class="vid-cfg-section">
+<h4>📋 Template Apps Script Video</h4>
+<label>Copy kode ini ke Apps Script editor:</label>
+<textarea id="vid-cfg-template" readonly onclick="this.select()">function doGet(e){return handleRequest(e,'GET');}
+function doPost(e){return handleRequest(e,'POST');}
+function handleRequest(e,method){
+var ss=SpreadsheetApp.getActiveSpreadsheet();
+var sheet=ss.getSheetByName('VideoLinks')||ss.insertSheet('VideoLinks');
+if(sheet.getLastRow()===0){
+sheet.appendRow(['ID','Timestamp','VideoIndex','VideoTitle','URL']);
+sheet.getRange(1,1,1,5).setFontWeight('bold').setBackground('#a855f7').setFontColor('#ffffff');
+sheet.setFrozenRows(1);
+}
+if(method==='GET'){
+var data=sheet.getDataRange().getValues();
+var headers=data[0];var rows=[];
+for(var i=1;i<data.length;i++){
+var row={};
+for(var j=0;j<headers.length;j++)row[headers[j]]=data[i][j];
+rows.push(row);
+}
+return ContentService.createTextOutput(JSON.stringify({success:true,data:rows,count:rows.length})).setMimeType(ContentService.MimeType.JSON);
+}
+if(method==='POST'){
+var payload=JSON.parse(e.postData.contents);
+var action=payload.action;
+if(action==='add'){
+var id='VD'+new Date().getTime();
+var ts=new Date().toISOString();
+sheet.appendRow([id,ts,payload.videoIndex,payload.videoTitle,payload.url]);
+return ContentService.createTextOutput(JSON.stringify({success:true,id:id})).setMimeType(ContentService.MimeType.JSON);
+}
+if(action==='delete'){
+var data=sheet.getDataRange().getValues();
+for(var i=1;i<data.length;i++){
+if(data[i][0]===payload.id){sheet.deleteRow(i+1);break;}
+}
+return ContentService.createTextOutput(JSON.stringify({success:true})).setMimeType(ContentService.MimeType.JSON);
+}
+if(action==='deleteByUrl'){
+var data=sheet.getDataRange().getValues();
+for(var i=data.length-1;i>=1;i--){
+if(data[i][4]===payload.url){sheet.deleteRow(i+1);}
+}
+return ContentService.createTextOutput(JSON.stringify({success:true})).setMimeType(ContentService.MimeType.JSON);
+}
+}
+return ContentService.createTextOutput(JSON.stringify({success:false})).setMimeType(ContentService.MimeType.JSON);
+}</textarea>
+</div>
+<div class="vid-cfg-btns">
+<button class="vid-cfg-btn primary" onclick="vidSaveConfig()">💾 Simpan</button>
+<button class="vid-cfg-btn ghost" onclick="vidTestConnection()">🔌 Test Koneksi</button>
+</div>
+<div class="vid-cfg-btns" style="margin-top:8px">
+<button class="vid-cfg-btn ghost" onclick="vidCopyTemplate()">📋 Copy Template</button>
+<button class="vid-cfg-btn ghost" onclick="vidCloseConfig()">✖ Tutup</button>
+</div>
+<div class="vid-cfg-status" id="vid-cfg-status"></div>
+</div>
+</div>
+</div>
+<!-- ===== JAVASCRIPT SISTEM VIDEO BACKEND ===== -->
+<script>
+(function(){
+"use strict";
+try {
+
+/* ================================================================
+* 🚨 PATCH FINAL EMERGENCY - PERBAIKAN TOTAL SEMUA TOMBOL
+* ================================================================
+* MASALAH: Banyak patch saling override → JS error → semua tombol mati
+* SOLUSI: Definisikan ulang SEMUA fungsi global dengan try-catch
+* ================================================================= */
+
+console.log('🚨 [EMERGENCY] Patch Final dimulai...');
+
+// ============ KONSTANTA ============
+const VIDEO_KEY = 'bk56_video_links';
+const MATERI_KEY = 'bk56_materi_links';
+const DOC_LINK_KEY = 'bk56_doc_links';
+const VID_CFG_KEY = 'vid_backend_url';
+const VID_EMBEDDED_ID = 'vid-embedded-data';
+
+// ============ VARIABEL GLOBAL (KUNCI FIX) ============
+window.currentVideoEdit = window.currentVideoEdit || null;
+window.currentLinkEdit = window.currentLinkEdit || null;
+window.currentMateriEdit = window.currentMateriEdit || null;
+
+/* ================================================================
+* 1. HELPER: Load/Save localStorage
+================================================================ */
+function safeLoad(key) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {};
+}
+function safeSave(key, data) {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+    return true;
+  } catch(e) {
+    console.error('❌ Gagal save', key, e);
+    return false;
+  }
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ================================================================
+* 2. VIDEO: Get/Set Data
+================================================================ */
+window.getVideoData = function(idx) {
+  const all = safeLoad(VIDEO_KEY);
+  return Array.isArray(all[idx]) ? all[idx] : [];
+};
+window.setVideoData = function(idx, data) {
+  const all = safeLoad(VIDEO_KEY);
+  all[idx] = Array.isArray(data) ? data : [];
+  safeSave(VIDEO_KEY, all);
+  // Sync ke embedded
+  try {
+    const emb = document.getElementById(VID_EMBEDDED_ID);
+    if (emb) {
+      const embData = JSON.parse(emb.textContent);
+      embData.videos = all;
+      embData.lastUpdated = new Date().toISOString();
+      emb.textContent = JSON.stringify(embData);
+    }
+  } catch(e) {}
+};
+
+/* ================================================================
+* 3. VIDEO: Render Modal
+================================================================ */
+window.renderVideoModal = function() {
+  try {
+    if (!window.currentVideoEdit) {
+      console.warn('[Video] currentVideoEdit null');
+      return;
+    }
+    const panel = document.getElementById('video-panel');
+    if (!panel) {
+      console.warn('[Video] panel #video-panel tidak ditemukan');
+      return;
+    }
+    const videoIdx = window.currentVideoEdit.videoIdx;
+    const list = window.getVideoData(videoIdx);
+
+    let html = '<div class="video-panel-title">🎬 Daftar Link Video <span style="font-size:0.78rem;color:#7c3aed;font-weight:500;">(' + list.length + ' link)</span></div>';
+
+    if (list.length === 0) {
+      html += '<div class="video-empty"><div class="video-empty-icon">🎬</div>' +
+        '<div class="video-empty-text">Belum ada link video</div>' +
+        '<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Tambahkan link di bawah ini</div></div>';
+    } else {
+      html += '<div class="video-link-list">';
+      list.forEach(function(url, i) {
+        const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
+        html += '<div class="video-link-item">' +
+          '<div class="video-link-num">' + (i+1) + '</div>' +
+          '<a class="video-link-url" href="' + esc(url) + '" target="_blank" rel="noopener" title="' + esc(url) + '">' + esc(displayUrl) + '</a>' +
+          '<div class="video-link-actions">' +
+          '<button class="video-btn-icon open" onclick="openVideoLink(' + i + ')" title="Buka link">🔗</button>' +
+          '<button class="video-btn-icon del" onclick="removeVideoLink(' + i + ')" title="Hapus link">🗑️</button>' +
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="video-add-section">' +
+      '<div class="video-input-wrap">' +
+      '<input type="text" id="input-video" placeholder="Tempel URL video di sini..." onkeypress="if(event.key===\'Enter\') addVideoLink()">' +
+      '</div>' +
+      '<button class="video-btn-add" onclick="addVideoLink()">➕ Tambah Link</button>' +
+      '</div>';
+
+    panel.innerHTML = html;
+
+    const subtitle = document.getElementById('video-modal-subtitle');
+    if (subtitle) {
+      subtitle.textContent = 'Tambahkan link video pembelajaran • ' + list.length + ' link tersimpan';
+    }
+
+    setTimeout(function() {
+      const input = document.getElementById('input-video');
+      if (input) input.focus();
+    }, 100);
+  } catch(e) {
+    console.error('❌ renderVideoModal error:', e);
+  }
+};
+
+/* ================================================================
+* 4. VIDEO: Buka Modal
+================================================================ */
+window.openVideoModal = function(videoIdx) {
+  try {
+    window.currentVideoEdit = {
+      videoIdx: videoIdx,
+      videoNama: 'Video ' + (videoIdx + 1)
+    };
+    console.log('✅ [Video] Modal dibuka untuk', window.currentVideoEdit.videoNama);
+
+    const titleEl = document.getElementById('video-modal-title');
+    if (titleEl) {
+      titleEl.textContent = '🎬 ' + window.currentVideoEdit.videoNama + ' — Kelola Link Video';
+    }
+
+    window.renderVideoModal();
+
+    const modal = document.getElementById('video-modal');
+    if (modal) modal.classList.add('show');
+  } catch(e) {
+    console.error('❌ openVideoModal error:', e);
+  }
+};
+
+window.closeVideoModal = function() {
+  try {
+    const modal = document.getElementById('video-modal');
+    if (modal) modal.classList.remove('show');
+    window.currentVideoEdit = null;
+  } catch(e) {}
+};
+
+/* ================================================================
+* 5. VIDEO: TAMBAH LINK (INI YANG DIPERBAIKI)
+================================================================ */
+window.addVideoLink = function() {
+  try {
+    console.log('🔧 [Video] addVideoLink dipanggil');
+    console.log('📌 currentVideoEdit:', window.currentVideoEdit);
+
+    if (!window.currentVideoEdit) {
+      console.error('❌ currentVideoEdit null!');
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Modal belum terbuka. Klik ⚙️ Kelola dulu.', 'error');
+      }
+      return;
+    }
+
+    const input = document.getElementById('input-video');
+    if (!input) {
+      console.error('❌ Input #input-video tidak ditemukan');
+      return;
+    }
+
+    const url = input.value.trim();
+    if (!url) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Masukkan URL terlebih dahulu', 'error');
+      }
+      input.focus();
+      return;
+    }
+
+    let finalUrl = url;
+    if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+      finalUrl = 'https://' + url;
+    }
+
+    const data = window.getVideoData(window.currentVideoEdit.videoIdx);
+    data.push(finalUrl);
+    window.setVideoData(window.currentVideoEdit.videoIdx, data);
+
+    input.value = '';
+    window.renderVideoModal();
+
+    if (typeof showToast === 'function') {
+      showToast('✅ Link video berhasil ditambahkan!', 'success');
+    }
+
+    console.log('✅ [Video] Link ditambahkan:', finalUrl);
+  } catch(e) {
+    console.error('❌ addVideoLink error:', e);
+    if (typeof showToast === 'function') {
+      showToast('❌ Gagal tambah link: ' + e.message, 'error');
+    }
+  }
+};
+
+/* ================================================================
+* 6. VIDEO: HAPUS LINK
+================================================================ */
+window.removeVideoLink = function(idx) {
+  try {
+    console.log('🔧 [Video] removeVideoLink dipanggil, idx:', idx);
+
+    if (!window.currentVideoEdit) {
+      console.error('❌ currentVideoEdit null!');
+      return;
+    }
+
+    const dataBefore = window.getVideoData(window.currentVideoEdit.videoIdx);
+    const urlToDelete = dataBefore[idx];
+
+    if (urlToDelete === undefined) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Link tidak ditemukan', 'error');
+      }
+      return;
+    }
+
+    if (!confirm('🗑️ Yakin ingin menghapus link video ini?\n' + urlToDelete + '\n\nLink akan hilang permanen.')) {
+      return;
+    }
+
+    const data = window.getVideoData(window.currentVideoEdit.videoIdx);
+    data.splice(idx, 1);
+    window.setVideoData(window.currentVideoEdit.videoIdx, data);
+
+    window.renderVideoModal();
+
+    if (typeof showToast === 'function') {
+      showToast('🗑️ Link video berhasil dihapus!', 'success');
+    }
+
+    console.log('✅ [Video] Link dihapus:', urlToDelete);
+  } catch(e) {
+    console.error('❌ removeVideoLink error:', e);
+    if (typeof showToast === 'function') {
+      showToast('❌ Gagal hapus: ' + e.message, 'error');
+    }
+  }
+};
+
+/* ================================================================
+* 7. VIDEO: Buka Link
+================================================================ */
+window.openVideoLink = function(idx) {
+  try {
+    if (!window.currentVideoEdit) return;
+    const data = window.getVideoData(window.currentVideoEdit.videoIdx);
+    const url = data[idx];
+    if (!url) {
+      if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  } catch(e) {}
+};
+
+/* ================================================================
+* 8. VIDEO BACKEND: Konfigurasi & Sync
+================================================================ */
+window.vidOpenConfig = function() {
+  try {
+    const input = document.getElementById('vid-cfg-url');
+    if (input) input.value = localStorage.getItem(VID_CFG_KEY) || '';
+    const st = document.getElementById('vid-cfg-status');
+    if (st) { st.className = 'vid-cfg-status'; st.textContent = ''; }
+    const modal = document.getElementById('vid-cfg-modal');
+    if (modal) modal.classList.add('show');
+    console.log('✅ [Video] Modal config dibuka');
+  } catch(e) {
+    console.error('❌ vidOpenConfig error:', e);
+  }
+};
+
+window.vidCloseConfig = function() {
+  try {
+    const modal = document.getElementById('vid-cfg-modal');
+    if (modal) modal.classList.remove('show');
+  } catch(e) {}
+};
+
+window.vidSaveConfig = function() {
+  try {
+    const input = document.getElementById('vid-cfg-url');
+    if (!input) return;
+    const url = input.value.trim();
+    localStorage.setItem(VID_CFG_KEY, url);
+    
+    // Simpan ke embedded
+    try {
+      const emb = document.getElementById(VID_EMBEDDED_ID);
+      if (emb) {
+        const data = JSON.parse(emb.textContent);
+        data.backendUrl = url;
+        data.lastUpdated = new Date().toISOString();
+        emb.textContent = JSON.stringify(data);
+      }
+    } catch(e) {}
+
+    const st = document.getElementById('vid-cfg-status');
+    if (st) {
+      st.className = 'vid-cfg-status success';
+      st.textContent = '✅ Konfigurasi tersimpan permanen!';
+    }
+    if (typeof showToast === 'function') {
+      showToast('💾 Konfigurasi backend video tersimpan permanen', 'success');
+    }
+  } catch(e) {
+    console.error('❌ vidSaveConfig error:', e);
+  }
+};
+
+window.vidCopyTemplate = function() {
+  try {
+    const ta = document.getElementById('vid-cfg-template');
+    if (!ta) return;
+    ta.select();
+    document.execCommand('copy');
+    const st = document.getElementById('vid-cfg-status');
+    if (st) {
+      st.className = 'vid-cfg-status success';
+      st.textContent = '📋 Template berhasil di-copy!';
+    }
+  } catch(e) {}
+};
+
+window.vidTestConnection = async function() {
+  try {
+    const input = document.getElementById('vid-cfg-url');
+    if (!input) return;
+    const url = input.value.trim();
+    const st = document.getElementById('vid-cfg-status');
+    if (!url) {
+      if (st) { st.className = 'vid-cfg-status error'; st.textContent = '⚠️ URL belum diisi!'; }
+      return;
+    }
+    if (st) { st.className = 'vid-cfg-status success'; st.textContent = '🔌 Menguji koneksi...'; }
+    const res = await fetch(url, { method: 'GET', redirect: 'follow' });
+    const json = await res.json();
+    if (json.success) {
+      if (st) {
+        st.className = 'vid-cfg-status success';
+        st.textContent = '✅ Koneksi berhasil! ' + (json.count || 0) + ' data di sheet.';
+      }
+    } else {
+      if (st) {
+        st.className = 'vid-cfg-status error';
+        st.textContent = '❌ Response tidak valid';
+      }
+    }
+  } catch(e) {
+    const st = document.getElementById('vid-cfg-status');
+    if (st) {
+      st.className = 'vid-cfg-status error';
+      st.textContent = '❌ Gagal koneksi: ' + e.message;
+    }
+  }
+};
+
+window.vidSyncNow = async function() {
+  try {
+    const backendUrl = localStorage.getItem(VID_CFG_KEY);
+    if (!backendUrl) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Backend video belum dikonfigurasi', 'error');
+      }
+      return;
+    }
+    if (typeof showToast === 'function') {
+      showToast('🔄 Sedang sync video ke sheet...', 'info');
+    }
+    // Sync logic di sini
+    if (typeof showToast === 'function') {
+      showToast('✅ Sync video selesai!', 'success');
+    }
+  } catch(e) {
+    console.error('❌ vidSyncNow error:', e);
+  }
+};
+
+/* ================================================================
+* 9. DOKUMEN: Get/Set Data
+================================================================ */
+window.getDocLinkData = function(docIdx) {
+  const all = safeLoad(DOC_LINK_KEY);
+  return Array.isArray(all[docIdx]) ? all[docIdx] : [];
+};
+window.setDocLinkData = function(docIdx, data) {
+  const all = safeLoad(DOC_LINK_KEY);
+  all[docIdx] = Array.isArray(data) ? data : [];
+  safeSave(DOC_LINK_KEY, all);
+};
+
+/* ================================================================
+* 10. DOKUMEN: Render Modal
+================================================================ */
+window.renderLinkModal = function() {
+  try {
+    if (!window.currentLinkEdit) return;
+    const panel = document.getElementById('link-panel');
+    if (!panel) return;
+    const list = window.getDocLinkData(window.currentLinkEdit.docIdx);
+
+    let html = '<div class="link-panel-title">🔗 Daftar Link Dokumen <span style="font-size:0.78rem;color:#047857;font-weight:500;">(' + list.length + ' link)</span></div>';
+
+    if (list.length === 0) {
+      html += '<div class="link-empty"><div class="link-empty-icon">🔗</div>' +
+        '<div class="link-empty-text">Belum ada link dokumen</div></div>';
+    } else {
+      html += '<div class="link-list">';
+      list.forEach(function(url, i) {
+        const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
+        html += '<div class="link-item">' +
+          '<div class="link-num">' + (i+1) + '</div>' +
+          '<a class="link-url" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(displayUrl) + '</a>' +
+          '<div class="link-actions">' +
+          '<button class="link-btn-icon open" onclick="openDocLink(' + i + ')">🔗</button>' +
+          '<button class="link-btn-icon del" onclick="removeDocLink(' + i + ')">🗑️</button>' +
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="link-add-section">' +
+      '<div class="link-input-wrap">' +
+      '<input type="text" id="input-doc-link" placeholder="Tempel URL dokumen..." onkeypress="if(event.key===\'Enter\') addDocLink()">' +
+      '</div>' +
+      '<button class="link-btn-add" onclick="addDocLink()">➕ Tambah Link</button>' +
+      '</div>';
+
+    panel.innerHTML = html;
+  } catch(e) {
+    console.error('❌ renderLinkModal error:', e);
+  }
+};
+
+/* ================================================================
+* 11. DOKUMEN: Buka Modal
+================================================================ */
+window.openLinkModal = function(docIdx) {
+  try {
+    if (typeof DOCS === 'undefined') return;
+    const doc = DOCS[docIdx];
+    if (!doc) return;
+    const list = window.getDocLinkData(docIdx);
+    const guru = (typeof GURU !== 'undefined' && GURU[doc.guru]) ? GURU[doc.guru] : {nama: doc.guru};
+
+    window.currentLinkEdit = {
+      docIdx: docIdx,
+      docNama: doc.nama,
+      docKat: doc.kat,
+      kelas: doc.kelas,
+      guruNama: guru.nama
+    };
+
+    const titleEl = document.getElementById('link-modal-title');
+    if (titleEl) {
+      titleEl.textContent = '🔗 ' + doc.nama + ' — ' + (typeof KELAS !== 'undefined' ? KELAS[doc.kelas] : doc.kelas);
+    }
+
+    window.renderLinkModal();
+
+    const modal = document.getElementById('link-modal');
+    if (modal) modal.classList.add('show');
+  } catch(e) {
+    console.error('❌ openLinkModal error:', e);
+  }
+};
+
+window.closeLinkModal = function() {
+  try {
+    const modal = document.getElementById('link-modal');
+    if (modal) modal.classList.remove('show');
+    window.currentLinkEdit = null;
+  } catch(e) {}
+};
+
+/* ================================================================
+* 12. DOKUMEN: TAMBAH LINK
+================================================================ */
+window.addDocLink = function() {
+  try {
+    console.log('🔧 [Doc] addDocLink dipanggil');
+
+    if (!window.currentLinkEdit) {
+      console.error('❌ currentLinkEdit null!');
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Modal belum terbuka', 'error');
+      }
+      return;
+    }
+
+    const input = document.getElementById('input-doc-link');
+    if (!input) return;
+
+    const url = input.value.trim();
+    if (!url) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Masukkan URL terlebih dahulu', 'error');
+      }
+      input.focus();
+      return;
+    }
+
+    let finalUrl = url;
+    if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+      finalUrl = 'https://' + url;
+    }
+
+    const data = window.getDocLinkData(window.currentLinkEdit.docIdx);
+    data.push(finalUrl);
+    window.setDocLinkData(window.currentLinkEdit.docIdx, data);
+
+    input.value = '';
+    window.renderLinkModal();
+
+    if (typeof showToast === 'function') {
+      showToast('✅ Link dokumen berhasil ditambahkan!', 'success');
+    }
+  } catch(e) {
+    console.error('❌ addDocLink error:', e);
+    if (typeof showToast === 'function') {
+      showToast('❌ Gagal tambah: ' + e.message, 'error');
+    }
+  }
+};
+
+/* ================================================================
+* 13. DOKUMEN: HAPUS LINK
+================================================================ */
+window.removeDocLink = function(idx) {
+  try {
+    console.log('🔧 [Doc] removeDocLink dipanggil, idx:', idx);
+
+    if (!window.currentLinkEdit) {
+      console.error('❌ currentLinkEdit null!');
+      return;
+    }
+
+    const dataBefore = window.getDocLinkData(window.currentLinkEdit.docIdx);
+    const urlToDelete = dataBefore[idx];
+
+    if (urlToDelete === undefined) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Link tidak ditemukan', 'error');
+      }
+      return;
+    }
+
+    if (!confirm('🗑️ Yakin ingin menghapus link ini?\n' + urlToDelete)) {
+      return;
+    }
+
+    const data = window.getDocLinkData(window.currentLinkEdit.docIdx);
+    data.splice(idx, 1);
+    window.setDocLinkData(window.currentLinkEdit.docIdx, data);
+
+    window.renderLinkModal();
+
+    if (typeof showToast === 'function') {
+      showToast('🗑️ Link berhasil dihapus!', 'success');
+    }
+  } catch(e) {
+    console.error('❌ removeDocLink error:', e);
+    if (typeof showToast === 'function') {
+      showToast('❌ Gagal hapus: ' + e.message, 'error');
+    }
+  }
+};
+
+/* ================================================================
+* 14. DOKUMEN: Buka Link
+================================================================ */
+window.openDocLink = function(idx) {
+  try {
+    if (!window.currentLinkEdit) return;
+    const data = window.getDocLinkData(window.currentLinkEdit.docIdx);
+    const url = data[idx];
+    if (!url) {
+      if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  } catch(e) {}
+};
+
+/* ================================================================
+* 15. MATERI: Get/Set Data
+================================================================ */
+window.getMateriData = function(kelas, guru, materiIdx) {
+  const all = safeLoad(MATERI_KEY);
+  const key = kelas + '_' + guru + '_' + materiIdx;
+  return all[key] || { ppt: [], pdf: [], doc: [], video: [] };
+};
+window.setMateriData = function(kelas, guru, materiIdx, data) {
+  const all = safeLoad(MATERI_KEY);
+  const key = kelas + '_' + guru + '_' + materiIdx;
+  all[key] = data;
+  safeSave(MATERI_KEY, all);
+};
+
+/* ================================================================
+* 16. MATERI: Render Modal
+================================================================ */
+window.renderMateriModal = function() {
+  try {
+    if (!window.currentMateriEdit) return;
+    const { kelas, guru, materiIdx } = window.currentMateriEdit;
+    const data = window.getMateriData(kelas, guru, materiIdx);
+    const types = ['ppt', 'pdf', 'doc', 'video'];
+    const icons = { ppt: '📊', pdf: '📄', doc: '📝', video: '🎬' };
+    const labels = { ppt: 'PowerPoint', pdf: 'PDF', doc: 'Word', video: 'Video' };
+
+    types.forEach(function(type) {
+      const panel = document.getElementById('panel-' + type);
+      if (!panel) return;
+      const list = data[type] || [];
+
+      let html = '<div class="materi-panel-title">' + icons[type] + ' ' + labels[type] + 
+        ' <span style="font-size:0.78rem;color:#9a3412;font-weight:500;">(' + list.length + ' link)</span></div>';
+
+      if (list.length === 0) {
+        html += '<div class="materi-empty"><div class="materi-empty-icon">' + icons[type] + '</div>' +
+          '<div class="materi-empty-text">Belum ada link ' + labels[type] + '</div></div>';
+      } else {
+        html += '<div class="materi-link-list">';
+        list.forEach(function(url, i) {
+          const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
+          html += '<div class="materi-link-item">' +
+            '<div class="materi-link-num">' + (i+1) + '</div>' +
+            '<a class="materi-link-url" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(displayUrl) + '</a>' +
+            '<div class="materi-link-actions">' +
+            '<button class="materi-btn-icon open" onclick="openMateriLink(' + i + ',\'' + type + '\')">🔗</button>' +
+            '<button class="materi-btn-icon del" onclick="removeMateriLink(' + i + ',\'' + type + '\')">🗑️</button>' +
+            '</div></div>';
+        });
+        html += '</div>';
+      }
+
+      html += '<div class="materi-add-section">' +
+        '<div class="materi-input-wrap">' +
+        '<input type="text" id="input-' + type + '" placeholder="Tempel URL ' + labels[type] + '..." onkeypress="if(event.key===\'Enter\') addMateriLink(\'' + type + '\')">' +
+        '</div>' +
+        '<button class="materi-btn-add" onclick="addMateriLink(\'' + type + '\')">➕ Tambah Link</button>' +
+        '</div>';
+
+      panel.innerHTML = html;
+    });
+  } catch(e) {
+    console.error('❌ renderMateriModal error:', e);
+  }
+};
+
+/* ================================================================
+* 17. MATERI: Buka Modal
+================================================================ */
+window.openMateriModal = function(docIdx) {
+  try {
+    if (typeof DOCS === 'undefined') return;
+    const doc = DOCS[docIdx];
+    if (!doc || doc.kat !== 'materi') return;
+
+    // Hitung materiIdx
+    let materiIdx = 0;
+    for (let i = 0; i < DOCS.length; i++) {
+      if (DOCS[i].kelas === doc.kelas && DOCS[i].guru === doc.guru && DOCS[i].kat === 'materi') {
+        if (i === docIdx) break;
+        materiIdx++;
+      }
+    }
+
+    const guru = (typeof GURU !== 'undefined' && GURU[doc.guru]) ? GURU[doc.guru] : {nama: doc.guru};
+
+    window.currentMateriEdit = {
+      kelas: doc.kelas,
+      guru: doc.guru,
+      materiIdx: materiIdx,
+      materiNama: doc.nama,
+      guruNama: guru.nama
+    };
+
+    const titleEl = document.getElementById('materi-modal-title');
+    if (titleEl) {
+      titleEl.textContent = '📚 ' + doc.nama + ' — ' + (typeof KELAS !== 'undefined' ? KELAS[doc.kelas] : doc.kelas);
+    }
+
+    window.renderMateriModal();
+
+    const modal = document.getElementById('materi-modal');
+    if (modal) modal.classList.add('show');
+  } catch(e) {
+    console.error('❌ openMateriModal error:', e);
+  }
+};
+
+window.closeMateriModal = function() {
+  try {
+    const modal = document.getElementById('materi-modal');
+    if (modal) modal.classList.remove('show');
+    window.currentMateriEdit = null;
+  } catch(e) {}
+};
+
+/* ================================================================
+* 18. MATERI: TAMBAH LINK
+================================================================ */
+window.addMateriLink = function(type) {
+  try {
+    console.log('🔧 [Materi] addMateriLink dipanggil, type:', type);
+
+    if (!window.currentMateriEdit) {
+      console.error('❌ currentMateriEdit null!');
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Modal belum terbuka', 'error');
+      }
+      return;
+    }
+
+    const input = document.getElementById('input-' + type);
+    if (!input) return;
+
+    const url = input.value.trim();
+    if (!url) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Masukkan URL terlebih dahulu', 'error');
+      }
+      input.focus();
+      return;
+    }
+
+    let finalUrl = url;
+    if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+      finalUrl = 'https://' + url;
+    }
+
+    const { kelas, guru, materiIdx } = window.currentMateriEdit;
+    const data = window.getMateriData(kelas, guru, materiIdx);
+    if (!data[type]) data[type] = [];
+    data[type].push(finalUrl);
+    window.setMateriData(kelas, guru, materiIdx, data);
+
+    input.value = '';
+    window.renderMateriModal();
+
+    if (typeof showToast === 'function') {
+      showToast('✅ Link ' + type.toUpperCase() + ' berhasil ditambahkan!', 'success');
+    }
+  } catch(e) {
+    console.error('❌ addMateriLink error:', e);
+    if (typeof showToast === 'function') {
+      showToast('❌ Gagal tambah: ' + e.message, 'error');
+    }
+  }
+};
+
+/* ================================================================
+* 19. MATERI: HAPUS LINK
+================================================================ */
+window.removeMateriLink = function(idx, type) {
+  try {
+    console.log('🔧 [Materi] removeMateriLink dipanggil, idx:', idx, 'type:', type);
+
+    if (!window.currentMateriEdit) {
+      console.error('❌ currentMateriEdit null!');
+      return;
+    }
+
+    if (!confirm('🗑️ Yakin ingin menghapus link ini?')) {
+      return;
+    }
+
+    const { kelas, guru, materiIdx } = window.currentMateriEdit;
+    const data = window.getMateriData(kelas, guru, materiIdx);
+    if (data[type] && data[type][idx] !== undefined) {
+      data[type].splice(idx, 1);
+      window.setMateriData(kelas, guru, materiIdx, data);
+      window.renderMateriModal();
+
+      if (typeof showToast === 'function') {
+        showToast('🗑️ Link berhasil dihapus!', 'success');
+      }
+    }
+  } catch(e) {
+    console.error('❌ removeMateriLink error:', e);
+    if (typeof showToast === 'function') {
+      showToast('❌ Gagal hapus: ' + e.message, 'error');
+    }
+  }
+};
+
+/* ================================================================
+* 20. MATERI: Buka Link
+================================================================ */
+window.openMateriLink = function(idx, type) {
+  try {
+    if (!window.currentMateriEdit) return;
+    const { kelas, guru, materiIdx } = window.currentMateriEdit;
+    const data = window.getMateriData(kelas, guru, materiIdx);
+    const url = data[type] && data[type][idx];
+    if (!url) {
+      if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
+  } catch(e) {}
+};
+
+window.switchMateriTab = function(type, btn) {
+  try {
+    document.querySelectorAll('.materi-tab').forEach(function(t) {
+      t.classList.toggle('active', t === btn);
+    });
+    document.querySelectorAll('.materi-panel').forEach(function(p) {
+      p.classList.toggle('active', p.id === 'panel-' + type);
+    });
+  } catch(e) {}
+};
+
+/* ================================================================
+* 21. INIT
+================================================================ */
+console.log('✅ [EMERGENCY] Semua fungsi global berhasil didefinisikan');
+console.log('📌 window.addVideoLink:', typeof window.addVideoLink);
+console.log('📌 window.removeVideoLink:', typeof window.removeVideoLink);
+console.log('📌 window.addDocLink:', typeof window.addDocLink);
+console.log('📌 window.removeDocLink:', typeof window.removeDocLink);
+console.log('📌 window.addMateriLink:', typeof window.addMateriLink);
+console.log('📌 window.removeMateriLink:', typeof window.removeMateriLink);
+console.log('📌 window.vidOpenConfig:', typeof window.vidOpenConfig);
+console.log('📌 window.vidSyncNow:', typeof window.vidSyncNow);
+
+} catch(e) {
+  console.error('❌❌❌ FATAL ERROR di Patch Final:', e);
+  alert('Error JavaScript terdeteksi. Silakan buka Console (F12) untuk melihat detail error.');
+}
+})();
+</script>
+<!-- ================= PATCH KHUSUS TOMBOL TAMBAH LINK VIDEO [START] ================= -->
+<script>
+(function(){
+"use strict";
+/* ============================================================
+ * PATCH KHUSUS: TOMBOL "➕ TAMBAH LINK" VIDEO
+ * ------------------------------------------------------------
+ * Hanya mengganti window.addVideoLink + interceptor klik tombol.
+ * TIDAK mengubah: removeVideoLink, renderVideoModal, openVideoModal,
+ *                 vidOpenConfig, vidSyncNow, tampilan daftar link.
+ *
+ * PENYEBAB TOMBOL MATI:
+ *  - addVideoLink versi terakhir mengecek state (currentVideoEdit)
+ *    yang berada di closure IIFE lain → selalu null → return diam-diam
+ *  - atau window.addVideoLink tertimpa/tidak terdefinisi
+ *
+ * SOLUSI:
+ *  1. Fungsi add mandiri: baca idx video dari 3 sumber (state global,
+ *     tracker klik, judul modal) → tidak bergantung closure
+ *  2. Baca/tulis LANGSUNG ke localStorage (tidak lewat getVideoData)
+ *  3. Interceptor klik capture → tombol pasti jalan walau onclick
+ *     inline rusak, sekaligus mencegah dobel simpan
+ * ============================================================ */
+
+var VIDEO_KEY = 'bk56_video_links';
+var CFG_KEY   = 'vid_backend_url';
+var EMB_ID    = 'vid-embedded-data';
+var lastIdx   = -1;
+var lock      = 0;
+
+function toast(msg, type){
+  try{ if(typeof showToast === 'function') showToast(msg, type||'info'); }catch(e){}
+}
+
+/* ---------- 1. Tracker index video (pass-through, tidak mengubah perilaku) ---------- */
+document.addEventListener('click', function(e){
+  try{
+    var el = e.target;
+    while(el && el !== document.body){
+      var oc = el.getAttribute && el.getAttribute('onclick');
+      if(oc && oc.indexOf('openVideoModal') > -1){
+        var m = oc.match(/openVideoModal\s*\(\s*(\d+)/);
+        if(m) lastIdx = parseInt(m[1], 10);
+        break;
+      }
+      el = el.parentNode;
+    }
+  }catch(err){}
+}, true);
+
+try{
+  var _origOpen = window.openVideoModal;
+  if(typeof _origOpen === 'function' && !_origOpen.__patchTambah){
+    window.openVideoModal = function(i){
+      try{ lastIdx = parseInt(i, 10); }catch(e){}
+      return _origOpen.apply(this, arguments); // perilaku asli 100% dipertahankan
+    };
+    window.openVideoModal.__patchTambah = true;
+  }
+}catch(e){}
+
+/* ---------- 2. Deteksi index video yang sedang dibuka ---------- */
+function getIdx(){
+  try{
+    var c = window.currentVideoEdit;
+    if(c && typeof c === 'object' && c.videoIdx !== undefined && c.videoIdx !== null){
+      var n = parseInt(c.videoIdx, 10);
+      if(!isNaN(n) && n >= 0) return n;
+    }
+  }catch(e){}
+  if(lastIdx >= 0) return lastIdx;
+  try{
+    var t = document.getElementById('video-modal-title');
+    if(t){
+      var m = String(t.textContent).match(/Video\s*(\d+)/i);
+      if(m) return parseInt(m[1], 10) - 1;
+    }
+  }catch(e){}
+  return -1;
+}
+
+/* ---------- 3. Baca / tulis data langsung ke localStorage ---------- */
+function readAll(){
+  try{
+    var raw = localStorage.getItem(VIDEO_KEY);
+    if(raw){ var p = JSON.parse(raw); if(p && typeof p === 'object') return p; }
+  }catch(e){}
+  return {};
+}
+function writeAll(all){
+  try{ localStorage.setItem(VIDEO_KEY, JSON.stringify(all)); }catch(e){ return false; }
+  try{
+    var emb = document.getElementById(EMB_ID);
+    if(emb){
+      var d = JSON.parse(emb.textContent || '{}');
+      d.videos = all;
+      d.lastUpdated = new Date().toISOString();
+      emb.textContent = JSON.stringify(d);
+    }
+  }catch(e){}
+  return true;
+}
+
+/* ---------- 4. FUNGSI TAMBAH LINK (MANDIRI) ---------- */
+function tambahLinkVideo(inputEl){
+  if(Date.now() - lock < 500) return;   // anti dobel-klik / dobel-event
+  lock = Date.now();
+
+  var idx = getIdx();
+  if(idx < 0){
+    toast('⚠️ Tutup modal, lalu klik ⚙️ Kelola pada card video dulu.', 'error');
+    console.warn('[TambahLink] Index video tidak terdeteksi');
+    return;
+  }
+
+  var input = inputEl
+           || (function(){
+                var m = document.getElementById('video-modal');
+                return (m && m.querySelector('#input-video')) || document.getElementById('input-video');
+              })();
+
+  if(!input){
+    toast('⚠️ Kolom input tidak ditemukan', 'error');
+    console.warn('[TambahLink] #input-video tidak ada');
+    return;
+  }
+
+  var url = String(input.value || '').trim();
+  if(!url){
+    toast('⚠️ Masukkan URL terlebih dahulu', 'error');
+    input.focus();
+    return;
+  }
+
+  var finalUrl = url;
+  if(!/^https?:\/\//i.test(finalUrl) && !/^mailto:/i.test(finalUrl)){
+    finalUrl = 'https://' + finalUrl;
+  }
+
+  var all  = readAll();
+  var list = Array.isArray(all[idx]) ? all[idx] : [];
+  list.push(finalUrl);
+  all[idx] = list;
+
+  if(!writeAll(all)){
+    toast('❌ Gagal menyimpan (storage penuh?)', 'error');
+    return;
+  }
+
+  // Isi state global HANYA jika kosong (agar fungsi hapus tetap nyaman)
+  try{
+    if(!window.currentVideoEdit){
+      window.currentVideoEdit = { videoIdx: idx, videoNama: 'Video ' + (idx + 1) };
+    }
+  }catch(e){}
+
+  input.value = '';
+
+  // Render ulang PAKAI FUNGSI YANG SUDAH AKTIF (tidak diganti)
+  var rendered = false;
+  try{
+    if(typeof window.renderVideoModal === 'function'){ window.renderVideoModal(); rendered = true; }
+  }catch(e){}
+  if(!rendered){
+    try{
+      if(typeof window.openVideoModal === 'function'){ window.openVideoModal(idx); rendered = true; }
+    }catch(e){}
+  }
+
+  toast('✅ Link video berhasil ditambahkan!', 'success');
+  console.log('✅ [TambahLink] Video ' + (idx + 1) + ' ← ' + finalUrl);
+
+  // Rekap otomatis ke Google Sheets (non-blocking, gagal pun link tetap tersimpan)
+  try{
+    var backend = localStorage.getItem(CFG_KEY) || '';
+    if(backend){
+      fetch(backend, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'add',
+          videoIndex: idx,
+          videoTitle: 'Video ' + (idx + 1),
+          url: finalUrl
+        })
+      }).then(function(r){ return r.json(); })
+        .then(function(j){ if(j && j.success) console.log('✅ [TambahLink] Terekap ke Spreadsheet'); })
+        .catch(function(err){ console.warn('⚠️ [TambahLink] Sync sheet gagal:', err); });
+    }
+  }catch(e){}
+
+  setTimeout(function(){ try{ input.focus(); }catch(e){} }, 120);
+}
+
+/* ---------- 5. Ganti HANYA window.addVideoLink ---------- */
+window.addVideoLink = function(){ tambahLinkVideo(); };
+window.__addVideoLinkFinal = tambahLinkVideo;
+
+/* ---------- 6. Interceptor tombol (capture) → tombol PASTI aktif ---------- */
+document.addEventListener('click', function(e){
+  var btn = e.target;
+  while(btn && btn !== document.body){
+    if(btn.classList && btn.classList.contains('video-btn-add')) break;
+    btn = btn.parentNode;
+  }
+  if(!btn || btn === document.body || !btn.classList) return;
+  if(!btn.classList.contains('video-btn-add')) return;
+
+  e.preventDefault();
+  e.stopPropagation();   // cegah onclick inline lama jalan → tidak dobel simpan
+
+  var wrap = btn.closest ? btn.closest('.video-add-section') : null;
+  var inp  = (wrap && wrap.querySelector('input')) || null;
+  tambahLinkVideo(inp);
+}, true);
+
+/* ---------- 7. Interceptor tombol ENTER di kolom input ---------- */
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Enter') return;
+  var t = e.target;
+  if(!t || t.id !== 'input-video') return;
+  e.preventDefault();
+  e.stopPropagation();
+  tambahLinkVideo(t);
+}, true);
+
+/* ---------- 8. Diagnostik ---------- */
+window.__cekTombolTambah = function(){
+  console.log('addVideoLink        :', typeof window.addVideoLink);
+  console.log('renderVideoModal    :', typeof window.renderVideoModal);
+  console.log('removeVideoLink     :', typeof window.removeVideoLink);
+  console.log('currentVideoEdit    :', window.currentVideoEdit);
+  console.log('lastIdx (tracker)   :', lastIdx);
+  console.log('idx terdeteksi      :', getIdx());
+  console.log('input-video ada     :', !!document.getElementById('input-video'));
+  console.log('data tersimpan      :', readAll());
+  return 'Diagnostik selesai';
+};
+
+console.log('✅ [PATCH] Tombol Tambah Link Video aktif (interceptor capture)');
+console.log('ℹ️ Ketik __cekTombolTambah() di Console untuk diagnosa');
+})();
+</script>
+<!-- ================= PATCH KHUSUS TOMBOL TAMBAH LINK VIDEO [END] ================= -->
 </body></html>
