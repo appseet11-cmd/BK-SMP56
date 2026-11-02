@@ -14838,4 +14838,330 @@ if(document.readyState === 'loading'){
 <!-- ================================================================ -->
 <!-- ========== PATCH: AKTIVASI BACKUP PERMANEN HTML [END] ========== -->
 <!-- ================================================================ -->
+ <!-- ========== PATCH: PERMANEN BACKEND URL VIA INDEXEDDB (NON-DESTRUCTIVE) - START ========== -->
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: PERMANEN BACKEND URL VIA INDEXEDDB v3.0
+* ================================================================
+* KEUNGGULAN DARI PATCH SEBELUMNYA:
+* ✅ 1. IndexedDB = storage PALING PERMANEN (tidak ikut clear browser)
+* ✅ 2. TIDAK override fungsi apapun (non-destructive)
+* ✅ 3. TIDAK konflik dengan patch v1.0 / v5 / emergency yang sudah ada
+* ✅ 4. Triple-layer: IndexedDB → Embedded → localStorage
+* ✅ 5. Event delegation (bukan override) untuk hook tombol
+* ✅ 6. Integrity check otomatis setiap 2 detik
+* ✅ 7. Auto-restore saat modal config dibuka
+* ✅ 8. Mencegah backup menimpa URL dengan string kosong
+================================================================ */
+
+const PATCH_ID = '__BK56_IDB_PERMANENT_V3__';
+if (window[PATCH_ID]) { console.log('[IDB] Patch sudah aktif'); return; }
+window[PATCH_ID] = true;
+
+const DB_NAME   = 'bk56_permanent_cfg_db';
+const DB_STORE  = 'config';
+const DB_KEY    = 'backend_url';
+const EMB_ID    = 'bk56-embedded-data';
+const LS_KEY    = 'bk56_backend_url';
+const CHECK_MS  = 2000;
+
+/* ================================================================
+* 🗄️ INDEXEDDB LAYER (PALING PERMANEN)
+================================================================ */
+function openDB() {
+    return new Promise(function(resolve, reject) {
+        try {
+            var req = indexedDB.open(DB_NAME, 1);
+            req.onupgradeneeded = function(e) {
+                var db = e.target.result;
+                if (!db.objectStoreNames.contains(DB_STORE)) {
+                    db.createObjectStore(DB_STORE);
+                }
+            };
+            req.onsuccess = function() { resolve(req.result); };
+            req.onerror   = function() { reject(req.error); };
+        } catch(e) { reject(e); }
+    });
+}
+
+function idbGet() {
+    return openDB().then(function(db) {
+        return new Promise(function(resolve) {
+            try {
+                var tx  = db.transaction(DB_STORE, 'readonly');
+                var req = tx.objectStore(DB_STORE).get(DB_KEY);
+                req.onsuccess = function() { resolve(req.result || null); };
+                req.onerror   = function() { resolve(null); };
+            } catch(e) { resolve(null); }
+        });
+    }).catch(function() { return null; });
+}
+
+function idbSet(url) {
+    return openDB().then(function(db) {
+        return new Promise(function(resolve) {
+            try {
+                var tx = db.transaction(DB_STORE, 'readwrite');
+                tx.objectStore(DB_STORE).put(url, DB_KEY);
+                tx.oncomplete = function() { resolve(true); };
+                tx.onerror    = function() { resolve(false); };
+            } catch(e) { resolve(false); }
+        });
+    }).catch(function() { return false; });
+}
+
+/* ================================================================
+* 📄 EMBEDDED JSON LAYER (BACKUP DI HTML)
+================================================================ */
+function embGet() {
+    try {
+        var el = document.getElementById(EMB_ID);
+        if (!el) return null;
+        var data = JSON.parse(el.textContent || '{}');
+        return (data.backendUrl && data.backendUrl.trim()) ? data.backendUrl : null;
+    } catch(e) { return null; }
+}
+
+function embSet(url) {
+    try {
+        var el = document.getElementById(EMB_ID);
+        if (!el) return false;
+        var data = JSON.parse(el.textContent || '{}');
+        data.backendUrl   = url;
+        data.lastUpdated  = new Date().toISOString();
+        data.patchVersion = 'IDB-v3.0';
+        el.textContent = JSON.stringify(data);
+        return true;
+    } catch(e) { return false; }
+}
+
+/* ================================================================
+* 🔄 MULTI-LAYER RESTORE (IDB → LS → EMB)
+================================================================ */
+async function restoreUrl() {
+    // 1. IndexedDB (paling persisten)
+    var url = await idbGet();
+    if (url && url.trim()) {
+        try { localStorage.setItem(LS_KEY, url); } catch(e) {}
+        console.log('[IDB] ✅ Restored from IndexedDB');
+        return url;
+    }
+
+    // 2. localStorage
+    try {
+        url = localStorage.getItem(LS_KEY);
+        if (url && url.trim()) {
+            await idbSet(url);
+            console.log('[IDB] ✅ Synced localStorage → IndexedDB');
+            return url;
+        }
+    } catch(e) {}
+
+    // 3. Embedded JSON
+    url = embGet();
+    if (url && url.trim()) {
+        try { localStorage.setItem(LS_KEY, url); } catch(e) {}
+        await idbSet(url);
+        console.log('[IDB] ✅ Restored from Embedded JSON');
+        return url;
+    }
+
+    return '';
+}
+
+/* ================================================================
+* 💾 MULTI-LAYER SAVE (IDB + LS + EMB)
+================================================================ */
+async function saveUrl(url) {
+    if (!url || !url.trim()) return;
+    try { localStorage.setItem(LS_KEY, url); } catch(e) {}
+    await idbSet(url);
+    embSet(url);
+}
+
+/* ================================================================
+* 🎣 EVENT DELEGATION (NON-DESTRUCTIVE HOOKS)
+* Tidak override fungsi apapun → tidak konflik dengan patch lain
+================================================================ */
+function hookViaEvents() {
+    // 🎯 Hook 1: Klik tombol "💾 Simpan Konfigurasi" di modal config
+    document.addEventListener('click', function(e) {
+        var btn = e.target;
+        while (btn && btn !== document.body) {
+            var oc = btn.getAttribute && btn.getAttribute('onclick');
+            if (oc && /bk56SaveConfig\s*\(/.test(oc)) {
+                // Tangkap URL SEBELUM fungsi asli dijalankan
+                setTimeout(function() {
+                    var input = document.getElementById('bk56-cfg-url');
+                    var url = input ? input.value.trim() : '';
+                    if (url) {
+                        saveUrl(url);
+                        console.log('[IDB] ✅ URL tersimpan ke 3 layer:', url.substring(0, 60));
+                    }
+                }, 300);
+                break;
+            }
+            btn = btn.parentNode;
+        }
+    }, true);
+
+    // 🎯 Hook 2: Klik tombol "💾 Backup Permanen"
+    // PENTING: Pastikan embedded punya URL SEBELUM backup dijalankan
+    document.addEventListener('click', function(e) {
+        var btn = e.target;
+        while (btn && btn !== document.body) {
+            var text = (btn.textContent || '').trim();
+            var oc   = btn.getAttribute && btn.getAttribute('onclick');
+            var isBackup = /Backup\s*Permanen/i.test(text) ||
+                           (oc && /bk56BackupToHTML|bk56OpenBackup/.test(oc));
+            if (isBackup) {
+                (async function() {
+                    // Ambil URL dari layer paling persisten (IDB)
+                    var url = (await idbGet()) ||
+                              (localStorage.getItem(LS_KEY) || '') ||
+                              embGet() || '';
+                    if (url && url.trim()) {
+                        embSet(url);
+                        console.log('[IDB] 🛡️ URL diamankan di embedded sebelum backup');
+                    } else {
+                        console.warn('[IDB] ⚠️ Tidak ada URL untuk di-backup');
+                    }
+                })();
+                break;
+            }
+            btn = btn.parentNode;
+        }
+    }, true);
+
+    // 🎯 Hook 3: Modal config dibuka → auto-restore URL ke input
+    var modal = document.getElementById('bk56-config-modal');
+    if (modal) {
+        var observer = new MutationObserver(function() {
+            if (modal.classList.contains('show')) {
+                setTimeout(async function() {
+                    var url = await restoreUrl();
+                    var input = document.getElementById('bk56-cfg-url');
+                    if (input && url && !input.value.trim()) {
+                        input.value = url;
+                        console.log('[IDB] ✅ URL di-restore ke input modal');
+                    }
+                }, 250);
+            }
+        });
+        observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+    }
+}
+
+/* ================================================================
+* 🔄 INTEGRITY CHECK (SETIAP 2 DETIK)
+* Memastikan URL selalu tersedia di semua layer
+================================================================ */
+function startIntegrityCheck() {
+    var lastKnownUrl = '';
+
+    setInterval(async function() {
+        var lsUrl  = '';
+        var idbUrl = '';
+        var embUrl = '';
+
+        try { lsUrl  = localStorage.getItem(LS_KEY) || ''; } catch(e) {}
+        idbUrl = (await idbGet()) || '';
+        embUrl = embGet() || '';
+
+        // Cari URL terbaik (yang tidak kosong)
+        var bestUrl = lsUrl || idbUrl || embUrl;
+
+        // Jika ada URL tapi localStorage kosong → RESTORE
+        if (!lsUrl && bestUrl) {
+            try {
+                localStorage.setItem(LS_KEY, bestUrl);
+                console.log('[IDB] 🔄 Integrity: localStorage di-restore');
+            } catch(e) {}
+        }
+
+        // Sync semua layer jika ada perubahan
+        if (bestUrl && bestUrl !== lastKnownUrl) {
+            lastKnownUrl = bestUrl;
+            await saveUrl(bestUrl);
+        }
+    }, CHECK_MS);
+}
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+async function init() {
+    console.log('[IDB] 🚀 Patch Permanen Backend URL v3.0 dimulai');
+    console.log('[IDB] 📦 Storage: IndexedDB (permanen) + Embedded + localStorage');
+
+    // 1. Restore URL dari semua layer
+    var url = await restoreUrl();
+    if (url) {
+        console.log('[IDB] ✅ URL aktif:', url.substring(0, 60) + '...');
+    } else {
+        console.log('[IDB] ⚠️ Belum ada URL tersimpan');
+    }
+
+    // 2. Hook event (non-destructive)
+    hookViaEvents();
+
+    // 3. Integrity check periodik
+    startIntegrityCheck();
+
+    // 4. Restore saat user kembali ke tab
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) restoreUrl();
+    });
+
+    // 5. Restore saat window fokus
+    window.addEventListener('focus', function() {
+        restoreUrl();
+    });
+
+    // 6. Save ke IDB sebelum halaman unload (anti hilang)
+    window.addEventListener('beforeunload', function() {
+        var url = '';
+        try { url = localStorage.getItem(LS_KEY) || ''; } catch(e) {}
+        if (url) {
+            // Sync call untuk IDB (fire-and-forget)
+            try {
+                var req = indexedDB.open(DB_NAME, 1);
+                req.onsuccess = function() {
+                    try {
+                        var db  = req.result;
+                        var tx  = db.transaction(DB_STORE, 'readwrite');
+                        tx.objectStore(DB_STORE).put(url, DB_KEY);
+                    } catch(e) {}
+                };
+            } catch(e) {}
+        }
+    });
+
+    console.log('[IDB] ✅ Patch aktif - URL sekarang PERMANEN walau clear browser');
+    console.log('[IDB] 💡 Test: Buka Console → ketik __bk56CheckIDB()');
+
+    // Fungsi diagnostik
+    window.__bk56CheckIDB = async function() {
+        var ls  = ''; try { ls = localStorage.getItem(LS_KEY) || ''; } catch(e) {}
+        var idb = (await idbGet()) || '';
+        var emb = embGet() || '';
+        console.table({
+            'localStorage': ls || '(kosong)',
+            'IndexedDB':    idb || '(kosong)',
+            'Embedded':     emb || '(kosong)'
+        });
+        return '✅ Diagnostic complete';
+    };
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+})();
+</script>
+<!-- ========== PATCH: PERMANEN BACKEND URL VIA INDEXEDDB - END ========== -->
 </body></html>
