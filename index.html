@@ -13615,120 +13615,573 @@ console.log('ℹ️ Ketik __cekTombolTambah() di Console untuk diagnosa');
     </div>
   </div>
 </div>
-<!-- ================================================================ -->
-<!-- ========== PATCH FINAL FIX: BACKUP + SYNC + PERMANEN URL ========== -->
-<!-- ================================================================ -->
-<style>
-/* ===== Tombol Sync dari Sheet ===== */
-.bk56fix-sync-btn{
-  background:linear-gradient(135deg,#3b82f6,#1d4ed8) !important;
-  box-shadow:0 4px 14px rgba(59,130,246,.4);
-  position:relative;
-}
-.bk56fix-sync-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 8px 22px rgba(59,130,246,.5);
-  filter:brightness(1.1);
-}
-.bk56fix-sync-btn.syncing{
-  background:linear-gradient(135deg,#64748b,#475569) !important;
-  cursor:wait;pointer-events:none;opacity:.85;
-}
-.bk56fix-sync-btn.syncing::after{
-  content:'';display:inline-block;width:14px;height:14px;
-  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
-  border-radius:50%;margin-left:8px;
-  animation:bk56fixSpin .8s linear infinite;
-}
-@keyframes bk56fixSpin{to{transform:rotate(360deg)}}
-
-/* ===== Indikator tombol Backup Permanen aktif ===== */
-.a56-header-btn-final.bk56fix-backup-active{
-  position:relative;
-}
-.a56-header-btn-final.bk56fix-backup-active::after{
-  content:'✓';position:absolute;top:-4px;right:-4px;
-  background:#10b981;color:#fff;
-  width:18px;height:18px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.7rem;font-weight:700;
-  border:2px solid #fff;box-shadow:0 2px 6px rgba(16,185,129,.4);
-}
-.a56-header-btn-final.bk56fix-backup-processing{
-  background:linear-gradient(135deg,#64748b,#475569) !important;
-  cursor:wait !important;pointer-events:none !important;opacity:.85;
-}
-
-/* ===== Toast ===== */
-.bk56fix-toast{
-  position:fixed;top:100px;left:50%;
-  transform:translateX(-50%) translateY(-100px);
-  background:linear-gradient(135deg,#059669,#047857);
-  color:#fff;padding:14px 24px;border-radius:100px;
-  font-size:14px;font-weight:600;
-  box-shadow:0 12px 32px rgba(5,150,105,.4);
-  z-index:100030;opacity:0;transition:all .4s ease;
-  pointer-events:none;display:flex;align-items:center;gap:10px;
-  max-width:90vw;
-}
-.bk56fix-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.bk56fix-toast.error{background:linear-gradient(135deg,#dc2626,#991b1b);box-shadow:0 12px 32px rgba(220,38,38,.4)}
-.bk56fix-toast.info{background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 12px 32px rgba(59,130,246,.4)}
-</style>
-
-<div class="bk56fix-toast" id="bk56fix-toast">✅ Patch aktif</div>
 
 <script>
 (function(){
 "use strict";
 /* ================================================================
-* PATCH FINAL FIX: BACKUP + SYNC + PERMANEN URL LINTAS DEVICE
+* PATCH: BACKEND PERMANEN (SATU KALI, LINTAS DEVICE)
 * ================================================================
-* NAMESPACE: bk56fix_ (unik, tidak bentrok dengan patch lain)
+* TUJUAN:
+* ✅ Konfigurasi backend cukup 1x saja
+* ✅ URL backend tertanam permanen di HTML (embedded JSON)
+* ✅ Frontend-backend tetap terhubung walau buka di device berbeda
+* ✅ Tidak konflik dengan fungsi existing
 *
-* 3 FIX UTAMA:
-* ✅ FIX 1: Konfigurasi Backend permanen lintas device
-*    → Parse URL dari 3 sumber (localStorage → embedded JSON → info box HTML)
-*    → Simpan ke embedded JSON saat backup → URL ikut ter-download
+* CARA KERJA:
+* 1. Saat user klik "Simpan Konfigurasi" → tawarkan "Jadikan Permanen"
+* 2. Jika YA → embed URL ke <script id="bk56-embedded-data">
+* 3. Trigger download HTML baru (via bk56BackupToHTML yang sudah ada)
+* 4. User replace file di GitHub → commit
+* 5. Saat load: auto-restore URL dari embedded → localStorage
 *
-* ✅ FIX 2: Tombol "Sync dari Sheet" selalu aktif di header
-*    → Inject langsung dengan ID unik
-*    → Handler manual (bukan auto-sync)
+* NAMESPACE: Semua fungsi & variabel pakai prefix "bk56Perm_" 
+*            agar tidak konflik dengan patch lain
+================================================================ */
+
+const BK56_PERM_EMB_ID = 'bk56-embedded-data';
+const BK56_PERM_CFG_KEY = 'bk56_backend_url';
+const BK56_PERM_FLAG_KEY = 'bk56_backend_is_permanent';
+
+/* ================================================================
+* 1. CEK STATUS: Apakah backend sudah permanen?
+================================================================ */
+function bk56PermIsPermanent(){
+  try {
+    const emb = document.getElementById(BK56_PERM_EMB_ID);
+    if (!emb) return false;
+    const data = JSON.parse(emb.textContent);
+    return !!(data && data.backendUrl && data.backendUrl.trim() !== '');
+  } catch(e) { return false; }
+}
+
+function bk56PermGetCurrentUrl(){
+  return localStorage.getItem(BK56_PERM_CFG_KEY) || '';
+}
+
+/* ================================================================
+* 2. RENDER BANNER STATUS DI HALAMAN ADMINISTRASI BK56
+================================================================ */
+function bk56PermRenderBanner(){
+  const slot = document.getElementById('bk56-perm-banner-slot');
+  if (!slot) return;
+  
+  // Hanya tampilkan banner jika halaman adminbk56 aktif
+  const adminPage = document.getElementById('adminbk56');
+  if (!adminPage || !adminPage.classList.contains('active')) {
+    slot.style.display = 'none';
+    return;
+  }
+  
+  const isPerm = bk56PermIsPermanent();
+  const currentUrl = bk56PermGetCurrentUrl();
+  const hasUrl = currentUrl.trim() !== '';
+  
+  if (isPerm && hasUrl) {
+    // ✅ Backend PERMANEN aktif
+    slot.innerHTML = 
+      '<div class="bk56-perm-banner">' +
+        '<div class="perm-icon">✅</div>' +
+        '<div class="perm-text">' +
+          '<strong>Backend Permanen Aktif</strong>' +
+          '<small>URL Apps Script sudah tertanam di HTML. Koneksi frontend-backend tetap aktif di device manapun. Konfigurasi cukup 1x saja.</small>' +
+        '</div>' +
+        '<div class="perm-actions">' +
+          '<button class="perm-btn" onclick="bk56PermShowDetails()">🔍 Lihat URL</button>' +
+          '<button class="perm-btn" onclick="bk56PermReBackup()">🔄 Update Backup</button>' +
+        '</div>' +
+      '</div>';
+    slot.style.display = 'block';
+    
+    // Tandai tombol konfigurasi dengan badge ✓
+    const cfgBtn = document.querySelector('.a56-header-btn-final:not(.logout)');
+    if (cfgBtn && !cfgBtn.classList.contains('has-perm')) {
+      cfgBtn.classList.add('has-perm');
+    }
+    
+  } else if (hasUrl && !isPerm) {
+    // ⚠️ Backend aktif tapi BELUM permanen
+    slot.innerHTML = 
+      '<div class="bk56-perm-banner warn">' +
+        '<div class="perm-icon">⚠️</div>' +
+        '<div class="perm-text">' +
+          '<strong>Backend Aktif, Tapi Belum Permanen</strong>' +
+          '<small>URL saat ini hanya tersimpan di browser ini. Jika buka di device lain, backend tidak akan terhubung. Klik "Jadikan Permanen" untuk mengatasinya.</small>' +
+        '</div>' +
+        '<div class="perm-actions">' +
+          '<button class="perm-btn primary" onclick="bk56PermOpenModal()">💾 Jadikan Permanen</button>' +
+        '</div>' +
+      '</div>';
+    slot.style.display = 'block';
+    
+  } else {
+    slot.style.display = 'none';
+  }
+}
+
+/* ================================================================
+* 3. FUNGSI GLOBAL (dipanggil dari HTML)
+================================================================ */
+window.bk56PermShowDetails = function(){
+  const url = bk56PermGetCurrentUrl();
+  alert('🔗 URL Backend Permanen:\n\n' + url + '\n\nURL ini tertanam di file HTML. Device manapun yang membuka file HTML ini akan otomatis terhubung ke backend.');
+};
+
+window.bk56PermReBackup = function(){
+  if (!confirm('🔄 Download file HTML backup terbaru?\n\nFile ini berisi URL backend yang sudah tertanam. Gunakan untuk replace file index.html di GitHub.')) return;
+  if (typeof window.bk56BackupToHTML === 'function') {
+    window.bk56BackupToHTML();
+  } else {
+    alert('❌ Fungsi backup tidak tersedia');
+  }
+};
+
+window.bk56PermOpenModal = function(){
+  const st = document.getElementById('bk56-perm-status');
+  if (st) { st.className = 'bk56-perm-status'; st.textContent = ''; }
+  const modal = document.getElementById('bk56-perm-modal');
+  if (modal) modal.classList.add('show');
+};
+
+window.bk56PermClose = function(){
+  const modal = document.getElementById('bk56-perm-modal');
+  if (modal) modal.classList.remove('show');
+};
+
+window.bk56PermConfirm = function(){
+  const st = document.getElementById('bk56-perm-status');
+  const currentUrl = bk56PermGetCurrentUrl();
+  
+  if (!currentUrl) {
+    if (st) {
+      st.className = 'bk56-perm-status error';
+      st.textContent = '❌ URL backend belum dikonfigurasi!';
+    }
+    return;
+  }
+  
+  // 1. Simpan URL ke embedded JSON
+  try {
+    const emb = document.getElementById(BK56_PERM_EMB_ID);
+    if (emb) {
+      const data = JSON.parse(emb.textContent);
+      data.backendUrl = currentUrl;
+      data.lastUpdated = new Date().toISOString();
+      data.isPermanent = true;
+      emb.textContent = JSON.stringify(data);
+      console.log('✅ [Perm] URL di-embed ke HTML:', currentUrl);
+    }
+  } catch(e) {
+    console.error('❌ [Perm] Gagal embed:', e);
+    if (st) {
+      st.className = 'bk56-perm-status error';
+      st.textContent = '❌ Gagal embed URL: ' + e.message;
+    }
+    return;
+  }
+  
+  // 2. Tandai sebagai permanent di localStorage
+  try { localStorage.setItem(BK56_PERM_FLAG_KEY, 'true'); } catch(e){}
+  
+  // 3. Tutup modal
+  window.bk56PermClose();
+  
+  // 4. Notifikasi sukses
+  if (st) {
+    st.className = 'bk56-perm-status success';
+    st.textContent = '✅ URL berhasil di-embed! Memulai download file HTML...';
+  }
+  
+  if (typeof showToast === 'function') {
+    showToast('💾 URL di-embed ke HTML. Download file backup...', 'success');
+  }
+  
+  // 5. Trigger download HTML backup (pakai fungsi existing)
+  setTimeout(function(){
+    if (typeof window.bk56BackupToHTML === 'function') {
+      try {
+        window.bk56BackupToHTML();
+        console.log('✅ [Perm] Backup HTML berhasil di-download');
+        
+        // 6. Tampilkan instruksi final setelah download
+        setTimeout(function(){
+          alert(
+            '✅ BERHASIL!\n\n' +
+            '📥 File HTML baru sudah ter-download.\n\n' +
+            '📌 LANGKAH SELANJUTNYA:\n' +
+            '1. Buka repository GitHub Anda\n' +
+            '2. Upload file HTML baru → replace index.html\n' +
+            '3. Commit perubahan\n\n' +
+            '✨ Setelah commit, backend akan PERMANEN aktif di SEMUA device!\n' +
+            'Anda tidak perlu konfigurasi ulang.'
+          );
+          // Refresh banner
+          bk56PermRenderBanner();
+        }, 1500);
+        
+      } catch(e) {
+        console.error('❌ [Perm] Backup gagal:', e);
+        alert('❌ Gagal download backup: ' + e.message);
+      }
+    } else {
+      alert('❌ Fungsi backup tidak tersedia');
+    }
+  }, 800);
+};
+
+/* ================================================================
+* 4. AUTO-RESTORE URL DARI EMBEDDED (saat load)
+* ================================================================
+* Dipanggil SEBELUM fungsi restore existing, agar URL selalu tersedia
+================================================================ */
+function bk56PermAutoRestore(){
+  const currentUrl = localStorage.getItem(BK56_PERM_CFG_KEY);
+  
+  // Jika localStorage sudah ada URL → skip
+  if (currentUrl && currentUrl.trim() !== '') {
+    console.log('✅ [Perm] URL sudah ada di localStorage');
+    return;
+  }
+  
+  // Jika localStorage kosong → ambil dari embedded
+  try {
+    const emb = document.getElementById(BK56_PERM_EMB_ID);
+    if (!emb) return;
+    const data = JSON.parse(emb.textContent);
+    if (data && data.backendUrl && data.backendUrl.trim() !== '') {
+      localStorage.setItem(BK56_PERM_CFG_KEY, data.backendUrl);
+      console.log('✅ [Perm] URL dipulihkan dari embedded HTML:', data.backendUrl);
+      
+      // Update input di modal config jika ada
+      setTimeout(function(){
+        const input = document.getElementById('bk56-cfg-url');
+        if (input && !input.value) input.value = data.backendUrl;
+      }, 500);
+      
+      // Notifikasi user (hanya 1x)
+      if (typeof showToast === 'function') {
+        showToast('✅ Backend permanen terdeteksi! Koneksi otomatis aktif.', 'success');
+      }
+    }
+  } catch(e) {
+    console.warn('⚠️ [Perm] Gagal restore:', e);
+  }
+}
+
+/* ================================================================
+* 5. OVERRIDE bk56SaveConfig → Tawarkan "Jadikan Permanen"
+================================================================ */
+(function(){
+  const _origSaveCfg = window.bk56SaveConfig;
+  window.bk56SaveConfig = function(){
+    // Panggil fungsi asli dulu
+    if (typeof _origSaveCfg === 'function') {
+      try { _origSaveCfg(); } catch(e) { console.warn('⚠️', e); }
+    }
+    
+    // Setelah save, tawarkan "Jadikan Permanen" (jika belum permanen)
+    setTimeout(function(){
+      const isPerm = bk56PermIsPermanent();
+      const currentUrl = bk56PermGetCurrentUrl();
+      
+      if (!isPerm && currentUrl) {
+        // Tampilkan konfirmasi (non-blocking)
+        setTimeout(function(){
+          if (confirm(
+            '💾 Konfigurasi berhasil disimpan!\n\n' +
+            '⚠️ URL saat ini HANYA tersimpan di browser ini.\n' +
+            'Jika buka di device lain, backend TIDAK terhubung.\n\n' +
+            '💡 Jadikan PERMANEN agar URL tertanam di HTML?\n' +
+            '(File HTML baru akan di-download → upload ke GitHub)'
+          )) {
+            bk56PermOpenModal();
+          }
+        }, 800);
+      }
+      
+      // Refresh banner
+      bk56PermRenderBanner();
+    }, 500);
+  };
+})();
+
+/* ================================================================
+* 6. INISIALISASI
+================================================================ */
+function bk56PermInit(){
+  console.log('🚀 [Perm] Patch Backend Permanen dimulai...');
+  
+  // 1. Auto-restore URL dari embedded (prioritas utama)
+  bk56PermAutoRestore();
+  
+  // 2. Render banner
+  setTimeout(bk56PermRenderBanner, 1500);
+  
+  // 3. Observer untuk re-render banner saat halaman adminbk56 aktif
+  const adminPage = document.getElementById('adminbk56');
+  if (adminPage) {
+    const observer = new MutationObserver(function(){
+      if (adminPage.classList.contains('active')) {
+        setTimeout(bk56PermRenderBanner, 300);
+      }
+    });
+    observer.observe(adminPage, { attributes: true, attributeFilter: ['class'] });
+  }
+  
+  // 4. Re-render banner saat user kembali ke tab
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) setTimeout(bk56PermRenderBanner, 500);
+  });
+  
+  // 5. ESC untuk tutup modal
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      const m = document.getElementById('bk56-perm-modal');
+      if (m && m.classList.contains('show')) bk56PermClose();
+    }
+  });
+  
+  // 6. Klik di luar untuk tutup modal
+  document.addEventListener('click', function(e){
+    const m = document.getElementById('bk56-perm-modal');
+    if (m && e.target === m) bk56PermClose();
+  }, true);
+  
+  console.log('✅ [Perm] Patch terpasang');
+  console.log('📌 Status permanen:', bk56PermIsPermanent() ? 'YA' : 'BELUM');
+  console.log('📌 URL aktif:', bk56PermGetCurrentUrl() || '(belum ada)');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bk56PermInit);
+} else {
+  bk56PermInit();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: BACKEND PERMANEN [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH FINAL: AUTO-SYNC + BACKUP + SYNC SHEET ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== TOMBOL AUTO-SYNC DI HEADER ===== */
+.a56-header-btn-final.autosync-btn{
+  background:linear-gradient(135deg,#10b981,#059669) !important;
+  box-shadow:0 4px 14px rgba(16,185,129,.4);
+  position:relative;
+}
+.a56-header-btn-final.autosync-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(16,185,129,.5);
+  filter:brightness(1.1);
+}
+.a56-header-btn-final.autosync-btn.syncing{
+  background:linear-gradient(135deg,#64748b,#475569) !important;
+  cursor:wait;
+  pointer-events:none;
+}
+.a56-header-btn-final.autosync-btn.syncing::after{
+  content:'';
+  display:inline-block;
+  width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  margin-left:8px;
+  animation:bk56finalSpin .8s linear infinite;
+}
+@keyframes bk56finalSpin{to{transform:rotate(360deg)}}
+
+/* ===== STATUS AUTO-SYNC ===== */
+.bk56final-autosync-status{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:rgba(16,185,129,.95);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  padding:10px 16px;
+  border-radius:12px;
+  font-size:.78rem;
+  font-weight:600;
+  box-shadow:0 4px 16px rgba(16,185,129,.3);
+  z-index:9998;
+  display:none;
+  max-width:280px;
+}
+.bk56final-autosync-status.show{
+  display:block;
+  animation:bk56finalSlideIn .4s ease;
+}
+@keyframes bk56finalSlideIn{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.bk56final-autosync-status .as-icon{
+  font-size:1.3rem;
+  margin-right:8px;
+}
+.bk56final-autosync-status .as-close{
+  background:rgba(255,255,255,.2);
+  border:none;
+  color:#fff;
+  width:24px;height:24px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:.8rem;
+  margin-left:10px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+.bk56final-autosync-status .as-close:hover{
+  background:rgba(255,255,255,.35);
+}
+
+/* ===== TOAST NOTIFIKASI ===== */
+.bk56final-toast{
+  position:fixed;
+  top:100px;
+  left:50%;
+  transform:translateX(-50%) translateY(-100px);
+  background:linear-gradient(135deg,#10b981,#059669);
+  color:#fff;
+  padding:14px 24px;
+  border-radius:100px;
+  font-size:14px;
+  font-weight:600;
+  box-shadow:0 12px 32px rgba(16,185,129,.4);
+  z-index:100011;
+  opacity:0;
+  transition:all .4s ease;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  max-width:90vw;
+}
+.bk56final-toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}
+.bk56final-toast.error{
+  background:linear-gradient(135deg,#ef4444,#dc2626);
+  box-shadow:0 12px 32px rgba(239,68,68,.4);
+}
+.bk56final-toast.info{
+  background:linear-gradient(135deg,#3b82f6,#1d4ed8);
+  box-shadow:0 12px 32px rgba(59,130,246,.4);
+}
+
+@media (max-width:768px){
+  .bk56final-autosync-status{
+    left:10px;right:10px;max-width:none;bottom:10px;
+  }
+}
+</style>
+
+<!-- ===== TOAST ===== -->
+<div class="bk56final-toast" id="bk56final-toast">✅ Auto-sync aktif</div>
+
+<!-- ===== STATUS AUTO-SYNC ===== -->
+<div class="bk56final-autosync-status" id="bk56final-autosync-status">
+  <span class="as-icon">🔄</span>
+  <span id="bk56final-as-text">Auto-sync aktif • Sync terakhir: -</span>
+  <button class="as-close" onclick="this.parentElement.classList.remove('show')" title="Tutup">✕</button>
+</div>
+<!-- ================================================================ -->
+<!-- ========== PATCH: SYNC DARI SHEET (TANPA AUTO SYNC) ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== Tombol Sync dari Sheet (selalu aktif) ===== */
+.a56-header-btn-final.bk56asact-syncsheet-btn{
+  background:linear-gradient(135deg,#3b82f6,#1d4ed8) !important;
+  box-shadow:0 4px 14px rgba(59,130,246,.4);
+}
+.a56-header-btn-final.bk56asact-syncsheet-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(59,130,246,.5);
+  filter:brightness(1.1);
+}
+.a56-header-btn-final.bk56asact-syncsheet-btn.syncing{
+  background:linear-gradient(135deg,#64748b,#475569) !important;
+  cursor:wait;
+  pointer-events:none;
+}
+.a56-header-btn-final.bk56asact-syncsheet-btn.syncing::after{
+  content:'';
+  display:inline-block;
+  width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  margin-left:8px;
+  animation:bk56asactSpin .8s linear infinite;
+}
+@keyframes bk56asactSpin{to{transform:rotate(360deg)}}
+
+/* ===== Toast Notifikasi ===== */
+.bk56asact-toast{
+  position:fixed;top:100px;left:50%;
+  transform:translateX(-50%) translateY(-100px);
+  background:linear-gradient(135deg,#10b981,#059669);
+  color:#fff;padding:14px 24px;border-radius:100px;
+  font-size:14px;font-weight:600;
+  box-shadow:0 12px 32px rgba(16,185,129,.4);
+  z-index:100021;opacity:0;transition:all .4s ease;
+  pointer-events:none;display:flex;align-items:center;gap:10px;
+  max-width:90vw;
+}
+.bk56asact-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.bk56asact-toast.error{background:linear-gradient(135deg,#dc2626,#991b1b);box-shadow:0 12px 32px rgba(220,38,38,.4)}
+.bk56asact-toast.info{background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 12px 32px rgba(59,130,246,.4)}
+</style>
+
+<!-- ===== Toast ===== -->
+<div class="bk56asact-toast" id="bk56asact-toast">✅ Sync berhasil</div>
+
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: SYNC DARI SHEET (TANPA AUTO SYNC)
+* ================================================================
+* NAMESPACE: bk56asact_ (unik, tidak bentrok dengan patch lain)
 *
-* ✅ FIX 3: Tombol "Backup Permanen" berfungsi
-*    → Attach event listener di capture phase
-*    → Reset modal state sebelum backup
-*    → Update embedded JSON dengan data terbaru
+* FITUR:
+* ✅ Tombol "Sync dari Sheet" SELALU aktif di header
+* ✅ Tidak ada tombol Auto Sync
+* ✅ Tidak ada auto-sync periodik
+* ✅ Tidak ada deteksi aktivitas untuk menampilkan tombol
+* ✅ User klik tombol → sync manual dari Google Sheets
 *
-* CARA KERJA LINTAS DEVICE:
-* 1. Device A: Konfigurasi Backend → Simpan URL
-* 2. Device A: Klik Backup Permanen → URL di-embed ke HTML
-* 3. Device A: Download HTML baru → Upload ke GitHub → Commit
-* 4. Device B: Buka HTML → URL otomatis terdeteksi dari embedded JSON
-* 5. Device B: ✅ Backend langsung aktif tanpa konfigurasi ulang!
+* CARA KERJA:
+* 1. Inject tombol "Sync dari Sheet" di header (selalu ada)
+* 2. User klik tombol → fetch data dari backend
+* 3. Data di-sync ke card (materi, video, dokumen)
+* 4. UI di-refresh
 ================================================================ */
 
 // ============ KONSTANTA ============
-const BK56FIX_EMB_ID = 'bk56-embedded-data';
-const BK56FIX_CFG_KEY = 'bk56_backend_url';
-const BK56FIX_MATERI_KEY = 'bk56_materi_links';
-const BK56FIX_VIDEO_KEY = 'bk56_video_links';
-const BK56FIX_DOC_KEY = 'bk56_doc_links';
+const BK56ASACT_CFG_KEY = 'bk56_backend_url';
+const BK56ASACT_MATERI_KEY = 'bk56_materi_links';
+const BK56ASACT_VIDEO_KEY = 'bk56_video_links';
+const BK56ASACT_DOC_KEY = 'bk56_doc_links';
 
 // ============ HELPER ============
-function bk56fixToast(msg, type){
-  const toast = document.getElementById('bk56fix-toast');
-  if(!toast){
-    if(typeof showToast === 'function') showToast(msg, type);
-    return;
-  }
+function bk56asactToast(msg, type){
+  const toast = document.getElementById('bk56asact-toast');
+  if(!toast) return;
   toast.textContent = msg;
-  toast.className = 'bk56fix-toast ' + (type || '');
+  toast.className = 'bk56asact-toast ' + (type || '');
   setTimeout(() => toast.classList.add('show'), 10);
   setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-function bk56fixSafeLoad(key){
+function bk56asactSafeLoad(key){
   try {
     const raw = localStorage.getItem(key);
     if(raw) return JSON.parse(raw);
@@ -13736,144 +14189,60 @@ function bk56fixSafeLoad(key){
   return {};
 }
 
-function bk56fixEsc(s){
-  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-
-/* ================================================================
-* FIX 1: RESTORE URL BACKEND DARI 3 SUMBER (permanen lintas device)
-================================================================ */
-function bk56fixRestoreUrl(){
-  // Sumber 1: localStorage (prioritas tertinggi)
-  const lsUrl = localStorage.getItem(BK56FIX_CFG_KEY);
-  if(lsUrl && lsUrl.trim() !== ''){
-    console.log('✅ [bk56fix] URL dari localStorage:', lsUrl.substring(0,50)+'...');
-    return lsUrl;
-  }
-  
-  // Sumber 2: Embedded JSON di HTML
-  try {
-    const emb = document.getElementById(BK56FIX_EMB_ID);
-    if(emb){
-      const data = JSON.parse(emb.textContent);
-      if(data && data.backendUrl && data.backendUrl.trim() !== ''){
-        localStorage.setItem(BK56FIX_CFG_KEY, data.backendUrl);
-        console.log('✅ [bk56fix] URL dipulihkan dari embedded HTML');
-        return data.backendUrl;
-      }
-    }
-  } catch(e) {}
-  
-  // Sumber 3: Parse dari info box backend di HTML (FALLBACK)
-  // Di HTML ada: <div class="a56-backend-info-final connected">
-  //              ...<small>https://script.google.com/...</small>
-  try {
-    const infoDiv = document.getElementById('a56-backend-info-final');
-    if(infoDiv){
-      const smallEl = infoDiv.querySelector('small');
-      if(smallEl){
-        const text = smallEl.textContent.trim();
-        // Cek apakah text mengandung URL Apps Script
-        if(/^https?:\/\/script\.google\.com\/macros\/s\//i.test(text)){
-          localStorage.setItem(BK56FIX_CFG_KEY, text);
-          console.log('✅ [bk56fix] URL dipulihkan dari info box HTML');
-          // Update input config jika ada
-          setTimeout(() => {
-            const input = document.getElementById('bk56-cfg-url');
-            if(input && !input.value) input.value = text;
-          }, 500);
-          return text;
-        }
-      }
-    }
-  } catch(e) {}
-  
-  console.warn('⚠️ [bk56fix] Backend URL tidak ditemukan di semua sumber');
-  return '';
-}
-
-/* ================================================================
-* SIMPAN URL KE EMBEDDED JSON (agar ikut ter-backup)
-================================================================ */
-function bk56fixSaveUrlToEmbedded(url){
-  try {
-    const emb = document.getElementById(BK56FIX_EMB_ID);
-    if(!emb) return false;
-    const data = JSON.parse(emb.textContent);
-    data.backendUrl = url;
-    data.lastUpdated = new Date().toISOString();
-    emb.textContent = JSON.stringify(data);
-    console.log('✅ [bk56fix] URL disimpan ke embedded HTML');
-    return true;
-  } catch(e) {
-    console.error('❌ [bk56fix] Gagal save ke embedded:', e);
-    return false;
-  }
-}
-
-/* ================================================================
-* FIX 2: INJECT TOMBOL "SYNC DARI SHEET" DI HEADER
-================================================================ */
-function bk56fixInjectSyncButton(){
+// ============ 1. INJECT TOMBOL SYNC DARI SHEET (SELALU AKTIF) ============
+function bk56asactInjectSyncSheetButton(){
   const header = document.getElementById('a56-header-actions-final');
   if(!header){
-    console.warn('⚠️ [bk56fix] Header actions tidak ditemukan');
-    return false;
+    console.warn('⚠️ [bk56asact] Header actions tidak ditemukan');
+    return;
   }
   
-  // Jangan inject 2x
-  if(document.getElementById('bk56fix-sync-btn')){
-    return true;
+  // Cek apakah tombol sudah ada
+  if(document.getElementById('bk56asact-syncsheet-btn')){
+    return; // Sudah ada, jangan inject 2x
   }
+  
+  console.log('✅ [bk56asact] Inject tombol Sync dari Sheet (selalu aktif)');
   
   const btn = document.createElement('button');
-  btn.id = 'bk56fix-sync-btn';
-  btn.className = 'a56-header-btn-final bk56fix-sync-btn';
+  btn.id = 'bk56asact-syncsheet-btn';
+  btn.className = 'a56-header-btn-final bk56asact-syncsheet-btn';
   btn.innerHTML = '🔄 Sync dari Sheet';
-  btn.title = 'Sinkronkan data dari Google Sheets';
-  btn.type = 'button';
+  btn.title = 'Ambil data link dari Google Sheets';
   
-  // Handler langsung (tidak bergantung fungsi external)
-  btn.addEventListener('click', function(e){
-    e.preventDefault();
-    e.stopPropagation();
-    bk56fixDoSyncFromSheet();
-  });
+  btn.onclick = function(){
+    bk56asactDoSyncFromSheet();
+  };
   
-  // Sisipkan sebelum tombol Logout
+  // Sisipkan sebelum tombol Logout (jika ada)
   const logoutBtn = header.querySelector('.logout');
   if(logoutBtn){
     header.insertBefore(btn, logoutBtn);
   } else {
     header.appendChild(btn);
   }
-  
-  console.log('✅ [bk56fix] Tombol Sync dari Sheet ditambahkan');
-  return true;
 }
 
-/* ================================================================
-* FUNGSI SYNC DARI SHEET (manual, pull data)
-================================================================ */
-async function bk56fixDoSyncFromSheet(){
-  const syncBtn = document.getElementById('bk56fix-sync-btn');
-  const backendUrl = localStorage.getItem(BK56FIX_CFG_KEY);
+// ============ 2. FUNGSI SYNC DARI SHEET (pull data dari sheet ke card) ============
+async function bk56asactDoSyncFromSheet(){
+  const syncBtn = document.getElementById('bk56asact-syncsheet-btn');
+  const backendUrl = localStorage.getItem(BK56ASACT_CFG_KEY);
   
   if(!backendUrl){
-    bk56fixToast('⚠️ Backend belum dikonfigurasi! Klik "Konfigurasi Backend" dulu.', 'error');
+    bk56asactToast('⚠️ Backend belum dikonfigurasi! Klik "Konfigurasi Backend" dulu.', 'error');
     return;
   }
   
-  // UI: loading
+  // UI: loading state
   if(syncBtn){
     syncBtn.classList.add('syncing');
     syncBtn.innerHTML = '🔄 Sedang Sync';
   }
   
-  bk56fixToast('🔄 Mengambil data dari Google Sheets...', 'info');
+  bk56asactToast('🔄 Mengambil data dari Google Sheets...', 'info');
   
   try {
+    // Fetch data dari sheet
     const res = await fetch(backendUrl, { method: 'GET', redirect: 'follow' });
     const json = await res.json();
     
@@ -13881,46 +14250,26 @@ async function bk56fixDoSyncFromSheet(){
       throw new Error('Response tidak valid dari backend');
     }
     
-    console.log('📊 [bk56fix] Data dari sheet:', json.data.length, 'link');
+    console.log('📊 [bk56asact] Data dari sheet:', json.data.length, 'link');
     
-    // Simpan ke rekap cache
-    localStorage.setItem('bk56_rekap_cache', JSON.stringify(json.data));
+    // Sync ke card (materi, video, dokumen)
+    const result = await bk56asactSyncSheetToLocal(json.data);
     
-    // Sync ke card
-    const result = await bk56fixSyncSheetToLocal(json.data);
-    
-    // Refresh UI
-    if(typeof bk56RenderRekap === 'function'){
-      try { bk56RenderRekap(); } catch(e) {}
-    }
+    // Update UI
     if(typeof render === 'function'){
       try { render(true); } catch(e) {}
     }
     
-    // Update status koneksi
-    const connStatus = document.getElementById('bk56-conn-status');
-    const connText = document.getElementById('bk56-conn-text');
-    if(connStatus && connText){
-      connStatus.className = 'a56-connection-status connected';
-      connText.textContent = '✅ Terhubung • ' + json.data.length + ' link tersinkron';
-    }
-    
-    bk56fixToast(
-      '✅ Sync berhasil! ' + result.added + ' link baru ditambahkan',
+    bk56asactToast(
+      '✅ Sync dari Sheet berhasil! ' + result.added + ' link baru ditambahkan',
       'success'
     );
     
   } catch(e) {
-    console.error('❌ [bk56fix] Sync error:', e);
-    bk56fixToast('❌ Gagal sync: ' + e.message, 'error');
-    
-    const connStatus = document.getElementById('bk56-conn-status');
-    const connText = document.getElementById('bk56-conn-text');
-    if(connStatus && connText){
-      connStatus.className = 'a56-connection-status disconnected';
-      connText.textContent = '❌ Gagal sync: ' + e.message;
-    }
+    console.error('❌ [bk56asact] Sync error:', e);
+    bk56asactToast('❌ Gagal sync: ' + e.message, 'error');
   } finally {
+    // Reset UI
     if(syncBtn){
       syncBtn.classList.remove('syncing');
       syncBtn.innerHTML = '🔄 Sync dari Sheet';
@@ -13928,18 +14277,16 @@ async function bk56fixDoSyncFromSheet(){
   }
 }
 
-/* ================================================================
-* SYNC DATA DARI SHEET KE CARD
-================================================================ */
-async function bk56fixSyncSheetToLocal(sheetData){
+// ============ 3. SYNC DATA DARI SHEET KE CARD ============
+async function bk56asactSyncSheetToLocal(sheetData){
   if(typeof DOCS === 'undefined' || !Array.isArray(DOCS)){
-    console.warn('⚠️ [bk56fix] DOCS array tidak tersedia');
+    console.warn('⚠️ [bk56asact] DOCS array tidak tersedia');
     return { added: 0 };
   }
   
-  let materi = bk56fixSafeLoad(BK56FIX_MATERI_KEY);
-  let video = bk56fixSafeLoad(BK56FIX_VIDEO_KEY);
-  let doc = bk56fixSafeLoad(BK56FIX_DOC_KEY);
+  let materi = bk56asactSafeLoad(BK56ASACT_MATERI_KEY);
+  let video = bk56asactSafeLoad(BK56ASACT_VIDEO_KEY);
+  let doc = bk56asactSafeLoad(BK56ASACT_DOC_KEY);
   
   let added = 0;
   
@@ -13953,6 +14300,7 @@ async function bk56fixSyncSheetToLocal(sheetData){
     
     if(!url || url === '-') return;
     
+    // Cari docIdx di DOCS array
     let docIdx = -1;
     for(let i = 0; i < DOCS.length; i++){
       const d = DOCS[i];
@@ -13969,6 +14317,7 @@ async function bk56fixSyncSheetToLocal(sheetData){
     const d = DOCS[docIdx];
     
     if(d.kat === 'materi'){
+      // Hitung materiIdx
       let materiIdx = 0, found = false;
       for(let i = 0; i < DOCS.length; i++){
         if(DOCS[i].kelas === d.kelas && DOCS[i].guru === d.guru && DOCS[i].kat === 'materi'){
@@ -13994,138 +14343,308 @@ async function bk56fixSyncSheetToLocal(sheetData){
     }
   });
   
+  // Simpan ke localStorage
   try {
-    localStorage.setItem(BK56FIX_MATERI_KEY, JSON.stringify(materi));
-    localStorage.setItem(BK56FIX_VIDEO_KEY, JSON.stringify(video));
-    localStorage.setItem(BK56FIX_DOC_KEY, JSON.stringify(doc));
-  } catch(e) {}
+    localStorage.setItem(BK56ASACT_MATERI_KEY, JSON.stringify(materi));
+    localStorage.setItem(BK56ASACT_VIDEO_KEY, JSON.stringify(video));
+    localStorage.setItem(BK56ASACT_DOC_KEY, JSON.stringify(doc));
+  } catch(e) {
+    console.error('❌ [bk56asact] Gagal save ke localStorage:', e);
+  }
   
-  console.log('✅ [bk56fix] Sync selesai:', added, 'link baru');
+  console.log('✅ [bk56asact] Sync selesai:', added, 'link baru ditambahkan ke card');
   return { added };
 }
 
-/* ================================================================
-* FIX 3: ATTACH HANDLER KE TOMBOL BACKUP PERMANEN EXISTING
-================================================================ */
-function bk56fixAttachBackupButton(){
-  // Cari tombol "Backup Permanen" di header
+// ============ 4. OBSERVER: Re-inject tombol saat header berubah ============
+function bk56asactSetupObserver(){
+  // Observer untuk header actions (tempat tombol di-inject)
   const header = document.getElementById('a56-header-actions-final');
-  if(!header) return false;
-  
-  const buttons = header.querySelectorAll('.a56-header-btn-final');
-  let backupBtn = null;
-  
-  buttons.forEach(btn => {
-    const text = (btn.textContent || '').trim();
-    // Match: "💾 Backup Permanen" atau "Backup Permanen"
-    if(/Backup\s+Permanen/i.test(text) && !btn.id){
-      backupBtn = btn;
-    }
-  });
-  
-  if(!backupBtn){
-    console.warn('⚠️ [bk56fix] Tombol Backup Permanen tidak ditemukan');
-    return false;
+  if(header){
+    const observer = new MutationObserver(() => {
+      setTimeout(() => {
+        bk56asactInjectSyncSheetButton();
+      }, 300);
+    });
+    observer.observe(header, { childList: true, subtree: true });
   }
   
-  // Cek apakah sudah di-attach
-  if(backupBtn.dataset.bk56fixAttached === 'true'){
-    return true;
+  // Observer untuk adminbk56 page
+  const adminPage = document.getElementById('adminbk56');
+  if(adminPage){
+    const observer = new MutationObserver(() => {
+      if(adminPage.classList.contains('active')){
+        setTimeout(() => {
+          bk56asactInjectSyncSheetButton();
+        }, 500);
+      }
+    });
+    observer.observe(adminPage, { attributes: true, attributeFilter: ['class'] });
   }
-  
-  // Hapus onclick inline lama (jika ada)
-  backupBtn.removeAttribute('onclick');
-  
-  // Attach di CAPTURE PHASE (jalan SEBELUM handler lain)
-  backupBtn.addEventListener('click', function(e){
-    e.stopImmediatePropagation();
-    e.preventDefault();
-    
-    backupBtn.classList.add('bk56fix-backup-processing');
-    setTimeout(() => backupBtn.classList.remove('bk56fix-backup-processing'), 2500);
-    
-    bk56fixDoBackup();
-    
-    return false;
-  }, true); // ← capture phase
-  
-  backupBtn.dataset.bk56fixAttached = 'true';
-  backupBtn.classList.add('bk56fix-backup-active');
-  
-  console.log('✅ [bk56fix] Event listener terpasang pada tombol Backup Permanen');
-  return true;
 }
 
+// ============ 5. INIT ============
+function bk56asactInit(){
+  console.log('🚀 [bk56asact] Patch Sync dari Sheet dimulai...');
+  console.log('📌 Tombol Sync dari Sheet SELALU aktif');
+  console.log('📌 TIDAK ada Auto Sync');
+  
+  // 1. Inject tombol Sync dari Sheet (selalu aktif)
+  setTimeout(bk56asactInjectSyncSheetButton, 1500);
+  
+  // 2. Setup observer untuk re-inject
+  bk56asactSetupObserver();
+  
+  console.log('✅ [bk56asact] Patch terpasang');
+}
+
+// Jalankan init
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', bk56asactInit);
+} else {
+  bk56asactInit();
+}
+
+// ============ DEBUG FUNCTION ============
+window.__bk56asactDebug = function(){
+  console.log('=== BK56 Sync dari Sheet Debug ===');
+  console.log('Backend URL:', localStorage.getItem(BK56ASACT_CFG_KEY) || '(belum ada)');
+  console.log('Tombol Sync dari Sheet ada:', !!document.getElementById('bk56asact-syncsheet-btn'));
+  console.log('Tombol Auto Sync ada:', !!document.getElementById('bk56asact-autosync-btn'));
+  console.log('Materi:', Object.keys(bk56asactSafeLoad(BK56ASACT_MATERI_KEY)).length, 'item');
+  console.log('Video:', Object.keys(bk56asactSafeLoad(BK56ASACT_VIDEO_KEY)).length, 'item');
+  console.log('DocLinks:', Object.keys(bk56asactSafeLoad(BK56ASACT_DOC_KEY)).length, 'item');
+  console.log('===================================');
+};
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: SYNC DARI SHEET (TANPA AUTO SYNC) [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: AKTIVASI BACKUP PERMANEN HTML (MANDIRI) ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== Indikator Tombol Backup Aktif ===== */
+.a56-header-btn-final.bk56bpv2-active{
+  position:relative;
+}
+.a56-header-btn-final.bk56bpv2-active::after{
+  content:'✓';position:absolute;top:-5px;right:-5px;
+  background:#10b981;color:#fff;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;
+  border:2px solid #fff;box-shadow:0 2px 6px rgba(16,185,129,.4);
+  animation:bk56bpv2Pulse 2s infinite;
+}
+@keyframes bk56bpv2Pulse{
+  0%,100%{box-shadow:0 2px 6px rgba(16,185,129,.4)}
+  50%{box-shadow:0 2px 12px rgba(16,185,129,.7)}
+}
+.a56-header-btn-final.bk56bpv2-processing{
+  background:linear-gradient(135deg,#64748b,#475569) !important;
+  cursor:wait !important;
+  pointer-events:none !important;
+  opacity:.85;
+}
+.a56-header-btn-final.bk56bpv2-processing::before{
+  content:'';display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  border-radius:50%;margin-right:6px;
+  animation:bk56bpv2Spin .8s linear infinite;
+}
+@keyframes bk56bpv2Spin{to{transform:rotate(360deg)}}
+
+/* ===== Toast Notifikasi Backup ===== */
+.bk56bpv2-toast{
+  position:fixed;top:100px;left:50%;
+  transform:translateX(-50%) translateY(-100px);
+  background:linear-gradient(135deg,#059669,#047857);
+  color:#fff;padding:14px 24px;border-radius:100px;
+  font-size:14px;font-weight:600;
+  box-shadow:0 12px 32px rgba(5,150,105,.4);
+  z-index:100025;opacity:0;transition:all .4s ease;
+  pointer-events:none;display:flex;align-items:center;gap:10px;
+  max-width:90vw;
+}
+.bk56bpv2-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.bk56bpv2-toast.error{background:linear-gradient(135deg,#dc2626,#991b1b);box-shadow:0 12px 32px rgba(220,38,38,.4)}
+.bk56bpv2-toast.info{background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 12px 32px rgba(59,130,246,.4)}
+</style>
+
+<!-- ===== Toast Notifikasi ===== -->
+<div class="bk56bpv2-toast" id="bk56bpv2-toast">💾 Backup siap</div>
+
+<script>
+(function(){
+"use strict";
 /* ================================================================
-* FUNGSI BACKUP UTAMA
+* PATCH: AKTIVASI BACKUP PERMANEN HTML (MANDIRI, NON-KONFLIK)
+* ================================================================
+* NAMESPACE: bk56bpv2_ (unik, tidak bentrok dengan patch lain)
+*
+* PRINSIP UTAMA:
+* ✅ TIDAK meng-override fungsi existing (bk56BackupToHTML, bk56OpenBackup)
+* ✅ TIDAK mengubah variabel global existing
+* ✅ Hanya menambah event listener baru di capture phase
+* ✅ Mencari tombol "Backup Permanen" via text content (robust)
+*
+* CARA KERJA:
+* 1. MutationObserver mencari tombol "Backup Permanen" di header
+* 2. Attach click event listener (capture phase)
+* 3. Saat diklik:
+*    a. Reset semua modal state (agar HTML backup bersih)
+*    b. Kumpulkan semua data dari localStorage
+*    c. Update <script id="bk56-embedded-data"> dengan data terbaru
+*    d. Clone HTML document → download file baru
+*
+* KEAMANAN:
+* - Cek dataset untuk mencegah double-attach
+* - Semua operasi dibungkus try-catch
+* - Event delegation di capture phase → jalan sebelum handler lain
 ================================================================ */
-function bk56fixDoBackup(){
-  console.log('🔧 [bk56fix] Backup dimulai...');
+
+// ============ KONSTANTA ============
+const BK56BPV2_EMB_ID = 'bk56-embedded-data';
+const BK56BPV2_CFG_KEY = 'bk56_backend_url';
+const BK56BPV2_MATERI_KEY = 'bk56_materi_links';
+const BK56BPV2_VIDEO_KEY = 'bk56_video_links';
+const BK56BPV2_DOC_KEY = 'bk56_doc_links';
+const BK56BPV2_LAST_BACKUP_KEY = 'bk56_last_backup_time';
+
+// ============ HELPER FUNCTIONS ============
+function bk56bpv2Toast(msg, type){
+  const toast = document.getElementById('bk56bpv2-toast');
+  if(!toast) {
+    if(typeof showToast === 'function') showToast(msg, type);
+    return;
+  }
+  toast.textContent = msg;
+  toast.className = 'bk56bpv2-toast ' + (type || '');
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+function bk56bpv2SafeLoad(key){
+  try {
+    const raw = localStorage.getItem(key);
+    if(raw) return JSON.parse(raw);
+  } catch(e) {}
+  return {};
+}
+
+function bk56bpv2SafeSave(key, data){
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+    return true;
+  } catch(e) {
+    console.error('❌ [bk56bpv2] Gagal save', key, e);
+    return false;
+  }
+}
+
+// ============ 1. KUMPULKAN SEMUA DATA ============
+function bk56bpv2CollectAllData(){
+  const allData = {
+    materi: bk56bpv2SafeLoad(BK56BPV2_MATERI_KEY),
+    video: bk56bpv2SafeLoad(BK56BPV2_VIDEO_KEY),
+    docLinks: bk56bpv2SafeLoad(BK56BPV2_DOC_KEY),
+    backendUrl: localStorage.getItem(BK56BPV2_CFG_KEY) || '',
+    version: '1.0',
+    lastUpdated: new Date().toISOString(),
+    note: 'Data link Administrasi BK56 - tersimpan permanen di HTML'
+  };
+  
+  // Hitung statistik
+  let totalLinks = 0;
+  for(const key in allData.materi){
+    const d = allData.materi[key];
+    totalLinks += (d.ppt||[]).length + (d.pdf||[]).length + (d.doc||[]).length + (d.video||[]).length;
+  }
+  for(const key in allData.video){
+    totalLinks += (allData.video[key]||[]).length;
+  }
+  for(const key in allData.docLinks){
+    totalLinks += (allData.docLinks[key]||[]).length;
+  }
+  allData.totalLinks = totalLinks;
+  
+  console.log('✅ [bk56bpv2] Data dikumpulkan:', totalLinks, 'total link');
+  return allData;
+}
+
+// ============ 2. UPDATE EMBEDDED JSON ============
+function bk56bpv2UpdateEmbedded(allData){
+  const emb = document.getElementById(BK56BPV2_EMB_ID);
+  if(!emb){
+    console.warn('⚠️ [bk56bpv2] Embedded data tidak ditemukan');
+    return false;
+  }
+  try {
+    emb.textContent = JSON.stringify(allData);
+    console.log('✅ [bk56bpv2] Embedded data diupdate');
+    return true;
+  } catch(e) {
+    console.error('❌ [bk56bpv2] Gagal update embedded:', e);
+    return false;
+  }
+}
+
+// ============ 3. RESET SEMUA MODAL STATE ============
+function bk56bpv2ResetModalState(){
+  // Tutup semua modal yang mungkin terbuka
+  const allModals = document.querySelectorAll(
+    '.bk56-backup-modal, .bk56-config-modal, .adm56-login-modal, .adm56-admin-modal, ' +
+    '.materi-modal, .materi-picker-modal, .video-modal, .link-modal, .link-picker-modal, ' +
+    '.pw-modal, .master-modal, .editor-modal, .share-pw-modal, .vid-cfg-modal, ' +
+    '.bk56perm-modal, .bk56asact-toast, .bk56final-autosync-status'
+  );
+  allModals.forEach(m => m.classList.remove('show'));
+  
+  // Reset panel rekap
+  const rekapPanel = document.getElementById('a56-panel-rekap');
+  if(rekapPanel) rekapPanel.style.display = 'none';
+  
+  // Reset container utama
+  const container = document.querySelector('.a56-container');
+  if(container) container.style.display = '';
+  
+  // Reset tab aktif ke Kelas VII
+  const tabBtns = document.querySelectorAll('.a56-tab-btn');
+  tabBtns.forEach((b, i) => {
+    if(i === 0) b.classList.add('active');
+    else b.classList.remove('active');
+  });
+  
+  console.log('✅ [bk56bpv2] Modal state direset');
+}
+
+// ============ 4. FUNGSI BACKUP UTAMA ============
+function bk56bpv2DoBackup(){
+  console.log('🔧 [bk56bpv2] Backup dimulai...');
   
   try {
-    // 1. TUTUP SEMUA MODAL (agar HTML backup bersih)
-    const allModals = document.querySelectorAll(
-      '.bk56-backup-modal, .bk56-config-modal, .adm56-login-modal, .adm56-admin-modal, ' +
-      '.materi-modal, .materi-picker-modal, .video-modal, .link-modal, .link-picker-modal, ' +
-      '.pw-modal, .master-modal, .editor-modal, .share-pw-modal, .vid-cfg-modal'
-    );
-    allModals.forEach(m => m.classList.remove('show'));
+    // 1. Reset modal state
+    bk56bpv2ResetModalState();
     
-    // 2. Reset panel rekap
-    const rekapPanel = document.getElementById('a56-panel-rekap');
-    if(rekapPanel) rekapPanel.style.display = 'none';
+    // 2. Kumpulkan semua data
+    const allData = bk56bpv2CollectAllData();
     
-    // 3. Reset container utama
-    const container = document.querySelector('.a56-container');
-    if(container) container.style.display = '';
-    
-    // 4. Reset tab aktif ke Kelas VII
-    const tabBtns = document.querySelectorAll('.a56-tab-btn');
-    tabBtns.forEach((b, i) => {
-      if(i === 0) b.classList.add('active');
-      else b.classList.remove('active');
-    });
-    
-    // 5. KUMPULKAN SEMUA DATA
-    const allData = {
-      materi: bk56fixSafeLoad(BK56FIX_MATERI_KEY),
-      video: bk56fixSafeLoad(BK56FIX_VIDEO_KEY),
-      docLinks: bk56fixSafeLoad(BK56FIX_DOC_KEY),
-      backendUrl: localStorage.getItem(BK56FIX_CFG_KEY) || '',
-      version: '1.0',
-      lastUpdated: new Date().toISOString(),
-      note: 'Data link Administrasi BK56 - tersimpan permanen di HTML'
-    };
-    
-    // Hitung statistik
-    let totalLinks = 0;
-    for(const key in allData.materi){
-      const d = allData.materi[key];
-      totalLinks += (d.ppt||[]).length + (d.pdf||[]).length + (d.doc||[]).length + (d.video||[]).length;
-    }
-    for(const key in allData.video){
-      totalLinks += (allData.video[key]||[]).length;
-    }
-    for(const key in allData.docLinks){
-      totalLinks += (allData.docLinks[key]||[]).length;
-    }
-    allData.totalLinks = totalLinks;
-    
-    console.log('✅ [bk56fix] Data dikumpulkan:', totalLinks, 'total link');
-    console.log('📌 Backend URL:', allData.backendUrl ? 'YA' : 'TIDAK');
-    
-    // 6. UPDATE EMBEDDED JSON
-    const emb = document.getElementById(BK56FIX_EMB_ID);
-    if(emb){
-      emb.textContent = JSON.stringify(allData);
-      console.log('✅ [bk56fix] Embedded data diupdate');
+    // 3. Update embedded JSON di DOM saat ini
+    if(!bk56bpv2UpdateEmbedded(allData)){
+      bk56bpv2Toast('❌ Gagal update embedded data', 'error');
+      return;
     }
     
-    // 7. TUNGGU DOM UPDATE, LALU DOWNLOAD
+    // 4. Tunggu sebentar agar DOM update
     setTimeout(() => {
       try {
+        // 5. Baca HTML saat ini (sudah termasuk embedded data yang baru)
         const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
         
+        // 6. Download file
         const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -14137,12 +14656,13 @@ function bk56fixDoBackup(){
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
         
-        // Simpan waktu backup
-        localStorage.setItem('bk56_last_backup_time', new Date().toISOString());
+        // 7. Simpan waktu backup terakhir
+        localStorage.setItem(BK56BPV2_LAST_BACKUP_KEY, new Date().toISOString());
         
-        bk56fixToast('💾 File HTML berhasil di-download!', 'success');
+        // 8. Notifikasi sukses
+        bk56bpv2Toast('💾 File HTML berhasil di-download!', 'success');
         
-        // Tampilkan instruksi
+        // 9. Tampilkan instruksi
         setTimeout(() => {
           alert(
             '✅ BACKUP BERHASIL!\n\n' +
@@ -14152,7 +14672,7 @@ function bk56fixDoBackup(){
             '2. Upload file HTML baru → replace index.html\n' +
             '3. Commit perubahan\n\n' +
             '✨ Data yang ter-backup:\n' +
-            '• URL Backend: ' + (allData.backendUrl ? 'YA ✅' : 'BELUM ❌') + '\n' +
+            '• URL Backend: ' + (allData.backendUrl ? 'YA' : 'BELUM') + '\n' +
             '• Link Materi: ' + Object.keys(allData.materi).length + ' item\n' +
             '• Link Video: ' + Object.keys(allData.video).length + ' item\n' +
             '• Link Dokumen: ' + Object.keys(allData.docLinks).length + ' item\n' +
@@ -14162,133 +14682,160 @@ function bk56fixDoBackup(){
           );
         }, 800);
         
-        console.log('✅ [bk56fix] Backup selesai');
+        console.log('✅ [bk56bpv2] Backup selesai');
         
       } catch(e) {
-        console.error('❌ [bk56fix] Backup error:', e);
-        bk56fixToast('❌ Gagal backup: ' + e.message, 'error');
+        console.error('❌ [bk56bpv2] Backup error:', e);
+        bk56bpv2Toast('❌ Gagal backup: ' + e.message, 'error');
       }
     }, 400);
     
   } catch(e) {
-    console.error('❌ [bk56fix] Error:', e);
-    bk56fixToast('❌ Gagal backup: ' + e.message, 'error');
+    console.error('❌ [bk56bpv2] Error:', e);
+    bk56bpv2Toast('❌ Gagal backup: ' + e.message, 'error');
   }
 }
 
-/* ================================================================
-* OBSERVER: Re-attach jika header di-recreate
-================================================================ */
-function bk56fixSetupObserver(){
-  const header = document.getElementById('a56-header-actions-final');
-  if(header){
-    const observer = new MutationObserver(() => {
-      setTimeout(() => {
-        bk56fixInjectSyncButton();
-        bk56fixAttachBackupButton();
-      }, 300);
-    });
-    observer.observe(header, { childList: true, subtree: true });
+// ============ 5. CARI TOMBOL BACKUP PERMANEN ============
+function bk56bpv2FindButton(){
+  // Cari di seluruh dokumen (karena tombol bisa di-recreate)
+  const allButtons = document.querySelectorAll('.a56-header-btn-final, button');
+  for(let i = 0; i < allButtons.length; i++){
+    const btn = allButtons[i];
+    const text = (btn.textContent || '').trim();
+    // Cek apakah tombol ini mengandung "Backup Permanen"
+    if(/backup\s*permanen/i.test(text)){
+      return btn;
+    }
+  }
+  return null;
+}
+
+// ============ 6. ATTACH EVENT LISTENER ============
+function bk56bpv2AttachHandler(){
+  const backupBtn = bk56bpv2FindButton();
+  
+  if(!backupBtn){
+    console.log('ℹ️ [bk56bpv2] Tombol Backup Permanen belum ditemukan');
+    return false;
   }
   
+  // Cek apakah sudah di-attach (jangan dobel)
+  if(backupBtn.dataset.bk56bpv2Attached === 'true'){
+    console.log('ℹ️ [bk56bpv2] Event listener sudah terpasang');
+    return true;
+  }
+  
+  // Attach click event listener di CAPTURE PHASE
+  // Ini akan jalan SEBELUM handler onclick inline yang sudah ada
+  backupBtn.addEventListener('click', function(e){
+    // Cegah handler lain jalan (termasuk onclick inline)
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    
+    // Visual feedback
+    backupBtn.classList.add('bk56bpv2-processing');
+    setTimeout(() => backupBtn.classList.remove('bk56bpv2-processing'), 2500);
+    
+    // Jalankan backup
+    bk56bpv2DoBackup();
+    
+    return false;
+  }, true); // ← capture phase = true (KUNCI agar tidak konflik)
+  
+  // Tandai sudah di-attach
+  backupBtn.dataset.bk56bpv2Attached = 'true';
+  backupBtn.classList.add('bk56bpv2-active');
+  
+  console.log('✅ [bk56bpv2] Event listener terpasang pada tombol Backup Permanen');
+  return true;
+}
+
+// ============ 7. OBSERVER: Re-attach jika tombol di-recreate ============
+function bk56bpv2SetupObserver(){
+  // Observer untuk header actions (tempat tombol backup berada)
+  const headerActions = document.getElementById('a56-header-actions-final');
+  if(headerActions){
+    const observer = new MutationObserver(() => {
+      setTimeout(bk56bpv2AttachHandler, 300);
+    });
+    observer.observe(headerActions, { childList: true, subtree: true });
+  }
+  
+  // Observer untuk adminbk56 page
   const adminPage = document.getElementById('adminbk56');
   if(adminPage){
     const observer = new MutationObserver(() => {
       if(adminPage.classList.contains('active')){
-        setTimeout(() => {
-          bk56fixInjectSyncButton();
-          bk56fixAttachBackupButton();
-        }, 500);
+        setTimeout(bk56bpv2AttachHandler, 500);
       }
     });
     observer.observe(adminPage, { attributes: true, attributeFilter: ['class'] });
   }
+  
+  // Observer untuk body (fallback jika tombol di tempat lain)
+  const bodyObserver = new MutationObserver(() => {
+    setTimeout(bk56bpv2AttachHandler, 300);
+  });
+  bodyObserver.observe(document.body, { childList: true, subtree: true });
 }
 
-/* ================================================================
-* EXPOSE UNTUK DEBUGGING
-================================================================ */
-window.bk56fixDoBackup = bk56fixDoBackup;
-window.bk56fixDoSyncFromSheet = bk56fixDoSyncFromSheet;
+// ============ 8. EXPOSE FUNGSI UNTUK DEBUGGING ============
+window.bk56bpv2DoBackup = bk56bpv2DoBackup;
+window.bk56bpv2CollectAllData = bk56bpv2CollectAllData;
 
-window.__bk56fixDebug = function(){
-  console.log('=== BK56 Final Fix Debug ===');
-  console.log('URL di localStorage:', localStorage.getItem(BK56FIX_CFG_KEY));
-  console.log('URL di embedded:', (() => {
-    try {
-      const emb = document.getElementById(BK56FIX_EMB_ID);
-      if(emb){
-        const data = JSON.parse(emb.textContent);
-        return data.backendUrl;
-      }
-    } catch(e) {}
-    return null;
-  })());
-  console.log('Tombol Sync ada:', !!document.getElementById('bk56fix-sync-btn'));
-  console.log('Tombol Backup attached:', !!document.querySelector('.a56-header-btn-final.bk56fix-backup-active'));
-  console.log('Materi:', Object.keys(bk56fixSafeLoad(BK56FIX_MATERI_KEY)).length, 'item');
-  console.log('Video:', Object.keys(bk56fixSafeLoad(BK56FIX_VIDEO_KEY)).length, 'item');
-  console.log('DocLinks:', Object.keys(bk56fixSafeLoad(BK56FIX_DOC_KEY)).length, 'item');
-  console.log('===========================');
+window.__bk56bpv2Debug = function(){
+  console.log('=== BK56 Backup Permanen v2 Debug ===');
+  console.log('Tombol Backup ditemukan:', !!bk56bpv2FindButton());
+  console.log('Embedded data ada:', !!document.getElementById(BK56BPV2_EMB_ID));
+  console.log('URL Backend:', localStorage.getItem(BK56BPV2_CFG_KEY) || '(belum ada)');
+  console.log('Materi:', Object.keys(bk56bpv2SafeLoad(BK56BPV2_MATERI_KEY)).length, 'item');
+  console.log('Video:', Object.keys(bk56bpv2SafeLoad(BK56BPV2_VIDEO_KEY)).length, 'item');
+  console.log('DocLinks:', Object.keys(bk56bpv2SafeLoad(BK56BPV2_DOC_KEY)).length, 'item');
+  console.log('Last backup:', localStorage.getItem(BK56BPV2_LAST_BACKUP_KEY) || 'Belum pernah');
+  console.log('Fungsi bk56bpv2DoBackup:', typeof window.bk56bpv2DoBackup);
+  console.log('======================================');
 };
 
-/* ================================================================
-* INIT
-================================================================ */
-function bk56fixInit(){
-  console.log('🚀 [bk56fix] Patch Final Fix dimulai...');
+// ============ 9. INIT ============
+function bk56bpv2Init(){
+  console.log('🚀 [bk56bpv2] Patch Aktivasi Backup Permanen dimulai...');
   
-  // 1. Restore URL dari 3 sumber (permanen lintas device)
-  const url = bk56fixRestoreUrl();
-  if(url){
-    console.log('✅ [bk56fix] Backend URL aktif:', url.substring(0,50)+'...');
-    // Update input config jika ada
-    setTimeout(() => {
-      const input = document.getElementById('bk56-cfg-url');
-      if(input && !input.value) input.value = url;
-    }, 500);
+  // 1. Coba attach langsung
+  if(bk56bpv2AttachHandler()){
+    console.log('✅ [bk56bpv2] Tombol Backup Permanen sudah aktif');
   } else {
-    console.warn('⚠️ [bk56fix] Backend URL belum ada');
+    console.log('ℹ️ [bk56bpv2] Menunggu tombol Backup Permanen muncul...');
   }
   
-  // 2. Inject tombol Sync dari Sheet
-  setTimeout(bk56fixInjectSyncButton, 1500);
+  // 2. Setup observer untuk re-attach
+  bk56bpv2SetupObserver();
   
-  // 3. Attach handler ke tombol Backup Permanen
-  setTimeout(bk56fixAttachBackupButton, 1500);
-  
-  // 4. Setup observer
-  bk56fixSetupObserver();
-  
-  // 5. Retry jika tombol belum muncul
+  // 3. Retry setiap 2 detik selama 10 detik pertama (untuk kasus tombol muncul lambat)
   let retryCount = 0;
   const retryInterval = setInterval(() => {
     retryCount++;
-    const syncOk = !!document.getElementById('bk56fix-sync-btn');
-    const backupOk = !!document.querySelector('.a56-header-btn-final.bk56fix-backup-active');
-    if((syncOk && backupOk) || retryCount >= 5){
+    if(bk56bpv2AttachHandler() || retryCount >= 5){
       clearInterval(retryInterval);
-      if(!syncOk) bk56fixInjectSyncButton();
-      if(!backupOk) bk56fixAttachBackupButton();
     }
   }, 2000);
   
-  console.log('✅ [bk56fix] Patch terpasang');
-  console.log('📌 Tombol Sync dari Sheet: AKTIF');
-  console.log('📌 Tombol Backup Permanen: AKTIF');
-  console.log('📌 Konfigurasi Backend: PERMANEN lintas device');
-  console.log('📌 Ketik __bk56fixDebug() untuk debug');
+  console.log('✅ [bk56bpv2] Patch terpasang');
+  console.log('📌 Tombol Backup Permanen sekarang aktif');
+  console.log('📌 Ketik __bk56bpv2Debug() di Console untuk debug');
+  console.log('📌 Ketik bk56bpv2DoBackup() untuk test backup manual');
 }
 
+// Jalankan init
 if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', bk56fixInit);
+  document.addEventListener('DOMContentLoaded', bk56bpv2Init);
 } else {
-  bk56fixInit();
+  bk56bpv2Init();
 }
 
 })();
 </script>
 <!-- ================================================================ -->
-<!-- ========== PATCH FINAL FIX [END] ========== -->
+<!-- ========== PATCH: AKTIVASI BACKUP PERMANEN HTML [END] ========== -->
 <!-- ================================================================ -->
 </body></html>
