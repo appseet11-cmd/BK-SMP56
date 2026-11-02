@@ -13432,4 +13432,535 @@ console.log('ℹ️ Ketik __cekTombolTambah() di Console untuk diagnosa');
 })();
 </script>
 <!-- ================= PATCH KHUSUS TOMBOL TAMBAH LINK VIDEO [END] ================= -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: BACKEND PERMANEN (SATU KALI, LINTAS DEVICE) ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== Banner Status Backend Permanen ===== */
+.bk56-perm-banner{
+  background:linear-gradient(135deg,#065f46,#047857);
+  color:#fff;padding:14px 18px;border-radius:12px;
+  margin:12px 24px;display:flex;align-items:center;gap:14px;
+  font-size:.85rem;box-shadow:0 4px 16px rgba(4,120,87,.25);
+  position:relative;overflow:hidden;
+}
+.bk56-perm-banner::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 50%,rgba(167,243,208,.15),transparent 50%);
+  pointer-events:none;
+}
+.bk56-perm-banner.warn{
+  background:linear-gradient(135deg,#92400e,#b45309);
+  box-shadow:0 4px 16px rgba(180,83,9,.25);
+}
+.bk56-perm-banner .perm-icon{font-size:1.8rem;flex-shrink:0;position:relative;z-index:2}
+.bk56-perm-banner .perm-text{flex:1;line-height:1.5;position:relative;z-index:2}
+.bk56-perm-banner .perm-text strong{display:block;margin-bottom:2px;font-size:.92rem}
+.bk56-perm-banner .perm-text small{opacity:.85;font-size:.75rem}
+.bk56-perm-banner .perm-actions{display:flex;gap:8px;position:relative;z-index:2;flex-wrap:wrap}
+.bk56-perm-banner .perm-btn{
+  background:rgba(255,255,255,.18);backdrop-filter:blur(10px);
+  color:#fff;border:1px solid rgba(255,255,255,.3);
+  padding:8px 16px;border-radius:100px;font-size:.78rem;
+  font-weight:700;cursor:pointer;transition:all .2s ease;
+  font-family:inherit;display:inline-flex;align-items:center;gap:6px;
+  white-space:nowrap;
+}
+.bk56-perm-banner .perm-btn:hover{background:rgba(255,255,255,.3);transform:translateY(-1px)}
+.bk56-perm-banner .perm-btn.primary{background:#fff;color:#065f46;border-color:#fff}
+.bk56-perm-banner .perm-btn.primary:hover{background:#ecfdf5}
+
+/* ===== Modal Konfirmasi Permanen ===== */
+.bk56-perm-modal{
+  position:fixed;inset:0;background:rgba(11,30,84,.92);
+  backdrop-filter:blur(14px);display:none;align-items:center;
+  justify-content:center;z-index:100015;padding:20px;overflow-y:auto;
+}
+.bk56-perm-modal.show{display:flex}
+.bk56-perm-box{
+  background:#fff;border-radius:22px;max-width:560px;width:100%;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:0 30px 70px rgba(0,0,0,.5);
+  animation:bk56Pop .4s cubic-bezier(.22,1,.36,1);
+}
+.bk56-perm-header{
+  background:linear-gradient(135deg,#059669,#047857 50%,#064e3b);
+  color:#fff;padding:26px 24px;text-align:center;
+  border-radius:22px 22px 0 0;position:relative;overflow:hidden;
+}
+.bk56-perm-header::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 30% 30%,rgba(167,243,208,.2),transparent 50%);
+}
+.bk56-perm-header .perm-big-icon{font-size:3.5rem;margin-bottom:8px;position:relative;z-index:2}
+.bk56-perm-header h3{font-family:'Space Grotesk',sans-serif;font-size:1.3rem;margin-bottom:4px;position:relative;z-index:2}
+.bk56-perm-header p{font-size:.85rem;opacity:.9;position:relative;z-index:2}
+.bk56-perm-body{padding:24px}
+.bk56-perm-steps{counter-reset:step;display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.bk56-perm-step{
+  counter-increment:step;display:flex;gap:12px;align-items:flex-start;
+  padding:12px 14px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);
+  border:1px solid #a7f3d0;border-radius:10px;
+}
+.bk56-perm-step::before{
+  content:counter(step);flex-shrink:0;
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,#059669,#047857);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.85rem;
+}
+.bk56-perm-step .step-text{flex:1;font-size:.85rem;color:#065f46;line-height:1.5}
+.bk56-perm-step .step-text strong{color:#047857}
+.bk56-perm-step .step-text code{
+  background:rgba(5,150,105,.15);padding:2px 6px;border-radius:4px;
+  font-family:Consolas,Monaco,monospace;font-size:.78rem;color:#065f46;
+}
+.bk56-perm-warning{
+  background:linear-gradient(135deg,#fef3c7,#fde68a);
+  border:1px solid #f59e0b;border-left:4px solid #f59e0b;
+  padding:12px 14px;border-radius:8px;font-size:.82rem;
+  color:#78350f;line-height:1.5;margin-bottom:14px;
+}
+.bk56-perm-warning strong{color:#92400e}
+.bk56-perm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.bk56-perm-btn{
+  padding:13px;border:none;border-radius:12px;
+  font-size:.9rem;font-weight:700;cursor:pointer;
+  transition:all .25s ease;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.bk56-perm-btn.primary{
+  background:linear-gradient(135deg,#059669,#047857);color:#fff;
+  box-shadow:0 4px 14px rgba(16,185,129,.3);
+}
+.bk56-perm-btn.primary:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(16,185,129,.4)}
+.bk56-perm-btn.ghost{background:#f1f5f9;color:#065f46;border:1px solid #cbd5e1}
+.bk56-perm-btn.ghost:hover{background:#e2e8f0}
+.bk56-perm-status{
+  padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;
+  text-align:center;margin-top:12px;display:none;
+}
+.bk56-perm-status.success{display:block;background:#ecfdf5;color:#059669;border:1px solid #a7f3d0}
+.bk56-perm-status.error{display:block;background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+
+/* ===== Badge "Permanen" di tombol konfigurasi ===== */
+.a56-header-btn-final.has-perm{
+  background:linear-gradient(135deg,#059669,#047857);
+  position:relative;
+}
+.a56-header-btn-final.has-perm::after{
+  content:'✓';position:absolute;top:-4px;right:-4px;
+  background:#10b981;color:#fff;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:700;
+  border:2px solid #fff;box-shadow:0 2px 6px rgba(16,185,129,.4);
+}
+
+@media (max-width:768px){
+  .bk56-perm-banner{flex-direction:column;align-items:flex-start;margin:12px 14px}
+  .bk56-perm-btns{grid-template-columns:1fr}
+}
+</style>
+
+<!-- ===== Banner Status Backend (akan di-inject oleh JS) ===== -->
+<div id="bk56-perm-banner-slot" style="display:none;"></div>
+
+<!-- ===== Modal Konfirmasi "Jadikan Permanen" ===== -->
+<div class="bk56-perm-modal" id="bk56-perm-modal" role="dialog" aria-modal="true">
+  <div class="bk56-perm-box">
+    <div class="bk56-perm-header">
+      <div class="perm-big-icon">💾</div>
+      <h3>Jadikan Backend Permanen?</h3>
+      <p>Konfigurasi 1x, aktif di semua device</p>
+    </div>
+    <div class="bk56-perm-body">
+      <div class="bk56-perm-steps">
+        <div class="bk56-perm-step">
+          <div class="step-text">
+            <strong>URL Backend akan di-embed ke HTML</strong><br>
+            URL Apps Script akan ditanam langsung di file <code>index.html</code>
+          </div>
+        </div>
+        <div class="bk56-perm-step">
+          <div class="step-text">
+            <strong>File HTML baru akan ter-download</strong><br>
+            Nama file: <code>index-backup-[timestamp].html</code>
+          </div>
+        </div>
+        <div class="bk56-perm-step">
+          <div class="step-text">
+            <strong>Replace file di GitHub & Commit</strong><br>
+            Upload file baru → replace <code>index.html</code> → commit perubahan
+          </div>
+        </div>
+        <div class="bk56-perm-step">
+          <div class="step-text">
+            <strong>✅ Selesai! Backend aktif selamanya</strong><br>
+            Device manapun yang buka HTML ini otomatis terhubung ke backend
+          </div>
+        </div>
+      </div>
+
+      <div class="bk56-perm-warning">
+        <strong>⚠️ Penting:</strong> Setelah commit, URL backend akan <strong>tertanam permanen</strong> di HTML. 
+        Anda tidak perlu konfigurasi ulang kecuali ingin <strong>mengganti URL backend</strong> ke yang baru.
+      </div>
+
+      <div class="bk56-perm-btns">
+        <button class="bk56-perm-btn ghost" onclick="bk56PermClose()">Nanti Saja</button>
+        <button class="bk56-perm-btn primary" onclick="bk56PermConfirm()">💾 Ya, Jadikan Permanen</button>
+      </div>
+      <div class="bk56-perm-status" id="bk56-perm-status"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: BACKEND PERMANEN (SATU KALI, LINTAS DEVICE)
+* ================================================================
+* TUJUAN:
+* ✅ Konfigurasi backend cukup 1x saja
+* ✅ URL backend tertanam permanen di HTML (embedded JSON)
+* ✅ Frontend-backend tetap terhubung walau buka di device berbeda
+* ✅ Tidak konflik dengan fungsi existing
+*
+* CARA KERJA:
+* 1. Saat user klik "Simpan Konfigurasi" → tawarkan "Jadikan Permanen"
+* 2. Jika YA → embed URL ke <script id="bk56-embedded-data">
+* 3. Trigger download HTML baru (via bk56BackupToHTML yang sudah ada)
+* 4. User replace file di GitHub → commit
+* 5. Saat load: auto-restore URL dari embedded → localStorage
+*
+* NAMESPACE: Semua fungsi & variabel pakai prefix "bk56Perm_" 
+*            agar tidak konflik dengan patch lain
+================================================================ */
+
+const BK56_PERM_EMB_ID = 'bk56-embedded-data';
+const BK56_PERM_CFG_KEY = 'bk56_backend_url';
+const BK56_PERM_FLAG_KEY = 'bk56_backend_is_permanent';
+
+/* ================================================================
+* 1. CEK STATUS: Apakah backend sudah permanen?
+================================================================ */
+function bk56PermIsPermanent(){
+  try {
+    const emb = document.getElementById(BK56_PERM_EMB_ID);
+    if (!emb) return false;
+    const data = JSON.parse(emb.textContent);
+    return !!(data && data.backendUrl && data.backendUrl.trim() !== '');
+  } catch(e) { return false; }
+}
+
+function bk56PermGetCurrentUrl(){
+  return localStorage.getItem(BK56_PERM_CFG_KEY) || '';
+}
+
+/* ================================================================
+* 2. RENDER BANNER STATUS DI HALAMAN ADMINISTRASI BK56
+================================================================ */
+function bk56PermRenderBanner(){
+  const slot = document.getElementById('bk56-perm-banner-slot');
+  if (!slot) return;
+  
+  // Hanya tampilkan banner jika halaman adminbk56 aktif
+  const adminPage = document.getElementById('adminbk56');
+  if (!adminPage || !adminPage.classList.contains('active')) {
+    slot.style.display = 'none';
+    return;
+  }
+  
+  const isPerm = bk56PermIsPermanent();
+  const currentUrl = bk56PermGetCurrentUrl();
+  const hasUrl = currentUrl.trim() !== '';
+  
+  if (isPerm && hasUrl) {
+    // ✅ Backend PERMANEN aktif
+    slot.innerHTML = 
+      '<div class="bk56-perm-banner">' +
+        '<div class="perm-icon">✅</div>' +
+        '<div class="perm-text">' +
+          '<strong>Backend Permanen Aktif</strong>' +
+          '<small>URL Apps Script sudah tertanam di HTML. Koneksi frontend-backend tetap aktif di device manapun. Konfigurasi cukup 1x saja.</small>' +
+        '</div>' +
+        '<div class="perm-actions">' +
+          '<button class="perm-btn" onclick="bk56PermShowDetails()">🔍 Lihat URL</button>' +
+          '<button class="perm-btn" onclick="bk56PermReBackup()">🔄 Update Backup</button>' +
+        '</div>' +
+      '</div>';
+    slot.style.display = 'block';
+    
+    // Tandai tombol konfigurasi dengan badge ✓
+    const cfgBtn = document.querySelector('.a56-header-btn-final:not(.logout)');
+    if (cfgBtn && !cfgBtn.classList.contains('has-perm')) {
+      cfgBtn.classList.add('has-perm');
+    }
+    
+  } else if (hasUrl && !isPerm) {
+    // ⚠️ Backend aktif tapi BELUM permanen
+    slot.innerHTML = 
+      '<div class="bk56-perm-banner warn">' +
+        '<div class="perm-icon">⚠️</div>' +
+        '<div class="perm-text">' +
+          '<strong>Backend Aktif, Tapi Belum Permanen</strong>' +
+          '<small>URL saat ini hanya tersimpan di browser ini. Jika buka di device lain, backend tidak akan terhubung. Klik "Jadikan Permanen" untuk mengatasinya.</small>' +
+        '</div>' +
+        '<div class="perm-actions">' +
+          '<button class="perm-btn primary" onclick="bk56PermOpenModal()">💾 Jadikan Permanen</button>' +
+        '</div>' +
+      '</div>';
+    slot.style.display = 'block';
+    
+  } else {
+    slot.style.display = 'none';
+  }
+}
+
+/* ================================================================
+* 3. FUNGSI GLOBAL (dipanggil dari HTML)
+================================================================ */
+window.bk56PermShowDetails = function(){
+  const url = bk56PermGetCurrentUrl();
+  alert('🔗 URL Backend Permanen:\n\n' + url + '\n\nURL ini tertanam di file HTML. Device manapun yang membuka file HTML ini akan otomatis terhubung ke backend.');
+};
+
+window.bk56PermReBackup = function(){
+  if (!confirm('🔄 Download file HTML backup terbaru?\n\nFile ini berisi URL backend yang sudah tertanam. Gunakan untuk replace file index.html di GitHub.')) return;
+  if (typeof window.bk56BackupToHTML === 'function') {
+    window.bk56BackupToHTML();
+  } else {
+    alert('❌ Fungsi backup tidak tersedia');
+  }
+};
+
+window.bk56PermOpenModal = function(){
+  const st = document.getElementById('bk56-perm-status');
+  if (st) { st.className = 'bk56-perm-status'; st.textContent = ''; }
+  const modal = document.getElementById('bk56-perm-modal');
+  if (modal) modal.classList.add('show');
+};
+
+window.bk56PermClose = function(){
+  const modal = document.getElementById('bk56-perm-modal');
+  if (modal) modal.classList.remove('show');
+};
+
+window.bk56PermConfirm = function(){
+  const st = document.getElementById('bk56-perm-status');
+  const currentUrl = bk56PermGetCurrentUrl();
+  
+  if (!currentUrl) {
+    if (st) {
+      st.className = 'bk56-perm-status error';
+      st.textContent = '❌ URL backend belum dikonfigurasi!';
+    }
+    return;
+  }
+  
+  // 1. Simpan URL ke embedded JSON
+  try {
+    const emb = document.getElementById(BK56_PERM_EMB_ID);
+    if (emb) {
+      const data = JSON.parse(emb.textContent);
+      data.backendUrl = currentUrl;
+      data.lastUpdated = new Date().toISOString();
+      data.isPermanent = true;
+      emb.textContent = JSON.stringify(data);
+      console.log('✅ [Perm] URL di-embed ke HTML:', currentUrl);
+    }
+  } catch(e) {
+    console.error('❌ [Perm] Gagal embed:', e);
+    if (st) {
+      st.className = 'bk56-perm-status error';
+      st.textContent = '❌ Gagal embed URL: ' + e.message;
+    }
+    return;
+  }
+  
+  // 2. Tandai sebagai permanent di localStorage
+  try { localStorage.setItem(BK56_PERM_FLAG_KEY, 'true'); } catch(e){}
+  
+  // 3. Tutup modal
+  window.bk56PermClose();
+  
+  // 4. Notifikasi sukses
+  if (st) {
+    st.className = 'bk56-perm-status success';
+    st.textContent = '✅ URL berhasil di-embed! Memulai download file HTML...';
+  }
+  
+  if (typeof showToast === 'function') {
+    showToast('💾 URL di-embed ke HTML. Download file backup...', 'success');
+  }
+  
+  // 5. Trigger download HTML backup (pakai fungsi existing)
+  setTimeout(function(){
+    if (typeof window.bk56BackupToHTML === 'function') {
+      try {
+        window.bk56BackupToHTML();
+        console.log('✅ [Perm] Backup HTML berhasil di-download');
+        
+        // 6. Tampilkan instruksi final setelah download
+        setTimeout(function(){
+          alert(
+            '✅ BERHASIL!\n\n' +
+            '📥 File HTML baru sudah ter-download.\n\n' +
+            '📌 LANGKAH SELANJUTNYA:\n' +
+            '1. Buka repository GitHub Anda\n' +
+            '2. Upload file HTML baru → replace index.html\n' +
+            '3. Commit perubahan\n\n' +
+            '✨ Setelah commit, backend akan PERMANEN aktif di SEMUA device!\n' +
+            'Anda tidak perlu konfigurasi ulang.'
+          );
+          // Refresh banner
+          bk56PermRenderBanner();
+        }, 1500);
+        
+      } catch(e) {
+        console.error('❌ [Perm] Backup gagal:', e);
+        alert('❌ Gagal download backup: ' + e.message);
+      }
+    } else {
+      alert('❌ Fungsi backup tidak tersedia');
+    }
+  }, 800);
+};
+
+/* ================================================================
+* 4. AUTO-RESTORE URL DARI EMBEDDED (saat load)
+* ================================================================
+* Dipanggil SEBELUM fungsi restore existing, agar URL selalu tersedia
+================================================================ */
+function bk56PermAutoRestore(){
+  const currentUrl = localStorage.getItem(BK56_PERM_CFG_KEY);
+  
+  // Jika localStorage sudah ada URL → skip
+  if (currentUrl && currentUrl.trim() !== '') {
+    console.log('✅ [Perm] URL sudah ada di localStorage');
+    return;
+  }
+  
+  // Jika localStorage kosong → ambil dari embedded
+  try {
+    const emb = document.getElementById(BK56_PERM_EMB_ID);
+    if (!emb) return;
+    const data = JSON.parse(emb.textContent);
+    if (data && data.backendUrl && data.backendUrl.trim() !== '') {
+      localStorage.setItem(BK56_PERM_CFG_KEY, data.backendUrl);
+      console.log('✅ [Perm] URL dipulihkan dari embedded HTML:', data.backendUrl);
+      
+      // Update input di modal config jika ada
+      setTimeout(function(){
+        const input = document.getElementById('bk56-cfg-url');
+        if (input && !input.value) input.value = data.backendUrl;
+      }, 500);
+      
+      // Notifikasi user (hanya 1x)
+      if (typeof showToast === 'function') {
+        showToast('✅ Backend permanen terdeteksi! Koneksi otomatis aktif.', 'success');
+      }
+    }
+  } catch(e) {
+    console.warn('⚠️ [Perm] Gagal restore:', e);
+  }
+}
+
+/* ================================================================
+* 5. OVERRIDE bk56SaveConfig → Tawarkan "Jadikan Permanen"
+================================================================ */
+(function(){
+  const _origSaveCfg = window.bk56SaveConfig;
+  window.bk56SaveConfig = function(){
+    // Panggil fungsi asli dulu
+    if (typeof _origSaveCfg === 'function') {
+      try { _origSaveCfg(); } catch(e) { console.warn('⚠️', e); }
+    }
+    
+    // Setelah save, tawarkan "Jadikan Permanen" (jika belum permanen)
+    setTimeout(function(){
+      const isPerm = bk56PermIsPermanent();
+      const currentUrl = bk56PermGetCurrentUrl();
+      
+      if (!isPerm && currentUrl) {
+        // Tampilkan konfirmasi (non-blocking)
+        setTimeout(function(){
+          if (confirm(
+            '💾 Konfigurasi berhasil disimpan!\n\n' +
+            '⚠️ URL saat ini HANYA tersimpan di browser ini.\n' +
+            'Jika buka di device lain, backend TIDAK terhubung.\n\n' +
+            '💡 Jadikan PERMANEN agar URL tertanam di HTML?\n' +
+            '(File HTML baru akan di-download → upload ke GitHub)'
+          )) {
+            bk56PermOpenModal();
+          }
+        }, 800);
+      }
+      
+      // Refresh banner
+      bk56PermRenderBanner();
+    }, 500);
+  };
+})();
+
+/* ================================================================
+* 6. INISIALISASI
+================================================================ */
+function bk56PermInit(){
+  console.log('🚀 [Perm] Patch Backend Permanen dimulai...');
+  
+  // 1. Auto-restore URL dari embedded (prioritas utama)
+  bk56PermAutoRestore();
+  
+  // 2. Render banner
+  setTimeout(bk56PermRenderBanner, 1500);
+  
+  // 3. Observer untuk re-render banner saat halaman adminbk56 aktif
+  const adminPage = document.getElementById('adminbk56');
+  if (adminPage) {
+    const observer = new MutationObserver(function(){
+      if (adminPage.classList.contains('active')) {
+        setTimeout(bk56PermRenderBanner, 300);
+      }
+    });
+    observer.observe(adminPage, { attributes: true, attributeFilter: ['class'] });
+  }
+  
+  // 4. Re-render banner saat user kembali ke tab
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden) setTimeout(bk56PermRenderBanner, 500);
+  });
+  
+  // 5. ESC untuk tutup modal
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      const m = document.getElementById('bk56-perm-modal');
+      if (m && m.classList.contains('show')) bk56PermClose();
+    }
+  });
+  
+  // 6. Klik di luar untuk tutup modal
+  document.addEventListener('click', function(e){
+    const m = document.getElementById('bk56-perm-modal');
+    if (m && e.target === m) bk56PermClose();
+  }, true);
+  
+  console.log('✅ [Perm] Patch terpasang');
+  console.log('📌 Status permanen:', bk56PermIsPermanent() ? 'YA' : 'BELUM');
+  console.log('📌 URL aktif:', bk56PermGetCurrentUrl() || '(belum ada)');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bk56PermInit);
+} else {
+  bk56PermInit();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: BACKEND PERMANEN [END] ========== -->
+<!-- ================================================================ -->
 </body></html>
