@@ -1539,7 +1539,7 @@ box-shadow: 0 8px 22px rgba(0,0,0,0.3);
 </div>
 <div class="editor-footer">⚠️ Perubahan hanya tersimpan di browser ini (localStorage). Klik "Download" untuk menyimpan file HTML baru.</div>
 </div>
-<div class="toast info" id="toast">🗑️ Link dihapus dari rekap</div>
+<div class="toast success" id="toast">💾 Konfigurasi backend tersimpan (permanen di HTML)</div>
 <header class="header" role="banner">
 <div class="header-inner">
 <div class="logo-container">
@@ -2972,7 +2972,7 @@ Telp. (021) 7803516 | www.smpn56jakarta.sch.id
 <div class="a56-header-content">
 <span class="a56-badge">Administrasi • Dokumen • Terintegrasi</span>
 <h1>Administrasi <em>BK 56</em></h1>
-<p class="a56-subtitle">Dokumen administrasi Bimbingan dan Konseling SMP Negeri 56 Jakarta untuk <strong>4 Guru BK</strong> di Kelas VII, VIII, dan IX. Gunakan filter Kelas → Guru BK → Kategori untuk menemukan dokumen.</p><div class="a56-header-actions-final" id="a56-header-actions-final"><button class="a56-header-btn-final ">⚙️ Konfigurasi Backend</button><button class="a56-header-btn-final">💾 Backup Permanen</button><button id="bk56-hdr-sync" class="a56-header-btn-final" title="Ambil data terbaru dari Google Sheets" style="background: linear-gradient(135deg, rgb(16, 185, 129), rgb(5, 150, 105)); box-shadow: rgba(16, 185, 129, 0.4) 0px 4px 14px;">🔄 Sync dari Sheet</button><button id="bk56-hdr-push" class="a56-header-btn-final" title="Kirim data ke Google Sheets" style="background: linear-gradient(135deg, rgb(59, 130, 246), rgb(29, 78, 216)); box-shadow: rgba(59, 130, 246, 0.4) 0px 4px 14px;">💾 Push ke Sheet</button></div><div class="a56-backend-info-final connected" id="a56-backend-info-final"><span style="font-size:1.2rem;">✅</span><div style="flex:1;text-align:left;line-height:1.4;"><strong style="display:block;font-size:.82rem;margin-bottom:2px;">Backend Terhubung</strong><small>https://script.google.com/macros/s/AKfycbzdfR2fJrFDAcgbgzwQ6IWFs5yqpAO6ziseLq4UCFJ8U8kvHpQq6vnRz9FvDBTyfPhs/exec</small></div></div>
+<p class="a56-subtitle">Dokumen administrasi Bimbingan dan Konseling SMP Negeri 56 Jakarta untuk <strong>4 Guru BK</strong> di Kelas VII, VIII, dan IX. Gunakan filter Kelas → Guru BK → Kategori untuk menemukan dokumen.</p><div class="a56-header-actions-final" id="a56-header-actions-final"><button class="a56-header-btn-final ">⚙️ Konfigurasi Backend</button><button class="a56-header-btn-final">💾 Backup Permanen</button><button id="bk56-update-html-btn" class="a56-header-btn-update" type="button" title="Update file HTML dengan data link terbaru (untuk upload ke GitHub)">📝 Update HTML Asli</button><button id="bk56-hdr-sync" class="a56-header-btn-final" title="Ambil data terbaru dari Google Sheets" style="background: linear-gradient(135deg, rgb(16, 185, 129), rgb(5, 150, 105)); box-shadow: rgba(16, 185, 129, 0.4) 0px 4px 14px;">🔄 Sync dari Sheet</button><button id="bk56-hdr-push" class="a56-header-btn-final" title="Kirim data ke Google Sheets" style="background: linear-gradient(135deg, rgb(59, 130, 246), rgb(29, 78, 216)); box-shadow: rgba(59, 130, 246, 0.4) 0px 4px 14px;">💾 Push ke Sheet</button></div><div class="a56-backend-info-final connected" id="a56-backend-info-final"><span style="font-size:1.2rem;">✅</span><div style="flex:1;text-align:left;line-height:1.4;"><strong style="display:block;font-size:.82rem;margin-bottom:2px;">Backend Terhubung</strong><small>https://script.google.com/macros/s/AKfycbzdfR2fJrFDAcgbgzwQ6IWFs5yqpAO6ziseLq4UCFJ8U8kvHpQq6vnRz9FvDBTyfPhs/exec</small></div></div>
 <div class="a56-stats-bar">
 <div class="a56-stat-item"><span class="a56-stat-number">3</span><span class="a56-stat-label">Kelas</span></div>
 <div class="a56-stat-item"><span class="a56-stat-number">4</span><span class="a56-stat-label">Guru BK</span></div>
@@ -2988,73 +2988,8 @@ Telp. (021) 7803516 | www.smpn56jakarta.sch.id
 <button class="a56-tab-btn" onclick="pindahKelas('ix',this)">📕 Kelas IX</button>
 <button class="a56-tab-btn" id="a56-tab-rekap-btn" onclick="bk56ShowRekap(this)">📋 Rekap Link</button>
 </div>
-</nav><div id="a56-panel-rekap" style="display: none;">
-  <div class="a56-tab-rekap">
-    <h2>📋 Rekap Link Tersemat</h2>
-    <p>Semua link yang disematkan di Administrasi BK56 terekap otomatis di sini. Data tersinkron dengan Google Sheets (backend).</p>
-  </div>
-
-  <div class="a56-connection-status connected" id="bk56-conn-status">
-    <span class="status-dot"></span>
-    <span id="bk56-conn-text">✅ Terhubung • 3 link tersinkron</span>
-  </div>
-
-  <div class="a56-rekap-controls">
-    <button class="a56-rekap-btn primary" onclick="bk56SyncFromSheet()">
-      🔄 Sync dari Sheet
-    </button>
-    <button class="a56-rekap-btn secondary" onclick="bk56SyncToSheet()">
-      💾 Push ke Sheet
-    </button>
-    <button class="a56-rekap-btn warning" onclick="bk56OpenConfig()">
-      ⚙️ Konfigurasi Backend
-    </button>
-    <button class="a56-rekap-btn ghost" onclick="bk56ExportRekapCSV()">
-      📊 Export CSV
-    </button>
-  <button id="bk56-btn-delete-selected" class="a56-rekap-btn" type="button" disabled="" title="Hapus semua link yang telah dicentang">🗑️ Hapus Terpilih <span id="bk56-selected-count">0</span></button></div>
-
-  <div class="a56-rekap-counter" id="bk56-rekap-counter">
-    <div class="a56-rekap-count-item">
-      <div class="count-value" id="cnt-total">2</div>
-      <div class="count-label">Total Link</div>
-    </div>
-    <div class="a56-rekap-count-item">
-      <div class="count-value" id="cnt-materi">0</div>
-      <div class="count-label">Materi</div>
-    </div>
-    <div class="a56-rekap-count-item">
-      <div class="count-value" id="cnt-video">0</div>
-      <div class="count-label">Video</div>
-    </div>
-    <div class="a56-rekap-count-item">
-      <div class="count-value" id="cnt-doc">2</div>
-      <div class="count-label">Dokumen</div>
-    </div>
-  </div>
-
-  <div class="a56-rekap-filter" id="bk56-rekap-filter"><div class="a56-rekap-filter-label">🔍 Filter Tampilan:</div><button class="a56-rekap-chip active" onclick="bk56SetFilter('kelas','all')">📋 Semua Kelas</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kelas','ix')">IX</button><button class="a56-rekap-chip active" onclick="bk56SetFilter('guru','all')" style="margin-left:8px;">👤 Semua Guru</button><button class="a56-rekap-chip " onclick="bk56SetFilter('guru','sotya')">Sotya Palupi</button><button class="a56-rekap-chip active" onclick="bk56SetFilter('kat','all')" style="margin-left:8px;">🗂️ Semua Kategori</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','kasus')">Catatan Kasus</button></div>
-
-  <div class="a56-rekap-table-wrap">
-    <table class="a56-rekap-table">
-      <thead>
-        <tr><th class="bk56-cb-th"><input type="checkbox" id="bk56-select-all-cb" title="Pilih semua / batal pilih semua"></th>
-          <th class="col-no">No</th>
-          <th class="col-time">Waktu</th>
-          <th class="col-kelas">Kelas</th>
-          <th class="col-guru">Guru BK</th>
-          <th class="col-kat">Kategori</th>
-          <th class="col-nama">Nama Dokumen</th>
-          <th class="col-jenis">Jenis</th>
-          <th class="col-url">URL Link</th>
-          <th class="col-aksi">Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="bk56-rekap-tbody"><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793644390494" title="Pilih link ini"></td><td class="col-no">1</td><td class="col-time">03 Nov 2026, 01.33</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Catatan Kasus</td><td class="col-nama">Catatan Kasus Kelas IX-A</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793644390494')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793644783615" title="Pilih link ini"></td><td class="col-no">2</td><td class="col-time">03 Nov 2026, 01.39</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Catatan Kasus</td><td class="col-nama">Catatan Kasus Kelas IX-B</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793644783615')" title="Hapus">🗑️</button></div></td></tr></tbody>
-    </table>
-  </div>
-</div>
-<div class="a56-container" style="">
+</nav>
+<div class="a56-container">
 <div class="a56-info-tip">
 <strong>💡 Cara mengisi link:</strong> buka kode halaman ini, tekan <strong>Ctrl+F</strong>, ketik <strong>nama guru</strong> (contoh: SOTYA PALUPI). Setiap baris dokumen diakhiri tanda <strong>""</strong> — tempelkan link Anda di antara dua tanda kutip itu.
 </div>
@@ -4971,232 +4906,7 @@ document.addEventListener('DOMContentLoaded', function() { initCariNIS(); });
 .share-locked-overlay { z-index: 2 !important; }
 </style>
 <!-- ========== FIX DROPDOWN SHARE - END ========== -->
- <!-- ========== PATCH: FIX DROPDOWN MOBILE POSITION - START ========== -->
-<style>
-@media (max-width: 768px) {
-  /* Dropdown di mobile: full width, tidak terpotong */
-  .dropdown {
-    position: fixed !important;
-    top: auto !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    min-width: 100% !important;
-    max-width: 100vw !important;
-    max-height: 60vh !important;
-    transform: none !important;
-    border-radius: 0 !important;
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.2) !important;
-    z-index: 10000 !important;
-    overflow-y: auto !important;
-  }
-  
-  .dropdown.show {
-    animation: slideUpMobile 0.3s ease forwards !important;
-  }
-  
-  @keyframes slideUpMobile {
-    from { opacity: 0; transform: translateY(20px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  
-  /* Navbar tetap di atas saat dropdown terbuka */
-  .navbar {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 10001 !important;
-  }
-  
-  /* Nav-item tidak perlu position relative lagi */
-  .nav-item {
-    position: static !important;
-  }
-}
-</style>
 
-<script>
-(function(){
-  "use strict";
-  
-  // Simpan fungsi asli
-  var _origToggleDD = window.toggleDD;
-  var _origCloseAllDD = window.closeAllDD;
-  
-  // Override toggleDD untuk mobile
-  window.toggleDD = function(id) {
-    var dd = document.getElementById('dd-' + id);
-    if (!dd) return;
-    
-    // Cek apakah layar mobile
-    var isMobile = window.innerWidth <= 768;
-    
-    if (isMobile) {
-      // Jika sudah terbuka, tutup
-      if (dd.classList.contains('show')) {
-        _origCloseAllDD();
-        return;
-      }
-      
-      // Tutup semua dropdown lain
-      _origCloseAllDD();
-      
-      // Pindahkan dropdown ke body agar full-screen
-      if (!dd._origParent) {
-        dd._origParent = dd.parentElement;
-      }
-      
-      // Set posisi fixed di bawah navbar
-      var navbar = document.querySelector('.navbar');
-      var navbarHeight = navbar ? navbar.offsetHeight : 60;
-      
-      dd.style.position = 'fixed';
-      dd.style.top = navbarHeight + 'px';
-      dd.style.left = '0';
-      dd.style.right = '0';
-      dd.style.bottom = '0';
-      dd.style.width = '100%';
-      dd.style.maxWidth = '100vw';
-      dd.style.maxHeight = 'calc(100vh - ' + navbarHeight + 'px)';
-      dd.style.transform = 'none';
-      dd.style.zIndex = '10000';
-      dd.style.borderRadius = '0';
-      dd.style.overflowY = 'auto';
-      
-      document.body.appendChild(dd);
-      dd.classList.add('show');
-      
-      // Update tombol
-      var btn = document.querySelector('.nav-btn[onclick*="toggleDD(\'' + id + '\')"]');
-      if (btn) {
-        btn.classList.add('active');
-        btn.setAttribute('aria-expanded', 'true');
-      }
-    } else {
-      // Desktop: gunakan fungsi asli
-      _origToggleDD(id);
-    }
-  };
-  
-  // Override closeAllDD untuk mengembalikan dropdown ke tempat asal
-  window.closeAllDD = function() {
-    var allDropdowns = document.querySelectorAll('.dropdown');
-    for (var i = 0; i < allDropdowns.length; i++) {
-      var dd = allDropdowns[i];
-      dd.classList.remove('show');
-      
-      // Kembalikan ke parent asli
-      if (dd._origParent) {
-        dd.style.position = '';
-        dd.style.top = '';
-        dd.style.left = '';
-        dd.style.right = '';
-        dd.style.bottom = '';
-        dd.style.width = '';
-        dd.style.maxWidth = '';
-        dd.style.maxHeight = '';
-        dd.style.transform = '';
-        dd.style.zIndex = '';
-        dd.style.borderRadius = '';
-        dd.style.overflowY = '';
-        
-        dd._origParent.appendChild(dd);
-      }
-    }
-    
-    var allBtns = document.querySelectorAll('.nav-btn');
-    for (var j = 0; j < allBtns.length; j++) {
-      allBtns[j].classList.remove('active');
-      allBtns[j].setAttribute('aria-expanded', 'false');
-    }
-  };
-  
-  // Tutup dropdown saat klik di luar (mobile)
-  document.addEventListener('click', function(e) {
-    if (window.innerWidth <= 768) {
-      if (!e.target.closest('.nav-item') && !e.target.closest('.dropdown')) {
-        window.closeAllDD();
-      }
-    }
-  }, true);
-  
-  // Tutup dropdown saat resize ke desktop
-  window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-      window.closeAllDD();
-    }
-  });
-})();
-</script>
-<!-- ========== PATCH: FIX DROPDOWN MOBILE POSITION - END ========== -->
- <!-- ========== PATCH FINAL: AUTO CLOSE MENU & DROPDOWN - START ========== -->
-<script>
-(function(){
-  "use strict";
-  
-  // Simpan fungsi asli
-  var _origToggleDD = window.toggleDD;
-  var _origCloseAllDD = window.closeAllDD;
-  
-  // Override toggleDD
-  window.toggleDD = function(id) {
-    var dd = document.getElementById('dd-' + id);
-    if (!dd) return;
-    
-    // Jika dropdown sudah terbuka, tutup saja
-    if (dd.classList.contains('show')) {
-      _origCloseAllDD();
-      // Tutup menu utama juga
-      var navWrap = document.getElementById('navWrap');
-      if (navWrap) navWrap.classList.remove('show');
-      return;
-    }
-    
-    // Tutup semua dropdown lain dulu
-    _origCloseAllDD();
-    
-    // Buka dropdown ini
-    dd.classList.add('show');
-    
-    // Update tombol
-    var btn = dd.previousElementSibling;
-    if (btn) {
-      btn.classList.add('active');
-      btn.setAttribute('aria-expanded', 'true');
-    }
-  };
-  
-  // Override closeAllDD
-  window.closeAllDD = function() {
-    _origCloseAllDD();
-    // Tutup menu utama juga
-    var navWrap = document.getElementById('navWrap');
-    if (navWrap) navWrap.classList.remove('show');
-  };
-  
-  // Tutup menu & dropdown saat klik di luar
-  document.addEventListener('click', function(e) {
-    var clickedInNav = e.target.closest('.nav-item');
-    var clickedInDropdown = e.target.closest('.dropdown');
-    var clickedInHamburger = e.target.closest('.hamburger');
-    
-    if (!clickedInNav && !clickedInDropdown && !clickedInHamburger) {
-      window.closeAllDD();
-    }
-  }, true);
-  
-  // Tutup menu & dropdown saat klik item dropdown
-  document.addEventListener('click', function(e) {
-    var clickedLink = e.target.closest('.dropdown a');
-    if (clickedLink) {
-      setTimeout(function() {
-        window.closeAllDD();
-      }, 100);
-    }
-  }, true);
-  
-})();
-</script>
-<!-- ========== PATCH FINAL: AUTO CLOSE MENU & DROPDOWN - END ========== -->
  <!-- ========== PATCH: ADMINISTRASI BK56 - FILTER KATEGORI AUTO-HIDE ========== -->
 <script>
 (function(){
@@ -7075,7 +6785,7 @@ box-shadow: 0 4px 12px rgba(220,38,38,0.2);
 <div class="adm56-admin-status" id="adm56-admin-status"></div>
 <div class="adm56-section-title"> Daftar User Terdaftar</div>
 <div class="adm56-user-list" id="adm56-user-list"></div>
-<div class="adm56-section-title" style="margin-top: 24px;">💾 Backup Permanen Link</div><button id="bk56-backup-trigger-admin" class="bk56-backup-trigger">💾 Backup Permanen ke HTML <span class="trigger-badge">1 link</span></button></div>
+<div class="adm56-section-title" style="margin-top: 24px;">💾 Backup Permanen Link</div><button id="bk56-backup-trigger-admin" class="bk56-backup-trigger">💾 Backup Permanen ke HTML <span class="trigger-badge">25 link</span></button></div>
 </div>
 </div>
 </div>
@@ -8058,7 +7768,7 @@ console.log('✅ Patch Link Permanen Dokumen (kecuali Materi) berhasil dimuat');
   JANGAN dihapus manual kecuali ingin mereset semua link.
 -->
 <script type="application/json" id="bk56-embedded-data">
-{"materi":{},"video":{"0":["https://drive.google.com/file/d/1EnwlbjQFIsUOJdIRf771atS5zf9_aGpQ/view?usp=drive_link"]},"docLinks":{"593":["https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/","https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/"]},"version":"1.0","lastUpdated":"2026-11-03T04:36:59.646Z","note":"Data link Administrasi BK56 - tersimpan permanen di HTML"}
+{"materi":{"ix_sotya_0":{"ppt":[],"pdf":["https://drive.google.com/file/d/1n4nrWs4VJT8TSL0VvAYqWafRwrgFvhmb/view?usp=drive_link","https://drive.google.com/file/d/1mxj3QoxbziesvQCwN7dCAZYUNN-I2f0p/view?usp=drive_link","https://drive.google.com/file/d/13A8jhGir0Fe0fuvUM4BDrJH_nPv4oJni/view?usp=drive_link"],"doc":[],"video":["https://drive.google.com/file/d/12HL05UgO2rzbCtGqA_A_MtvRZsuMrCai/view?usp=drive_link","https://drive.google.com/file/d/1AW59gnjtjN9fZVZhADj8YBBQK-122k3U/view?usp=drive_link"]},"vii_sotya_0":{"ppt":[],"pdf":["https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/view?usp=drive_link"],"doc":[],"video":[]},"ix_sotya_3":{"ppt":[],"pdf":["https://drive.google.com/file/d/13A8jhGir0Fe0fuvUM4BDrJH_nPv4oJni/view?usp=drive_link"],"doc":[],"video":[]},"ix_sotya_1":{"ppt":[],"pdf":[],"doc":[],"video":["https://drive.google.com/file/d/12HL05UgO2rzbCtGqA_A_MtvRZsuMrCai/view?usp=drive_link"]}},"video":{"0":["https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/preview","https://drive.google.com/file/d/1EnwlbjQFIsUOJdIRf771atS5zf9_aGpQ/view?usp=drive_link"]},"docLinks":{"148":["https://script.google.com/macros/s/AKfycbz-s90bmPYluqQSihJyIyzvIgtbjmgxAQc1E5BXMRPXrhjfATYHxgSweQIgMxTvXQ8o1w/exec","https://script.google.com/macros/s/AKfycbzUbEwzYnxgkE_gc2JKiDBscSoY8Pz4rRtMd9M4IcoKQ9kE5YafSu9QSdcXDPsQ4cjJYg/exec","https://script.google.com/macros/s/AKfycbxt5sYHdCWLiRI09Lu2C0PRztqQJx8gwTzPXuZFneZtoYAWXlgE5BH46N86zK3nu1RY/exec","https://script.google.com/macros/s/AKfycbz8Bz-t37u58hABhK4SQWfroEVV00rf1iUTSj4AE6UOqUmkKc0rJ_nxUXGzgM5y9qyQ/exec","https://script.google.com/macros/s/AKfycby3khwolG4XyTiPsTPPOfHKMQF9F4YT-tzZERmiYL4g_xoR_DYIM_EXAJeFSa6Ak9vt/exec","https://script.google.com/macros/s/AKfycbze2QEkrN_ybbv8XWFWQNVochKkGKuonSAceA7_tOVm5ulGyMcicLBgo2HOxRi-wC9J/exec","https://script.google.com/macros/s/AKfycbzAdXRuhU0NZBQjDbJVlw2vYsdGtvjw0MH8u-UMXav391tEJ_j3dqs8BD2l7V1pH4ib/exec","https://script.google.com/macros/s/AKfycbzi_iQAJRq6dxurUm1fRVd8SyjB-W7Bct_JgE0HW0uFPyeLNOue7vhotuk8zy2ykrTX1g/exec"],"159":["https://appseet11-cmd.github.io/Agenda-Belaja-Siti-Wahyuni-KLSVII-Sem-1/"],"171":["https://appseet11-cmd.github.io/Catatan-Kasus-Kelas-VII-A/","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-B/","https://appseet11-cmd.github.io/CATATAN-KASUS-VII-C/"],"564":["https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/"],"565":[],"593":["https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/"],"594":["https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/"]},"backendUrl":"https://script.google.com/macros/s/AKfycbzdfR2fJrFDAcgbgzwQ6IWFs5yqpAO6ziseLq4UCFJ8U8kvHpQq6vnRz9FvDBTyfPhs/exec","version":"2.0","lastUpdated":"2026-11-03T17:53:47.939Z","note":"Data link + URL Backend - permanen di HTML"}
 </script>
 <!-- ========== BK56 EMBEDDED DATA [END] ========== -->
  <!-- ================================================================ -->
@@ -8268,12 +7978,12 @@ border-radius: 100px; font-size: 0.72rem; font-weight: 700;
 </div>
 <div class="bk56-backup-stat">
 <div class="stat-icon">🎬</div>
-<div class="stat-value" id="bk56-stat-video">1</div>
+<div class="stat-value" id="bk56-stat-video">0</div>
 <div class="stat-label">Link Video</div>
 </div>
 <div class="bk56-backup-stat">
 <div class="stat-icon">🔗</div>
-<div class="stat-value" id="bk56-stat-doclinks">2</div>
+<div class="stat-value" id="bk56-stat-doclinks">0</div>
 <div class="stat-label">Link Dokumen</div>
 </div>
 <div class="bk56-backup-stat">
@@ -9295,7 +9005,72 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 
 <!-- ===== PANEL REKAP LINK (disisipkan ke halaman adminbk56) ===== -->
+<div id="a56-panel-rekap" style="display:none;">
+  <div class="a56-tab-rekap">
+    <h2>📋 Rekap Link Tersemat</h2>
+    <p>Semua link yang disematkan di Administrasi BK56 terekap otomatis di sini. Data tersinkron dengan Google Sheets (backend).</p>
+  </div>
 
+  <div class="a56-connection-status connected" id="bk56-conn-status">
+    <span class="status-dot"></span>
+    <span id="bk56-conn-text">✅ Terhubung • 22 link tersinkron</span>
+  </div>
+
+  <div class="a56-rekap-controls">
+    <button class="a56-rekap-btn primary" onclick="bk56SyncFromSheet()">
+      🔄 Sync dari Sheet
+    </button>
+    <button class="a56-rekap-btn secondary" onclick="bk56SyncToSheet()">
+      💾 Push ke Sheet
+    </button>
+    <button class="a56-rekap-btn warning" onclick="bk56OpenConfig()">
+      ⚙️ Konfigurasi Backend
+    </button>
+    <button class="a56-rekap-btn ghost" onclick="bk56ExportRekapCSV()">
+      📊 Export CSV
+    </button>
+  <button id="bk56-btn-delete-selected" class="a56-rekap-btn" type="button" disabled="" title="Hapus semua link yang telah dicentang">🗑️ Hapus Terpilih <span id="bk56-selected-count">0</span></button></div>
+
+  <div class="a56-rekap-counter" id="bk56-rekap-counter">
+    <div class="a56-rekap-count-item">
+      <div class="count-value" id="cnt-total">22</div>
+      <div class="count-label">Total Link</div>
+    </div>
+    <div class="a56-rekap-count-item">
+      <div class="count-value" id="cnt-materi">0</div>
+      <div class="count-label">Materi</div>
+    </div>
+    <div class="a56-rekap-count-item">
+      <div class="count-value" id="cnt-video">4</div>
+      <div class="count-label">Video</div>
+    </div>
+    <div class="a56-rekap-count-item">
+      <div class="count-value" id="cnt-doc">18</div>
+      <div class="count-label">Dokumen</div>
+    </div>
+  </div>
+
+  <div class="a56-rekap-filter" id="bk56-rekap-filter"><div class="a56-rekap-filter-label">🔍 Filter Tampilan:</div><button class="a56-rekap-chip active" onclick="bk56SetFilter('kelas','all')">📋 Semua Kelas</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kelas','ix')">IX</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kelas','vii')">VII</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kelas','-')">-</button><button class="a56-rekap-chip active" onclick="bk56SetFilter('guru','all')" style="margin-left:8px;">👤 Semua Guru</button><button class="a56-rekap-chip " onclick="bk56SetFilter('guru','sotya')">Sotya Palupi</button><button class="a56-rekap-chip " onclick="bk56SetFilter('guru','-')">-</button><button class="a56-rekap-chip " onclick="bk56SetFilter('guru','wahyuni')">Siti Wahyuni</button><button class="a56-rekap-chip active" onclick="bk56SetFilter('kat','all')" style="margin-left:8px;">🗂️ Semua Kategori</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','materi')">Materi</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','video')">video</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','rpl')">Rencana Pelaksanaan Layanan (RPL)</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','agenda')">Agenda Belajar</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','kasus')">Catatan Kasus</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','-')">-</button><button class="a56-rekap-chip " onclick="bk56SetFilter('kat','analisis')">Analisis Kebutuhan Siswa</button></div>
+
+  <div class="a56-rekap-table-wrap">
+    <table class="a56-rekap-table">
+      <thead>
+        <tr><th class="bk56-cb-th"><input type="checkbox" id="bk56-select-all-cb" title="Pilih semua / batal pilih semua"></th>
+          <th class="col-no">No</th>
+          <th class="col-time">Waktu</th>
+          <th class="col-kelas">Kelas</th>
+          <th class="col-guru">Guru BK</th>
+          <th class="col-kat">Kategori</th>
+          <th class="col-nama">Nama Dokumen</th>
+          <th class="col-jenis">Jenis</th>
+          <th class="col-url">URL Link</th>
+          <th class="col-aksi">Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="bk56-rekap-tbody"><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707932221" title="Pilih link ini"></td><td class="col-no">1</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Materi</td><td class="col-nama">Materi 1</td><td class="col-jenis"><span class="a56-badge-jenis pdf">📄 PDF</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/1n4nrWs4VJT8TSL0VvAYqWafRwrgFvhmb/view?usp=drive_link" target="_blank" rel="noopener">https://drive.google.com/file/d/1n4nrWs4VJT8TSL0VvAYqWafRwrgFvhmb/view?usp=drive_link</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/1n4nrWs4VJT8TSL0VvAYqWafRwrgFvhmb/view?usp=drive_link','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707932221')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707934286" title="Pilih link ini"></td><td class="col-no">2</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Materi</td><td class="col-nama">Materi 1</td><td class="col-jenis"><span class="a56-badge-jenis pdf">📄 PDF</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/1mxj3QoxbziesvQCwN7dCAZYUNN-I2f0p/view?usp=drive_link" target="_blank" rel="noopener">https://drive.google.com/file/d/1mxj3QoxbziesvQCwN7dCAZYUNN-I2f0p/view?usp=drive_link</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/1mxj3QoxbziesvQCwN7dCAZYUNN-I2f0p/view?usp=drive_link','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707934286')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707937145" title="Pilih link ini"></td><td class="col-no">3</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Materi</td><td class="col-nama">Materi 1</td><td class="col-jenis"><span class="a56-badge-jenis pdf">📄 PDF</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/13A8jhGir0Fe0fuvUM4BDrJH_nPv4oJni/view?usp=drive_link" target="_blank" rel="noopener">https://drive.google.com/file/d/13A8jhGir0Fe0fuvUM4BDrJH_nPv4oJni/view?usp=drive_link</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/13A8jhGir0Fe0fuvUM4BDrJH_nPv4oJni/view?usp=drive_link','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707937145')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707939073" title="Pilih link ini"></td><td class="col-no">4</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Materi</td><td class="col-nama">Materi 1</td><td class="col-jenis"><span class="a56-badge-jenis video">🎬 Video</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/12HL05UgO2rzbCtGqA_A_MtvRZsuMrCai/view?usp=drive_link" target="_blank" rel="noopener">https://drive.google.com/file/d/12HL05UgO2rzbCtGqA_A_MtvRZsuMrCai/view?usp=drive_link</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/12HL05UgO2rzbCtGqA_A_MtvRZsuMrCai/view?usp=drive_link','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707939073')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707941080" title="Pilih link ini"></td><td class="col-no">5</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Materi</td><td class="col-nama">Materi 1</td><td class="col-jenis"><span class="a56-badge-jenis video">🎬 Video</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/1AW59gnjtjN9fZVZhADj8YBBQK-122k3U/view?usp=drive_link" target="_blank" rel="noopener">https://drive.google.com/file/d/1AW59gnjtjN9fZVZhADj8YBBQK-122k3U/view?usp=drive_link</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/1AW59gnjtjN9fZVZhADj8YBBQK-122k3U/view?usp=drive_link','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707941080')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707943530" title="Pilih link ini"></td><td class="col-no">6</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Materi</td><td class="col-nama">Materi 1</td><td class="col-jenis"><span class="a56-badge-jenis pdf">📄 PDF</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/view?usp=drive_link" target="_blank" rel="noopener">https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/view?usp=drive_link</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/view?usp=drive_link','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707943530')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707945599" title="Pilih link ini"></td><td class="col-no">7</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas ">-</span></td><td class="col-guru">-</td><td class="col-kat">video</td><td class="col-nama">Video 1</td><td class="col-jenis"><span class="a56-badge-jenis video">🎬 Video</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/preview" target="_blank" rel="noopener">https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/preview</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/1JPnU3ukyhVXeCvezrwNvo3WEZcCVEVJv/preview','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707945599')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707947554" title="Pilih link ini"></td><td class="col-no">8</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas ">-</span></td><td class="col-guru">-</td><td class="col-kat">video</td><td class="col-nama">Video 1</td><td class="col-jenis"><span class="a56-badge-jenis video">🎬 Video</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://drive.google.com/file/d/1EnwlbjQFIsUOJdIRf771atS5zf9_aGpQ/view?usp=drive_link" target="_blank" rel="noopener">https://drive.google.com/file/d/1EnwlbjQFIsUOJdIRf771atS5zf9_aGpQ/view?usp=drive_link</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://drive.google.com/file/d/1EnwlbjQFIsUOJdIRf771atS5zf9_aGpQ/view?usp=drive_link','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707947554')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707949287" title="Pilih link ini"></td><td class="col-no">9</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycbz-s90bmPYluqQSihJyIyzvIgtbjmgxAQc1E5BXMRPXrhjfATYHxgSweQIgMxTvXQ8o1w/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbz-s90bmPYluqQSihJyIyzvIgtbjmgxAQc1E5BXMRPXrhjfATYHxgSweQIgMxTvXQ8o1w/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycbz-s90bmPYluqQSihJyIyzvIgtbjmgxAQc1E5BXMRPXrhjfATYHxgSweQIgMxTvXQ8o1w/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707949287')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707951188" title="Pilih link ini"></td><td class="col-no">10</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycbzUbEwzYnxgkE_gc2JKiDBscSoY8Pz4rRtMd9M4IcoKQ9kE5YafSu9QSdcXDPsQ4cjJYg/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbzUbEwzYnxgkE_gc2JKiDBscSoY8Pz4rRtMd9M4IcoKQ9kE5YafSu9QSdcXDPsQ4cjJYg/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycbzUbEwzYnxgkE_gc2JKiDBscSoY8Pz4rRtMd9M4IcoKQ9kE5YafSu9QSdcXDPsQ4cjJYg/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707951188')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707953782" title="Pilih link ini"></td><td class="col-no">11</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycbxt5sYHdCWLiRI09Lu2C0PRztqQJx8gwTzPXuZFneZtoYAWXlgE5BH46N86zK3nu1RY/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbxt5sYHdCWLiRI09Lu2C0PRztqQJx8gwTzPXuZFneZtoYAWXlgE5BH46N86zK3nu1RY/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycbxt5sYHdCWLiRI09Lu2C0PRztqQJx8gwTzPXuZFneZtoYAWXlgE5BH46N86zK3nu1RY/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707953782')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707955980" title="Pilih link ini"></td><td class="col-no">12</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycbz8Bz-t37u58hABhK4SQWfroEVV00rf1iUTSj4AE6UOqUmkKc0rJ_nxUXGzgM5y9qyQ/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbz8Bz-t37u58hABhK4SQWfroEVV00rf1iUTSj4AE6UOqUmkKc0rJ_nxUXGzgM5y9qyQ/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycbz8Bz-t37u58hABhK4SQWfroEVV00rf1iUTSj4AE6UOqUmkKc0rJ_nxUXGzgM5y9qyQ/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707955980')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707958042" title="Pilih link ini"></td><td class="col-no">13</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycby3khwolG4XyTiPsTPPOfHKMQF9F4YT-tzZERmiYL4g_xoR_DYIM_EXAJeFSa6Ak9vt/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycby3khwolG4XyTiPsTPPOfHKMQF9F4YT-tzZERmiYL4g_xoR_DYIM_EXAJeFSa6Ak9vt/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycby3khwolG4XyTiPsTPPOfHKMQF9F4YT-tzZERmiYL4g_xoR_DYIM_EXAJeFSa6Ak9vt/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707958042')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707960205" title="Pilih link ini"></td><td class="col-no">14</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycbze2QEkrN_ybbv8XWFWQNVochKkGKuonSAceA7_tOVm5ulGyMcicLBgo2HOxRi-wC9J/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbze2QEkrN_ybbv8XWFWQNVochKkGKuonSAceA7_tOVm5ulGyMcicLBgo2HOxRi-wC9J/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycbze2QEkrN_ybbv8XWFWQNVochKkGKuonSAceA7_tOVm5ulGyMcicLBgo2HOxRi-wC9J/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707960205')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707963949" title="Pilih link ini"></td><td class="col-no">15</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycbzAdXRuhU0NZBQjDbJVlw2vYsdGtvjw0MH8u-UMXav391tEJ_j3dqs8BD2l7V1pH4ib/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbzAdXRuhU0NZBQjDbJVlw2vYsdGtvjw0MH8u-UMXav391tEJ_j3dqs8BD2l7V1pH4ib/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycbzAdXRuhU0NZBQjDbJVlw2vYsdGtvjw0MH8u-UMXav391tEJ_j3dqs8BD2l7V1pH4ib/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707963949')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707966389" title="Pilih link ini"></td><td class="col-no">16</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Rencana Pelaksanaan Layanan (RPL)</td><td class="col-nama">RPL Klasikal TW1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://script.google.com/macros/s/AKfycbzi_iQAJRq6dxurUm1fRVd8SyjB-W7Bct_JgE0HW0uFPyeLNOue7vhotuk8zy2ykrTX1g/exec" target="_blank" rel="noopener">https://script.google.com/macros/s/AKfycbzi_iQAJRq6dxurUm1fRVd8SyjB-W7Bct_JgE0HW0uFPyeLNOue7vhotuk8zy2ykrTX1g/exec</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://script.google.com/macros/s/AKfycbzi_iQAJRq6dxurUm1fRVd8SyjB-W7Bct_JgE0HW0uFPyeLNOue7vhotuk8zy2ykrTX1g/exec','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707966389')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707969520" title="Pilih link ini"></td><td class="col-no">17</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Agenda Belajar</td><td class="col-nama">Agenda Belajar Semester 1</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/Agenda-Belaja-Siti-Wahyuni-KLSVII-Sem-1/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/Agenda-Belaja-Siti-Wahyuni-KLSVII-Sem-1/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/Agenda-Belaja-Siti-Wahyuni-KLSVII-Sem-1/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707969520')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707971729" title="Pilih link ini"></td><td class="col-no">18</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Catatan Kasus</td><td class="col-nama">Catatan Kasus Kelas VII-A</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/Catatan-Kasus-Kelas-VII-A/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/Catatan-Kasus-Kelas-VII-A/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/Catatan-Kasus-Kelas-VII-A/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707971729')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793707973880" title="Pilih link ini"></td><td class="col-no">19</td><td class="col-time">03 Nov 2026, 19.12</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Catatan Kasus</td><td class="col-nama">Catatan Kasus Kelas VII-B</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-B/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/CATATAN-KASUS-VII-B/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/CATATAN-KASUS-VII-B/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793707973880')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793726111081" title="Pilih link ini"></td><td class="col-no">20</td><td class="col-time">04 Nov 2026, 00.15</td><td class="col-kelas"><span class="a56-badge-kelas ">-</span></td><td class="col-guru">-</td><td class="col-kat">-</td><td class="col-nama">Dokumen</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/CATATAN-KASUS-IX-B/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793726111081')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793726123220" title="Pilih link ini"></td><td class="col-no">21</td><td class="col-time">04 Nov 2026, 00.15</td><td class="col-kelas"><span class="a56-badge-kelas vii">VII</span></td><td class="col-guru">Siti Wahyuni, S.Pd</td><td class="col-kat">Catatan Kasus</td><td class="col-nama">Catatan Kasus Kelas VII-C</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/CATATAN-KASUS-VII-C/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/CATATAN-KASUS-VII-C/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/CATATAN-KASUS-VII-C/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793726123220')" title="Hapus">🗑️</button></div></td></tr><tr><td class="bk56-cb-td"><input type="checkbox" class="bk56-row-cb" data-id="LK1793726125412" title="Pilih link ini"></td><td class="col-no">22</td><td class="col-time">04 Nov 2026, 00.15</td><td class="col-kelas"><span class="a56-badge-kelas ix">IX</span></td><td class="col-guru">Sotya Palupi, S.Pd, MM</td><td class="col-kat">Analisis Kebutuhan Siswa</td><td class="col-nama">Metode Angket</td><td class="col-jenis"><span class="a56-badge-jenis doc">📝 DOC</span></td><td class="col-url"><div class="a56-url-cell"><a href="https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/" target="_blank" rel="noopener">https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/</a></div></td><td class="col-aksi"><div class="a56-aksi-btns"><button class="a56-aksi-btn open" onclick="window.open('https://appseet11-cmd.github.io/CATATAN-KASUS-IX-A/','_blank','noopener')" title="Buka">🔗</button><button class="a56-aksi-btn del" onclick="bk56DeleteRekapItem('LK1793726125412')" title="Hapus">🗑️</button></div></td></tr></tbody>
+    </table>
+  </div>
+</div>
 
 <!-- ===== MODAL KONFIGURASI BACKEND ===== -->
 <div class="bk56-config-modal" id="bk56-config-modal">
@@ -15241,6 +15016,3383 @@ if (document.readyState === 'loading') {
 <!-- ================================================================ -->
 <!-- ========== PATCH: ALL LINKS → TARGET _self + CROSS-DEVICE [END] ========== -->
 <!-- ================================================================ -->
- 
+ <!-- ================================================================ -->
+<!-- ========== PATCH FINAL: UNIVERSAL VIDEO PLAYER (CROSS-DEVICE) ========== -->
+<!-- ================================================================ -->
+<style>
+/* ===== UNIVERSAL VIDEO PLAYER MODAL ===== */
+#bk56-universal-player{
+position:fixed;inset:0;
+background:rgba(0,0,0,.95);
+backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+display:none;align-items:center;justify-content:center;
+z-index:100020;padding:20px;
+flex-direction:column;gap:12px;
+}
+#bk56-universal-player.show{display:flex}
+.bk56-up-header{
+width:100%;max-width:1100px;
+display:flex;justify-content:space-between;align-items:center;
+gap:12px;flex-wrap:wrap;
+}
+.bk56-up-title{
+color:#fff;font-family:'Space Grotesk',sans-serif;
+font-size:1rem;font-weight:700;
+display:flex;align-items:center;gap:10px;
+flex:1;min-width:0;
+}
+.bk56-up-title .up-type-badge{
+background:rgba(168,85,247,.3);color:#e9d5ff;
+padding:4px 10px;border-radius:100px;
+font-size:.72rem;font-weight:700;
+border:1px solid rgba(168,85,247,.5);
+white-space:nowrap;
+}
+.bk56-up-actions{display:flex;gap:8px;flex-wrap:wrap}
+.bk56-up-btn{
+background:rgba(255,255,255,.15);
+backdrop-filter:blur(10px);
+color:#fff;border:1px solid rgba(255,255,255,.25);
+padding:8px 14px;border-radius:10px;
+font-size:.82rem;font-weight:700;
+cursor:pointer;transition:all .2s ease;
+font-family:inherit;
+display:inline-flex;align-items:center;gap:6px;
+text-decoration:none;
+}
+.bk56-up-btn:hover{background:rgba(255,255,255,.25);transform:translateY(-1px)}
+.bk56-up-btn.primary{background:linear-gradient(135deg,#a855f7,#7c3aed);border-color:#a855f7}
+.bk56-up-btn.danger{background:linear-gradient(135deg,#ef4444,#dc2626);border-color:#ef4444}
+.bk56-up-frame-wrap{
+width:100%;max-width:1100px;
+aspect-ratio:16/9;
+background:#000;border-radius:16px;
+overflow:hidden;position:relative;
+box-shadow:0 30px 70px rgba(0,0,0,.6);
+border:2px solid rgba(255,255,255,.1);
+}
+.bk56-up-frame-wrap iframe,
+.bk56-up-frame-wrap video{
+width:100%;height:100%;border:0;display:block;background:#000;
+}
+/* Loading */
+.bk56-up-loading{
+position:absolute;inset:0;
+display:flex;align-items:center;justify-content:center;
+flex-direction:column;gap:12px;
+background:rgba(0,0,0,.7);color:#fff;
+z-index:2;
+}
+.bk56-up-spinner{
+width:48px;height:48px;
+border:4px solid rgba(255,255,255,.2);
+border-top-color:#a855f7;
+border-radius:50%;
+animation:bk56up-spin 1s linear infinite;
+}
+@keyframes bk56up-spin{to{transform:rotate(360deg)}}
+/* Error State */
+.bk56-up-error{
+position:absolute;inset:0;
+display:none;align-items:center;justify-content:center;
+flex-direction:column;gap:14px;
+background:linear-gradient(135deg,#1e1b4b,#312e81);
+color:#fff;padding:24px;text-align:center;
+z-index:3;
+}
+.bk56-up-error.show{display:flex}
+.bk56-up-error-icon{font-size:3.5rem;filter:drop-shadow(0 4px 12px rgba(0,0,0,.4))}
+.bk56-up-error-title{
+font-family:'Space Grotesk',sans-serif;
+font-size:1.1rem;font-weight:700;
+}
+.bk56-up-error-msg{
+font-size:.85rem;opacity:.85;
+max-width:500px;line-height:1.5;
+}
+.bk56-up-error-tips{
+background:rgba(255,255,255,.08);
+border:1px solid rgba(255,255,255,.15);
+border-radius:12px;padding:14px 18px;
+text-align:left;max-width:500px;width:100%;
+font-size:.82rem;line-height:1.6;
+}
+.bk56-up-error-tips strong{color:#fbbf24}
+.bk56-up-error-tips ol{margin:6px 0 0 18px}
+.bk56-up-error-tips ol li{margin-bottom:4px}
+.bk56-up-error-actions{
+display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+margin-top:6px;
+}
+/* Info Bar */
+.bk56-up-info{
+width:100%;max-width:1100px;
+background:rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,.15);
+border-radius:12px;padding:10px 16px;
+color:rgba(255,255,255,.9);
+font-size:.78rem;
+display:flex;align-items:center;gap:10px;
+flex-wrap:wrap;
+}
+.bk56-up-info .info-url{
+font-family:Consolas,Monaco,monospace;
+word-break:break-all;opacity:.75;
+flex:1;min-width:0;
+}
+@media (max-width:768px){
+.bk56-up-header{flex-direction:column;align-items:stretch}
+.bk56-up-actions{justify-content:center}
+.bk56-up-title{justify-content:center;text-align:center}
+.bk56-up-info{flex-direction:column;text-align:center}
+}
+</style>
+
+<!-- Universal Video Player Modal (HTML Statis) -->
+<div id="bk56-universal-player" role="dialog" aria-modal="true" aria-label="Video Player">
+<div class="bk56-up-header">
+<div class="bk56-up-title">
+<span id="bk56-up-icon">🎬</span>
+<span id="bk56-up-title-text">Video Player</span>
+<span class="up-type-badge" id="bk56-up-type-badge">VIDEO</span>
+</div>
+<div class="bk56-up-actions">
+<a href="#" id="bk56-up-open-new" class="bk56-up-btn" target="_blank" rel="noopener noreferrer">
+↗️ Buka di Tab Baru
+</a>
+<a href="#" id="bk56-up-download" class="bk56-up-btn primary" download="" style="display:none;">
+⬇️ Download
+</a>
+<button class="bk56-fs-btn" type="button" title="Perbesar ke layar penuh"><span class="fs-icon">⛶</span> Fullscreen</button><button class="bk56-up-btn danger" onclick="bk56CloseUniversalPlayer()">
+✖ Tutup
+</button>
+</div>
+</div>
+<div class="bk56-up-frame-wrap" id="bk56-up-frame-wrap">
+<div class="bk56-up-loading" id="bk56-up-loading">
+<div class="bk56-up-spinner"></div>
+<div style="font-size:.85rem;font-weight:600;">Memuat video...</div>
+</div>
+<div class="bk56-up-error" id="bk56-up-error">
+<div class="bk56-up-error-icon">⚠️</div>
+<div class="bk56-up-error-title" id="bk56-up-error-title">Video Tidak Bisa Diputar</div>
+<div class="bk56-up-error-msg" id="bk56-up-error-msg">
+Terjadi masalah saat memuat video ini.
+</div>
+<div class="bk56-up-error-tips" id="bk56-up-error-tips" style="display:none;">
+<strong>💡 Solusi:</strong>
+<ol id="bk56-up-error-tips-list"></ol>
+</div>
+<div class="bk56-up-error-actions">
+<a href="#" id="bk56-up-error-open" class="bk56-up-btn primary" target="_blank" rel="noopener noreferrer">
+↗️ Buka di Tab Baru
+</a>
+<button class="bk56-up-btn" onclick="bk56RetryUniversalPlayer()">
+🔄 Coba Lagi
+</button>
+</div>
+</div>
+<div id="bk56-up-content"></div>
+</div>
+<div class="bk56-up-info">
+<span>🔗</span>
+<span class="info-url" id="bk56-up-url-display">-</span>
+</div>
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH FINAL: UNIVERSAL VIDEO PLAYER (CROSS-DEVICE)
+* ================================================================
+* FITUR UTAMA:
+* ✅ 1. Auto-normalisasi URL (GDrive, YouTube, Vimeo, Dropbox, dll)
+* ✅ 2. Deteksi tipe video (youtube/gdrive/direct/unknown)
+* ✅ 3. Modal player dengan iframe/video tag
+* ✅ 4. Error handler + fallback "Buka di tab baru"
+* ✅ 5. Panduan sharing permission untuk Google Drive
+* ✅ 6. Tombol download untuk video langsung
+* ✅ 7. Lintas device — URL yang sama bisa diputar di mana saja
+* ✅ 8. Normalisasi URL saat disimpan (bukan hanya saat dibuka)
+* ✅ 9. Auto-restore dari embedded JSON (anti clear browser)
+* ✅ 10. Hook add/remove → sync ke embedded
+*
+* ANTI-CONFLICT:
+* - Flag: window.__bk56UniversalVideoPlayerPatched
+* - Hook (bukan replace total) fungsi bukaVideoLangsung & openVideoLink
+* - Elemen HTML statis (tidak di-inject via JS)
+* - ID unik: bk56-universal-player, bk56-up-*
+* - Tidak override addVideoLink/removeVideoLink (hanya hook)
+================================================================ */
+const FLAG = '__bk56UniversalVideoPlayerPatched';
+if (window[FLAG]) {
+console.log('ℹ️ [UniversalPlayer] Patch sudah terpasang, skip');
+return;
+}
+window[FLAG] = true;
+
+const EMB_ID = 'bk56-embedded-data';
+const VIDEO_KEY = 'bk56_video_links';
+let currentVideoUrl = '';
+let currentVideoType = 'unknown';
+let currentVideoTitle = 'Video';
+let errorTimer = null;
+
+/* ================================================================
+* 🔑 HELPER 1: Normalisasi URL Video (KUNCI UTAMA)
+*    → Konversi URL mentah ke format yang bisa di-embed di semua device
+================================================================ */
+function normalizeVideoUrl(url) {
+if (!url || typeof url !== 'string') {
+return { url: '', originalUrl: '', type: 'unknown', embeddable: false, label: 'Unknown' };
+}
+url = url.trim();
+
+// Tambahkan https:// jika belum ada
+if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+url = 'https://' + url;
+}
+
+// === GOOGLE DRIVE ===
+// Format: /file/d/FILE_ID/view → /file/d/FILE_ID/preview
+let m = url.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
+if (m) {
+return {
+url: 'https://drive.google.com/file/d/' + m[1] + '/preview',
+originalUrl: url,
+type: 'gdrive',
+fileId: m[1],
+embeddable: true,
+label: 'Google Drive'
+};
+}
+// Format: /open?id=FILE_ID → /file/d/FILE_ID/preview
+m = url.match(/drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/i);
+if (m) {
+return {
+url: 'https://drive.google.com/file/d/' + m[1] + '/preview',
+originalUrl: url,
+type: 'gdrive',
+fileId: m[1],
+embeddable: true,
+label: 'Google Drive'
+};
+}
+// Format: /d/FILE_ID (short) → /file/d/FILE_ID/preview
+m = url.match(/drive\.google\.com\/d\/([a-zA-Z0-9_-]+)/i);
+if (m) {
+return {
+url: 'https://drive.google.com/file/d/' + m[1] + '/preview',
+originalUrl: url,
+type: 'gdrive',
+fileId: m[1],
+embeddable: true,
+label: 'Google Drive'
+};
+}
+// Format: uc?id=FILE_ID (download link) → /file/d/FILE_ID/preview
+m = url.match(/drive\.google\.com\/uc\?(?:id|export=download&id)=([a-zA-Z0-9_-]+)/i);
+if (m) {
+return {
+url: 'https://drive.google.com/file/d/' + m[1] + '/preview',
+originalUrl: url,
+type: 'gdrive',
+fileId: m[1],
+embeddable: true,
+label: 'Google Drive'
+};
+}
+
+// === YOUTUBE ===
+// Format: youtube.com/watch?v=VIDEO_ID → youtube.com/embed/VIDEO_ID
+// Format: youtu.be/VIDEO_ID → youtube.com/embed/VIDEO_ID
+// Format: youtube.com/shorts/VIDEO_ID → youtube.com/embed/VIDEO_ID
+m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/i);
+if (m) {
+return {
+url: 'https://www.youtube.com/embed/' + m[1] + '?rel=0&modestbranding=1',
+originalUrl: url,
+type: 'youtube',
+videoId: m[1],
+embeddable: true,
+label: 'YouTube'
+};
+}
+
+// === VIMEO ===
+m = url.match(/vimeo\.com\/(\d+)/i);
+if (m) {
+return {
+url: 'https://player.vimeo.com/video/' + m[1],
+originalUrl: url,
+type: 'vimeo',
+videoId: m[1],
+embeddable: true,
+label: 'Vimeo'
+};
+}
+
+// === DROPBOX ===
+if (/dropbox\.com/i.test(url)) {
+let dropboxUrl = url.replace(/[?&]dl=[01]/, '').replace(/\?$/, '');
+if (!/\?raw=1/.test(dropboxUrl)) {
+dropboxUrl += (dropboxUrl.indexOf('?') > -1 ? '&' : '?') + 'raw=1';
+}
+return {
+url: dropboxUrl,
+originalUrl: url,
+type: 'dropbox',
+embeddable: true,
+label: 'Dropbox'
+};
+}
+
+// === DIRECT VIDEO FILES (mp4, webm, ogg, m4v) ===
+m = url.match(/\.(mp4|webm|ogg|ogv|m4v|mov)(\?|$)/i);
+if (m) {
+return {
+url: url,
+originalUrl: url,
+type: 'direct',
+ext: m[1].toLowerCase(),
+embeddable: true,
+label: 'Video File (' + m[1].toUpperCase() + ')'
+};
+}
+
+// === GOOGLE DOCS VIEWER (untuk PDF/PPT/DOC yang di-host online) ===
+if (/\.(pdf|ppt|pptx|doc|docx|xls|xlsx)(\?|$)/i.test(url)) {
+return {
+url: 'https://docs.google.com/gview?url=' + encodeURIComponent(url) + '&embedded=true',
+originalUrl: url,
+type: 'docs-viewer',
+embeddable: true,
+label: 'Document Viewer'
+};
+}
+
+// === UNKNOWN ===
+return {
+url: url,
+originalUrl: url,
+type: 'unknown',
+embeddable: false,
+label: 'Unknown'
+};
+}
+
+/* ================================================================
+* 🔑 HELPER 2: Load/Save video data dari localStorage
+================================================================ */
+function loadVideoData() {
+try {
+const raw = localStorage.getItem(VIDEO_KEY);
+if (raw) {
+const parsed = JSON.parse(raw);
+if (parsed && typeof parsed === 'object') return parsed;
+}
+} catch(e) {}
+return {};
+}
+function saveVideoData(data) {
+try {
+localStorage.setItem(VIDEO_KEY, JSON.stringify(data || {}));
+} catch(e) {
+console.warn('⚠️ [UniversalPlayer] Gagal simpan localStorage:', e);
+}
+}
+
+/* ================================================================
+* 🔑 HELPER 3: Embedded JSON (untuk lintas device)
+================================================================ */
+function readEmb() {
+try {
+const el = document.getElementById(EMB_ID);
+return el ? JSON.parse(el.textContent) : null;
+} catch(e) { return null; }
+}
+function writeEmb(data) {
+try {
+const el = document.getElementById(EMB_ID);
+if (el) { el.textContent = JSON.stringify(data); return true; }
+return false;
+} catch(e) { return false; }
+}
+function syncVideoToEmbedded(videoData) {
+const emb = readEmb() || { materi:{}, video:{}, docLinks:{} };
+emb.video = videoData || {};
+emb.lastUpdated = new Date().toISOString();
+emb.universalPlayerPatch = '1.0.0';
+return writeEmb(emb);
+}
+function autoRestoreVideo() {
+const localData = loadVideoData();
+const emb = readEmb();
+if (!emb || !emb.video) return;
+const embVideo = emb.video;
+const embKeys = Object.keys(embVideo);
+if (embKeys.length === 0) return;
+
+// Kasus 1: localStorage kosong → restore penuh
+if (!localData || Object.keys(localData).length === 0) {
+saveVideoData(embVideo);
+console.log('✅ [UniversalPlayer] Video dipulihkan dari embedded (' + embKeys.length + ' video)');
+if (typeof showToast === 'function') {
+showToast('🔄 Data video dipulihkan dari HTML', 'info');
+}
+return;
+}
+
+// Kasus 2: localStorage ada → merge
+let merged = false;
+const mergedData = Object.assign({}, localData);
+embKeys.forEach(function(idx) {
+const embList = embVideo[idx];
+if (!Array.isArray(embList) || embList.length === 0) return;
+const localList = mergedData[idx] || [];
+embList.forEach(function(url) {
+if (!localList.includes(url)) {
+if (!mergedData[idx]) mergedData[idx] = [];
+mergedData[idx].push(url);
+merged = true;
+}
+});
+});
+if (merged) {
+saveVideoData(mergedData);
+console.log('✅ [UniversalPlayer] Video di-merge dari embedded');
+}
+}
+
+/* ================================================================
+* 🎬 FUNGSI UTAMA: Buka Universal Video Player
+================================================================ */
+window.bk56OpenUniversalPlayer = function(url, title) {
+if (!url) {
+if (typeof showToast === 'function') showToast('⚠️ URL video kosong', 'error');
+return;
+}
+currentVideoUrl = url;
+currentVideoTitle = title || 'Video';
+
+// 🔑 NORMALISASI URL (kunci utama - biar bisa diputar di semua device)
+const normalized = normalizeVideoUrl(url);
+currentVideoType = normalized.type;
+
+// Update UI
+const modal = document.getElementById('bk56-universal-player');
+const titleEl = document.getElementById('bk56-up-title-text');
+const iconEl = document.getElementById('bk56-up-icon');
+const badgeEl = document.getElementById('bk56-up-type-badge');
+const urlDisplay = document.getElementById('bk56-up-url-display');
+const openNewBtn = document.getElementById('bk56-up-open-new');
+const downloadBtn = document.getElementById('bk56-up-download');
+const content = document.getElementById('bk56-up-content');
+const loading = document.getElementById('bk56-up-loading');
+const errorBox = document.getElementById('bk56-up-error');
+
+if (titleEl) titleEl.textContent = currentVideoTitle;
+if (badgeEl) badgeEl.textContent = normalized.label.toUpperCase();
+if (urlDisplay) urlDisplay.textContent = normalized.originalUrl || url;
+
+// Icon berdasarkan tipe
+const icons = {
+youtube: '📺', gdrive: '📁', vimeo: '🎥',
+dropbox: '📦', direct: '🎬', 'docs-viewer': '📄', unknown: '🔗'
+};
+if (iconEl) iconEl.textContent = icons[normalized.type] || '🎬';
+
+// Tombol "Buka di tab baru" - pakai URL ASLI (bukan normalized)
+if (openNewBtn) {
+openNewBtn.href = normalized.originalUrl || url;
+}
+
+// Tombol download (hanya untuk direct video)
+if (downloadBtn) {
+if (normalized.type === 'direct') {
+downloadBtn.href = normalized.url;
+downloadBtn.style.display = '';
+} else {
+downloadBtn.style.display = 'none';
+}
+}
+
+// Tombol di error box juga
+const errorOpenBtn = document.getElementById('bk56-up-error-open');
+if (errorOpenBtn) {
+errorOpenBtn.href = normalized.originalUrl || url;
+}
+
+// Reset state
+if (loading) loading.style.display = 'flex';
+if (errorBox) errorBox.classList.remove('show');
+if (content) content.innerHTML = '';
+
+// Render konten berdasarkan tipe
+renderVideoContent(normalized);
+
+// Tampilkan modal
+if (modal) modal.classList.add('show');
+
+// Auto-hide loading setelah 10 detik (fallback jika onload tidak trigger)
+clearTimeout(errorTimer);
+errorTimer = setTimeout(function() {
+if (loading && loading.style.display !== 'none') {
+showVideoError('timeout', normalized);
+}
+}, 10000);
+};
+
+/* ================================================================
+* 🎬 RENDER: Tampilkan konten video berdasarkan tipe
+================================================================ */
+function renderVideoContent(normalized) {
+const content = document.getElementById('bk56-up-content');
+const loading = document.getElementById('bk56-up-loading');
+if (!content) return;
+
+if (normalized.type === 'direct') {
+// === DIRECT VIDEO (mp4, webm, dll) → gunakan <video> tag ===
+const video = document.createElement('video');
+video.src = normalized.url;
+video.controls = true;
+video.autoplay = false;
+video.style.width = '100%';
+video.style.height = '100%';
+video.style.background = '#000';
+video.onloadeddata = function() {
+if (loading) loading.style.display = 'none';
+};
+video.onerror = function() {
+showVideoError('load-error', normalized);
+};
+content.appendChild(video);
+} else if (normalized.embeddable) {
+// === EMBEDDABLE (YouTube, GDrive, Vimeo, dll) → gunakan iframe ===
+const iframe = document.createElement('iframe');
+iframe.src = normalized.url;
+iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+iframe.allowFullscreen = true;
+iframe.style.width = '100%';
+iframe.style.height = '100%';
+iframe.style.border = '0';
+iframe.style.background = '#000';
+iframe.onload = function() {
+if (loading) loading.style.display = 'none';
+};
+iframe.onerror = function() {
+showVideoError('load-error', normalized);
+};
+content.appendChild(iframe);
+
+// Fallback: jika iframe tidak load dalam 8 detik → tampilkan error
+setTimeout(function() {
+if (loading && loading.style.display !== 'none') {
+// Beberapa embed (seperti GDrive) tidak trigger onload
+// Jadi kita biarkan loading hilang via timeout 10 detik di atas
+}
+}, 8000);
+} else {
+// === UNKNOWN → tampilkan error dengan solusi ===
+showVideoError('not-embeddable', normalized);
+}
+}
+
+/* ================================================================
+* ⚠️ ERROR HANDLER: Tampilkan error dengan solusi
+================================================================ */
+function showVideoError(errorType, normalized) {
+const loading = document.getElementById('bk56-up-loading');
+const errorBox = document.getElementById('bk56-up-error');
+const errorTitle = document.getElementById('bk56-up-error-title');
+const errorMsg = document.getElementById('bk56-up-error-msg');
+const errorTips = document.getElementById('bk56-up-error-tips');
+const errorTipsList = document.getElementById('bk56-up-error-tips-list');
+
+if (loading) loading.style.display = 'none';
+if (!errorBox) return;
+
+let title = 'Video Tidak Bisa Diputar';
+let msg = 'Terjadi masalah saat memuat video ini.';
+let tips = [];
+
+switch(errorType) {
+case 'timeout':
+title = '⏱️ Video Terlalu Lama Dimuat';
+msg = 'Video tidak merespons dalam waktu 10 detik. Kemungkinan koneksi lambat atau URL tidak valid.';
+tips = [
+'Klik <strong>"Buka di Tab Baru"</strong> untuk mencoba di tab terpisah',
+'Periksa koneksi internet Anda',
+'Pastikan URL video masih aktif dan bisa diakses',
+'Jika video Google Drive, pastikan sudah di-share "Anyone with the link"'
+];
+break;
+case 'load-error':
+title = '❌ Gagal Memuat Video';
+msg = 'Video tidak dapat dimuat. File mungkin sudah dihapus, dipindah, atau URL salah.';
+tips = [
+'Klik <strong>"Buka di Tab Baru"</strong> untuk membuka URL asli',
+'Periksa apakah URL video masih valid',
+'Hubungi guru BK untuk memperbarui link video'
+];
+break;
+case 'not-embeddable':
+title = '🔗 Format URL Tidak Didukung';
+msg = 'URL ini tidak bisa diputar langsung di player. Silakan buka di tab baru.';
+tips = [
+'Klik <strong>"Buka di Tab Baru"</strong> untuk membuka video',
+'Gunakan URL format: YouTube, Google Drive, Vimeo, atau file video langsung (.mp4, .webm)',
+'Minta guru BK untuk memperbarui link ke format yang didukung'
+];
+break;
+case 'gdrive-permission':
+title = '🔒 Google Drive: Izin Akses Ditolak';
+msg = 'File di Google Drive belum di-share ke "Anyone with the link".';
+tips = [
+'Buka Google Drive → klik kanan file → <strong>Share</strong>',
+'Ubah akses menjadi <strong>"Anyone with the link"</strong> (Siapa pun yang memiliki link)',
+'Tunggu 1-2 menit lalu coba putar lagi',
+'Atau klik <strong>"Buka di Tab Baru"</strong> dan login ke Google'
+];
+break;
+}
+
+if (errorTitle) errorTitle.textContent = title;
+if (errorMsg) errorMsg.innerHTML = msg;
+if (errorTips && errorTipsList && tips.length > 0) {
+errorTipsList.innerHTML = tips.map(function(t){ return '<li>' + t + '</li>'; }).join('');
+errorTips.style.display = 'block';
+}
+errorBox.classList.add('show');
+}
+
+/* ================================================================
+* 🔄 RETRY: Coba muat ulang video
+================================================================ */
+window.bk56RetryUniversalPlayer = function() {
+if (currentVideoUrl) {
+const errorBox = document.getElementById('bk56-up-error');
+if (errorBox) errorBox.classList.remove('show');
+const loading = document.getElementById('bk56-up-loading');
+if (loading) loading.style.display = 'flex';
+const content = document.getElementById('bk56-up-content');
+if (content) content.innerHTML = '';
+const normalized = normalizeVideoUrl(currentVideoUrl);
+renderVideoContent(normalized);
+clearTimeout(errorTimer);
+errorTimer = setTimeout(function() {
+if (loading && loading.style.display !== 'none') {
+showVideoError('timeout', normalized);
+}
+}, 10000);
+}
+};
+
+/* ================================================================
+* 🚪 TUTUP VIDEO PLAYER
+================================================================ */
+window.bk56CloseUniversalPlayer = function() {
+const modal = document.getElementById('bk56-universal-player');
+if (modal) modal.classList.remove('show');
+// Hapus konten untuk stop video
+const content = document.getElementById('bk56-up-content');
+if (content) content.innerHTML = '';
+clearTimeout(errorTimer);
+currentVideoUrl = '';
+};
+
+/* ================================================================
+* 🛡️ HOOK 1: Override bukaVideoLangsung
+*    → Panggil universal player, bukan buka tab baru
+================================================================ */
+if (typeof window.bukaVideoLangsung === 'function' && !window.bukaVideoLangsung.__upHooked) {
+const _orig = window.bukaVideoLangsung;
+window.bukaVideoLangsung = function(videoIdx) {
+try {
+const all = loadVideoData();
+const data = all[videoIdx] || [];
+if (data.length === 0) {
+if (typeof showToast === 'function') {
+showToast('⚠️ Belum ada link video. Klik ⚙️ Kelola untuk menambah.', 'error');
+}
+return;
+}
+// 🔑 NORMALISASI URL sebelum dibuka (penting untuk lintas device)
+const rawUrl = data[0];
+const normalized = normalizeVideoUrl(rawUrl);
+
+// Jika hanya 1 link → buka langsung di universal player
+if (data.length === 1) {
+bk56OpenUniversalPlayer(rawUrl, 'Video ' + (videoIdx + 1));
+return;
+}
+// Jika banyak link → buka modal picker (pakai yang asli)
+_orig.apply(this, arguments);
+} catch(e) {
+console.error('❌ [UniversalPlayer] Hook error:', e);
+_orig.apply(this, arguments);
+}
+};
+window.bukaVideoLangsung.__upHooked = true;
+console.log('✅ [UniversalPlayer] bukaVideoLangsung di-hook');
+}
+
+/* ================================================================
+* 🛡️ HOOK 2: Override openVideoLink (dari modal kelola video)
+================================================================ */
+if (typeof window.openVideoLink === 'function' && !window.openVideoLink.__upHooked) {
+const _orig = window.openVideoLink;
+window.openVideoLink = function(idx) {
+try {
+if (typeof currentVideoEdit === 'undefined' || !currentVideoEdit) {
+if (typeof showToast === 'function') showToast('⚠️ Modal video tidak aktif', 'error');
+return;
+}
+const all = loadVideoData();
+const list = all[currentVideoEdit.videoIdx] || [];
+const url = list[idx];
+if (!url) {
+if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
+return;
+}
+// 🔑 Buka di universal player (bukan tab baru)
+bk56OpenUniversalPlayer(url, currentVideoEdit.videoNama || 'Video');
+} catch(e) {
+console.error('❌ [UniversalPlayer] Hook error:', e);
+_orig.apply(this, arguments);
+}
+};
+window.openVideoLink.__upHooked = true;
+console.log('✅ [UniversalPlayer] openVideoLink di-hook');
+}
+
+/* ================================================================
+* 🛡️ HOOK 3: Intercept klik di anchor .video-link-url
+*    → Buka di universal player, bukan tab baru
+================================================================ */
+document.addEventListener('click', function(e) {
+const anchor = e.target.closest('.video-link-url, .materi-link-url');
+if (!anchor) return;
+// Cek apakah di dalam modal video
+const videoModal = document.getElementById('video-modal');
+if (!videoModal || !videoModal.contains(anchor)) return;
+e.preventDefault();
+e.stopPropagation();
+const url = anchor.getAttribute('href');
+if (!url || url === '#') return;
+bk56OpenUniversalPlayer(url, 'Video');
+}, true);
+
+/* ================================================================
+* 🛡️ HOOK 4: Override addVideoLink → normalisasi URL saat disimpan
+*    → Ini KUNCI agar URL yang tersimpan sudah dalam format yang benar
+================================================================ */
+if (typeof window.addVideoLink === 'function' && !window.addVideoLink.__upSaveHooked) {
+const _orig = window.addVideoLink;
+window.addVideoLink = function() {
+// 🔑 Ambil URL dari input SEBELUM disimpan
+const input = document.getElementById('input-video');
+if (input && input.value.trim()) {
+const rawUrl = input.value.trim();
+const normalized = normalizeVideoUrl(rawUrl);
+// Ganti value input dengan URL yang sudah dinormalisasi
+// (hanya jika berbeda - agar tidak loop)
+if (normalized.url && normalized.url !== rawUrl) {
+input.value = normalized.url;
+console.log('✅ [UniversalPlayer] URL dinormalisasi saat disimpan:', rawUrl.slice(0, 40), '→', normalized.url.slice(0, 40));
+}
+}
+// Panggil fungsi asli
+const result = _orig.apply(this, arguments);
+// Setelah selesai, sync ke embedded
+setTimeout(function() {
+const data = loadVideoData();
+if (data) syncVideoToEmbedded(data);
+}, 150);
+return result;
+};
+window.addVideoLink.__upSaveHooked = true;
+console.log('✅ [UniversalPlayer] addVideoLink di-hook (normalisasi URL saat simpan)');
+}
+
+/* ================================================================
+* 🛡️ HOOK 5: Override removeVideoLink → sync ke embedded
+================================================================ */
+if (typeof window.removeVideoLink === 'function' && !window.removeVideoLink.__upSaveHooked) {
+const _orig = window.removeVideoLink;
+window.removeVideoLink = function() {
+const result = _orig.apply(this, arguments);
+setTimeout(function() {
+const data = loadVideoData();
+if (data) syncVideoToEmbedded(data);
+}, 150);
+return result;
+};
+window.removeVideoLink.__upSaveHooked = true;
+console.log('✅ [UniversalPlayer] removeVideoLink di-hook');
+}
+
+/* ================================================================
+* 🛡️ HOOK 6: Override bk56BackupToHTML → include video di backup
+================================================================ */
+if (typeof window.bk56BackupToHTML === 'function' && !window.bk56BackupToHTML.__upHooked) {
+const _orig = window.bk56BackupToHTML;
+window.bk56BackupToHTML = function() {
+// 🔑 Sync video ke embedded SEBELUM backup
+const data = loadVideoData();
+if (data) {
+syncVideoToEmbedded(data);
+console.log('✅ [UniversalPlayer] Video ter-embed sebelum backup');
+}
+return _orig.apply(this, arguments);
+};
+window.bk56BackupToHTML.__upHooked = true;
+console.log('✅ [UniversalPlayer] bk56BackupToHTML di-hook');
+}
+
+/* ================================================================
+* ⌨️ KEYBOARD: ESC untuk tutup modal
+================================================================ */
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+const modal = document.getElementById('bk56-universal-player');
+if (modal && modal.classList.contains('show')) {
+bk56CloseUniversalPlayer();
+}
+}
+});
+
+/* ================================================================
+* 🖱️ CLICK OUTSIDE: Tutup modal jika klik di luar
+================================================================ */
+document.addEventListener('click', function(e) {
+const modal = document.getElementById('bk56-universal-player');
+if (modal && modal.classList.contains('show')) {
+if (e.target === modal) bk56CloseUniversalPlayer();
+}
+}, true);
+
+/* ================================================================
+* 🔄 PERIODIC SYNC (setiap 15 detik)
+================================================================ */
+setInterval(function() {
+const localData = loadVideoData();
+const emb = readEmb();
+if (!emb) return;
+if (localData && Object.keys(localData).length > 0) {
+const embVideo = emb.video || {};
+if (JSON.stringify(localData) !== JSON.stringify(embVideo)) {
+syncVideoToEmbedded(localData);
+}
+} else if (emb.video && Object.keys(emb.video).length > 0) {
+saveVideoData(emb.video);
+}
+}, 15000);
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+console.log('🚀 [UniversalPlayer Patch] v1.0.0 dimulai...');
+console.log('📌 Fitur:');
+console.log('   ✅ Auto-normalisasi URL (GDrive, YouTube, Vimeo, Dropbox)');
+console.log('   ✅ Modal player dengan iframe/video tag');
+console.log('   ✅ Error handler + fallback "Buka di tab baru"');
+console.log('   ✅ Panduan sharing permission untuk Google Drive');
+console.log('   ✅ Lintas device — URL yang sama bisa diputar di mana saja');
+console.log('   ✅ Normalisasi URL saat disimpan (bukan hanya saat dibuka)');
+console.log('   ✅ Auto-restore dari embedded JSON');
+
+// 1. Auto-restore dari embedded
+autoRestoreVideo();
+
+// 2. Initial sync ke embedded
+setTimeout(function() {
+const data = loadVideoData();
+if (data && Object.keys(data).length > 0) {
+syncVideoToEmbedded(data);
+console.log('✅ [UniversalPlayer] Initial sync selesai');
+}
+}, 2000);
+
+// 3. Sync saat visibility change
+document.addEventListener('visibilitychange', function() {
+if (!document.hidden) autoRestoreVideo();
+});
+
+console.log('✅ [UniversalPlayer Patch] Terpasang — semua hook aktif');
+}
+
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', init);
+} else {
+init();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH FINAL: UNIVERSAL VIDEO PLAYER (CROSS-DEVICE) [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: UNIVERSAL VIDEO PLAYER - ADMIN BK56 ========== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: UNIVERSAL VIDEO PLAYER - ADMINISTRASI BK56
+* ================================================================
+* MASALAH:
+* ❌ Di modal Materi (tab Video), tombol 🔗 memanggil openMateriLink()
+*    yang membuka tab baru → tidak melewati universal player
+*
+* SOLUSI:
+* ✅ 1. Hook openMateriLink → redirect ke bk56OpenUniversalPlayer
+* ✅ 2. Intercept klik anchor .materi-link-url di panel video
+* ✅ 3. Intercept klik tombol 🔗 di panel video
+* ✅ 4. Fallback aman jika universal player belum tersedia
+*
+* ANTI-CONFLICT:
+* - Flag: window.__bk56AdminVideoPlayerPatched
+* - Event delegation (bukan inline override)
+* - Tidak sentuh fungsi inti lainnya
+================================================================ */
+const FLAG = '__bk56AdminVideoPlayerPatched';
+if (window[FLAG]) {
+  console.log('ℹ️ [AdminVideo] Patch sudah terpasang, skip');
+  return;
+}
+window[FLAG] = true;
+
+/* ================================================================
+* 🔑 HELPER: Cek apakah universal player tersedia
+================================================================ */
+function isUniversalPlayerReady() {
+  return typeof window.bk56OpenUniversalPlayer === 'function';
+}
+
+/* ================================================================
+* 🔑 HELPER: Buka video di universal player (dengan fallback)
+================================================================ */
+function openVideoInPlayer(url, title) {
+  if (!url) {
+    if (typeof showToast === 'function') showToast('⚠️ URL video kosong', 'error');
+    return;
+  }
+  if (isUniversalPlayerReady()) {
+    window.bk56OpenUniversalPlayer(url, title || 'Video Materi');
+  } else {
+    // Fallback: buka di tab baru
+    console.warn('⚠️ [AdminVideo] Universal player tidak tersedia, fallback ke tab baru');
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+}
+
+/* ================================================================
+* 🛡️ LAYER 1: Hook openMateriLink → redirect video ke universal player
+================================================================ */
+if (typeof window.openMateriLink === 'function' && !window.openMateriLink.__adminVideoHooked) {
+  const _orig = window.openMateriLink;
+  window.openMateriLink = function(idx, type) {
+    if (type === 'video') {
+      // Ambil URL dari localStorage
+      try {
+        const MATERI_KEY = 'bk56_materi_links';
+        const raw = localStorage.getItem(MATERI_KEY);
+        if (raw) {
+          const allData = JSON.parse(raw);
+          // Cari currentMateriEdit dari DOM modal
+          const titleEl = document.getElementById('materi-modal-title');
+          const title = titleEl ? titleEl.textContent : 'Video Materi';
+          
+          // Cari data video dari semua key yang mungkin
+          let foundUrl = null;
+          for (const key in allData) {
+            const data = allData[key];
+            if (data && data.video && data.video[idx]) {
+              foundUrl = data.video[idx];
+              break;
+            }
+          }
+          
+          if (foundUrl) {
+            openVideoInPlayer(foundUrl, title);
+            return;
+          }
+        }
+      } catch(e) {
+        console.warn('⚠️ [AdminVideo] Gagal ambil URL video:', e);
+      }
+    }
+    // Fallback ke fungsi asli
+    return _orig.apply(this, arguments);
+  };
+  window.openMateriLink.__adminVideoHooked = true;
+  console.log('✅ [AdminVideo] openMateriLink di-hook untuk video');
+}
+
+/* ================================================================
+* 🛡️ LAYER 2: Intercept klik anchor .materi-link-url di panel video
+================================================================ */
+document.addEventListener('click', function(e) {
+  const anchor = e.target.closest('.materi-link-url');
+  if (!anchor) return;
+  
+  const modal = document.getElementById('materi-modal');
+  if (!modal || !modal.contains(anchor)) return;
+  
+  // Cek apakah anchor berada di panel video
+  const panel = anchor.closest('.materi-panel');
+  if (!panel || panel.id !== 'panel-video') return;
+  
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const url = anchor.getAttribute('href');
+  if (!url || url === '#' || url === 'about:blank') return;
+  
+  // Ambil judul dari modal header
+  const titleEl = document.getElementById('materi-modal-title');
+  const title = titleEl ? titleEl.textContent : 'Video Materi';
+  
+  openVideoInPlayer(url, title);
+}, true);
+
+/* ================================================================
+* 🛡️ LAYER 3: Intercept klik tombol 🔗 di panel video
+================================================================ */
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.materi-btn-icon.open');
+  if (!btn) return;
+  
+  const modal = document.getElementById('materi-modal');
+  if (!modal || !modal.contains(btn)) return;
+  
+  // Cek apakah di panel video
+  const panel = btn.closest('.materi-panel');
+  if (!panel || panel.id !== 'panel-video') return;
+  
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // Cari URL dari anchor di item yang sama
+  const item = btn.closest('.materi-link-item');
+  if (!item) return;
+  const anchor = item.querySelector('.materi-link-url');
+  if (!anchor) return;
+  
+  const url = anchor.getAttribute('href');
+  if (!url || url === '#' || url === 'about:blank') return;
+  
+  const titleEl = document.getElementById('materi-modal-title');
+  const title = titleEl ? titleEl.textContent : 'Video Materi';
+  
+  openVideoInPlayer(url, title);
+}, true);
+
+/* ================================================================
+* 🛡️ LAYER 4: Intercept klik tombol "🎬 Buka Video" di card materi
+*    (jika ada card yang menampilkan video langsung)
+================================================================ */
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.a56-btn-video');
+  if (!btn) return;
+  
+  // Cek apakah di halaman adminbk56
+  const adminPage = document.getElementById('adminbk56');
+  if (!adminPage || !adminPage.contains(btn)) return;
+  
+  // Cek apakah ini tombol buka video (bukan kelola)
+  const onclickAttr = btn.getAttribute('onclick') || '';
+  if (!onclickAttr.includes('bukaVideoLangsung')) return;
+  
+  // Fungsi bukaVideoLangsung sudah di-hook oleh patch sebelumnya
+  // Tidak perlu hook lagi di sini
+}, true);
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+  console.log('🚀 [AdminVideo Patch] v1.0.0 dimulai...');
+  console.log('📌 Fitur:');
+  console.log('   ✅ Hook openMateriLink → redirect video ke universal player');
+  console.log('   ✅ Intercept anchor click di modal materi (panel video)');
+  console.log('   ✅ Intercept tombol 🔗 di modal materi (panel video)');
+  console.log('   ✅ Fallback aman jika universal player tidak tersedia');
+  
+  // Cek apakah universal player tersedia
+  if (isUniversalPlayerReady()) {
+    console.log('✅ [AdminVideo] Universal player tersedia');
+  } else {
+    console.warn('⚠️ [AdminVideo] Universal player TIDAK tersedia — akan fallback ke tab baru');
+  }
+  
+  console.log('✅ [AdminVideo Patch] Terpasang — 3 layer proteksi aktif');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: UNIVERSAL VIDEO PLAYER - ADMIN BK56 [END] ========== -->
+<!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ========== PATCH FIX: MODAL MATERI AKTIF (SELF-CONTAINED) ========== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH FIX: MODAL MATERI TIDAK AKTIF
+* ================================================================
+* AKAR MASALAH:
+* ❌ 1. Patch FINAL FIX override window.render() tanpa memanggil
+*       enhanceMateriCards() → tombol ⚙️ tidak pernah di-inject
+* ❌ 2. openMateriModal() asli bergantung pada variabel internal IIFE
+*       (currentMateriEdit, renderMateriModal) yang tidak bisa diakses
+* ❌ 3. Banyak override window.render() saling menimpa → chain putus
+*
+* SOLUSI:
+* ✅ 1. Versi SELF-CONTAINED — tidak bergantung variabel internal IIFE
+* ✅ 2. MutationObserver auto-inject tombol ⚙️ di setiap kartu materi
+* ✅ 3. Flag anti-double (__bk56ModalMateriFixPatched)
+* ✅ 4. Override openMateriModal → redirect ke versi fix
+* ✅ 5. Hook render, pindahKelas, setGuru, setKat untuk auto-apply
+* ✅ 6. ID unik (bk56-*, input-fix-*) — tidak bentrok patch existing
+================================================================ */
+const FLAG = '__bk56ModalMateriFixPatched';
+if (window[FLAG]) {
+  console.log('ℹ️ [ModalMateriFix] Patch sudah terpasang, skip');
+  return;
+}
+window[FLAG] = true;
+
+const MATERI_KEY = 'bk56_materi_links';
+
+/* ================================================================
+* 🔧 HELPER: Escape HTML
+================================================================ */
+function escFix(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ================================================================
+* 🔧 HELPER: Load/Save materi links (akses localStorage langsung)
+================================================================ */
+function loadMateriLinksFix() {
+  try {
+    const raw = localStorage.getItem(MATERI_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch(e) {}
+  return {};
+}
+
+function saveMateriLinksFix(data) {
+  try {
+    localStorage.setItem(MATERI_KEY, JSON.stringify(data || {}));
+  } catch(e) {
+    console.warn('⚠️ [ModalMateriFix] Gagal simpan:', e);
+  }
+}
+
+function getMateriDataFix(kelas, guru, materiIdx) {
+  const all = loadMateriLinksFix();
+  const key = kelas + '_' + guru + '_' + materiIdx;
+  return all[key] || { ppt: [], pdf: [], doc: [], video: [] };
+}
+
+function setMateriDataFix(kelas, guru, materiIdx, data) {
+  const all = loadMateriLinksFix();
+  const key = kelas + '_' + guru + '_' + materiIdx;
+  all[key] = data;
+  saveMateriLinksFix(all);
+}
+
+function getMateriIndexFix(kelas, guru, docIdx) {
+  if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return -1;
+  let idx = 0;
+  for (let i = 0; i < DOCS.length; i++) {
+    const d = DOCS[i];
+    if (d.kelas === kelas && d.guru === guru && d.kat === 'materi') {
+      if (i === docIdx) return idx;
+      idx++;
+    }
+  }
+  return -1;
+}
+
+/* ================================================================
+* 🎯 FUNGSI UTAMA: Buka Modal Materi (SELF-CONTAINED)
+*    → Tidak bergantung pada variabel internal IIFE manapun
+================================================================ */
+window.bk56OpenMateriModalFix = function(docIdx) {
+  if (typeof DOCS === 'undefined' || !DOCS[docIdx]) {
+    if (typeof showToast === 'function') showToast('⚠️ Dokumen tidak ditemukan', 'error');
+    return;
+  }
+  const doc = DOCS[docIdx];
+  if (doc.kat !== 'materi') return;
+
+  const materiIdx = getMateriIndexFix(doc.kelas, doc.guru, docIdx);
+  if (materiIdx < 0) {
+    if (typeof showToast === 'function') showToast('⚠️ Index materi tidak ditemukan', 'error');
+    return;
+  }
+
+  const guru = (typeof GURU !== 'undefined' && GURU[doc.guru])
+    ? GURU[doc.guru]
+    : { nama: doc.guru, inisial: '?', warna: '#6b7280' };
+  const kelasLabel = (typeof KELAS !== 'undefined' && KELAS[doc.kelas])
+    ? KELAS[doc.kelas]
+    : doc.kelas.toUpperCase();
+
+  // Set state global (pengganti variabel internal IIFE)
+  window.currentMateriEditFix = {
+    kelas: doc.kelas,
+    guru: doc.guru,
+    materiIdx: materiIdx,
+    materiNama: doc.nama,
+    guruNama: guru.nama,
+    docIdx: docIdx
+  };
+  window.currentMateriTypeFix = 'ppt';
+
+  // Reset tab ke PPT
+  document.querySelectorAll('.materi-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.type === 'ppt');
+  });
+  document.querySelectorAll('.materi-panel').forEach(function(p) {
+    p.classList.toggle('active', p.id === 'panel-ppt');
+  });
+
+  // Update header modal
+  const titleEl = document.getElementById('materi-modal-title');
+  const subtitleEl = document.getElementById('materi-modal-subtitle');
+  if (titleEl) titleEl.textContent = '📚 ' + doc.nama + ' — ' + kelasLabel;
+  if (subtitleEl) subtitleEl.textContent =
+    'Guru BK: ' + guru.nama + ' • Kelola link materi (PPT, PDF, DOC, Video)';
+
+  // Render panels
+  renderMateriPanelsFix();
+
+  // Show modal
+  const modal = document.getElementById('materi-modal');
+  if (modal) {
+    modal.classList.add('show');
+    console.log('✅ [ModalMateriFix] Modal ditampilkan untuk:', doc.nama);
+  } else {
+    console.error('❌ [ModalMateriFix] #materi-modal tidak ditemukan di DOM!');
+  }
+};
+
+/* ================================================================
+* 🎨 RENDER: Render panels materi (self-contained)
+================================================================ */
+function renderMateriPanelsFix() {
+  const edit = window.currentMateriEditFix;
+  if (!edit) return;
+
+  const data = getMateriDataFix(edit.kelas, edit.guru, edit.materiIdx);
+  const types = ['ppt', 'pdf', 'doc', 'video'];
+  const icons = { ppt: '📊', pdf: '📄', doc: '📝', video: '🎬' };
+  const labels = {
+    ppt: 'PowerPoint',
+    pdf: 'PDF Document',
+    doc: 'Word Document',
+    video: 'Video Pembelajaran'
+  };
+
+  types.forEach(function(type) {
+    const panel = document.getElementById('panel-' + type);
+    if (!panel) return;
+    const list = data[type] || [];
+
+    let html = '<div class="materi-panel-title">' + icons[type] + ' ' + labels[type] +
+      ' <span style="font-size:0.78rem;color:#9a3412;font-weight:500;">(' + list.length + ' link)</span></div>';
+
+    if (list.length === 0) {
+      html += '<div class="materi-empty">' +
+        '<div class="materi-empty-icon">' + icons[type] + '</div>' +
+        '<div class="materi-empty-text">Belum ada link ' + labels[type] + '</div>' +
+        '<div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">Tambahkan link di bawah ini</div>' +
+        '</div>';
+    } else {
+      html += '<div class="materi-link-list">';
+      list.forEach(function(url, i) {
+        const displayUrl = url.length > 60 ? url.substring(0, 57) + '...' : url;
+        html += '<div class="materi-link-item">' +
+          '<div class="materi-link-num">' + (i+1) + '</div>' +
+          '<a class="materi-link-url" href="' + escFix(url) + '" target="_blank" rel="noopener" title="' + escFix(url) + '">' + escFix(displayUrl) + '</a>' +
+          '<div class="materi-link-actions">' +
+          '<button class="materi-btn-icon open" onclick="bk56OpenMateriLinkFix(' + i + ',\'' + type + '\')" title="Buka link">🔗</button>' +
+          '<button class="materi-btn-icon del" onclick="bk56RemoveMateriLinkFix(' + i + ',\'' + type + '\')" title="Hapus link">🗑️</button>' +
+          '</div></div>';
+      });
+      html += '</div>';
+    }
+
+    // Input tambah link (ID unik: input-fix-{type})
+    html += '<div class="materi-add-section">' +
+      '<div class="materi-input-wrap">' +
+      '<input type="text" id="input-fix-' + type + '" placeholder="Tempel URL ' + labels[type] + ' di sini..." onkeypress="if(event.key===\'Enter\') bk56AddMateriLinkFix(\'' + type + '\')">' +
+      '</div>' +
+      '<button class="materi-btn-add" onclick="bk56AddMateriLinkFix(\'' + type + '\')">➕ Tambah Link</button>' +
+      '</div>';
+
+    panel.innerHTML = html;
+  });
+
+  // Update counter di tab
+  ['ppt','pdf','doc','video'].forEach(function(type) {
+    const el = document.getElementById('count-' + type);
+    if (el) el.textContent = (data[type] || []).length;
+  });
+}
+
+/* ================================================================
+* ➕ ADD / 🗑️ REMOVE / 🔗 OPEN link (self-contained)
+================================================================ */
+window.bk56AddMateriLinkFix = function(type) {
+  const edit = window.currentMateriEditFix;
+  if (!edit) return;
+  const input = document.getElementById('input-fix-' + type);
+  if (!input) return;
+  const url = input.value.trim();
+  if (!url) {
+    if (typeof showToast === 'function') showToast('⚠️ Masukkan URL terlebih dahulu', 'error');
+    input.focus();
+    return;
+  }
+  let finalUrl = url;
+  if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+    finalUrl = 'https://' + url;
+  }
+  const data = getMateriDataFix(edit.kelas, edit.guru, edit.materiIdx);
+  if (!data[type]) data[type] = [];
+  data[type].push(finalUrl);
+  setMateriDataFix(edit.kelas, edit.guru, edit.materiIdx, data);
+  input.value = '';
+  renderMateriPanelsFix();
+  if (typeof showToast === 'function') showToast('✅ Link ' + type.toUpperCase() + ' berhasil ditambahkan!', 'success');
+};
+
+window.bk56RemoveMateriLinkFix = function(idx, type) {
+  const edit = window.currentMateriEditFix;
+  if (!edit) return;
+  if (!confirm('🗑️ Yakin ingin menghapus link ini?\nLink akan hilang permanen.')) return;
+  const data = getMateriDataFix(edit.kelas, edit.guru, edit.materiIdx);
+  if (data[type] && data[type][idx] !== undefined) {
+    data[type].splice(idx, 1);
+    setMateriDataFix(edit.kelas, edit.guru, edit.materiIdx, data);
+    renderMateriPanelsFix();
+    if (typeof showToast === 'function') showToast('🗑️ Link berhasil dihapus', 'info');
+  }
+};
+
+window.bk56OpenMateriLinkFix = function(idx, type) {
+  const edit = window.currentMateriEditFix;
+  if (!edit) return;
+  const data = getMateriDataFix(edit.kelas, edit.guru, edit.materiIdx);
+  const url = data[type] && data[type][idx];
+  if (!url) {
+    if (typeof showToast === 'function') showToast('⚠️ Link tidak valid', 'error');
+    return;
+  }
+  // Video → buka di Universal Player (jika tersedia)
+  if (type === 'video' && typeof window.bk56OpenUniversalPlayer === 'function') {
+    window.bk56OpenUniversalPlayer(url, 'Video Materi');
+  } else {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+};
+
+window.bk56CloseMateriModalFix = function() {
+  const modal = document.getElementById('materi-modal');
+  if (modal) modal.classList.remove('show');
+  window.currentMateriEditFix = null;
+  // Refresh kartu agar badge update
+  if (typeof window.render === 'function') {
+    try { window.render(true); } catch(e) {}
+  }
+};
+
+/* ================================================================
+* 🔑 OVERRIDE: openMateriModal & closeMateriModal → redirect ke fix
+================================================================ */
+window.openMateriModal = function(docIdx) {
+  window.bk56OpenMateriModalFix(docIdx);
+};
+window.closeMateriModal = function() {
+  window.bk56CloseMateriModalFix();
+};
+
+/* ================================================================
+* 🔑 FIX: switchMateriTab (jika belum ada atau broken)
+================================================================ */
+if (typeof window.switchMateriTab !== 'function' || window.switchMateriTab.__fixPatched) {
+  window.switchMateriTab = function(type, btn) {
+    window.currentMateriTypeFix = type;
+    document.querySelectorAll('.materi-tab').forEach(function(t) {
+      t.classList.toggle('active', t === btn);
+    });
+    document.querySelectorAll('.materi-panel').forEach(function(p) {
+      p.classList.toggle('active', p.id === 'panel-' + type);
+    });
+  };
+  window.switchMateriTab.__fixPatched = true;
+}
+
+/* ================================================================
+* 🔑 ENSURE: Tombol ⚙️ selalu ada di kartu materi
+*    → Dipanggil setiap kali kartu di-render
+================================================================ */
+function ensureManageButton() {
+  const cards = document.querySelectorAll('#grid-dokumen .a56-card');
+  cards.forEach(function(card) {
+    const pathEl = card.querySelector('.a56-path');
+    if (!pathEl) return;
+    if (!/Materi/i.test(pathEl.textContent || '')) return;
+
+    // Cari tombol utama (bisa dari berbagai patch)
+    const btnOpen = card.querySelector(
+      '.a56-btn-materi-open-final, .a56-btn-materi, .a56-btn-link-open, .a56-btn'
+    );
+    if (!btnOpen) return;
+
+    // Cari docIdx dari onclick
+    const onclickAttr = btnOpen.getAttribute('onclick') || '';
+    const match = onclickAttr.match(/(?:openMateriFinal|openMateriModal|bukaDoc)\((\d+)\)/);
+    if (!match) return;
+    const docIdx = parseInt(match[1]);
+
+    // Cek apakah sudah ada tombol manage fix (anti-double)
+    if (card.querySelector('.bk56-materi-manage-fix')) return;
+
+    // Cari atau buat wrapper actions
+    let actionsWrap = card.querySelector('.a56-materi-actions-final, .a56-link-actions-wrap');
+    if (!actionsWrap) {
+      actionsWrap = document.createElement('div');
+      actionsWrap.className = 'a56-materi-actions-final';
+      actionsWrap.style.cssText = 'display:grid;grid-template-columns:1fr 44px;gap:8px;margin-top:8px;';
+      btnOpen.parentNode.insertBefore(actionsWrap, btnOpen.nextSibling);
+      actionsWrap.appendChild(btnOpen);
+    }
+
+    // Buat tombol manage ⚙️
+    const btnManage = document.createElement('button');
+    btnManage.className = 'bk56-materi-manage-fix';
+    btnManage.type = 'button';
+    btnManage.style.cssText = 'background:rgba(255,255,255,.15);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#fff;border:1px solid rgba(255,255,255,.3);width:44px;height:44px;border-radius:10px;cursor:pointer;font-size:1.1rem;transition:all .2s ease;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+    btnManage.innerHTML = '⚙️';
+    btnManage.title = 'Kelola Link Materi (PPT/PDF/DOC/Video)';
+    btnManage.onclick = function(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      window.bk56OpenMateriModalFix(docIdx);
+    };
+    btnManage.onmouseover = function() {
+      this.style.background = 'rgba(255,255,255,.3)';
+      this.style.transform = 'scale(1.08)';
+    };
+    btnManage.onmouseout = function() {
+      this.style.background = 'rgba(255,255,255,.15)';
+      this.style.transform = 'scale(1)';
+    };
+    actionsWrap.appendChild(btnManage);
+  });
+}
+
+/* ================================================================
+* 🔑 HOOK: Fungsi-fungsi yang trigger render → auto-apply
+================================================================ */
+function hookFunction(name) {
+  if (typeof window[name] !== 'function' || window[name].__modalMateriFixHooked) return;
+  const _orig = window[name];
+  window[name] = function() {
+    const result = _orig.apply(this, arguments);
+    setTimeout(ensureManageButton, 300);
+    return result;
+  };
+  window[name].__modalMateriFixHooked = true;
+  console.log('✅ [ModalMateriFix] ' + name + ' di-hook');
+}
+
+hookFunction('render');
+hookFunction('pindahKelas');
+hookFunction('setGuru');
+hookFunction('setKat');
+
+/* ================================================================
+* 🔑 MutationObserver: Auto-apply saat grid-dokumen berubah
+================================================================ */
+function setupObserver() {
+  const grid = document.getElementById('grid-dokumen');
+  if (!grid) {
+    setTimeout(setupObserver, 500);
+    return;
+  }
+  const obs = new MutationObserver(function() {
+    setTimeout(ensureManageButton, 150);
+  });
+  obs.observe(grid, { childList: true, subtree: true });
+  console.log('✅ [ModalMateriFix] MutationObserver aktif pada #grid-dokumen');
+}
+
+/* ================================================================
+* ⌨️ ESC untuk tutup modal
+================================================================ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('materi-modal');
+    if (modal && modal.classList.contains('show')) {
+      window.bk56CloseMateriModalFix();
+    }
+  }
+});
+
+/* ================================================================
+* 🖱️ Klik di luar modal untuk tutup
+================================================================ */
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('materi-modal');
+  if (modal && modal.classList.contains('show')) {
+    if (e.target === modal) window.bk56CloseMateriModalFix();
+  }
+}, true);
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+  console.log('🚀 [ModalMateriFix] Patch dimulai...');
+  console.log('📌 Fitur:');
+  console.log('   ✅ openMateriModal self-contained (bypass IIFE internal)');
+  console.log('   ✅ Tombol ⚙️ auto-inject di setiap kartu materi');
+  console.log('   ✅ Auto-apply via MutationObserver + hook functions');
+  console.log('   ✅ ESC & klik luar untuk tutup modal');
+  console.log('   ✅ switchMateriTab di-fix');
+
+  setupObserver();
+
+  // Initial ensure (beberapa kali untuk pasti)
+  setTimeout(ensureManageButton, 800);
+  setTimeout(ensureManageButton, 2000);
+  setTimeout(ensureManageButton, 4000);
+
+  console.log('✅ [ModalMateriFix] Terpasang — semua handler aktif');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH FIX: MODAL MATERI AKTIF [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH UNIVERSAL: FULLSCREEN VIDEO PLAYER ========== -->
+<!-- ================================================================ -->
+<style id="bk56-fs-style">
+/* ===== TOMBOL FULLSCREEN ===== */
+.bk56-fs-btn{
+  background:linear-gradient(135deg,#10b981,#059669);
+  color:#fff;
+  border:1px solid #10b981;
+  padding:8px 14px;
+  border-radius:10px;
+  font-size:.82rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s ease;
+  font-family:inherit;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+.bk56-fs-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 6px 18px rgba(16,185,129,.4);
+  filter:brightness(1.1);
+}
+.bk56-fs-btn.active{
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  border-color:#f59e0b;
+}
+.bk56-fs-btn .fs-icon{
+  font-size:1rem;
+  transition:transform .3s ease;
+}
+.bk56-fs-btn:hover .fs-icon{
+  transform:scale(1.15);
+}
+
+/* ===== MODE FULLSCREEN ===== */
+#bk56-universal-player.bk56-fs-active{
+  padding:0 !important;
+  background:#000 !important;
+}
+#bk56-universal-player.bk56-fs-active .bk56-up-header,
+#bk56-universal-player.bk56-fs-active .bk56-up-info{
+  display:none !important;
+}
+#bk56-universal-player.bk56-fs-active .bk56-up-frame-wrap{
+  max-width:100% !important;
+  max-height:100% !important;
+  width:100vw !important;
+  height:100vh !important;
+  aspect-ratio:auto !important;
+  border-radius:0 !important;
+  border:none !important;
+  box-shadow:none !important;
+}
+#bk56-universal-player.bk56-fs-active .bk56-up-frame-wrap iframe,
+#bk56-universal-player.bk56-fs-active .bk56-up-frame-wrap video{
+  width:100% !important;
+  height:100% !important;
+  object-fit:contain;
+}
+
+/* ===== FLOATING CLOSE BUTTON (saat fullscreen) ===== */
+.bk56-fs-close-float{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:100021;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  border:2px solid rgba(255,255,255,.3);
+  padding:10px 18px;
+  border-radius:100px;
+  font-size:.85rem;
+  font-weight:700;
+  cursor:pointer;
+  display:none;
+  align-items:center;
+  gap:8px;
+  font-family:inherit;
+  transition:all .2s ease;
+}
+.bk56-fs-close-float.show{
+  display:flex;
+  animation:bk56fsFadeIn .3s ease;
+}
+.bk56-fs-close-float:hover{
+  background:rgba(239,68,68,.9);
+  border-color:rgba(255,255,255,.5);
+  transform:scale(1.05);
+}
+@keyframes bk56fsFadeIn{
+  from{opacity:0;transform:translateY(-10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ===== FULLSCREEN HINT (muncul saat masuk fullscreen) ===== */
+.bk56-fs-hint{
+  position:fixed;
+  bottom:30px;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,.8);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  padding:10px 20px;
+  border-radius:100px;
+  font-size:.82rem;
+  font-weight:600;
+  z-index:100021;
+  display:none;
+  align-items:center;
+  gap:8px;
+  border:1px solid rgba(255,255,255,.2);
+}
+.bk56-fs-hint.show{
+  display:flex;
+  animation:bk56fsFadeIn .3s ease;
+}
+</style>
+
+<!-- Tombol Close Floating (saat fullscreen) -->
+<button class="bk56-fs-close-float" id="bk56-fs-close-float" onclick="bk56ExitFullscreen()" title="Keluar dari fullscreen (ESC)">
+  ✖ Keluar Fullscreen
+</button>
+
+<!-- Hint saat masuk fullscreen -->
+<div class="bk56-fs-hint" id="bk56-fs-hint">
+  💡 Tekan <strong style="background:rgba(255,255,255,.2);padding:2px 8px;border-radius:4px;">ESC</strong> untuk keluar fullscreen
+</div>
+
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH UNIVERSAL: FULLSCREEN VIDEO PLAYER
+* ================================================================
+* FITUR:
+* ✅ Tombol Fullscreen di header player (semua video)
+* ✅ Fullscreen API native (F11-like experience)
+* ✅ Floating close button saat fullscreen
+* ✅ Hint keyboard shortcut (ESC)
+* ✅ Auto-hide header & info saat fullscreen
+* ✅ Video tetap proporsional (object-fit: contain)
+* ✅ Fallback untuk browser lama
+* ✅ Tidak konflik dengan patch existing
+*
+* ANTI-CONFLICT:
+* - Flag: window.__bk56FullscreenPlayerPatched
+* - MutationObserver untuk inject tombol (bukan override)
+* - Class unik: bk56-fs-*
+* - ID unik: bk56-fs-close-float, bk56-fs-hint
+================================================================ */
+const FLAG = '__bk56FullscreenPlayerPatched';
+if (window[FLAG]) {
+  console.log('ℹ️ [FullscreenPlayer] Patch sudah terpasang, skip');
+  return;
+}
+window[FLAG] = true;
+
+const MODAL_ID = 'bk56-universal-player';
+const FS_ACTIVE_CLASS = 'bk56-fs-active';
+let hintTimer = null;
+
+/* ================================================================
+* 🔑 HELPER 1: Cek Fullscreen API support
+================================================================ */
+function isFullscreenSupported() {
+  return !!(
+    document.fullscreenEnabled ||
+    document.webkitFullscreenEnabled ||
+    document.mozFullScreenEnabled ||
+    document.msFullscreenEnabled
+  );
+}
+
+function isCurrentlyFullscreen() {
+  return !!(
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.mozFullScreenElement ||
+    document.msFullscreenElement
+  );
+}
+
+/* ================================================================
+* 🎯 FUNGSI UTAMA: Toggle Fullscreen
+================================================================ */
+window.bk56ToggleFullscreen = function() {
+  const modal = document.getElementById(MODAL_ID);
+  if (!modal) {
+    if (typeof showToast === 'function') showToast('⚠️ Player tidak ditemukan', 'error');
+    return;
+  }
+
+  if (!isFullscreenSupported()) {
+    // Fallback: gunakan CSS fullscreen (bukan native)
+    toggleCssFullscreen(modal);
+    return;
+  }
+
+  if (isCurrentlyFullscreen()) {
+    // Keluar fullscreen
+    exitFullscreen();
+  } else {
+    // Masuk fullscreen
+    enterFullscreen(modal);
+  }
+};
+
+/* ================================================================
+* 🎯 ENTER FULLSCREEN (Native API)
+================================================================ */
+function enterFullscreen(element) {
+  const req = element.requestFullscreen ||
+              element.webkitRequestFullscreen ||
+              element.mozRequestFullScreen ||
+              element.msRequestFullscreen;
+  
+  if (!req) {
+    toggleCssFullscreen(element);
+    return;
+  }
+
+  req.call(element).then(function() {
+    onFullscreenEnter();
+  }).catch(function(err) {
+    console.warn('⚠️ [FullscreenPlayer] Gagal masuk fullscreen:', err);
+    // Fallback ke CSS fullscreen
+    toggleCssFullscreen(element);
+  });
+}
+
+/* ================================================================
+* 🎯 EXIT FULLSCREEN (Native API)
+================================================================ */
+function exitFullscreen() {
+  const exit = document.exitFullscreen ||
+               document.webkitExitFullscreen ||
+               document.mozCancelFullScreen ||
+               document.msExitFullscreen;
+
+  if (exit && isCurrentlyFullscreen()) {
+    exit.call(document).then(function() {
+      onFullscreenExit();
+    }).catch(function(err) {
+      console.warn('⚠️ [FullscreenPlayer] Gagal keluar fullscreen:', err);
+    });
+  } else {
+    // CSS fullscreen fallback
+    const modal = document.getElementById(MODAL_ID);
+    if (modal) modal.classList.remove(FS_ACTIVE_CLASS);
+    onFullscreenExit();
+  }
+}
+
+/* ================================================================
+* 🎯 CSS FULLSCREEN FALLBACK (untuk browser lama)
+================================================================ */
+function toggleCssFullscreen(modal) {
+  const isFs = modal.classList.contains(FS_ACTIVE_CLASS);
+  if (isFs) {
+    modal.classList.remove(FS_ACTIVE_CLASS);
+    onFullscreenExit();
+  } else {
+    modal.classList.add(FS_ACTIVE_CLASS);
+    onFullscreenEnter();
+  }
+}
+
+/* ================================================================
+* 🎨 UI: Saat masuk fullscreen
+================================================================ */
+function onFullscreenEnter() {
+  const modal = document.getElementById(MODAL_ID);
+  const closeBtn = document.getElementById('bk56-fs-close-float');
+  const hint = document.getElementById('bk56-fs-hint');
+  const fsBtn = document.querySelector('.bk56-fs-btn');
+
+  if (modal) modal.classList.add(FS_ACTIVE_CLASS);
+  if (closeBtn) closeBtn.classList.add('show');
+  if (fsBtn) {
+    fsBtn.classList.add('active');
+    fsBtn.innerHTML = '<span class="fs-icon">⛶</span> Keluar Fullscreen';
+    fsBtn.title = 'Keluar dari fullscreen (ESC)';
+  }
+
+  // Tampilkan hint 3 detik
+  if (hint) {
+    hint.classList.add('show');
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function() {
+      hint.classList.remove('show');
+    }, 3000);
+  }
+
+  console.log('✅ [FullscreenPlayer] Fullscreen aktif');
+}
+
+/* ================================================================
+* 🎨 UI: Saat keluar fullscreen
+================================================================ */
+function onFullscreenExit() {
+  const modal = document.getElementById(MODAL_ID);
+  const closeBtn = document.getElementById('bk56-fs-close-float');
+  const hint = document.getElementById('bk56-fs-hint');
+  const fsBtn = document.querySelector('.bk56-fs-btn');
+
+  if (modal) modal.classList.remove(FS_ACTIVE_CLASS);
+  if (closeBtn) closeBtn.classList.remove('show');
+  if (hint) hint.classList.remove('show');
+  if (fsBtn) {
+    fsBtn.classList.remove('active');
+    fsBtn.innerHTML = '<span class="fs-icon">⛶</span> Fullscreen';
+    fsBtn.title = 'Perbesar ke layar penuh';
+  }
+
+  clearTimeout(hintTimer);
+  console.log('✅ [FullscreenPlayer] Fullscreen nonaktif');
+}
+
+/* ================================================================
+* 🚪 FUNGSI GLOBAL: Keluar fullscreen (dipanggil dari tombol)
+================================================================ */
+window.bk56ExitFullscreen = function() {
+  exitFullscreen();
+};
+
+/* ================================================================
+* 🛡️ INJECT: Tombol Fullscreen di header player
+*    → Dipanggil via MutationObserver agar selalu ada
+================================================================ */
+function injectFullscreenButton() {
+  const modal = document.getElementById(MODAL_ID);
+  if (!modal) return;
+
+  // Jika sudah ada, skip
+  if (modal.querySelector('.bk56-fs-btn')) return;
+
+  const actionsDiv = modal.querySelector('.bk56-up-actions');
+  if (!actionsDiv) return;
+
+  // Buat tombol fullscreen
+  const btn = document.createElement('button');
+  btn.className = 'bk56-fs-btn';
+  btn.type = 'button';
+  btn.innerHTML = '<span class="fs-icon">⛶</span> Fullscreen';
+  btn.title = 'Perbesar ke layar penuh';
+  btn.onclick = function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    bk56ToggleFullscreen();
+  };
+
+  // Sisipkan sebelum tombol "Tutup" (paling kiri dari tombol kanan)
+  const closeBtn = actionsDiv.querySelector('.bk56-up-btn.danger');
+  if (closeBtn) {
+    actionsDiv.insertBefore(btn, closeBtn);
+  } else {
+    actionsDiv.appendChild(btn);
+  }
+
+  console.log('✅ [FullscreenPlayer] Tombol fullscreen di-inject');
+}
+
+/* ================================================================
+* 🛡️ HOOK 1: bk56OpenUniversalPlayer → inject tombol setelah buka
+================================================================ */
+if (typeof window.bk56OpenUniversalPlayer === 'function' && 
+    !window.bk56OpenUniversalPlayer.__fsHooked) {
+  const _orig = window.bk56OpenUniversalPlayer;
+  window.bk56OpenUniversalPlayer = function() {
+    const result = _orig.apply(this, arguments);
+    // Inject tombol setelah modal muncul
+    setTimeout(injectFullscreenButton, 100);
+    return result;
+  };
+  window.bk56OpenUniversalPlayer.__fsHooked = true;
+  console.log('✅ [FullscreenPlayer] bk56OpenUniversalPlayer di-hook');
+}
+
+/* ================================================================
+* 🛡️ HOOK 2: bk56CloseUniversalPlayer → keluar fullscreen jika aktif
+================================================================ */
+if (typeof window.bk56CloseUniversalPlayer === 'function' && 
+    !window.bk56CloseUniversalPlayer.__fsHooked) {
+  const _orig = window.bk56CloseUniversalPlayer;
+  window.bk56CloseUniversalPlayer = function() {
+    // Keluar fullscreen dulu jika aktif
+    if (isCurrentlyFullscreen() || 
+        document.getElementById(MODAL_ID)?.classList.contains(FS_ACTIVE_CLASS)) {
+      exitFullscreen();
+    }
+    return _orig.apply(this, arguments);
+  };
+  window.bk56CloseUniversalPlayer.__fsHooked = true;
+  console.log('✅ [FullscreenPlayer] bk56CloseUniversalPlayer di-hook');
+}
+
+/* ================================================================
+* 🛡️ LISTENER: Fullscreen change (native API)
+================================================================ */
+document.addEventListener('fullscreenchange', function() {
+  const modal = document.getElementById(MODAL_ID);
+  if (!modal) return;
+  
+  if (isCurrentlyFullscreen() && modal.classList.contains('show')) {
+    onFullscreenEnter();
+  } else {
+    onFullscreenExit();
+  }
+});
+
+document.addEventListener('webkitfullscreenchange', function() {
+  const modal = document.getElementById(MODAL_ID);
+  if (!modal) return;
+  
+  if (isCurrentlyFullscreen() && modal.classList.contains('show')) {
+    onFullscreenEnter();
+  } else {
+    onFullscreenExit();
+  }
+});
+
+/* ================================================================
+* ⌨️ KEYBOARD: ESC untuk keluar fullscreen
+================================================================ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    // Jika sedang fullscreen → keluar fullscreen (jangan tutup modal)
+    if (isCurrentlyFullscreen()) {
+      e.preventDefault();
+      e.stopPropagation();
+      exitFullscreen();
+      return;
+    }
+    // Jika CSS fullscreen aktif → keluar
+    const modal = document.getElementById(MODAL_ID);
+    if (modal && modal.classList.contains(FS_ACTIVE_CLASS)) {
+      e.preventDefault();
+      e.stopPropagation();
+      onFullscreenExit();
+      modal.classList.remove(FS_ACTIVE_CLASS);
+      return;
+    }
+  }
+  
+  // F11 untuk toggle fullscreen (seperti browser)
+  if (e.key === 'F11') {
+    const modal = document.getElementById(MODAL_ID);
+    if (modal && modal.classList.contains('show')) {
+      e.preventDefault();
+      bk56ToggleFullscreen();
+    }
+  }
+});
+
+/* ================================================================
+* 👁️ OBSERVER: Auto-inject tombol saat modal muncul
+================================================================ */
+function setupObserver() {
+  const modal = document.getElementById(MODAL_ID);
+  if (!modal) {
+    setTimeout(setupObserver, 500);
+    return;
+  }
+
+  const observer = new MutationObserver(function(mutations) {
+    for (let i = 0; i < mutations.length; i++) {
+      const m = mutations[i];
+      
+      // Detect class change (modal show/hide)
+      if (m.attributeName === 'class') {
+        if (modal.classList.contains('show')) {
+          setTimeout(injectFullscreenButton, 150);
+        }
+      }
+      
+      // Detect added nodes (header di-render ulang)
+      if (m.addedNodes && m.addedNodes.length > 0) {
+        for (let j = 0; j < m.addedNodes.length; j++) {
+          const node = m.addedNodes[j];
+          if (node && node.classList && 
+              (node.classList.contains('bk56-up-actions') || 
+               node.classList.contains('bk56-up-header'))) {
+            setTimeout(injectFullscreenButton, 100);
+            return;
+          }
+        }
+      }
+    }
+  });
+
+  observer.observe(modal, { 
+    attributes: true, 
+    attributeFilter: ['class'],
+    childList: true,
+    subtree: true
+  });
+
+  console.log('✅ [FullscreenPlayer] Observer aktif');
+}
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+  console.log('🚀 [FullscreenPlayer Patch] v1.0.0 dimulai...');
+  console.log('📌 Fitur:');
+  console.log('   ✅ Tombol Fullscreen di header player');
+  console.log('   ✅ Native Fullscreen API (F11-like)');
+  console.log('   ✅ CSS fallback untuk browser lama');
+  console.log('   ✅ Floating close button saat fullscreen');
+  console.log('   ✅ Hint keyboard shortcut (ESC, F11)');
+  console.log('   ✅ Auto-hide header & info saat fullscreen');
+  console.log('   ✅ Video tetap proporsional');
+
+  // Cek support
+  if (isFullscreenSupported()) {
+    console.log('✅ [FullscreenPlayer] Native Fullscreen API didukung');
+  } else {
+    console.warn('⚠️ [FullscreenPlayer] Native Fullscreen API tidak didukung, pakai CSS fallback');
+  }
+
+  // Setup observer
+  setupObserver();
+
+  // Initial inject (jika modal sudah terbuka)
+  setTimeout(injectFullscreenButton, 500);
+
+  console.log('✅ [FullscreenPlayer Patch] Terpasang');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH UNIVERSAL: FULLSCREEN VIDEO PLAYER [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: VIDEO PLAYER FULL HEIGHT (NO BLANK) ========== -->
+<!-- ================================================================ -->
+<style id="bk56-vp-fullheight-style">
+/* ===== OVERRIDE: Frame wrap isi penuh (hilangkan area kosong) ===== */
+#bk56-universal-player .bk56-up-frame-wrap {
+  aspect-ratio: auto !important;
+  height: calc(100vh - 220px) !important;
+  max-height: calc(100vh - 220px) !important;
+  min-height: 300px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  border-radius: 14px !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+/* ===== OVERRIDE: iframe & video isi 100% frame ===== */
+#bk56-universal-player .bk56-up-frame-wrap iframe,
+#bk56-universal-player .bk56-up-frame-wrap video,
+#bk56-universal-player #bk56-up-content iframe,
+#bk56-universal-player #bk56-up-content video {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  border: 0 !important;
+  display: block !important;
+  object-fit: contain !important;
+  background: #000 !important;
+}
+
+/* ===== OVERRIDE: Content wrapper isi penuh ===== */
+#bk56-universal-player #bk56-up-content {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+}
+
+/* ===== OVERRIDE: Loading & error juga isi penuh ===== */
+#bk56-universal-player .bk56-up-loading,
+#bk56-universal-player .bk56-up-error {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+
+/* ===== OVERRIDE: Modal player lebih compact ===== */
+#bk56-universal-player {
+  padding: 16px !important;
+  gap: 10px !important;
+}
+
+/* ===== OVERRIDE: Header & info bar lebih ringkas ===== */
+#bk56-universal-player .bk56-up-header {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 4px !important;
+}
+
+#bk56-universal-player .bk56-up-info {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 8px 12px !important;
+  font-size: 0.75rem !important;
+}
+
+/* ===== RESPONSIVE: HP ===== */
+@media (max-width: 640px) {
+  #bk56-universal-player .bk56-up-frame-wrap {
+    height: calc(100vh - 200px) !important;
+    max-height: calc(100vh - 200px) !important;
+    min-height: 250px !important;
+  }
+  #bk56-universal-player {
+    padding: 8px !important;
+    gap: 8px !important;
+  }
+}
+
+/* ===== RESPONSIVE: Tablet ===== */
+@media (min-width: 641px) and (max-width: 1024px) {
+  #bk56-universal-player .bk56-up-frame-wrap {
+    height: calc(100vh - 210px) !important;
+    max-height: calc(100vh - 210px) !important;
+  }
+}
+
+/* ===== RESPONSIVE: PC/Laptop besar ===== */
+@media (min-width: 1440px) {
+  #bk56-universal-player .bk56-up-frame-wrap {
+    height: calc(100vh - 230px) !important;
+    max-height: calc(100vh - 230px) !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* ===== FULLSCREEN: isi penuh layar ===== */
+#bk56-universal-player:fullscreen .bk56-up-frame-wrap,
+#bk56-universal-player:-webkit-full-screen .bk56-up-frame-wrap {
+  height: 100vh !important;
+  max-height: 100vh !important;
+  max-width: 100vw !important;
+  border-radius: 0 !important;
+}
+
+#bk56-universal-player:fullscreen .bk56-up-header,
+#bk56-universal-player:fullscreen .bk56-up-info {
+  display: none !important;
+}
+</style>
+
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: VIDEO PLAYER FULL HEIGHT (HILANGKAN AREA KOSONG)
+* ================================================================
+* MASALAH:
+* ❌ aspect-ratio: 16/9 membuat frame-wrap terlalu pendek
+* ❌ iframe Google Drive tidak mengisi tinggi container
+* ❌ Area bawah player kosong/hitam
+*
+* SOLUSI:
+* ✅ aspect-ratio: auto (hapus batasan rasio)
+* ✅ height: calc(100vh - 220px) (dinamis sesuai viewport)
+* ✅ iframe/video: width & height 100%
+* ✅ Responsive: HP, Tablet, PC
+* ✅ Fullscreen: isi penuh layar
+*
+* ANTI-CONFLICT:
+* - Flag: window.__bk56VpFullHeightPatched
+* - Hanya CSS override (tidak sentuh JS)
+* - ID unik: bk56-vp-fullheight-style
+================================================================ */
+const FLAG = '__bk56VpFullHeightPatched';
+if (window[FLAG]) {
+  console.log('ℹ️ [VpFullHeight] Patch sudah terpasang, skip');
+  return;
+}
+window[FLAG] = true;
+
+const MODAL_ID = 'bk56-universal-player';
+
+/* ================================================================
+* 🔑 HELPER: Hitung tinggi optimal frame-wrap
+================================================================ */
+function calculateFrameHeight() {
+  const vv = window.visualViewport;
+  const vh = (vv && vv.height) || window.innerHeight || 768;
+  const vw = (vv && vv.width) || window.innerWidth || 1024;
+  
+  // Kurangi header (~60px) + info bar (~40px) + padding modal (~40px) + gap (~20px)
+  let chromeHeight = 160;
+  if (vw < 640) chromeHeight = 140;
+  else if (vw >= 1440) chromeHeight = 180;
+  
+  return Math.max(250, vh - chromeHeight);
+}
+
+/* ================================================================
+* 🎯 APPLY: Terapkan tinggi dinamis ke frame-wrap
+================================================================ */
+function applyFullHeight() {
+  const modal = document.getElementById(MODAL_ID);
+  if (!modal || !modal.classList.contains('show')) return;
+  
+  const frame = modal.querySelector('.bk56-up-frame-wrap');
+  if (!frame) return;
+  
+  const optimalHeight = calculateFrameHeight();
+  
+  // Apply tinggi optimal
+  frame.style.height = optimalHeight + 'px';
+  frame.style.maxHeight = optimalHeight + 'px';
+  
+  console.log('✅ [VpFullHeight] Frame height:', optimalHeight + 'px');
+}
+
+/* ================================================================
+* 🛡️ HOOK 1: Saat modal player dibuka → apply tinggi
+================================================================ */
+if (typeof window.bk56OpenUniversalPlayer === 'function' && 
+    !window.bk56OpenUniversalPlayer.__fullHeightHooked) {
+  const _orig = window.bk56OpenUniversalPlayer;
+  window.bk56OpenUniversalPlayer = function() {
+    const result = _orig.apply(this, arguments);
+    // Apply tinggi setelah modal muncul
+    setTimeout(applyFullHeight, 100);
+    setTimeout(applyFullHeight, 400);
+    return result;
+  };
+  window.bk56OpenUniversalPlayer.__fullHeightHooked = true;
+  console.log('✅ [VpFullHeight] bk56OpenUniversalPlayer di-hook');
+}
+
+/* ================================================================
+* 🛡️ HOOK 2: Observer untuk deteksi saat modal muncul
+================================================================ */
+function setupObserver() {
+  const modal = document.getElementById(MODAL_ID);
+  if (!modal) {
+    setTimeout(setupObserver, 500);
+    return;
+  }
+  
+  const observer = new MutationObserver(function(mutations) {
+    for (let i = 0; i < mutations.length; i++) {
+      if (mutations[i].attributeName === 'class') {
+        if (modal.classList.contains('show')) {
+          setTimeout(applyFullHeight, 50);
+          setTimeout(applyFullHeight, 300);
+        }
+      }
+    }
+  });
+  
+  observer.observe(modal, { attributes: true, attributeFilter: ['class'] });
+  console.log('✅ [VpFullHeight] Observer aktif');
+}
+
+/* ================================================================
+* 🛡️ HOOK 3: Resize & orientation change → recalculate
+================================================================ */
+let resizeTimer = null;
+window.addEventListener('resize', function() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(applyFullHeight, 150);
+}, { passive: true });
+
+window.addEventListener('orientationchange', function() {
+  setTimeout(applyFullHeight, 300);
+}, { passive: true });
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(applyFullHeight, 150);
+  }, { passive: true });
+}
+
+/* ================================================================
+* 🛡️ HOOK 4: Fullscreen change → recalculate
+================================================================ */
+document.addEventListener('fullscreenchange', function() {
+  setTimeout(applyFullHeight, 200);
+});
+document.addEventListener('webkitfullscreenchange', function() {
+  setTimeout(applyFullHeight, 200);
+});
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+  console.log('🚀 [VpFullHeight Patch] v1.0.0 dimulai...');
+  console.log('📌 Fitur:');
+  console.log('   ✅ Video player isi penuh area modal (tidak ada ruang kosong)');
+  console.log('   ✅ Tinggi dinamis: calc(100vh - 220px)');
+  console.log('   ✅ Responsive: HP, Tablet, PC');
+  console.log('   ✅ Fullscreen: isi penuh layar');
+  console.log('   ✅ Tidak konflik dengan patch existing');
+  
+  setupObserver();
+  
+  // Apply awal (jika modal sudah terbuka)
+  setTimeout(applyFullHeight, 500);
+  
+  console.log('✅ [VpFullHeight Patch] Terpasang');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: VIDEO PLAYER FULL HEIGHT [END] ========== -->
+<!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ========== PATCH FINAL v2: DEDUPE LINK (TANPA MERUSAK FUNGSI) ========== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH FINAL v2: DEDUPE LINK (ANTI-DATA GANDA)
+* ================================================================
+* PERBAIKAN DARI v1:
+* ✅ 1. MEMANGGIL FUNGSI ASLI setelah lolos cek duplikat
+* ✅ 2. TIDAK simpan manual ke localStorage (biarkan fungsi asli)
+* ✅ 3. Input ID yang benar (input-fix-{type} untuk materi)
+* ✅ 4. State yang benar (currentMateriEditFix untuk materi)
+* ✅ 5. Instant push ke sheet setelah fungsi asli selesai
+*
+* CARA KERJA:
+* 1. User klik "Tambah Link"
+* 2. Hook cek duplikat di localStorage + Google Sheets
+* 3. Jika duplikat → TOLAK dengan pesan jelas
+* 4. Jika lolos → PANGGIL FUNGSI ASLI (simpan ke localStorage)
+* 5. Setelah fungsi asli selesai → push ke sheet (instant sync)
+*
+* ANTI-CONFLICT:
+* - Flag: window.__bk56FinalDedupeV2Patched
+* - Hook wrapper (panggil fungsi asli + tambah logic)
+* - Tidak sentuh fungsi inti lainnya
+================================================================ */
+const FLAG = '__bk56FinalDedupeV2Patched';
+if (window[FLAG]) {
+console.log('ℹ️ [FinalDedupeV2] Patch sudah terpasang, skip');
+return;
+}
+window[FLAG] = true;
+
+const MATERI_KEY = 'bk56_materi_links';
+const VIDEO_KEY  = 'bk56_video_links';
+const DOC_KEY    = 'bk56_doc_links';
+const CFG_KEY    = 'bk56_backend_url';
+
+/* ================================================================
+* 🔑 HELPER 1: Normalisasi URL
+================================================================ */
+function normalizeUrl(url) {
+if (!url || typeof url !== 'string') return '';
+url = url.trim();
+if (!url) return '';
+if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url) && !/^#/i.test(url)) {
+url = 'https://' + url;
+}
+return url;
+}
+
+function urlSignature(url) {
+return normalizeUrl(url).toLowerCase();
+}
+
+/* ================================================================
+* 🔑 HELPER 2: Scan SEMUA link di localStorage
+================================================================ */
+function getAllLinksFromLocal() {
+const allLinks = [];
+
+// === MATERI ===
+try {
+const m = localStorage.getItem(MATERI_KEY);
+if (m) {
+const mData = JSON.parse(m);
+for (const key in mData) {
+const parts = key.split('_');
+if (parts.length < 3) continue;
+const [kelas, guru, materiIdx] = parts;
+const d = mData[key];
+['ppt','pdf','doc','video'].forEach(function(t) {
+if (d[t] && Array.isArray(d[t])) {
+d[t].forEach(function(url) {
+allLinks.push({
+url: url,
+type: t,
+source: 'materi',
+key: key,
+kelas: kelas,
+guru: guru,
+nama: 'Materi ' + (parseInt(materiIdx)+1) + ' (' + t.toUpperCase() + ')'
+});
+});
+}
+});
+}
+}
+} catch(e) {}
+
+// === VIDEO ===
+try {
+const v = localStorage.getItem(VIDEO_KEY);
+if (v) {
+const vData = JSON.parse(v);
+for (const idx in vData) {
+if (Array.isArray(vData[idx])) {
+vData[idx].forEach(function(url) {
+allLinks.push({
+url: url,
+type: 'video',
+source: 'video',
+key: idx,
+nama: 'Video ' + (parseInt(idx)+1)
+});
+});
+}
+}
+}
+} catch(e) {}
+
+// === DOKUMEN ===
+try {
+const d = localStorage.getItem(DOC_KEY);
+if (d && typeof DOCS !== 'undefined') {
+const dData = JSON.parse(d);
+for (const idx in dData) {
+const doc = DOCS[parseInt(idx)];
+if (!doc) continue;
+if (Array.isArray(dData[idx])) {
+dData[idx].forEach(function(url) {
+allLinks.push({
+url: url,
+type: 'doc',
+source: 'dokumen',
+key: idx,
+kelas: doc.kelas,
+guru: doc.guru,
+nama: doc.nama
+});
+});
+}
+}
+}
+} catch(e) {}
+
+return allLinks;
+}
+
+/* ================================================================
+* 🔑 HELPER 3: Cek duplikasi URL di localStorage
+================================================================ */
+function findDuplicateInLocal(url) {
+if (!url) return null;
+const sig = urlSignature(url);
+if (!sig) return null;
+const allLinks = getAllLinksFromLocal();
+for (let i = 0; i < allLinks.length; i++) {
+const link = allLinks[i];
+if (urlSignature(link.url) === sig) {
+return link;
+}
+}
+return null;
+}
+
+/* ================================================================
+* 🔑 HELPER 4: Cek duplikasi URL di Google Sheets
+================================================================ */
+async function findDuplicateInSheet(url) {
+const backendUrl = localStorage.getItem(CFG_KEY);
+if (!backendUrl) return null;
+const sig = urlSignature(url);
+if (!sig) return null;
+try {
+const res = await fetch(backendUrl, { method: 'GET', redirect: 'follow' });
+const json = await res.json();
+if (json.success && Array.isArray(json.data)) {
+for (let i = 0; i < json.data.length; i++) {
+if (urlSignature(json.data[i].URL) === sig) {
+return json.data[i];
+}
+}
+}
+} catch(e) {
+console.warn('⚠️ [FinalDedupeV2] Gagal cek sheet:', e);
+}
+return null;
+}
+
+/* ================================================================
+* 🔑 HELPER 5: Tampilkan notifikasi duplikat
+================================================================ */
+function showDuplicateWarning(dupLink) {
+const sourceLabel = {
+'materi': '📚 MATERI',
+'video': '🎬 VIDEO',
+'dokumen': '📄 DOKUMEN'
+};
+const msg = '⚠️ Link sudah disematkan di:\n\n' +
+'📍 ' + (sourceLabel[dupLink.source] || dupLink.source.toUpperCase()) + '\n' +
+'📝 ' + dupLink.nama + '\n' +
+(dupLink.kelas ? '🏫 Kelas ' + dupLink.kelas.toUpperCase() + '\n' : '') +
+(dupLink.guru ? '👤 Guru: ' + dupLink.guru + '\n' : '') +
+'\n🔗 ' + (dupLink.url.length > 60 ? dupLink.url.substring(0, 57) + '...' : dupLink.url);
+
+if (typeof showToast === 'function') {
+showToast('⚠️ Link sudah ada di ' + dupLink.source + ' (' + dupLink.nama + ')', 'error');
+}
+alert(msg);
+}
+
+/* ================================================================
+* 🔑 HELPER 6: Push link ke sheet (instant sync)
+================================================================ */
+async function pushLinkToSheet(linkData) {
+const backendUrl = localStorage.getItem(CFG_KEY);
+if (!backendUrl) return;
+const normalizedUrl = normalizeUrl(linkData.url);
+if (!normalizedUrl) return;
+
+try {
+const res = await fetch(backendUrl, {
+method: 'POST',
+redirect: 'follow',
+headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+body: JSON.stringify({
+action: 'add',
+kelas: linkData.kelas || '-',
+guru: linkData.guru || '-',
+kategori: linkData.kategori || '-',
+nama: linkData.nama || '-',
+jenis: linkData.jenis || 'doc',
+url: normalizedUrl
+})
+});
+const json = await res.json();
+if (json.success) {
+console.log('✅ [FinalDedupeV2] Link di-push ke sheet:', linkData.nama);
+}
+return json;
+} catch(e) {
+console.error('❌ [FinalDedupeV2] Gagal push:', e);
+return { success: false, reason: e.message };
+}
+}
+
+/* ================================================================
+* 🛡️ HOOK 1: bk56AddMateriLinkFix (FUNGSI AKTIF untuk materi)
+*    ✅ MEMANGGIL FUNGSI ASLI setelah lolos cek duplikat
+================================================================ */
+if (typeof window.bk56AddMateriLinkFix === 'function' &&
+!window.bk56AddMateriLinkFix.__finalDedupeV2Hooked) {
+const _orig = window.bk56AddMateriLinkFix;
+window.bk56AddMateriLinkFix = async function(type) {
+// Ambil input yang AKTIF dipakai
+const input = document.getElementById('input-fix-' + type) ||
+document.getElementById('input-' + type);
+if (!input) {
+// Jika input tidak ada, panggil fungsi asli (fallback)
+return _orig.apply(this, arguments);
+}
+
+const rawUrl = input.value.trim();
+if (!rawUrl) {
+// Jika URL kosong, panggil fungsi asli (akan tampilkan error)
+return _orig.apply(this, arguments);
+}
+
+const normalizedUrl = normalizeUrl(rawUrl);
+
+// 🔑 PRE-CHECK: Cek duplikat di localStorage
+const dup = findDuplicateInLocal(normalizedUrl);
+if (dup) {
+console.warn('🚫 [FinalDedupeV2] URL duplikat terdeteksi:', normalizedUrl);
+showDuplicateWarning(dup);
+input.value = '';
+input.focus();
+return; // STOP - jangan panggil fungsi asli
+}
+
+// 🔑 PRE-CHECK: Cek duplikat di Google Sheets (async, tidak block UI)
+try {
+const dupInSheet = await findDuplicateInSheet(normalizedUrl);
+if (dupInSheet) {
+console.warn('🚫 [FinalDedupeV2] URL sudah ada di sheet:', normalizedUrl);
+if (typeof showToast === 'function') {
+showToast('⚠️ Link sudah ada di Google Sheets', 'error');
+}
+alert('⚠️ Link ini sudah tersimpan di Google Sheets:\n\n' +
+'📝 ' + (dupInSheet.NamaDokumen || '-') + '\n' +
+'🏫 Kelas: ' + (dupInSheet.Kelas || '-') + '\n' +
+'👤 Guru: ' + (dupInSheet.Guru || '-') + '\n\n' +
+'🔗 ' + dupInSheet.URL);
+input.value = '';
+input.focus();
+return; // STOP - jangan panggil fungsi asli
+}
+} catch(e) {
+console.warn('⚠️ [FinalDedupeV2] Gagal cek sheet, lanjutkan simpan lokal');
+}
+
+// ✅ LOLOS SEMUA CEK → PANGGIL FUNGSI ASLI
+// Fungsi asli akan simpan ke localStorage dan render UI
+const result = _orig.apply(this, arguments);
+
+// 🔑 INSTANT PUSH ke sheet (fire-and-forget, tidak block UI)
+const edit = window.currentMateriEditFix;
+if (edit) {
+pushLinkToSheet({
+kelas: edit.kelas,
+guru: edit.guru,
+kategori: 'materi',
+nama: edit.materiNama || 'Materi',
+jenis: type,
+url: normalizedUrl
+}).then(function(res) {
+if (res && res.success) {
+console.log('✅ [FinalDedupeV2] Link materi di-push ke sheet');
+if (typeof showToast === 'function') {
+showToast('✅ Link tersinkron ke Google Sheets', 'success');
+}
+}
+});
+}
+
+return result;
+};
+window.bk56AddMateriLinkFix.__finalDedupeV2Hooked = true;
+console.log('✅ [FinalDedupeV2] bk56AddMateriLinkFix di-hook');
+}
+
+/* ================================================================
+* 🛡️ HOOK 2: addVideoLink
+*    ✅ MEMANGGIL FUNGSI ASLI setelah lolos cek duplikat
+================================================================ */
+if (typeof window.addVideoLink === 'function' &&
+!window.addVideoLink.__finalDedupeV2Hooked) {
+const _orig = window.addVideoLink;
+window.addVideoLink = async function() {
+const input = document.getElementById('input-video');
+if (!input) {
+return _orig.apply(this, arguments);
+}
+
+const rawUrl = input.value.trim();
+if (!rawUrl) {
+return _orig.apply(this, arguments);
+}
+
+const normalizedUrl = normalizeUrl(rawUrl);
+
+// 🔑 PRE-CHECK: Cek duplikat di localStorage
+const dup = findDuplicateInLocal(normalizedUrl);
+if (dup) {
+console.warn('🚫 [FinalDedupeV2] URL duplikat terdeteksi:', normalizedUrl);
+showDuplicateWarning(dup);
+input.value = '';
+input.focus();
+return; // STOP
+}
+
+// 🔑 PRE-CHECK: Cek duplikat di Google Sheets
+try {
+const dupInSheet = await findDuplicateInSheet(normalizedUrl);
+if (dupInSheet) {
+console.warn('🚫 [FinalDedupeV2] URL sudah ada di sheet:', normalizedUrl);
+if (typeof showToast === 'function') {
+showToast('⚠️ Link sudah ada di Google Sheets', 'error');
+}
+alert('⚠️ Link ini sudah tersimpan di Google Sheets:\n\n' +
+'📝 ' + (dupInSheet.NamaDokumen || '-') + '\n\n' +
+'🔗 ' + dupInSheet.URL);
+input.value = '';
+input.focus();
+return; // STOP
+}
+} catch(e) {
+console.warn('⚠️ [FinalDedupeV2] Gagal cek sheet, lanjutkan simpan lokal');
+}
+
+// ✅ LOLOS SEMUA CEK → PANGGIL FUNGSI ASLI
+const result = _orig.apply(this, arguments);
+
+// 🔑 INSTANT PUSH ke sheet
+pushLinkToSheet({
+kelas: '-',
+guru: '-',
+kategori: 'video',
+nama: 'Video',
+jenis: 'video',
+url: normalizedUrl
+}).then(function(res) {
+if (res && res.success) {
+console.log('✅ [FinalDedupeV2] Link video di-push ke sheet');
+if (typeof showToast === 'function') {
+showToast('✅ Link tersinkron ke Google Sheets', 'success');
+}
+}
+});
+
+return result;
+};
+window.addVideoLink.__finalDedupeV2Hooked = true;
+console.log('✅ [FinalDedupeV2] addVideoLink di-hook');
+}
+
+/* ================================================================
+* 🛡️ HOOK 3: addDocLink
+*    ✅ MEMANGGIL FUNGSI ASLI setelah lolos cek duplikat
+================================================================ */
+if (typeof window.addDocLink === 'function' &&
+!window.addDocLink.__finalDedupeV2Hooked) {
+const _orig = window.addDocLink;
+window.addDocLink = async function() {
+const input = document.getElementById('input-doc-link');
+if (!input) {
+return _orig.apply(this, arguments);
+}
+
+const rawUrl = input.value.trim();
+if (!rawUrl) {
+return _orig.apply(this, arguments);
+}
+
+const normalizedUrl = normalizeUrl(rawUrl);
+
+// 🔑 PRE-CHECK: Cek duplikat di localStorage
+const dup = findDuplicateInLocal(normalizedUrl);
+if (dup) {
+console.warn('🚫 [FinalDedupeV2] URL duplikat terdeteksi:', normalizedUrl);
+showDuplicateWarning(dup);
+input.value = '';
+input.focus();
+return; // STOP
+}
+
+// 🔑 PRE-CHECK: Cek duplikat di Google Sheets
+try {
+const dupInSheet = await findDuplicateInSheet(normalizedUrl);
+if (dupInSheet) {
+console.warn('🚫 [FinalDedupeV2] URL sudah ada di sheet:', normalizedUrl);
+if (typeof showToast === 'function') {
+showToast('⚠️ Link sudah ada di Google Sheets', 'error');
+}
+alert('⚠️ Link ini sudah tersimpan di Google Sheets:\n\n' +
+'📝 ' + (dupInSheet.NamaDokumen || '-') + '\n\n' +
+'🔗 ' + dupInSheet.URL);
+input.value = '';
+input.focus();
+return; // STOP
+}
+} catch(e) {
+console.warn('⚠️ [FinalDedupeV2] Gagal cek sheet, lanjutkan simpan lokal');
+}
+
+// ✅ LOLOS SEMUA CEK → PANGGIL FUNGSI ASLI
+const result = _orig.apply(this, arguments);
+
+// 🔑 INSTANT PUSH ke sheet
+// Ambil info dokumen dari currentLinkEdit (jika tersedia)
+let docInfo = { kelas: '-', guru: '-', kategori: '-', nama: 'Dokumen' };
+try {
+// currentLinkEdit adalah variabel internal IIFE, tapi bisa diakses
+// jika patch Link Permanen sudah di-load
+if (typeof currentLinkEdit !== 'undefined' && currentLinkEdit) {
+const docIdx = currentLinkEdit.docIdx;
+if (typeof DOCS !== 'undefined' && DOCS[docIdx]) {
+const doc = DOCS[docIdx];
+docInfo = {
+kelas: doc.kelas || '-',
+guru: doc.guru || '-',
+kategori: doc.kat || '-',
+nama: doc.nama || 'Dokumen'
+};
+}
+}
+} catch(e) {}
+
+pushLinkToSheet({
+kelas: docInfo.kelas,
+guru: docInfo.guru,
+kategori: docInfo.kategori,
+nama: docInfo.nama,
+jenis: 'doc',
+url: normalizedUrl
+}).then(function(res) {
+if (res && res.success) {
+console.log('✅ [FinalDedupeV2] Link dokumen di-push ke sheet');
+if (typeof showToast === 'function') {
+showToast('✅ Link tersinkron ke Google Sheets', 'success');
+}
+}
+});
+
+return result;
+};
+window.addDocLink.__finalDedupeV2Hooked = true;
+console.log('✅ [FinalDedupeV2] addDocLink di-hook');
+}
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+console.log('🚀 [FinalDedupeV2 Patch] v2.0.0 dimulai...');
+console.log('📌 Fitur:');
+console.log('   ✅ Hook ke fungsi AKTIF (bk56AddMateriLinkFix, addVideoLink, addDocLink)');
+console.log('   ✅ MEMANGGIL FUNGSI ASLI setelah lolos cek duplikat');
+console.log('   ✅ Cek duplikat di SEMUA localStorage (materi+video+dokumen)');
+console.log('   ✅ Cek duplikat di Google Sheets sebelum push');
+console.log('   ✅ Tolak dengan pesan informatif');
+console.log('   ✅ Normalisasi URL (trim + lowercase)');
+console.log('   ✅ Instant push ke sheet setelah add');
+
+// Test: scan localStorage
+const allLinks = getAllLinksFromLocal();
+console.log('📊 Total link di localStorage:', allLinks.length);
+
+// Cek apakah ada duplikat existing
+const seen = new Set();
+let dupCount = 0;
+allLinks.forEach(function(link) {
+const sig = urlSignature(link.url);
+if (seen.has(sig)) {
+dupCount++;
+console.warn('⚠️ Duplikat existing:', link.url, 'di', link.source, link.nama);
+} else {
+seen.add(sig);
+}
+});
+if (dupCount > 0) {
+console.warn('⚠️ Ditemukan', dupCount, 'link duplikat di localStorage');
+if (typeof showToast === 'function') {
+showToast('⚠️ Ada ' + dupCount + ' link duplikat di database lokal', 'error');
+}
+}
+
+console.log('✅ [FinalDedupeV2 Patch] Terpasang — 3 hook aktif');
+}
+
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', init);
+} else {
+init();
+}
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH FINAL v2: DEDUPE LINK [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: TOMBOL UPDATE HTML ASLI DI HEADER BK56 ========== -->
+<!-- ================================================================ -->
+<style>
+.a56-header-btn-update{
+display:inline-flex;align-items:center;gap:8px;
+background:linear-gradient(135deg,#8b5cf6,#6d28d9);
+color:#fff;border:none;padding:10px 20px;
+border-radius:100px;font-size:.88rem;font-weight:700;
+cursor:pointer;transition:all .3s ease;font-family:inherit;
+box-shadow:0 4px 14px rgba(139,92,246,.4);
+}
+.a56-header-btn-update:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 22px rgba(139,92,246,.5);
+filter:brightness(1.1);
+}
+.a56-header-btn-update:active{transform:scale(.97)}
+</style>
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: TOMBOL UPDATE HTML ASLI DI HEADER ADMINISTRASI BK56
+* ================================================================
+* FUNGSI:
+* ✅ Tambahkan tombol "📝 Update HTML Asli" di header Administrasi BK56
+* ✅ Sejajar dengan tombol Konfigurasi Backend & Backup Permanen
+* ✅ Langsung bisa diklik tanpa buka modal backup dulu
+* ✅ Tidak konflik dengan patch existing
+*
+* ANTI-CONFLICT:
+* - Flag: window.__bk56UpdateHtmlBtnPatched
+* - MutationObserver + hook injectHeaderButtons
+* - ID unik: bk56-update-html-btn
+================================================================ */
+const FLAG = '__bk56UpdateHtmlBtnPatched';
+if (window[FLAG]) {
+console.log('ℹ️ [UpdateHtmlBtn] Patch sudah terpasang, skip');
+return;
+}
+window[FLAG] = true;
+
+const EMB_ID = 'bk56-embedded-data';
+const MATERI_KEY = 'bk56_materi_links';
+const VIDEO_KEY = 'bk56_video_links';
+const DOC_KEY = 'bk56_doc_links';
+const CFG_KEY = 'bk56_backend_url';
+
+/* ---------- Helper: Kumpulkan semua data ---------- */
+function collectAllData() {
+const allData = {
+materi: {},
+video: {},
+docLinks: {},
+backendUrl: '',
+version: "2.0",
+lastUpdated: new Date().toISOString(),
+note: "Data link + URL Backend - permanen di HTML"
+};
+try {
+const m = localStorage.getItem(MATERI_KEY);
+if (m) allData.materi = JSON.parse(m);
+} catch(e) {}
+try {
+const v = localStorage.getItem(VIDEO_KEY);
+if (v) allData.video = JSON.parse(v);
+} catch(e) {}
+try {
+const d = localStorage.getItem(DOC_KEY);
+if (d) allData.docLinks = JSON.parse(d);
+} catch(e) {}
+try {
+allData.backendUrl = localStorage.getItem(CFG_KEY) || '';
+} catch(e) {}
+return allData;
+}
+
+/* ---------- Helper: Hitung total link ---------- */
+function countTotalLinks(data) {
+let total = 0;
+if (data.materi) {
+for (const key in data.materi) {
+const d = data.materi[key];
+total += (d.ppt||[]).length + (d.pdf||[]).length + (d.doc||[]).length + (d.video||[]).length;
+}
+}
+if (data.video) {
+for (const key in data.video) {
+total += (Array.isArray(data.video[key]) ? data.video[key].length : 0);
+}
+}
+if (data.docLinks) {
+for (const key in data.docLinks) {
+total += (Array.isArray(data.docLinks[key]) ? data.docLinks[key].length : 0);
+}
+}
+return total;
+}
+
+/* ================================================================
+* 🎯 FUNGSI UTAMA: Update HTML Asli
+================================================================ */
+window.bk56UpdateOriginalHtml = function() {
+try {
+console.log('📝 [UpdateHtml] Memulai update HTML asli...');
+const allData = collectAllData();
+const totalLinks = countTotalLinks(allData);
+const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+const embEl = document.getElementById(EMB_ID);
+if (!embEl) {
+if (typeof showToast === 'function') {
+showToast('❌ Container embedded data tidak ditemukan!', 'error');
+}
+return;
+}
+const oldScript = embEl.outerHTML;
+const newScript = '<script type="application/json" id="' + EMB_ID + '">\n' +
+JSON.stringify(allData) + '\n<' + '/script>';
+let newHTML = htmlContent.replace(oldScript, newScript);
+if (newHTML === htmlContent) {
+const regex = new RegExp('<script[^>]*id="' + EMB_ID + '"[^>]*>[\\s\\S]*?<' + '/script>', 'i');
+newHTML = htmlContent.replace(regex, newScript);
+}
+window.__bk56UpdatedHtml = newHTML;
+bk56ShowUpdateConfirmModal(totalLinks, newHTML.length);
+console.log('✅ [UpdateHtml] HTML ter-update siap di-copy');
+} catch(e) {
+console.error('❌ [UpdateHtml] Error:', e);
+if (typeof showToast === 'function') {
+showToast('❌ Gagal update HTML: ' + e.message, 'error');
+}
+}
+};
+
+/* ================================================================
+* 📋 FUNGSI: Copy HTML Terupdate ke Clipboard
+================================================================ */
+window.bk56CopyUpdatedHtml = function() {
+if (!window.__bk56UpdatedHtml) {
+if (typeof showToast === 'function') {
+showToast('⚠️ HTML belum ter-update. Klik "Update HTML Asli" dulu.', 'error');
+}
+return;
+}
+const textarea = document.createElement('textarea');
+textarea.value = window.__bk56UpdatedHtml;
+textarea.style.cssText = 'position:fixed;left:-9999px;top:-9999px;';
+document.body.appendChild(textarea);
+textarea.select();
+textarea.setSelectionRange(0, textarea.value.length);
+let success = false;
+try {
+success = document.execCommand('copy');
+} catch(e) {}
+document.body.removeChild(textarea);
+if (!success && navigator.clipboard) {
+navigator.clipboard.writeText(window.__bk56UpdatedHtml).then(function() {
+bk56OnCopySuccess();
+}).catch(function(err) {
+console.error('❌ Clipboard API gagal:', err);
+if (typeof showToast === 'function') {
+showToast('❌ Gagal copy. Coba cara manual.', 'error');
+}
+});
+return;
+}
+if (success) {
+bk56OnCopySuccess();
+}
+};
+
+function bk56OnCopySuccess() {
+if (typeof showToast === 'function') {
+showToast('✅ HTML berhasil di-copy! Paste ke file index.html di GitHub', 'success');
+}
+const status = document.getElementById('bk56-update-status');
+if (status) {
+status.className = 'bk56-update-status success';
+status.innerHTML = '✅ HTML ter-copy! Langkah selanjutnya:<br>' +
+'<ol style="text-align:left;margin:8px 0 0 20px;">' +
+'<li>Buka repo GitHub Anda</li>' +
+'<li>Buka file <code>index.html</code></li>' +
+'<li>Klik ikon pensil (Edit)</li>' +
+'<li><strong>Select All (Ctrl+A)</strong> → <strong>Delete</strong></li>' +
+'<li><strong>Paste (Ctrl+V)</strong> HTML yang sudah di-copy</li>' +
+'<li>Commit changes</li>' +
+'</ol>';
+}
+}
+
+/* ================================================================
+* 📥 FUNGSI: Download HTML Terupdate
+================================================================ */
+window.bk56DownloadUpdatedHtml = function() {
+if (!window.__bk56UpdatedHtml) {
+if (typeof showToast === 'function') {
+showToast('⚠️ HTML belum ter-update', 'error');
+}
+return;
+}
+const blob = new Blob([window.__bk56UpdatedHtml], { type: 'text/html;charset=utf-8' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url;
+a.download = 'index.html';
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+if (typeof showToast === 'function') {
+showToast('⬇️ index.html berhasil di-download! Replace file di GitHub', 'success');
+}
+};
+
+/* ================================================================
+* 🎨 MODAL: Konfirmasi Update HTML
+================================================================ */
+function bk56ShowUpdateConfirmModal(totalLinks, htmlSize) {
+const oldModal = document.getElementById('bk56-update-original-modal');
+if (oldModal) oldModal.remove();
+const sizeKB = (htmlSize / 1024).toFixed(1);
+const modal = document.createElement('div');
+modal.id = 'bk56-update-original-modal';
+modal.style.cssText = 'position:fixed;inset:0;background:rgba(11,30,84,.85);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;z-index:100012;padding:20px;overflow-y:auto;';
+modal.innerHTML = `
+<div style="background:#fff;border-radius:22px;max-width:640px;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,.45);animation:bk56UpdatePop .4s cubic-bezier(.22,1,.36,1);">
+<div style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;padding:24px;text-align:center;">
+<div style="font-size:2.5rem;margin-bottom:8px;">📝</div>
+<h3 style="font-family:'Space Grotesk',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:4px;">Update HTML Asli</h3>
+<p style="font-size:.85rem;opacity:.9;">HTML yang sedang aktif telah di-update dengan data terbaru</p>
+</div>
+<div style="padding:24px;overflow-y:auto;flex:1;">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+<div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #8b5cf6;border-radius:12px;padding:14px;text-align:center;">
+<div style="font-size:1.5rem;margin-bottom:4px;">🔗</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;color:#6d28d9;line-height:1;">${totalLinks}</div>
+<div style="font-size:.72rem;color:#5b21b6;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:4px;">Link Ter-embed</div>
+</div>
+<div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #8b5cf6;border-radius:12px;padding:14px;text-align:center;">
+<div style="font-size:1.5rem;margin-bottom:4px;">📄</div>
+<div style="font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;color:#6d28d9;line-height:1;">${sizeKB}</div>
+<div style="font-size:.72rem;color:#5b21b6;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-top:4px;">KB Ukuran File</div>
+</div>
+</div>
+<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #f59e0b;border-left:4px solid #f59e0b;padding:12px 14px;border-radius:8px;font-size:.82rem;color:#78350f;line-height:1.5;margin-bottom:14px;">
+<strong style="color:#92400e;">📌 Cara Upload ke GitHub:</strong>
+<ol style="margin:8px 0 0 18px;">
+<li>Klik <strong>"📋 Copy HTML Terupdate"</strong> di bawah</li>
+<li>Buka repo GitHub → file <code>index.html</code></li>
+<li>Klik ikon pensil (Edit this file)</li>
+<li><strong>Ctrl+A</strong> (Select All) → <strong>Delete</strong></li>
+<li><strong>Ctrl+V</strong> (Paste) HTML yang sudah di-copy</li>
+<li>Klik <strong>Commit changes</strong></li>
+</ol>
+<strong style="color:#92400e;">💡 Alternatif:</strong> Klik <strong>"⬇️ Download index.html"</strong> lalu replace manual
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">
+<button onclick="bk56CopyUpdatedHtml()" style="padding:13px;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;box-shadow:0 4px 14px rgba(139,92,246,.3);font-family:inherit;">
+📋 Copy HTML Terupdate
+</button>
+<button onclick="bk56DownloadUpdatedHtml()" style="padding:13px;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.3);font-family:inherit;">
+⬇️ Download index.html
+</button>
+</div>
+<div id="bk56-update-status" style="padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;margin-top:12px;display:none;line-height:1.5;"></div>
+</div>
+<div style="padding:14px 24px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+<small style="font-size:.72rem;color:#64748b;">💡 File yang di-copy/download sudah berisi semua data link permanen</small>
+<button onclick="bk56CloseUpdateModal()" style="background:#f1f5f9;color:#475569;border:none;padding:8px 18px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">✖ Tutup</button>
+</div>
+</div>
+`;
+document.body.appendChild(modal);
+setTimeout(() => modal.style.display = 'flex', 10);
+}
+
+window.bk56CloseUpdateModal = function() {
+const modal = document.getElementById('bk56-update-original-modal');
+if (modal) {
+modal.style.display = 'none';
+setTimeout(() => modal.remove(), 300);
+}
+};
+
+/* ================================================================
+* 🔗 INJEK TOMBOL di header Administrasi BK56
+================================================================ */
+function injectUpdateButton() {
+const actionsDiv = document.getElementById('a56-header-actions-final');
+if (!actionsDiv) return;
+// Jika sudah ada, skip
+if (document.getElementById('bk56-update-html-btn')) return;
+// Buat tombol
+const btn = document.createElement('button');
+btn.id = 'bk56-update-html-btn';
+btn.className = 'a56-header-btn-update';
+btn.type = 'button';
+btn.innerHTML = '📝 Update HTML Asli';
+btn.title = 'Update file HTML dengan data link terbaru (untuk upload ke GitHub)';
+btn.onclick = function(e) {
+e.stopPropagation();
+e.preventDefault();
+bk56UpdateOriginalHtml();
+};
+// Sisipkan setelah tombol "Backup Permanen"
+const backupBtn = actionsDiv.querySelector('button[onclick*="bk56OpenBackup"]');
+if (backupBtn && backupBtn.nextSibling) {
+actionsDiv.insertBefore(btn, backupBtn.nextSibling);
+} else {
+actionsDiv.appendChild(btn);
+}
+console.log('✅ [UpdateHtmlBtn] Tombol "Update HTML Asli" ditambahkan di header');
+}
+
+/* ================================================================
+* 🛡️ HOOK: injectHeaderButtons → tambahkan tombol update
+================================================================ */
+if (typeof window.injectHeaderButtons === 'function' &&
+!window.injectHeaderButtons.__updateBtnHooked) {
+const _orig = window.injectHeaderButtons;
+window.injectHeaderButtons = function() {
+_orig.apply(this, arguments);
+setTimeout(injectUpdateButton, 100);
+};
+window.injectHeaderButtons.__updateBtnHooked = true;
+console.log('✅ [UpdateHtmlBtn] injectHeaderButtons di-hook');
+}
+
+/* ================================================================
+* 👁️ OBSERVER: Auto-inject tombol
+================================================================ */
+function setupObserver() {
+const actionsDiv = document.getElementById('a56-header-actions-final');
+if (!actionsDiv) {
+setTimeout(setupObserver, 500);
+return;
+}
+const observer = new MutationObserver(function() {
+setTimeout(injectUpdateButton, 100);
+});
+observer.observe(actionsDiv, { childList: true });
+// Initial inject
+setTimeout(injectUpdateButton, 500);
+console.log('✅ [UpdateHtmlBtn] Observer aktif');
+}
+
+/* ================================================================
+* ⌨️ ESC untuk tutup modal
+================================================================ */
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+const modal = document.getElementById('bk56-update-original-modal');
+if (modal && modal.style.display === 'flex') {
+bk56CloseUpdateModal();
+}
+}
+});
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+console.log('🚀 [UpdateHtmlBtn Patch] v1.0.0 dimulai...');
+console.log('📌 Fitur:');
+console.log('   ✅ Tombol "📝 Update HTML Asli" di header Administrasi BK56');
+console.log('   ✅ Sejajar dengan tombol Konfigurasi Backend & Backup Permanen');
+console.log('   ✅ Langsung bisa diklik tanpa buka modal backup');
+console.log('   ✅ Auto-inject via MutationObserver');
+setupObserver();
+console.log('✅ [UpdateHtmlBtn Patch] Terpasang');
+}
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', init);
+} else {
+init();
+}
+})();
+</script>
+<style>
+@keyframes bk56UpdatePop {
+from { opacity: 0; transform: translateY(40px) scale(.92); }
+to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.bk56-update-status.success {
+display: block !important;
+background: #ecfdf5 !important;
+color: #059669 !important;
+border: 1px solid #a7f3d0 !important;
+}
+.bk56-update-status.success ol {
+margin: 6px 0 0 18px;
+}
+.bk56-update-status.success code {
+background: rgba(0,0,0,.08);
+padding: 1px 6px;
+border-radius: 4px;
+font-size: .78rem;
+}
+@media (max-width: 600px) {
+.a56-header-btn-update {
+font-size: .78rem;
+padding: 8px 14px;
+}
+}
+</style>
+<!-- ================================================================ -->
+<!-- ========== PATCH: TOMBOL UPDATE HTML ASLI DI HEADER BK56 [END] ========== -->
+<!-- ================================================================ -->
 
 </body></html>
