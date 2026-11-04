@@ -19793,160 +19793,202 @@ init();
 </script>
 <!-- END PATCH -->
  <!-- ================================================================ -->
-<!-- ========== PATCH FINAL: AUTO-FIX METADATA DI LAYER RENDER ========== -->
+<!-- ========== SOLUSI FINAL: FETCH INTERCEPTOR (DIJAMIN BERHASIL) ========== -->
 <!-- ================================================================ -->
 <script>
 (function(){
   "use strict";
-  const FLAG = '__bk56UltimateMetadataFix';
-  if (window[FLAG]) { console.log('ℹ️ [UltimateFix] Sudah aktif, skip'); return; }
+  const FLAG = '__bk56FetchInterceptorFinal';
+  if (window[FLAG]) return;
   window[FLAG] = true;
-  console.log('🚀 [UltimateFix] Patch dimulai...');
+  console.log('🚀 [FetchInterceptor] Patch final dimulai...');
 
-  // Fungsi cerdas untuk memperbaiki metadata berdasarkan URL
-  function fixMetadata(row) {
-    if (!row || !row.URL) return row;
-    const url = String(row.URL).toLowerCase();
-    const kelas = String(row.Kelas || '').toLowerCase().trim();
-    const guru = String(row.Guru || '').toLowerCase().trim();
-    const kategori = String(row.Kategori || '').toLowerCase().trim();
-    const nama = String(row.NamaDokumen || '').trim();
+  // Mapping kode ke nama lengkap
+  const GURU_MAP = {'sotya':'Sotya Palupi, S.Pd, MM','halaliah':'Halaliah, S.Pd','wahyuni':'Siti Wahyuni, S.Pd','rizqi':'Rizqi Putri Sholihatin, S.Pd','palupi':'Sotya Palupi, S.Pd, MM'};
+  const KAT_MAP = {'kasus':'Catatan Kasus','rpl':'RPL','materi':'Materi','homevisit':'Home Visit','agenda':'Agenda','jurnal':'Jurnal','protapromes':'Prota/Promes','lapsem1':'Laporan Semester 1','lapsem2':'Laporan Semester 2','lapind':'Laporan Individual','inklusi':'Inklusi','suara':'Suara Siswa','analisis':'Analisis','lintas':'Lintas Kelas','status':'Status Konseling','video':'Video','metode':'Metode'};
+  const KELAS_MAP = {'vii':'VII','viii':'VIII','ix':'IX'};
 
-    // Jika data sudah valid, lewati
-    if (kelas !== '-' && kelas !== '' && guru !== '-' && guru !== '' && 
-        kategori !== '-' && kategori !== '' && nama !== 'Dokumen' && nama !== '-' && nama.length > 5) {
-      return row;
-    }
-
-    let fixKelas = kelas, fixGuru = guru, fixKategori = kategori, fixNama = nama;
-    let section = '';
-
-    // 1. Ekstrak Kelas & Section dari URL (misal: vii-a, viii-b, ix-c)
-    const kelasMatch = url.match(/(?:kelas[\s_-]*)?(vii|viii|ix)[\s_-]*([a-j])/i) || 
-                       url.match(/-(vii|viii|ix)-([a-j])(?:\/|$)/i);
+  // Fungsi untuk memperbaiki metadata dari URL
+  function fixFromUrl(url) {
+    if (!url) return null;
+    const u = url.toLowerCase();
+    let kelas = null, section = null, kategori = null, guru = null;
     
-    if (kelasMatch) {
-      fixKelas = kelasMatch[1];
-      section = kelasMatch[2].toUpperCase();
-      const kelasDisplay = fixKelas === 'vii' ? 'VII' : fixKelas === 'viii' ? 'VIII' : 'IX';
-
-      // 2. Ekstrak Kategori dari URL
-      if (url.includes('kasus')) fixKategori = 'kasus';
-      else if (url.includes('rpl')) fixKategori = 'rpl';
-      else if (url.includes('materi')) fixKategori = 'materi';
-      else if (url.includes('homevisit')) fixKategori = 'homevisit';
-      else if (url.includes('agenda')) fixKategori = 'agenda';
-      else if (url.includes('jurnal')) fixKategori = 'jurnal';
-      else if (url.includes('prota') || url.includes('promes')) fixKategori = 'protapromes';
-      else if (url.includes('laporan')) fixKategori = 'lapsem1';
-      else if (url.includes('inklusi')) fixKategori = 'inklusi';
-      else if (url.includes('suara') || url.includes('aspirasi')) fixKategori = 'suara';
-      else if (url.includes('analisis')) fixKategori = 'analisis';
-      else if (url.includes('status')) fixKategori = 'status';
-      else if (url.includes('video')) fixKategori = 'video';
-
-      // 3. Generate Nama Dokumen yang Spesifik (TIDAK AKAN JADI "Dokumen")
-      if (fixKategori === 'kasus') fixNama = `Catatan Kasus Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'rpl') fixNama = `RPL Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'materi') fixNama = `Materi Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'homevisit') fixNama = `Home Visit Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'agenda') fixNama = `Agenda Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'jurnal') fixNama = `Jurnal Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'protapromes') fixNama = `Prota/Promes Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'lapsem1') fixNama = `Laporan Semester 1 Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'inklusi') fixNama = `Inklusi Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'suara') fixNama = `Suara Siswa Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'analisis') fixNama = `Analisis Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'status') fixNama = `Status Konseling Kelas ${kelasDisplay}-${section}`;
-      else if (fixKategori === 'video') fixNama = `Video Kelas ${kelasDisplay}-${section}`;
-      else fixNama = `Dokumen Kelas ${kelasDisplay}-${section}`;
-
-      // 4. Ekstrak Guru dari URL (Fallback)
-      if (fixGuru === '-' || fixGuru === '') {
-        if (url.includes('sotya') || url.includes('palupi')) fixGuru = 'sotya';
-        else if (url.includes('halaliah')) fixGuru = 'halaliah';
-        else if (url.includes('wahyuni') || url.includes('siti')) fixGuru = 'wahyuni';
-        else if (url.includes('rizqi') || url.includes('putri')) fixGuru = 'rizqi';
-      }
+    const m = u.match(/(?:kelas[\s_-]*)?(vii|viii|ix)[\s_-]*([a-j])/i) || u.match(/-(vii|viii|ix)-([a-j])(?:\/|$)/i);
+    if (m) { kelas = m[1]; section = m[2].toUpperCase(); }
+    
+    if (u.includes('kasus')) kategori = 'kasus';
+    else if (u.includes('rpl')) kategori = 'rpl';
+    else if (u.includes('materi')) kategori = 'materi';
+    else if (u.includes('homevisit') || u.includes('home-visit')) kategori = 'homevisit';
+    else if (u.includes('agenda')) kategori = 'agenda';
+    else if (u.includes('jurnal')) kategori = 'jurnal';
+    else if (u.includes('prota') || u.includes('promes')) kategori = 'protapromes';
+    else if (u.includes('laporan')) kategori = 'lapsem1';
+    else if (u.includes('inklusi')) kategori = 'inklusi';
+    else if (u.includes('suara') || u.includes('aspirasi')) kategori = 'suara';
+    else if (u.includes('analisis')) kategori = 'analisis';
+    else if (u.includes('status')) kategori = 'status';
+    else if (u.includes('video')) kategori = 'video';
+    else if (u.includes('metode')) kategori = 'metode';
+    
+    if (u.includes('sotya') || u.includes('palupi')) guru = 'sotya';
+    else if (u.includes('halaliah')) guru = 'halaliah';
+    else if (u.includes('wahyuni') || u.includes('siti')) guru = 'wahyuni';
+    else if (u.includes('rizqi') || u.includes('putri')) guru = 'rizqi';
+    
+    let nama = null;
+    if (kelas && section && kategori) {
+      const k = KELAS_MAP[kelas] || kelas.toUpperCase();
+      if (kategori === 'kasus') nama = 'Catatan Kasus Kelas ' + k + '-' + section;
+      else if (kategori === 'rpl') nama = 'RPL Kelas ' + k + '-' + section;
+      else if (kategori === 'materi') nama = 'Materi Kelas ' + k + '-' + section;
+      else if (kategori === 'homevisit') nama = 'Home Visit Kelas ' + k + '-' + section;
+      else if (kategori === 'agenda') nama = 'Agenda Kelas ' + k + '-' + section;
+      else if (kategori === 'jurnal') nama = 'Jurnal Kelas ' + k + '-' + section;
+      else if (kategori === 'protapromes') nama = 'Prota/Promes Kelas ' + k + '-' + section;
+      else if (kategori === 'lapsem1') nama = 'Laporan Semester 1 Kelas ' + k + '-' + section;
+      else if (kategori === 'inklusi') nama = 'Inklusi Kelas ' + k + '-' + section;
+      else if (kategori === 'suara') nama = 'Suara Siswa Kelas ' + k + '-' + section;
+      else if (kategori === 'analisis') nama = 'Analisis Kelas ' + k + '-' + section;
+      else if (kategori === 'status') nama = 'Status Konseling Kelas ' + k + '-' + section;
+      else if (kategori === 'video') nama = 'Video Kelas ' + k + '-' + section;
+      else if (kategori === 'metode') nama = 'Metode Kelas ' + k + '-' + section;
+      else nama = (KAT_MAP[kategori] || kategori) + ' Kelas ' + k + '-' + section;
     }
-
-    // Terapkan perbaikan
-    row.Kelas = fixKelas;
-    row.Guru = fixGuru;
-    row.Kategori = fixKategori;
-    row.NamaDokumen = fixNama;
-    return row;
+    return { kelas, section, kategori, guru, nama };
   }
 
-  // 🔑 STRATEGI 1: Perbaiki data saat fungsi Render dipanggil
-  if (typeof window.bk56RenderRekap === 'function') {
-    const origRender = window.bk56RenderRekap;
-    window.bk56RenderRekap = function() {
-      if (window.bk56RekapData && Array.isArray(window.bk56RekapData)) {
-        let changed = false;
-        window.bk56RekapData.forEach(row => {
-          const before = JSON.stringify(row);
-          fixMetadata(row);
-          const after = JSON.stringify(row);
-          if (before !== after) changed = true;
-        });
-        
-        if (changed) {
-          console.log('✅ [UltimateFix] Metadata diperbaiki otomatis sebelum render');
-          try { localStorage.setItem('bk56_rekap_cache', JSON.stringify(window.bk56RekapData)); } catch(e) {}
+  // Fungsi untuk memperbaiki payload sebelum dikirim ke Sheet
+  function fixPayload(payload) {
+    if (!payload || payload.action !== 'add') return payload;
+    const url = String(payload.url || '').trim();
+    const kelas = String(payload.kelas || '').toLowerCase().trim();
+    const guru = String(payload.guru || '').toLowerCase().trim();
+    const kategori = String(payload.kategori || '').toLowerCase().trim();
+    const nama = String(payload.nama || '').trim();
+    
+    const kelasRusak = !kelas || kelas === '-';
+    const guruRusak = !guru || guru === '-';
+    const kategoriRusak = !kategori || kategori === '-';
+    const namaRusak = !nama || nama === 'Dokumen' || nama === '-' || nama.length <= 5;
+    
+    if (!kelasRusak && !guruRusak && !kategoriRusak && !namaRusak) return payload;
+    
+    console.log('🔧 [FetchInterceptor] Metadata rusak terdeteksi, memperbaiki...');
+    
+    // Prioritas 1: Ambil dari array DOCS
+    if (typeof DOCS !== 'undefined' && Array.isArray(DOCS)) {
+      const urlLower = url.toLowerCase();
+      for (let i = 0; i < DOCS.length; i++) {
+        const doc = DOCS[i];
+        const docLink = String(doc.link || '').toLowerCase();
+        if (docLink && (docLink === urlLower || urlLower.includes(docLink) || docLink.includes(urlLower))) {
+          if (kelasRusak && doc.kelas) payload.kelas = doc.kelas;
+          if (guruRusak && doc.guru) payload.guru = doc.guru;
+          if (kategoriRusak && doc.kat) payload.kategori = doc.kat;
+          if (namaRusak && doc.nama) payload.nama = doc.nama;
+          console.log('   ✅ Diperbaiki dari DOCS[' + i + ']');
+          return payload;
         }
       }
-      origRender.apply(this, arguments);
-    };
-    console.log('✅ [UltimateFix] Hook ke bk56RenderRekap berhasil');
+    }
+    
+    // Prioritas 2: Ekstrak dari URL
+    const extracted = fixFromUrl(url);
+    if (extracted) {
+      if (kelasRusak && extracted.kelas) payload.kelas = extracted.kelas;
+      if (guruRusak && extracted.guru) payload.guru = extracted.guru;
+      if (kategoriRusak && extracted.kategori) payload.kategori = extracted.kategori;
+      if (namaRusak && extracted.nama) payload.nama = extracted.nama;
+      console.log('   ✅ Diperbaiki dari URL');
+    }
+    return payload;
   }
 
-  // 🔑 STRATEGI 2: Perbaiki data setelah Sync dari Sheet
-  if (typeof window.bk56SyncFromSheet === 'function') {
-    const origSync = window.bk56SyncFromSheet;
-    window.bk56SyncFromSheet = async function() {
-      await origSync.apply(this, arguments);
-      setTimeout(() => {
-        if (window.bk56RekapData && Array.isArray(window.bk56RekapData)) {
-          let changed = false;
-          window.bk56RekapData.forEach(row => {
-            const before = JSON.stringify(row);
-            fixMetadata(row);
-            const after = JSON.stringify(row);
-            if (before !== after) changed = true;
-          });
-          if (changed) {
-            console.log('✅ [UltimateFix] Metadata dari Sheet diperbaiki');
-            try { localStorage.setItem('bk56_rekap_cache', JSON.stringify(window.bk56RekapData)); } catch(e) {}
-            if (typeof window.bk56RenderRekap === 'function') window.bk56RenderRekap();
+  // 🔑 INTERCEPTOR: Cegat SEMUA fetch request
+  const originalFetch = window.fetch;
+  window.fetch = function(url, options) {
+    if (options && options.method === 'POST' && typeof options.body === 'string') {
+      try {
+        const backendUrl = localStorage.getItem('bk56_backend_url') || localStorage.getItem('BK56_CFG_KEY') || localStorage.getItem('bk56BackendUrl');
+        const isBackend = backendUrl && (url === backendUrl || (typeof url === 'string' && url.includes('script.google.com')));
+        if (isBackend) {
+          const payload = JSON.parse(options.body);
+          if (payload.action === 'add') {
+            const fixed = fixPayload(payload);
+            options.body = JSON.stringify(fixed);
           }
         }
-      }, 500);
-    };
-    console.log('✅ [UltimateFix] Hook ke bk56SyncFromSheet berhasil');
+      } catch(e) {}
+    }
+    return originalFetch.apply(this, arguments);
+  };
+  console.log('✅ [FetchInterceptor] Fetch interceptor aktif');
+
+  // 🔑 PERBAIKI TAMPILAN DI bk56RekapData
+  function fixRekapData() {
+    if (typeof window.bk56RekapData === 'undefined' || !Array.isArray(window.bk56RekapData)) return;
+    let fixed = 0;
+    window.bk56RekapData.forEach(row => {
+      if (!row || !row.URL) return;
+      const url = String(row.URL || '').toLowerCase();
+      const kelas = String(row.Kelas || '').toLowerCase().trim();
+      const guru = String(row.Guru || '').toLowerCase().trim();
+      const kategori = String(row.Kategori || '').toLowerCase().trim();
+      const nama = String(row.NamaDokumen || '').trim();
+      
+      const kelasRusak = !kelas || kelas === '-';
+      const guruRusak = !guru || guru === '-';
+      const kategoriRusak = !kategori || kategori === '-';
+      const namaRusak = !nama || nama === 'Dokumen' || nama === '-' || nama.length <= 5;
+      
+      if (!kelasRusak && !guruRusak && !kategoriRusak && !namaRusak) return;
+      
+      if (typeof DOCS !== 'undefined' && Array.isArray(DOCS)) {
+        for (let i = 0; i < DOCS.length; i++) {
+          const doc = DOCS[i];
+          const docLink = String(doc.link || '').toLowerCase();
+          if (docLink && (docLink === url || url.includes(docLink) || docLink.includes(url))) {
+            if (kelasRusak && doc.kelas) row.Kelas = doc.kelas;
+            if (guruRusak && doc.guru) row.Guru = doc.guru;
+            if (kategoriRusak && doc.kat) row.Kategori = doc.kat;
+            if (namaRusak && doc.nama) row.NamaDokumen = doc.nama;
+            fixed++; return;
+          }
+        }
+      }
+      const extracted = fixFromUrl(row.URL);
+      if (extracted) {
+        if (kelasRusak && extracted.kelas) row.Kelas = extracted.kelas;
+        if (guruRusak && extracted.guru) row.Guru = extracted.guru;
+        if (kategoriRusak && extracted.kategori) row.Kategori = extracted.kategori;
+        if (namaRusak && extracted.nama) row.NamaDokumen = extracted.nama;
+        fixed++;
+      }
+    });
+    if (fixed > 0) {
+      console.log('✅ [FetchInterceptor]', fixed, 'baris di Rekap diperbaiki');
+      try { localStorage.setItem('bk56_rekap_cache', JSON.stringify(window.bk56RekapData)); } catch(e) {}
+      if (typeof window.bk56RenderRekap === 'function') setTimeout(() => window.bk56RenderRekap(), 300);
+    }
   }
 
-  // 🔑 STRATEGI 3: Perbaikan massal saat halaman pertama kali dimuat
-  setTimeout(() => {
-    if (window.bk56RekapData && Array.isArray(window.bk56RekapData)) {
-      let changed = false;
-      window.bk56RekapData.forEach(row => {
-        const before = JSON.stringify(row);
-        fixMetadata(row);
-        const after = JSON.stringify(row);
-        if (before !== after) changed = true;
-      });
-      if (changed) {
-        console.log('✅ [UltimateFix] Data lama di cache berhasil diperbaiki');
-        try { localStorage.setItem('bk56_rekap_cache', JSON.stringify(window.bk56RekapData)); } catch(e) {}
-        if (typeof window.bk56RenderRekap === 'function') window.bk56RenderRekap();
-      }
-    }
-  }, 2000);
+  setTimeout(fixRekapData, 1500);
+  setTimeout(fixRekapData, 3000);
+  
+  if (typeof window.bk56SyncFromSheet === 'function') {
+    const orig = window.bk56SyncFromSheet;
+    window.bk56SyncFromSheet = async function() { await orig.apply(this, arguments); setTimeout(fixRekapData, 500); };
+  }
+  if (typeof window.bk56RenderRekap === 'function') {
+    const orig = window.bk56RenderRekap;
+    window.bk56RenderRekap = function() { fixRekapData(); orig.apply(this, arguments); };
+  }
 
-  console.log('✅ [UltimateFix] Patch terpasang. Masalah "-" dan "Dokumen" akan hilang otomatis.');
+  console.log('✅ [FetchInterceptor] Patch final terpasang.');
 })();
 </script>
-<!-- ========== PATCH FINAL: AUTO-FIX METADATA DI LAYER RENDER [END] ========== -->
+<!-- ========== SOLUSI FINAL: FETCH INTERCEPTOR [END] ========== -->
 </body>
 </html>
