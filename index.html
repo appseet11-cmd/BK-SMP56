@@ -9851,10 +9851,9 @@ async function syncSheetToLocal(sheetData) {
       if (d.kelas.toLowerCase() !== kelas && kelas !== '-' && kelas !== '') continue;
       if (d.guru.toLowerCase() !== guru && guru !== '-' && guru !== '') continue;
       
-      if (d.nama.toLowerCase() === nama.toLowerCase() || d.kat.toLowerCase() === kategori) {
-        docIdx = i;
-        break;
-      }
+      if(d.nama.toLowerCase() === nama.toLowerCase()){
+  docIdx = i; break;
+}
     }
     
     if (docIdx < 0) return;
@@ -11094,7 +11093,80 @@ function bk56DetectChanges() {
 function bk56RenderRekap() {
   const tbody = document.getElementById('bk56-rekap-tbody');
   if (!tbody) return;
+  function bk56RenderRekap() {
+  const tbody = document.getElementById('bk56-rekap-tbody');
+  if (!tbody) return;
   
+  // 🔑 TAMBAHKAN KODE INI DI SINI 🔑
+  if (typeof window.bk56RekapData !== 'undefined' && Array.isArray(window.bk56RekapData) && typeof DOCS !== 'undefined') {
+    window.bk56RekapData.forEach(function(row) {
+      if (!row || !row.URL) return;
+      
+      const url = String(row.URL || '').toLowerCase().trim();
+      const kelas = String(row.Kelas || '').toLowerCase().trim();
+      const guru = String(row.Guru || '').toLowerCase().trim();
+      const kategori = String(row.Kategori || '').toLowerCase().trim();
+      const nama = String(row.NamaDokumen || '').trim();
+      
+      // Cek apakah metadata rusak
+      const kelasRusak = !kelas || kelas === '-';
+      const guruRusak = !guru || guru === '-';
+      const kategoriRusak = !kategori || kategori === '-';
+      const namaRusak = !nama || nama === 'Dokumen' || nama === '-' || nama.length <= 5;
+      
+      if (!kelasRusak && !guruRusak && !kategoriRusak && !namaRusak) return;
+      
+      // Cari di array DOCS berdasarkan URL
+      for (let i = 0; i < DOCS.length; i++) {
+        const doc = DOCS[i];
+        const docLink = String(doc.link || '').toLowerCase().trim();
+        
+        if (docLink && (docLink === url || url.includes(docLink) || docLink.includes(url))) {
+          if (kelasRusak && doc.kelas) row.Kelas = doc.kelas;
+          if (guruRusak && doc.guru) row.Guru = doc.guru;
+          if (kategoriRusak && doc.kat) row.Kategori = doc.kat;
+          if (namaRusak && doc.nama) row.NamaDokumen = doc.nama;
+          console.log('✅ Metadata diperbaiki dari DOCS[' + i + ']:', doc.nama);
+          return;
+        }
+      }
+      
+      // Fallback: ekstrak dari URL
+      const kelasMatch = url.match(/(?:kelas[\s_-]*)?(vii|viii|ix)[\s_-]*([a-j])/i) || url.match(/-(vii|viii|ix)-([a-j])(?:\/|$)/i);
+      if (kelasMatch) {
+        if (kelasRusak) row.Kelas = kelasMatch[1];
+        const section = kelasMatch[2].toUpperCase();
+        const kelasDisplay = kelasMatch[1] === 'vii' ? 'VII' : kelasMatch[1] === 'viii' ? 'VIII' : 'IX';
+        
+        if (url.includes('kasus')) {
+          if (kategoriRusak) row.Kategori = 'kasus';
+          if (namaRusak) row.NamaDokumen = 'Catatan Kasus Kelas ' + kelasDisplay + '-' + section;
+        } else if (url.includes('rpl')) {
+          if (kategoriRusak) row.Kategori = 'rpl';
+          if (namaRusak) row.NamaDokumen = 'RPL Kelas ' + kelasDisplay + '-' + section;
+        }
+        
+        if (url.includes('sotya') || url.includes('palupi')) {
+          if (guruRusak) row.Guru = 'sotya';
+        } else if (url.includes('halaliah')) {
+          if (guruRusak) row.Guru = 'halaliah';
+        } else if (url.includes('wahyuni')) {
+          if (guruRusak) row.Guru = 'wahyuni';
+        } else if (url.includes('rizqi')) {
+          if (guruRusak) row.Guru = 'rizqi';
+        }
+      }
+    });
+    
+    // Simpan perbaikan ke cache
+    try {
+      localStorage.setItem('bk56_rekap_cache', JSON.stringify(window.bk56RekapData));
+    } catch(e) {}
+  }
+  // 🔑 AKHIR KODE TAMBAHAN 🔑
+  
+  // ... kode render asli di bawah ini ...
+}
   let filtered = bk56RekapData.filter(d => {
     if (bk56FilterKelas !== 'all' && d.Kelas !== bk56FilterKelas) return false;
     if (bk56FilterGuru !== 'all' && d.Guru !== bk56FilterGuru) return false;
@@ -18388,7 +18460,608 @@ width:100%;justify-content:center;margin-left:0;margin-top:4px;
 }
 }
 </style>
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH TERPADU: 3 FITUR DALAM 1 PATCH
+* ================================================================
+* FITUR:
+* ✅ 1. Tombol "Pilih Semua" + checkbox per-row di Rekap Link
+* ✅ 2. Tombol "Hapus Terpilih" yang berfungsi
+* ✅ 3. Tombol "Update HTML Asli" di header Administrasi BK56
+*
+* PRINSIP ANTI-KONFLIK:
+* ❌ TIDAK override bk56RenderRekap
+* ❌ TIDAK override bk56ShowRekap
+* ❌ TIDAK override bk56DeleteSelected
+* ❌ TIDAK override injectHeaderButtons
+* ✅ Hanya MutationObserver + event delegation
+* ✅ ID unik: bk56-select-all-cb, bk56-btn-hapus-terpilih, bk56-update-html-terpadu-btn
+* ✅ Flag: window.__bk56TerpaduPatched
+================================================================ */
+const FLAG = '__bk56TerpaduPatched';
+if (window[FLAG]) {
+console.log('ℹ️ [Terpadu] Patch sudah terpasang, skip');
+return;
+}
+window[FLAG] = true;
 
+const EMB_ID = 'bk56-embedded-data';
+const CFG_KEY = 'bk56_backend_url';
+const CACHE_KEY = 'bk56_rekap_cache';
+
+// State global (aman, tidak akan hilang)
+if (!(window.bk56SelectedIds instanceof Set)) {
+window.bk56SelectedIds = new Set();
+}
+
+/* ================================================================
+* 🔑 BAGIAN 1: UPDATE HTML ASLI (self-contained)
+================================================================ */
+function collectAllData() {
+const allData = {
+materi: {}, video: {}, docLinks: {},
+backendUrl: '',
+version: "2.0",
+lastUpdated: new Date().toISOString(),
+note: "Data link + URL Backend - permanen di HTML"
+};
+try { const m = localStorage.getItem('bk56_materi_links'); if (m) allData.materi = JSON.parse(m); } catch(e){}
+try { const v = localStorage.getItem('bk56_video_links');  if (v) allData.video  = JSON.parse(v); } catch(e){}
+try { const d = localStorage.getItem('bk56_doc_links');    if (d) allData.docLinks = JSON.parse(d); } catch(e){}
+try { allData.backendUrl = localStorage.getItem(CFG_KEY) || ''; } catch(e){}
+return allData;
+}
+
+function countTotalLinks(data) {
+let total = 0;
+if (data.materi) {
+for (const key in data.materi) {
+const d = data.materi[key];
+total += (d.ppt||[]).length + (d.pdf||[]).length + (d.doc||[]).length + (d.video||[]).length;
+}
+}
+if (data.video) {
+for (const key in data.video) {
+total += (Array.isArray(data.video[key]) ? data.video[key].length : 0);
+}
+}
+if (data.docLinks) {
+for (const key in data.docLinks) {
+total += (Array.isArray(data.docLinks[key]) ? data.docLinks[key].length : 0);
+}
+}
+return total;
+}
+
+window.bk56UpdateHtmlTerpadu = function() {
+try {
+const allData = collectAllData();
+const totalLinks = countTotalLinks(allData);
+const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+const embEl = document.getElementById(EMB_ID);
+if (!embEl) {
+if (typeof showToast === 'function') showToast('❌ Container embedded data tidak ditemukan!', 'error');
+return;
+}
+const oldScript = embEl.outerHTML;
+const newScript = '<script type="application/json" id="' + EMB_ID + '">\n' +
+JSON.stringify(allData) + '\n<' + '/script>';
+let newHTML = htmlContent.replace(oldScript, newScript);
+if (newHTML === htmlContent) {
+const regex = new RegExp('<script[^>]*id="' + EMB_ID + '"[^>]*>[\\s\\S]*?<' + '/script>', 'i');
+newHTML = htmlContent.replace(regex, newScript);
+}
+// Simpan di memory untuk di-copy/download
+window.__bk56UpdatedHtmlTerpadu = newHTML;
+showUpdateModalTerpadu(totalLinks, newHTML.length);
+console.log('✅ [Terpadu] HTML ter-update siap di-copy');
+} catch(e) {
+console.error('❌ [Terpadu] Error:', e);
+if (typeof showToast === 'function') showToast('❌ Gagal update HTML: ' + e.message, 'error');
+}
+};
+
+function showUpdateModalTerpadu(totalLinks, htmlSize) {
+const oldModal = document.getElementById('bk56-update-terpadu-modal');
+if (oldModal) oldModal.remove();
+const sizeKB = (htmlSize / 1024).toFixed(1);
+const modal = document.createElement('div');
+modal.id = 'bk56-update-terpadu-modal';
+modal.style.cssText = 'position:fixed;inset:0;background:rgba(11,30,84,.85);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:center;z-index:100012;padding:20px;overflow-y:auto;';
+modal.innerHTML = '<div style="background:#fff;border-radius:22px;max-width:640px;width:100%;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 70px rgba(0,0,0,.45);">' +
+'<div style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;padding:24px;text-align:center;">' +
+'<div style="font-size:2.5rem;margin-bottom:8px;">📝</div>' +
+'<h3 style="font-family:\'Space Grotesk\',sans-serif;font-size:1.3rem;font-weight:700;margin-bottom:4px;">Update HTML Asli</h3>' +
+'<p style="font-size:.85rem;opacity:.9;">HTML yang sedang aktif telah di-update dengan data terbaru</p>' +
+'</div>' +
+'<div style="padding:24px;overflow-y:auto;flex:1;">' +
+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">' +
+'<div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #8b5cf6;border-radius:12px;padding:14px;text-align:center;">' +
+'<div style="font-size:1.5rem;margin-bottom:4px;">🔗</div>' +
+'<div style="font-family:\'Space Grotesk\',sans-serif;font-size:1.6rem;font-weight:700;color:#6d28d9;line-height:1;">' + totalLinks + '</div>' +
+'<div style="font-size:.72rem;color:#5b21b6;font-weight:600;text-transform:uppercase;margin-top:4px;">Link Ter-embed</div>' +
+'</div>' +
+'<div style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #8b5cf6;border-radius:12px;padding:14px;text-align:center;">' +
+'<div style="font-size:1.5rem;margin-bottom:4px;">📄</div>' +
+'<div style="font-family:\'Space Grotesk\',sans-serif;font-size:1.6rem;font-weight:700;color:#6d28d9;line-height:1;">' + sizeKB + '</div>' +
+'<div style="font-size:.72rem;color:#5b21b6;font-weight:600;text-transform:uppercase;margin-top:4px;">KB Ukuran File</div>' +
+'</div>' +
+'</div>' +
+'<div style="background:linear-gradient(135deg,#fef3c7,#fde68a);border:1px solid #f59e0b;border-left:4px solid #f59e0b;padding:12px 14px;border-radius:8px;font-size:.82rem;color:#78350f;line-height:1.5;margin-bottom:14px;">' +
+'<strong style="color:#92400e;">📌 Cara Upload ke GitHub:</strong>' +
+'<ol style="margin:8px 0 0 18px;">' +
+'<li>Klik <strong>"📋 Copy HTML Terupdate"</strong></li>' +
+'<li>Buka repo GitHub → file <code>index.html</code></li>' +
+'<li>Klik ikon pensil (Edit)</li>' +
+'<li><strong>Ctrl+A</strong> → <strong>Delete</strong> → <strong>Ctrl+V</strong> (Paste)</li>' +
+'<li>Commit changes</li>' +
+'</ol>' +
+'</div>' +
+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;">' +
+'<button id="bk56-update-terpadu-copy" style="padding:13px;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-family:inherit;">📋 Copy HTML Terupdate</button>' +
+'<button id="bk56-update-terpadu-dl" style="padding:13px;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-family:inherit;">⬇️ Download index.html</button>' +
+'</div>' +
+'<div id="bk56-update-terpadu-status" style="padding:10px;border-radius:8px;font-size:.82rem;font-weight:600;margin-top:12px;display:none;"></div>' +
+'</div>' +
+'<div style="padding:14px 24px;background:#f8fafc;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">' +
+'<small style="font-size:.72rem;color:#64748b;">💡 File sudah berisi semua data link permanen</small>' +
+'<button id="bk56-update-terpadu-close" style="background:#f1f5f9;color:#475569;border:none;padding:8px 18px;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit;">✖ Tutup</button>' +
+'</div>' +
+'</div>';
+document.body.appendChild(modal);
+// Attach handlers (langsung, bukan delegation)
+document.getElementById('bk56-update-terpadu-copy').onclick = function() {
+const html = window.__bk56UpdatedHtmlTerpadu;
+if (!html) return;
+const ta = document.createElement('textarea');
+ta.value = html;
+ta.style.cssText = 'position:fixed;left:-9999px;opacity:0;';
+document.body.appendChild(ta);
+ta.select();
+let ok = false;
+try { ok = document.execCommand('copy'); } catch(e) {}
+document.body.removeChild(ta);
+if (!ok && navigator.clipboard) {
+navigator.clipboard.writeText(html).then(function(){ showCopySuccessTerpadu(); });
+return;
+}
+if (ok) showCopySuccessTerpadu();
+};
+document.getElementById('bk56-update-terpadu-dl').onclick = function() {
+const html = window.__bk56UpdatedHtmlTerpadu;
+if (!html) return;
+const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+const url = URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = url; a.download = 'index.html';
+document.body.appendChild(a); a.click();
+document.body.removeChild(a);
+URL.revokeObjectURL(url);
+if (typeof showToast === 'function') showToast('⬇️ index.html berhasil di-download!', 'success');
+};
+document.getElementById('bk56-update-terpadu-close').onclick = function() {
+modal.style.display = 'none';
+setTimeout(function() { modal.remove(); }, 300);
+};
+modal.onclick = function(e) {
+if (e.target === modal) {
+modal.style.display = 'none';
+setTimeout(function() { modal.remove(); }, 300);
+}
+};
+}
+
+function showCopySuccessTerpadu() {
+if (typeof showToast === 'function') showToast('✅ HTML berhasil di-copy!', 'success');
+const statusEl = document.getElementById('bk56-update-terpadu-status');
+if (statusEl) {
+statusEl.style.display = 'block';
+statusEl.style.background = '#ecfdf5';
+statusEl.style.color = '#059669';
+statusEl.style.border = '1px solid #a7f3d0';
+statusEl.innerHTML = '✅ HTML ter-copy! Paste ke file index.html di GitHub.';
+}
+}
+
+/* ================================================================
+* 🔑 BAGIAN 2: INJECT TOMBOL UPDATE HTML DI HEADER
+================================================================ */
+function injectUpdateHtmlButton() {
+if (document.getElementById('bk56-update-html-terpadu-btn')) return;
+const actionsDiv = document.getElementById('a56-header-actions-final');
+if (!actionsDiv) return;
+const adminPage = document.getElementById('adminbk56');
+if (!adminPage || !adminPage.classList.contains('active')) return;
+const btn = document.createElement('button');
+btn.id = 'bk56-update-html-terpadu-btn';
+btn.className = 'bk56-update-html-terpadu-btn';
+btn.type = 'button';
+btn.innerHTML = '📝 Update HTML Asli';
+btn.title = 'Update file HTML dengan data link terbaru';
+// Handler LANGSUNG di tombol (bukan delegation)
+btn.addEventListener('click', function(e) {
+e.preventDefault();
+e.stopPropagation();
+window.bk56UpdateHtmlTerpadu();
+});
+actionsDiv.appendChild(btn);
+console.log('✅ [Terpadu] Tombol Update HTML ditambahkan');
+}
+
+/* ================================================================
+* 🔑 BAGIAN 3: INJECT CHECKBOX "PILIH SEMUA" DI HEADER TABEL
+================================================================ */
+function injectSelectAllCheckbox() {
+if (document.getElementById('bk56-select-all-cb')) return;
+const theadRow = document.querySelector('#a56-panel-rekap .a56-rekap-table thead tr');
+if (!theadRow) return;
+const th = document.createElement('th');
+th.className = 'bk56-cb-th';
+const cb = document.createElement('input');
+cb.type = 'checkbox';
+cb.id = 'bk56-select-all-cb';
+cb.title = 'Pilih semua / batal pilih semua';
+// Handler LANGSUNG (bukan delegation)
+cb.addEventListener('change', function() {
+toggleSelectAllTerpadu(this.checked);
+});
+th.appendChild(cb);
+theadRow.insertBefore(th, theadRow.firstChild);
+}
+
+/* ================================================================
+* 🔑 BAGIAN 4: INJECT CHECKBOX PER-ROW
+================================================================ */
+function injectRowCheckboxes() {
+const tbody = document.getElementById('bk56-rekap-tbody');
+if (!tbody) return;
+const rows = tbody.querySelectorAll('tr');
+rows.forEach(function(row) {
+if (row.querySelector('.bk56-row-cb')) return;
+const firstCell = row.querySelector('td');
+if (!firstCell) return;
+const delBtn = row.querySelector('.a56-aksi-btn.del');
+if (!delBtn) return;
+const onclickAttr = delBtn.getAttribute('onclick') || '';
+const match = onclickAttr.match(/bk56DeleteRekapItem\('([^']+)'\)/);
+if (!match) return;
+const id = match[1];
+const td = document.createElement('td');
+td.className = 'bk56-cb-td';
+const isChecked = window.bk56SelectedIds.has(id);
+const cb = document.createElement('input');
+cb.type = 'checkbox';
+cb.className = 'bk56-row-cb';
+cb.dataset.id = id;
+cb.checked = isChecked;
+cb.title = 'Pilih link ini';
+// Handler LANGSUNG
+cb.addEventListener('change', function() {
+toggleSelectItemTerpadu(id, this.checked);
+});
+td.appendChild(cb);
+row.insertBefore(td, row.firstChild);
+if (isChecked) row.classList.add('bk56-row-selected');
+});
+}
+
+/* ================================================================
+* 🔑 BAGIAN 5: TOGGLE FUNGSI
+================================================================ */
+function toggleSelectAllTerpadu(checked) {
+const cbs = document.querySelectorAll('.bk56-row-cb');
+cbs.forEach(function(cb) {
+cb.checked = checked;
+const id = cb.dataset.id;
+if (checked) window.bk56SelectedIds.add(id);
+else window.bk56SelectedIds.delete(id);
+const row = cb.closest('tr');
+if (row) {
+if (checked) row.classList.add('bk56-row-selected');
+else row.classList.remove('bk56-row-selected');
+}
+});
+updateDeleteBtnState();
+}
+
+function toggleSelectItemTerpadu(id, checked) {
+if (checked) window.bk56SelectedIds.add(id);
+else window.bk56SelectedIds.delete(id);
+const cb = document.querySelector('.bk56-row-cb[data-id="' + id + '"]');
+if (cb) {
+const row = cb.closest('tr');
+if (row) {
+if (checked) row.classList.add('bk56-row-selected');
+else row.classList.remove('bk56-row-selected');
+}
+}
+updateDeleteBtnState();
+syncSelectAllState();
+}
+
+function syncSelectAllState() {
+const allCbs = document.querySelectorAll('.bk56-row-cb');
+const selectAll = document.getElementById('bk56-select-all-cb');
+if (!selectAll || allCbs.length === 0) return;
+const allChecked = allCbs.length > 0 && Array.from(allCbs).every(function(cb){ return cb.checked; });
+selectAll.checked = allChecked;
+}
+
+function updateDeleteBtnState() {
+const btn = document.getElementById('bk56-btn-hapus-terpilih');
+const countEl = document.getElementById('bk56-selected-count-final');
+const count = window.bk56SelectedIds.size;
+if (countEl) countEl.textContent = count;
+if (btn) btn.disabled = (count === 0);
+}
+
+/* ================================================================
+* 🔑 BAGIAN 6: INJECT TOMBOL "HAPUS TERPILIH"
+================================================================ */
+function injectDeleteButton() {
+const controls = document.querySelector('#a56-panel-rekap .a56-rekap-controls');
+if (!controls) return;
+if (document.getElementById('bk56-btn-hapus-terpilih')) return;
+const btn = document.createElement('button');
+btn.id = 'bk56-btn-hapus-terpilih';
+btn.type = 'button';
+btn.className = 'a56-rekap-btn';
+btn.disabled = true;
+btn.innerHTML = '🗑️ Hapus Terpilih <span id="bk56-selected-count-final">0</span>';
+btn.title = 'Hapus semua link yang telah dicentang';
+// Handler LANGSUNG di tombol
+btn.addEventListener('click', function(e) {
+e.preventDefault();
+e.stopPropagation();
+hapusTerpilihTerpadu();
+});
+controls.appendChild(btn);
+console.log('✅ [Terpadu] Tombol Hapus Terpilih di-inject');
+}
+
+/* ================================================================
+* 🔑 BAGIAN 7: FUNGSI HAPUS TERPILIH (ROBUST)
+================================================================ */
+function hapusTerpilihTerpadu() {
+const count = window.bk56SelectedIds.size;
+if (count === 0) {
+if (typeof showToast === 'function') showToast('⚠️ Belum ada link yang dipilih', 'error');
+return;
+}
+if (!confirm('🗑️ Hapus ' + count + ' link terpilih?\n\nTindakan ini akan menghapus dari:\n• Google Sheets (jika backend aktif)\n• Cache lokal browser\n\nTindakan tidak bisa dibatalkan.')) {
+return;
+}
+const ids = Array.from(window.bk56SelectedIds);
+let deleted = 0, failed = 0;
+let backendUrl = '';
+try { backendUrl = localStorage.getItem(CFG_KEY) || ''; } catch(e) {}
+// Hapus dari backend
+if (backendUrl) {
+// Coba batch delete dulu
+fetch(backendUrl, {
+method: 'POST',
+redirect: 'follow',
+headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+body: JSON.stringify({ action: 'batchDelete', ids: ids })
+}).then(function(r){ return r.json(); }).then(function(json){
+if (json.success) {
+deleted = json.deleted || count;
+failed = json.failed || 0;
+finishDelete();
+} else {
+// Fallback: parallel delete
+parallelDelete(ids, backendUrl).then(finishDelete);
+}
+}).catch(function(){
+parallelDelete(ids, backendUrl).then(finishDelete);
+});
+} else {
+deleted = count;
+finishDelete();
+}
+
+function parallelDelete(ids, url) {
+return Promise.all(ids.map(function(id){
+return fetch(url, {
+method: 'POST',
+redirect: 'follow',
+headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+body: JSON.stringify({ action: 'delete', id: id })
+}).then(function(r){ return r.json(); }).then(function(json){
+if (json.success) deleted++;
+else failed++;
+}).catch(function(){ failed++; });
+}));
+}
+
+function finishDelete() {
+// Update cache lokal
+try {
+const cacheRaw = localStorage.getItem(CACHE_KEY);
+if (cacheRaw) {
+let cacheData = JSON.parse(cacheRaw);
+if (Array.isArray(cacheData)) {
+cacheData = cacheData.filter(function(d){ return !ids.includes(d.ID); });
+localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+if (Array.isArray(window.bk56RekapData)) {
+window.bk56RekapData = cacheData;
+}
+}
+}
+} catch(e) {}
+// Reset state
+window.bk56SelectedIds.clear();
+// Uncheck semua checkbox
+document.querySelectorAll('.bk56-row-cb').forEach(function(cb){ cb.checked = false; });
+const selectAll = document.getElementById('bk56-select-all-cb');
+if (selectAll) selectAll.checked = false;
+document.querySelectorAll('.bk56-row-selected').forEach(function(row){
+row.classList.remove('bk56-row-selected');
+});
+// Re-render tabel (panggil fungsi asli yang sudah ada)
+setTimeout(function() {
+if (typeof window.bk56RenderRekap === 'function') {
+try { window.bk56RenderRekap(); } catch(e) {}
+}
+// Re-inject checkbox setelah render
+setTimeout(function() {
+injectRowCheckboxes();
+updateDeleteBtnState();
+}, 150);
+}, 100);
+// Notifikasi
+if (typeof showToast === 'function') {
+if (failed > 0) {
+showToast('⚠️ ' + deleted + ' dihapus, ' + failed + ' gagal', 'error');
+} else {
+showToast('🗑️ ' + deleted + ' link berhasil dihapus', 'success');
+}
+}
+console.log('✅ [Terpadu] Delete selesai:', deleted, 'berhasil,', failed, 'gagal');
+}
+}
+
+/* ================================================================
+* 🔑 BAGIAN 8: EVENT DELEGATION (SAFETY NET)
+*    → Backup listener di document level
+================================================================ */
+document.addEventListener('click', function(e) {
+const target = e.target;
+if (!target) return;
+// Tombol Hapus Terpilih (backup)
+const delBtn = target.closest('#bk56-btn-hapus-terpilih');
+if (delBtn && !delBtn.disabled) {
+e.preventDefault();
+e.stopPropagation();
+hapusTerpilihTerpadu();
+return;
+}
+// Tombol Update HTML (backup)
+const updBtn = target.closest('#bk56-update-html-terpadu-btn');
+if (updBtn) {
+e.preventDefault();
+e.stopPropagation();
+window.bk56UpdateHtmlTerpadu();
+return;
+}
+}, true); // capture phase = prioritas tertinggi
+
+/* ================================================================
+* 🔑 BAGIAN 9: MUTATION OBSERVERS (AUTO-INJECT)
+================================================================ */
+function setupObservers() {
+// Observer 1: Header actions → inject tombol Update HTML
+const actionsDiv = document.getElementById('a56-header-actions-final');
+if (actionsDiv) {
+const obs1 = new MutationObserver(function() {
+setTimeout(injectUpdateHtmlButton, 100);
+});
+obs1.observe(actionsDiv, { childList: true });
+}
+// Observer 2: Panel rekap → inject tombol Hapus Terpilih
+const panel = document.getElementById('a56-panel-rekap');
+if (panel) {
+const obs2 = new MutationObserver(function() {
+if (panel.style.display !== 'none') {
+setTimeout(function() {
+injectDeleteButton();
+injectSelectAllCheckbox();
+injectRowCheckboxes();
+updateDeleteBtnState();
+}, 150);
+}
+});
+obs2.observe(panel, { attributes: true, attributeFilter: ['style'], childList: true, subtree: true });
+}
+// Observer 3: Tbody → inject checkbox per-row saat tabel di-render
+const tbody = document.getElementById('bk56-rekap-tbody');
+if (tbody) {
+const obs3 = new MutationObserver(function() {
+setTimeout(function() {
+injectRowCheckboxes();
+updateDeleteBtnState();
+syncSelectAllState();
+}, 80);
+});
+obs3.observe(tbody, { childList: true, subtree: true });
+}
+// Observer 4: Thead → inject checkbox "Pilih Semua"
+const theadRow = document.querySelector('#a56-panel-rekap .a56-rekap-table thead tr');
+if (theadRow) {
+const obs4 = new MutationObserver(function() {
+setTimeout(injectSelectAllCheckbox, 50);
+});
+obs4.observe(theadRow, { childList: true });
+}
+console.log('✅ [Terpadu] 4 observer aktif');
+}
+
+/* ================================================================
+* 🔑 BAGIAN 10: PERIODIC CHECK (SAFETY NET)
+================================================================ */
+function startPeriodicCheck() {
+setInterval(function() {
+const adminPage = document.getElementById('adminbk56');
+if (adminPage && adminPage.classList.contains('active')) {
+injectUpdateHtmlButton();
+}
+const panel = document.getElementById('a56-panel-rekap');
+if (panel && panel.style.display !== 'none') {
+injectDeleteButton();
+injectSelectAllCheckbox();
+injectRowCheckboxes();
+updateDeleteBtnState();
+}
+}, 2500);
+}
+
+/* ================================================================
+* 🚀 INIT
+================================================================ */
+function init() {
+console.log('🚀 [Terpadu Patch] v1.0.0 dimulai...');
+console.log('📌 Prinsip:');
+console.log('   ❌ TIDAK override bk56RenderRekap / bk56ShowRekap / bk56DeleteSelected');
+console.log('   ✅ Hanya MutationObserver + event delegation');
+console.log('   ✅ ID unik, tidak bentrok dengan patch lain');
+console.log('   ✅ 3 fitur dalam 1 patch terpadu');
+// Initial inject
+setTimeout(function() {
+injectUpdateHtmlButton();
+injectDeleteButton();
+injectSelectAllCheckbox();
+injectRowCheckboxes();
+updateDeleteBtnState();
+}, 1000);
+// Setup observers
+setupObservers();
+// Periodic check
+startPeriodicCheck();
+// ESC untuk tutup modal
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+const modal = document.getElementById('bk56-update-terpadu-modal');
+if (modal) {
+modal.style.display = 'none';
+setTimeout(function() { modal.remove(); }, 300);
+}
+}
+});
+console.log('✅ [Terpadu Patch] Terpasang — 3 fitur aktif');
+}
+
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', init);
+} else {
+init();
+}
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH TERPADU: REKAP SELECTION + UPDATE HTML [END] ========== -->
+<!-- ================================================================ -->
  <!-- ================================================================ -->
 <!-- ========== PATCH FINAL FIX: TOMBOL PILIH SEMUA ========== -->
 <!-- ================================================================ -->
@@ -19627,21 +20300,789 @@ init();
 <!-- ================================================================ -->
 <!-- ========== PATCH FINAL: STOP AUTO-RESTORE SHEET (CAPTURE PHASE) [END] ========== -->
 <!-- ================================================================ -->
-
-
- 
- <!-- PATCH SUPER SEDERHANA: FIX METADATA TAMPILAN -->
+<!-- ================================================================ -->
+<!-- ========== PATCH FINAL: STRICT CARD MATCHING (ANTI TUKAR KELAS) ========== -->
+<!-- ================================================================ -->
 <script>
 (function(){
-  // Mapping kode ke nama lengkap
+"use strict";
+/* ================================================================
+* PATCH FINAL: STRICT CARD MATCHING
+* ================================================================
+* MASALAH:
+* ❌ syncSheetToLocal() pakai kondisi: nama === nama || kat === kat
+* ❌ Akibatnya: "Catatan Kasus IX-B" cocok dengan card "IX-A" 
+*    karena keduanya punya kat='kasus'
+* ❌ Semua link kasus IX masuk ke card IX-A (yang pertama ditemukan)
+*
+* SOLUSI:
+* ✅ 1. Override syncSheetToLocal dengan matching STRICT
+* ✅ 2. Prioritas 1: Exact match nama dokumen (case-insensitive)
+* ✅ 3. Prioritas 2: Match section kelas (A, B, C) dari URL
+* ✅ 4. Jika tidak match → SKIP (jangan paksa masuk card lain!)
+* ✅ 5. Flag anti-conflict: __bk56StrictCardMatchingPatched
+*
+* ANTI-CONFLICT:
+* - Tidak override fungsi lain
+* - Tidak sentuh addMateriLink/addVideoLink/addDocLink
+* - Hanya override syncSheetToLocal
+================================================================ */
+const FLAG = '__bk56StrictCardMatchingPatched';
+if (window[FLAG]) {
+  console.log('ℹ️ [StrictCardMatching] Patch sudah terpasang, skip');
+  return;
+}
+window[FLAG] = true;
+
+const MATERI_KEY = 'bk56_materi_links';
+const VIDEO_KEY  = 'bk56_video_links';
+const DOC_KEY    = 'bk56_doc_links';
+
+/* ================================================================
+* 🔑 HELPER 1: Normalisasi nama untuk perbandingan
+================================================================ */
+function normalizeName(name) {
+  if (!name) return '';
+  return String(name)
+    .toLowerCase()
+    .replace(/[\s\-_\.]+/g, '')
+    .replace(/[^a-z0-9]/g, '')
+    .trim();
+}
+
+/* ================================================================
+* 🔑 HELPER 2: Ekstrak section kelas dari string (A, B, C, dst)
+*    Contoh: "Catatan Kasus Kelas IX-B" → "B"
+*            "CATATAN-KASUS-VIII-B/" → "B"
+================================================================ */
+function extractSection(str) {
+  if (!str) return null;
+  const match = String(str).match(/[\s_-]([A-J])(?:[\s_-]|\/|$)/i);
+  return match ? match[1].toUpperCase() : null;
+}
+
+/* ================================================================
+* 🔑 HELPER 3: Cari docIdx di DOCS dengan STRICT matching
+*    → Ini KUNCI perbaikan
+================================================================ */
+function findDocIdxStrict(kelas, guru, namaDokumen, url) {
+  if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return -1;
+  
+  const kelasNorm = String(kelas || '').toLowerCase().trim();
+  const guruNorm  = String(guru  || '').toLowerCase().trim();
+  const namaNorm  = normalizeName(namaDokumen);
+  const section   = extractSection(namaDokumen) || extractSection(url);
+  
+  // === PRIORITAS 1: Exact match nama + kelas + guru ===
+  for (let i = 0; i < DOCS.length; i++) {
+    const d = DOCS[i];
+    const docKelas = String(d.kelas || '').toLowerCase().trim();
+    const docGuru  = String(d.guru  || '').toLowerCase().trim();
+    const docNama  = normalizeName(d.nama);
+    
+    if (docKelas === kelasNorm && 
+        docGuru  === guruNorm && 
+        docNama  === namaNorm) {
+      console.log('✅ [StrictCard] Exact match:', d.nama, '→ idx', i);
+      return i;
+    }
+  }
+  
+  // === PRIORITAS 2: Match section kelas (A, B, C) ===
+  if (section) {
+    for (let i = 0; i < DOCS.length; i++) {
+      const d = DOCS[i];
+      const docKelas = String(d.kelas || '').toLowerCase().trim();
+      const docGuru  = String(d.guru  || '').toLowerCase().trim();
+      const docNama  = normalizeName(d.nama);
+      const docSection = extractSection(d.nama);
+      
+      if (docKelas === kelasNorm && 
+          docGuru  === guruNorm &&
+          docSection === section &&
+          docNama.includes(namaNorm.substring(0, Math.min(namaNorm.length, 15)))) {
+        console.log('✅ [StrictCard] Section match:', d.nama, '→ idx', i);
+        return i;
+      }
+    }
+  }
+  
+  // === PRIORITAS 3: Partial match nama (untuk nama generik) ===
+  if (namaNorm && namaNorm.length > 5) {
+    for (let i = 0; i < DOCS.length; i++) {
+      const d = DOCS[i];
+      const docKelas = String(d.kelas || '').toLowerCase().trim();
+      const docGuru  = String(d.guru  || '').toLowerCase().trim();
+      const docNama  = normalizeName(d.nama);
+      
+      if (docKelas === kelasNorm && 
+          docGuru  === guruNorm &&
+          (docNama.includes(namaNorm) || namaNorm.includes(docNama))) {
+        console.log('✅ [StrictCard] Partial match:', d.nama, '→ idx', i);
+        return i;
+      }
+    }
+  }
+  
+  console.log('⚠️ [StrictCard] Tidak ada match untuk:', namaDokumen, '| Kelas:', kelas, '| Guru:', guru);
+  return -1;
+}
+
+/* ================================================================
+* 🎯 OVERRIDE: syncSheetToLocal — VERSI STRICT
+================================================================ */
+window.syncSheetToLocal = async function(sheetData) {
+  console.log('🔧 [StrictCard] syncSheetToLocal STRICT dipanggil');
+  console.log('📊 Data dari sheet:', sheetData ? sheetData.length : 0, 'baris');
+  
+  if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) {
+    console.warn('⚠️ [StrictCard] DOCS array tidak tersedia');
+    return;
+  }
+  
+  let materi = {}, video = {}, doc = {};
+  try { materi = JSON.parse(localStorage.getItem(MATERI_KEY) || '{}'); } catch(e){}
+  try { video  = JSON.parse(localStorage.getItem(VIDEO_KEY)  || '{}'); } catch(e){}
+  try { doc    = JSON.parse(localStorage.getItem(DOC_KEY)    || '{}'); } catch(e){}
+  
+  let added = 0;
+  let skipped = 0;
+  let skippedDetails = [];
+  
+  sheetData.forEach(function(row, rowIndex) {
+    const kelas    = String(row.Kelas || '').toLowerCase().trim();
+    const guru     = String(row.Guru || '').toLowerCase().trim();
+    const kategori = String(row.Kategori || '').toLowerCase().trim();
+    const nama     = String(row.NamaDokumen || '').trim();
+    const jenis    = String(row.JenisLink || 'doc').toLowerCase().trim();
+    const url      = String(row.URL || '').trim();
+    
+    if (!url || url === '-') return;
+    
+    // 🔑 KUNCI: Cari docIdx dengan STRICT matching
+    const docIdx = findDocIdxStrict(kelas, guru, nama, url);
+    
+    if (docIdx < 0) {
+      skipped++;
+      skippedDetails.push({
+        row: rowIndex + 1,
+        nama: nama,
+        kelas: kelas,
+        guru: guru,
+        url: url.substring(0, 50)
+      });
+      return; // SKIP - jangan paksa masuk ke card lain!
+    }
+    
+    const d = DOCS[docIdx];
+    
+    if (d.kat === 'materi') {
+      // Hitung materiIdx
+      let materiIdx = 0, found = false;
+      for (let i = 0; i < DOCS.length; i++) {
+        if (DOCS[i].kelas === d.kelas && DOCS[i].guru === d.guru && DOCS[i].kat === 'materi') {
+          if (i === docIdx) { found = true; break; }
+          materiIdx++;
+        }
+      }
+      if (!found) return;
+      
+      const key = d.kelas + '_' + d.guru + '_' + materiIdx;
+      if (!materi[key]) materi[key] = {ppt:[], pdf:[], doc:[], video:[]};
+      if (!materi[key][jenis]) materi[key][jenis] = [];
+      if (!materi[key][jenis].includes(url)) {
+        materi[key][jenis].push(url);
+        added++;
+      }
+    } else {
+      if (!doc[docIdx]) doc[docIdx] = [];
+      if (!doc[docIdx].includes(url)) {
+        doc[docIdx].push(url);
+        added++;
+        console.log('✅ [StrictCard] Link ditambahkan ke:', d.nama, '(', d.kelas, '/', d.guru, ')');
+      }
+    }
+  });
+  
+  // Simpan ke localStorage
+  localStorage.setItem(MATERI_KEY, JSON.stringify(materi));
+  localStorage.setItem(VIDEO_KEY,  JSON.stringify(video));
+  localStorage.setItem(DOC_KEY,    JSON.stringify(doc));
+  
+  console.log('✅ [StrictCard] Selesai:', added, 'link ditambahkan,', skipped, 'link di-skip');
+  
+  if (skipped > 0) {
+    console.warn('⚠️ [StrictCard] Detail link yang di-skip:');
+    skippedDetails.forEach(function(item) {
+      console.warn('   - Baris', item.row, ':', item.nama, '|', item.kelas, '/', item.guru, '|', item.url);
+    });
+  }
+  
+  // Refresh UI
+  setTimeout(function() {
+    if (typeof render === 'function') {
+      try { render(true); } catch(e){}
+    }
+  }, 600);
+};
+
+console.log('✅ [StrictCardMatching] Patch terpasang');
+console.log('📌 Hasil: Link "Catatan Kasus IX-B" TIDAK akan masuk ke card "IX-A" lagi');
+console.log('📌 Matching: Exact nama → Section kelas → Partial nama → SKIP');
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH FINAL: STRICT CARD MATCHING [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH FINAL TERPADU: AUTO-SYNC + DEDUPE + STRICT MATCH ========== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+
+/* ================= KONFIGURASI UTAMA ================= */
+const CONFIG = {
+    STORAGE_KEYS: {
+        MATERI: 'bk56_materi_links',
+        VIDEO: 'bk56_video_links',
+        DOC: 'bk56_doc_links',
+        BACKEND: 'bk56_backend_url',
+        REKAP_CACHE: 'bk56_rekap_cache'
+    },
+    EMBEDDED_ID: 'bk56-embedded-data',
+    SYNC_INTERVAL: 5000, // Auto-sync setiap 5 detik
+    FLAG: '__bk56FinalTerpaduPatched'
+};
+
+// Cek apakah patch sudah terpasang
+if (window[CONFIG.FLAG]) {
+    console.log('ℹ️ [PatchTerpadu] Sudah aktif, skip instalasi ulang');
+    return;
+}
+window[CONFIG.FLAG] = true;
+
+/* ================= HELPER FUNCTIONS ================= */
+
+// Normalisasi URL untuk perbandingan akurat
+function normalizeUrl(url) {
+    if (!url || typeof url !== 'string') return '';
+    url = url.trim().toLowerCase();
+    if (!/^https?:\/\//i.test(url) && !/^mailto:/i.test(url)) {
+        url = 'https://' + url;
+    }
+    return url;
+}
+
+// Baca embedded JSON (backup permanen di HTML)
+function readEmbedded() {
+    try {
+        const el = document.getElementById(CONFIG.EMBEDDED_ID);
+        return el ? JSON.parse(el.textContent) : null;
+    } catch(e) { return null; }
+}
+
+// Tulis ke embedded JSON
+function writeEmbedded(data) {
+    try {
+        const el = document.getElementById(CONFIG.EMBEDDED_ID);
+        if (el) { 
+            el.textContent = JSON.stringify(data); 
+            return true; 
+        }
+        return false;
+    } catch(e) { return false; }
+}
+
+// Sinkronkan semua data ke embedded JSON
+function syncAllToEmbedded() {
+    const emb = readEmbedded() || { materi:{}, video:{}, docLinks:{} };
+    
+    try {
+        const m = localStorage.getItem(CONFIG.STORAGE_KEYS.MATERI);
+        if (m) emb.materi = JSON.parse(m);
+    } catch(e) {}
+    
+    try {
+        const v = localStorage.getItem(CONFIG.STORAGE_KEYS.VIDEO);
+        if (v) emb.video = JSON.parse(v);
+    } catch(e) {}
+    
+    try {
+        const d = localStorage.getItem(CONFIG.STORAGE_KEYS.DOC);
+        if (d) emb.docLinks = JSON.parse(d);
+    } catch(e) {}
+    
+    // Simpan juga URL backend
+    try {
+        const url = localStorage.getItem(CONFIG.STORAGE_KEYS.BACKEND);
+        if (url) emb.backendUrl = url;
+    } catch(e) {}
+    
+    emb.lastUpdated = new Date().toISOString();
+    emb.patchVersion = 'final-terpadu-v1';
+    
+    return writeEmbedded(emb);
+}
+
+// Restore data dari embedded jika localStorage kosong
+function restoreFromEmbedded() {
+    const emb = readEmbedded();
+    if (!emb) return 0;
+    
+    let restored = 0;
+    
+    if (emb.materi && Object.keys(emb.materi).length > 0 && 
+        !localStorage.getItem(CONFIG.STORAGE_KEYS.MATERI)) {
+        localStorage.setItem(CONFIG.STORAGE_KEYS.MATERI, JSON.stringify(emb.materi));
+        restored++;
+    }
+    
+    if (emb.video && Object.keys(emb.video).length > 0 && 
+        !localStorage.getItem(CONFIG.STORAGE_KEYS.VIDEO)) {
+        localStorage.setItem(CONFIG.STORAGE_KEYS.VIDEO, JSON.stringify(emb.video));
+        restored++;
+    }
+    
+    if (emb.docLinks && Object.keys(emb.docLinks).length > 0 && 
+        !localStorage.getItem(CONFIG.STORAGE_KEYS.DOC)) {
+        localStorage.setItem(CONFIG.STORAGE_KEYS.DOC, JSON.stringify(emb.docLinks));
+        restored++;
+    }
+    
+    if (emb.backendUrl && !localStorage.getItem(CONFIG.STORAGE_KEYS.BACKEND)) {
+        localStorage.setItem(CONFIG.STORAGE_KEYS.BACKEND, emb.backendUrl);
+    }
+    
+    return restored;
+}
+
+/* ================= LOGIKA STRICT MATCHING ================= */
+
+// Cari index dokumen dengan matching ketat (anti tukar kelas)
+function findDocIdxStrict(kelas, guru, namaDokumen, url) {
+    if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) return -1;
+    
+    const kelasNorm = String(kelas || '').toLowerCase().trim();
+    const guruNorm = String(guru || '').toLowerCase().trim();
+    const namaNorm = String(namaDokumen || '').toLowerCase().trim();
+    
+    // Prioritas 1: Exact match nama + kelas + guru
+    for (let i = 0; i < DOCS.length; i++) {
+        const d = DOCS[i];
+        if (String(d.kelas || '').toLowerCase().trim() === kelasNorm &&
+            String(d.guru || '').toLowerCase().trim() === guruNorm &&
+            String(d.nama || '').toLowerCase().trim() === namaNorm) {
+            console.log('✅ [StrictMatch] Exact:', d.nama);
+            return i;
+        }
+    }
+    
+    // Prioritas 2: Match section kelas (A/B/C) dari URL/nama
+    const extractSection = (str) => {
+        const m = String(str || '').match(/[\s_-]([A-J])(?:[\s_-]|\/|$)/i);
+        return m ? m[1].toUpperCase() : null;
+    };
+    
+    const section = extractSection(namaDokumen) || extractSection(url);
+    if (section) {
+        for (let i = 0; i < DOCS.length; i++) {
+            const d = DOCS[i];
+            if (String(d.kelas || '').toLowerCase().trim() === kelasNorm &&
+                String(d.guru || '').toLowerCase().trim() === guruNorm &&
+                extractSection(d.nama) === section) {
+                console.log('✅ [StrictMatch] Section:', d.nama);
+                return i;
+            }
+        }
+    }
+    
+    // Prioritas 3: Partial match nama (fallback aman)
+    if (namaNorm.length > 5) {
+        for (let i = 0; i < DOCS.length; i++) {
+            const d = DOCS[i];
+            const docNama = String(d.nama || '').toLowerCase().trim();
+            if (String(d.kelas || '').toLowerCase().trim() === kelasNorm &&
+                String(d.guru || '').toLowerCase().trim() === guruNorm &&
+                (docNama.includes(namaNorm) || namaNorm.includes(docNama))) {
+                console.log('✅ [StrictMatch] Partial:', d.nama);
+                return i;
+            }
+        }
+    }
+    
+    console.warn('⚠️ [StrictMatch] Tidak ada match:', namaDokumen, '| Kelas:', kelas);
+    return -1;
+}
+
+/* ================= LOGIKA AUTO-SYNC KE SHEET ================= */
+
+async function autoSyncToSheet() {
+    const backendUrl = localStorage.getItem(CONFIG.STORAGE_KEYS.BACKEND);
+    if (!backendUrl) return;
+    
+    // Kumpulkan semua link dari localStorage
+    const allLinks = [];
+    
+    // Materi
+    try {
+        const m = localStorage.getItem(CONFIG.STORAGE_KEYS.MATERI);
+        if (m) {
+            const mData = JSON.parse(m);
+            for (const key in mData) {
+                const parts = key.split('_');
+                if (parts.length < 3) continue;
+                const [kelas, guru, materiIdx] = parts;
+                const d = mData[key];
+                ['ppt','pdf','doc','video'].forEach(t => {
+                    if (d[t] && d[t].length > 0) {
+                        d[t].forEach(url => {
+                            allLinks.push({
+                                kelas, guru, kategori: 'materi',
+                                nama: 'Materi ' + (parseInt(materiIdx)+1),
+                                jenis: t, url
+                            });
+                        });
+                    }
+                });
+            }
+        }
+    } catch(e) {}
+    
+    // Video
+    try {
+        const v = localStorage.getItem(CONFIG.STORAGE_KEYS.VIDEO);
+        if (v) {
+            const vData = JSON.parse(v);
+            for (const idx in vData) {
+                const list = vData[idx];
+                if (Array.isArray(list)) {
+                    list.forEach(url => {
+                        allLinks.push({
+                            kelas: '-', guru: '-', kategori: 'video',
+                            nama: 'Video ' + (parseInt(idx)+1),
+                            jenis: 'video', url
+                        });
+                    });
+                }
+            }
+        }
+    } catch(e) {}
+    
+    // Dokumen
+    try {
+        const dl = localStorage.getItem(CONFIG.STORAGE_KEYS.DOC);
+        if (dl && typeof DOCS !== 'undefined') {
+            const dlData = JSON.parse(dl);
+            for (const idx in dlData) {
+                const doc = DOCS[parseInt(idx)];
+                if (!doc) continue;
+                const list = dlData[idx];
+                if (Array.isArray(list)) {
+                    list.forEach(url => {
+                        allLinks.push({
+                            kelas: doc.kelas, guru: doc.guru, kategori: doc.kat,
+                            nama: doc.nama, jenis: 'doc', url
+                        });
+                    });
+                }
+            }
+        }
+    } catch(e) {}
+    
+    if (allLinks.length === 0) return;
+    
+    // Fetch existing URLs dari sheet (untuk dedupe)
+    let existingUrls = new Set();
+    try {
+        const res = await fetch(backendUrl, { method: 'GET', redirect: 'follow' });
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+            existingUrls = new Set(json.data.map(d => normalizeUrl(d.URL)));
+        }
+    } catch(e) {}
+    
+    // Push hanya link baru (anti duplikat)
+    let pushed = 0;
+    for (const link of allLinks) {
+        const normUrl = normalizeUrl(link.url);
+        if (existingUrls.has(normUrl)) continue; // Skip jika sudah ada
+        
+        try {
+            const res = await fetch(backendUrl, {
+                method: 'POST',
+                redirect: 'follow',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'add',
+                    kelas: link.kelas,
+                    guru: link.guru,
+                    kategori: link.kategori,
+                    nama: link.nama,
+                    jenis: link.jenis,
+                    url: link.url
+                })
+            });
+            const json = await res.json();
+            if (json.success) pushed++;
+        } catch(e) {
+            console.warn('⚠️ Gagal push 1 link:', e);
+        }
+    }
+    
+    if (pushed > 0) {
+        console.log('✅ [AutoSync]', pushed, 'link baru terkirim ke Sheet');
+        if (typeof showToast === 'function') {
+            showToast('✅ ' + pushed + ' link tersinkron otomatis', 'success');
+        }
+    }
+}
+
+/* ================= OVERRIDE FUNGSI INTI ================= */
+
+// Override syncSheetToLocal dengan Strict Matching
+if (typeof window.syncSheetToLocal === 'function') {
+    const _origSync = window.syncSheetToLocal;
+    window.syncSheetToLocal = async function(sheetData) {
+        if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) {
+            console.warn('⚠️ [StrictSync] DOCS array tidak tersedia');
+            return;
+        }
+        
+        let materi = {}, video = {}, doc = {};
+        try { materi = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.MATERI) || '{}'); } catch(e){}
+        try { video  = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.VIDEO)  || '{}'); } catch(e){}
+        try { doc    = JSON.parse(localStorage.getItem(CONFIG.STORAGE_KEYS.DOC)    || '{}'); } catch(e){}
+        
+        let added = 0;
+        let skipped = 0;
+        
+        sheetData.forEach(row => {
+            const kelas    = String(row.Kelas || '').toLowerCase().trim();
+            const guru     = String(row.Guru || '').toLowerCase().trim();
+            const nama     = String(row.NamaDokumen || '').trim();
+            const jenis    = String(row.JenisLink || 'doc').toLowerCase().trim();
+            const url      = String(row.URL || '').trim();
+            
+            if (!url || url === '-') return;
+            
+            // 🔑 STRICT MATCHING
+            const docIdx = findDocIdxStrict(kelas, guru, nama, url);
+            
+            if (docIdx < 0) {
+                skipped++;
+                return; // SKIP jika tidak cocok, jangan paksa masuk card lain!
+            }
+            
+            const d = DOCS[docIdx];
+            
+            if (d.kat === 'materi') {
+                let materiIdx = 0, found = false;
+                for (let i = 0; i < DOCS.length; i++) {
+                    if (DOCS[i].kelas === d.kelas && DOCS[i].guru === d.guru && DOCS[i].kat === 'materi') {
+                        if (i === docIdx) { found = true; break; }
+                        materiIdx++;
+                    }
+                }
+                if (!found) return;
+                
+                const key = d.kelas + '_' + d.guru + '_' + materiIdx;
+                if (!materi[key]) materi[key] = {ppt:[],pdf:[],doc:[],video:[]};
+                if (!materi[key][jenis]) materi[key][jenis] = [];
+                if (!materi[key][jenis].includes(url)) {
+                    materi[key][jenis].push(url);
+                    added++;
+                }
+            } else {
+                if (!doc[docIdx]) doc[docIdx] = [];
+                if (!doc[docIdx].includes(url)) {
+                    doc[docIdx].push(url);
+                    added++;
+                }
+            }
+        });
+        
+        localStorage.setItem(CONFIG.STORAGE_KEYS.MATERI, JSON.stringify(materi));
+        localStorage.setItem(CONFIG.STORAGE_KEYS.VIDEO, JSON.stringify(video));
+        localStorage.setItem(CONFIG.STORAGE_KEYS.DOC, JSON.stringify(doc));
+        
+        console.log('✅ [StrictSync] Selesai:', added, 'ditambahkan,', skipped, 'di-skip');
+        
+        setTimeout(() => {
+            if (typeof render === 'function') {
+                try { render(true); } catch(e){}
+            }
+        }, 600);
+    };
+    console.log('✅ [StrictSync] syncSheetToLocal di-override');
+}
+
+// Hook fungsi add link untuk auto-sync ke embedded
+['addMateriLink','removeMateriLink','addVideoLink','removeVideoLink','addDocLink','removeDocLink'].forEach(name => {
+    if (typeof window[name] === 'function' && !window[name].__terpaduHooked) {
+        const _orig = window[name];
+        window[name] = function() {
+            const result = _orig.apply(this, arguments);
+            setTimeout(syncAllToEmbedded, 200);
+            return result;
+        };
+        window[name].__terpaduHooked = true;
+        console.log('✅ [Terpadu] ' + name + ' di-hook');
+    }
+});
+
+// Hook backup HTML
+if (typeof window.bk56BackupToHTML === 'function' && !window.bk56BackupToHTML.__terpaduHooked) {
+    const _orig = window.bk56BackupToHTML;
+    window.bk56BackupToHTML = function() {
+        syncAllToEmbedded();
+        console.log('✅ [Terpadu] Semua data ter-embed sebelum backup');
+        return _orig.apply(this, arguments);
+    };
+    window.bk56BackupToHTML.__terpaduHooked = true;
+}
+
+/* ================= INIT & PERIODIC SYNC ================= */
+
+function init() {
+    console.log('🚀 [PatchTerpadu] v1.0 dimulai...');
+    
+    // 1. Restore dari embedded
+    const restored = restoreFromEmbedded();
+    if (restored > 0) {
+        console.log('✅ [Terpadu]', restored, 'kategori dipulihkan dari HTML');
+        if (typeof showToast === 'function') {
+            showToast('🔄 Data dipulihkan dari backup HTML', 'info');
+        }
+    }
+    
+    // 2. Initial sync ke embedded
+    setTimeout(syncAllToEmbedded, 1500);
+    
+    // 3. Auto-sync periodik ke Sheet
+    setInterval(autoSyncToSheet, CONFIG.SYNC_INTERVAL);
+    
+    // 4. Sync saat visibility change
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            restoreFromEmbedded();
+            setTimeout(autoSyncToSheet, 1000);
+        }
+    });
+    
+    // 5. Sync saat user interaksi
+    document.addEventListener('click', () => {
+        setTimeout(() => {
+            syncAllToEmbedded();
+            autoSyncToSheet();
+        }, 500);
+    }, { passive: true });
+    
+    console.log('✅ [PatchTerpadu] Terpasang — Auto-sync + Dedupe + Strict Match aktif');
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH FINAL TERPADU [END] ========== -->
+<!-- ================================================================ -->
+
+
+ <!-- ================================================================ -->
+<!-- ========== PATCH: STOP AUTO-SYNC + EVENT-ONLY SYNC ========== -->
+<!-- ================================================================ -->
+
+  
+  // Block auto-sync saat tab aktif kembali
+  document.addEventListener('visibilitychange', function(e) {
+    if (!document.hidden) {
+      e.stopImmediatePropagation();
+      console.log('⏸️ [StopAutoSync] Tab aktif - auto-sync dicegah');
+    }
+  }, true);
+
+  /* ================================================================
+  * 🎯 SELESAI
+  ================================================================= */
+  console.log('✅ [StopAutoSync] Patch terpasang');
+  console.log('📌 Yang DINONAKTIFKAN:');
+  console.log('   ❌ bk56SyncToSheetSilent (auto-sync diam-diam)');
+  console.log('   ❌ autoSyncToSheet (scan localStorage setiap 3 detik)');
+  console.log('   ❌ startAutoSync (auto-sync saat load)');
+  console.log('   ❌ startPeriodicSync (sync periodik)');
+  console.log('   ❌ bk56DetectChanges (deteksi perubahan localStorage)');
+  console.log('📌 Yang AKTIF:');
+  console.log('   ✅ Hook addDocLink → push 1 link baru (data dari DOCS)');
+  console.log('   ✅ Hook addMateriLink → push 1 link baru');
+  console.log('   ✅ Hook addVideoLink → push 1 link baru');
+  console.log('   ✅ Tombol "🔄 Sync dari Sheet" (manual)');
+  console.log('   ✅ Tombol "💾 Push ke Sheet" (manual)');
+  console.log('📌 ATURAN:');
+  console.log('   • TIDAK ADA scan localStorage saat sync');
+  console.log('   • HANYA push 1 link yang user tambahkan');
+  console.log('   • Data diambil dari DOCS array (bukan localStorage)');
+
+})();
+</script>
+<!-- ========== PATCH: STOP AUTO-SYNC + EVENT-ONLY SYNC [END] ========== -->
+
+  
+  document.addEventListener('visibilitychange', function(e) {
+    if (!document.hidden) {
+      e.stopImmediatePropagation();
+      console.log('⏸️ [FinalStopAutoSync] Tab aktif - auto-sync dicegah');
+    }
+  }, true);
+
+  /* ================================================================
+  * SELESAI
+  ================================================================= */
+  console.log('✅ [FinalStopAutoSync] Patch terpasang');
+  console.log('📌 Yang DINONAKTIFKAN:');
+  console.log('   ❌ bk56StartAutoSync (auto-sync setiap 5 detik)');
+  console.log('   ❌ bk56DetectChanges (deteksi perubahan localStorage)');
+  console.log('   ❌ bk56SyncToSheetSilent (sync diam-diam)');
+  console.log('📌 Yang AKTIF:');
+  console.log('   ✅ Hook addDocLink → push 1 link baru (data dari DOCS)');
+  console.log('   ✅ Hook addMateriLink → push 1 link baru');
+  console.log('   ✅ Hook addVideoLink → push 1 link baru');
+  console.log('   ✅ Tombol "🔄 Sync dari Sheet" (manual)');
+  console.log('   ✅ Tombol "💾 Push ke Sheet" (manual)');
+  console.log('📌 ATURAN:');
+  console.log('   • TIDAK ADA scan localStorage saat sync');
+  console.log('   • HANYA push 1 link yang user tambahkan');
+  console.log('   • Data diambil dari DOCS array (bukan localStorage)');
+
+})();
+</script>
+<!-- ========== PATCH FINAL: STOP AUTO-SYNC + EVENT-ONLY [END] ========== -->
+ 
+ <!-- ================================================================ -->
+<!-- ========== SOLUSI FINAL: AUTO-FIX TAMPILAN REKAP LINK ========== -->
+<!-- ================================================================ -->
+<script>
+(function() {
+  if (window.__finalRekapFix) return;
+  window.__finalRekapFix = true;
+  
+  console.log('🎯 [FinalRekapFix] Aktif');
+
   const GURU_MAP = {
     'sotya': 'Sotya Palupi, S.Pd, MM',
     'halaliah': 'Halaliah, S.Pd',
     'wahyuni': 'Siti Wahyuni, S.Pd',
-    'rizqi': 'Rizqi Putri Sholihatin, S.Pd'
+    'rizqi': 'Rizqi Putri Sholihatin, S.Pd',
+    'palupi': 'Sotya Palupi, S.Pd, MM'
   };
-  
-  const KATEGORI_MAP = {
+
+  const KAT_MAP = {
     'kasus': 'Catatan Kasus',
     'rpl': 'RPL',
     'materi': 'Materi',
@@ -19653,342 +21094,461 @@ init();
     'inklusi': 'Inklusi',
     'suara': 'Suara Siswa',
     'analisis': 'Analisis',
-    'lintas': 'Lintas Kelas',
     'status': 'Status Konseling',
     'video': 'Video'
   };
-  
-  // Fungsi ekstrak info dari URL
-  function extractFromUrl(url) {
-    if (!url) return null;
-    
-    // Ekstrak kelas (VII, VIII, IX) dan section (A, B, C, dst)
-    var match = url.match(/(?:KELAS[\s_-]*)?(VII|VIII|IX)[\s_-]*([A-J])/i) ||
-                url.match(/-(VII|VIII|IX)-([A-J])(?:\/|$)/i);
-    
-    if (!match) return null;
-    
-    var kelas = match[1].toLowerCase();
-    var section = match[2].toUpperCase();
-    
-    // Ekstrak kategori
-    var kategori = null;
-    if (/CATATAN[\s_-]*KASUS/i.test(url)) kategori = 'kasus';
-    else if (/RPL/i.test(url)) kategori = 'rpl';
-    else if (/MATERI/i.test(url)) kategori = 'materi';
-    else if (/HOME[\s_-]*VISIT/i.test(url)) kategori = 'homevisit';
-    else if (/AGENDA/i.test(url)) kategori = 'agenda';
-    else if (/JURNAL/i.test(url)) kategori = 'jurnal';
-    else if (/PROTA|PROMES/i.test(url)) kategori = 'protapromes';
-    else if (/LAPORAN/i.test(url)) kategori = 'lapsem1';
-    else if (/INKLUSI/i.test(url)) kategori = 'inklusi';
-    else if (/SUARA|ASPIRASI/i.test(url)) kategori = 'suara';
-    else if (/ANALISIS/i.test(url)) kategori = 'analisis';
-    else if (/STATUS/i.test(url)) kategori = 'status';
-    else if (/VIDEO/i.test(url)) kategori = 'video';
-    
-    // Ekstrak guru
-    var guru = null;
-    if (/SOTYA|PALUPI/i.test(url)) guru = 'sotya';
-    else if (/HALALIAH/i.test(url)) guru = 'halaliah';
-    else if (/WAHYUNI|SITI/i.test(url)) guru = 'wahyuni';
-    else if (/RIZQI|PUTRI/i.test(url)) guru = 'rizqi';
-    
-    return {
-      kelas: kelas,
-      section: section,
-      kategori: kategori,
-      guru: guru
-    };
-  }
-  
-  // Fix data di bk56RekapData
-  function fixRekapData() {
-    if (!window.bk56RekapData || !Array.isArray(window.bk56RekapData)) return;
-    
-    var fixed = 0;
-    
-    window.bk56RekapData.forEach(function(row) {
-      var url = row.URL || '';
-      var kelas = (row.Kelas || '').toLowerCase().trim();
-      var guru = (row.Guru || '').toLowerCase().trim();
-      var kategori = (row.Kategori || '').toLowerCase().trim();
-      var nama = row.NamaDokumen || '';
-      
-      // Cek apakah perlu diperbaiki
-      var perluFix = (!kelas || kelas === '-') ||
-                     (!guru || guru === '-') ||
-                     (!kategori || kategori === '-') ||
-                     (nama === 'Dokumen' || nama === '-' || !nama);
-      
-      if (!perluFix) return;
-      
-      // Ekstrak dari URL
-      var info = extractFromUrl(url);
-      if (!info) return;
-      
-      // Perbaiki Kelas
-      if (!kelas || kelas === '-') {
-        row.Kelas = info.kelas;
-      }
-      
-      // Perbaiki Guru
-      if (!guru || guru === '-') {
-        row.Guru = info.guru || guru;
-      }
-      
-      // Perbaiki Kategori
-      if (!kategori || kategori === '-') {
-        row.Kategori = info.kategori;
-      }
-      
-      // Perbaiki NamaDokumen
-      if (nama === 'Dokumen' || nama === '-' || !nama) {
-        var kelasDisplay = info.kelas.toUpperCase();
-        if (info.kategori === 'kasus') {
-          row.NamaDokumen = 'Catatan Kasus Kelas ' + kelasDisplay + '-' + info.section;
-        } else if (info.kategori === 'rpl') {
-          row.NamaDokumen = 'RPL Kelas ' + kelasDisplay + '-' + info.section;
-        } else if (info.kategori === 'materi') {
-          row.NamaDokumen = 'Materi Kelas ' + kelasDisplay + '-' + info.section;
-        } else {
-          row.NamaDokumen = 'Dokumen Kelas ' + kelasDisplay + '-' + info.section;
+
+  function fixTable() {
+    const tbody = document.getElementById('bk56-rekap-tbody');
+    if (!tbody) return;
+
+    const rows = tbody.querySelectorAll('tr');
+    let fixed = 0;
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 8) return;
+
+      // Cari URL di baris ini
+      let url = '';
+      for (let i = 0; i < cells.length; i++) {
+        const link = cells[i].querySelector('a');
+        if (link && link.href && link.href.includes('http')) {
+          url = link.href.toLowerCase();
+          break;
         }
       }
-      
-      fixed++;
-    });
-    
-    if (fixed > 0) {
-      console.log('✅ Fixed', fixed, 'baris metadata');
-      
-      // Simpan ke cache
-      try {
-        localStorage.setItem('bk56_rekap_cache', JSON.stringify(window.bk56RekapData));
-      } catch(e) {}
-      
-      // Re-render tabel
-      if (typeof window.bk56RenderRekap === 'function') {
-        setTimeout(function() {
-          window.bk56RenderRekap();
-        }, 100);
+
+      if (!url) return;
+
+      // Tentukan metadata yang benar dari URL
+      let guru = null, kelas = null, kat = null, nama = null;
+
+      // Guru
+      if (url.includes('sotya') || url.includes('palupi')) guru = GURU_MAP['sotya'];
+      else if (url.includes('halaliah')) guru = GURU_MAP['halaliah'];
+      else if (url.includes('wahyuni')) guru = GURU_MAP['wahyuni'];
+      else if (url.includes('rizqi')) guru = GURU_MAP['rizqi'];
+
+      // Kelas
+      if (url.includes('ix')) kelas = 'IX';
+      else if (url.includes('viii')) kelas = 'VIII';
+      else if (url.includes('vii')) kelas = 'VII';
+
+      // Kategori & Nama
+      const match = url.match(/-(vii|viii|ix)-([a-j])(?:\/|$)/);
+      if (match) {
+        const section = match[2].toUpperCase();
+        const k = kelas;
+        
+        if (url.includes('kasus')) {
+          kat = 'Catatan Kasus';
+          nama = 'Catatan Kasus Kelas ' + k + '-' + section;
+        } else if (url.includes('rpl')) {
+          kat = 'RPL';
+          nama = 'RPL Kelas ' + k + '-' + section;
+        } else if (url.includes('materi')) {
+          kat = 'Materi';
+          nama = 'Materi Kelas ' + k + '-' + section;
+        } else if (url.includes('agenda')) {
+          kat = 'Agenda';
+          nama = 'Agenda Kelas ' + k + '-' + section;
+        } else if (url.includes('jurnal')) {
+          kat = 'Jurnal';
+          nama = 'Jurnal Kelas ' + k + '-' + section;
+        }
       }
+
+      // Terapkan perbaikan ke sel
+      // Sel 3 = Kelas, Sel 4 = Guru, Sel 5 = Kategori, Sel 6 = Nama Dokumen
+      if (guru && cells[4] && (cells[4].innerText.trim() === '-' || cells[4].innerText.trim() === '')) {
+        cells[4].innerText = guru;
+        fixed++;
+      }
+
+      if (kat && cells[5] && (cells[5].innerText.trim() === '-' || cells[5].innerText.trim() === '')) {
+        cells[5].innerText = kat;
+        fixed++;
+      }
+
+      if (nama && cells[6] && (cells[6].innerText.trim() === 'Dokumen' || cells[6].innerText.trim() === '-' || cells[6].innerText.trim() === '')) {
+        cells[6].innerHTML = '<strong>' + nama + '</strong>';
+        fixed++;
+      }
+
+      if (kelas && cells[3] && (cells[3].innerText.trim() === '-' || cells[3].innerText.trim() === '')) {
+        cells[3].innerHTML = '<span style="background:#ef4444;color:white;padding:4px 10px;border-radius:12px;font-weight:bold;font-size:0.75rem;">' + kelas + '</span>';
+        fixed++;
+      }
+    });
+
+    if (fixed > 0) {
+      console.log('✅ [FinalRekapFix] ' + fixed + ' sel diperbaiki');
     }
   }
-  
-  // Jalankan setelah halaman load
-  setTimeout(fixRekapData, 2000);
-  
-  // Hook ke bk56RenderRekap jika ada
+
+  // Jalankan segera
+  setTimeout(fixTable, 1000);
+  setTimeout(fixTable, 3000);
+  setTimeout(fixTable, 5000);
+
+  // Pantau perubahan tabel
+  const tbody = document.getElementById('bk56-rekap-tbody');
+  if (tbody) {
+    const observer = new MutationObserver(() => {
+      setTimeout(fixTable, 200);
+    });
+    observer.observe(tbody, { childList: true, subtree: true });
+  }
+
+  // Hook ke fungsi render jika ada
   if (typeof window.bk56RenderRekap === 'function') {
-    var oldRender = window.bk56RenderRekap;
+    const orig = window.bk56RenderRekap;
     window.bk56RenderRekap = function() {
-      fixRekapData();
-      oldRender();
+      orig.apply(this, arguments);
+      setTimeout(fixTable, 300);
     };
   }
-  
-  console.log('✅ Patch metadata fix loaded');
+
+  console.log('✅ [FinalRekapFix] Terpasang');
 })();
 </script>
-<!-- END PATCH -->
+<!-- ========== SOLUSI FINAL: AUTO-FIX TAMPILAN REKAP LINK [END] ========== -->
  <!-- ================================================================ -->
-<!-- ========== SOLUSI FINAL: FETCH INTERCEPTOR (DIJAMIN BERHASIL) ========== -->
+<!-- ========== PATCH BEDAH SARAF: AUTO-FIX METADATA DI LEVEL JARINGAN ========== -->
+<!-- ================================================================ -->
+<script>
+(function() {
+    "use strict";
+    
+    // Cegah patch ini berjalan 2x
+    if (window.__metadataSurgicalFix) return;
+    window.__metadataSurgicalFix = true;
+
+    console.log('🔧 [Bedah Saraf] Patch Metadata Interceptor dimulai...');
+
+    // Simpan fungsi fetch asli
+    const originalFetch = window.fetch;
+
+    // Override fungsi fetch global
+    window.fetch = function(url, options) {
+        // Cek apakah ini request POST ke Google Sheets
+        if (options && options.method === 'POST' && typeof options.body === 'string') {
+            try {
+                const backendUrl = localStorage.getItem('bk56_backend_url');
+                const isBackend = backendUrl && (url === backendUrl || (typeof url === 'string' && url.includes('script.google.com')));
+                
+                if (isBackend) {
+                    const payload = JSON.parse(options.body);
+                    
+                    // Jika ini aksi 'add' (menambah link)
+                    if (payload.action === 'add') {
+                        const kelas = String(payload.kelas || '').toLowerCase().trim();
+                        const guru = String(payload.guru || '').toLowerCase().trim();
+                        const kategori = String(payload.kategori || '').toLowerCase().trim();
+                        const nama = String(payload.nama || '').trim();
+                        const linkUrl = String(payload.url || '').trim();
+
+                        // DETEKSI KERUSAKAN: Jika metadata kosong atau default
+                        if (kelas === '-' || guru === '-' || kategori === '-' || nama === 'Dokumen' || nama === '-' || nama.length <= 5) {
+                            console.warn('⚠️ [Bedah Saraf] Metadata rusak terdeteksi, sedang diperbaiki...', { kelas, guru, kategori, nama });
+                            
+                            // PERBAIKAN OTOMATIS menggunakan array DOCS global
+                            if (typeof DOCS !== 'undefined' && Array.isArray(DOCS) && linkUrl) {
+                                const linkUrlLower = linkUrl.toLowerCase();
+                                
+                                for (let i = 0; i < DOCS.length; i++) {
+                                    const doc = DOCS[i];
+                                    const docLink = String(doc.link || '').toLowerCase();
+                                    
+                                    // Cocokkan URL dengan data di array DOCS
+                                    if (docLink && (docLink === linkUrlLower || linkUrlLower.includes(docLink) || docLink.includes(linkUrlLower))) {
+                                        
+                                        // Timpa payload dengan data yang BENAR dari DOCS
+                                        if (kelas === '-' || kelas === '') payload.kelas = doc.kelas;
+                                        if (guru === '-' || guru === '') payload.guru = doc.guru;
+                                        if (kategori === '-' || kategori === '') payload.kategori = doc.kat;
+                                        if (nama === 'Dokumen' || nama === '-' || nama.length <= 5) payload.nama = doc.nama;
+                                        
+                                        console.log('✅ [Bedah Saraf] Payload berhasil diperbaiki dari DOCS[' + i + ']:', payload.nama, '| Guru:', payload.guru);
+                                        break; // Keluar dari loop setelah ketemu
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Update body request dengan payload yang sudah diperbaiki
+                        options.body = JSON.stringify(payload);
+                    }
+                }
+            } catch (e) {
+                // Abaikan error parsing JSON
+            }
+        }
+        
+        // Lanjutkan proses fetch asli
+        return originalFetch.apply(this, arguments);
+    };
+
+    console.log('✅ [Bedah Saraf] Patch terpasang. Semua metadata rusak akan diperbaiki otomatis sebelum ke Sheet.');
+})();
+</script>
+<!-- ========== PATCH BEDAH SARAF [END] ========== -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: SYNC HANYA SAAT USER TAMBAH LINK ========== -->
 <!-- ================================================================ -->
 <script>
 (function(){
   "use strict";
-  const FLAG = '__bk56FetchInterceptorFinal';
-  if (window[FLAG]) return;
-  window[FLAG] = true;
-  console.log('🚀 [FetchInterceptor] Patch final dimulai...');
-
-  // Mapping kode ke nama lengkap
-  const GURU_MAP = {'sotya':'Sotya Palupi, S.Pd, MM','halaliah':'Halaliah, S.Pd','wahyuni':'Siti Wahyuni, S.Pd','rizqi':'Rizqi Putri Sholihatin, S.Pd','palupi':'Sotya Palupi, S.Pd, MM'};
-  const KAT_MAP = {'kasus':'Catatan Kasus','rpl':'RPL','materi':'Materi','homevisit':'Home Visit','agenda':'Agenda','jurnal':'Jurnal','protapromes':'Prota/Promes','lapsem1':'Laporan Semester 1','lapsem2':'Laporan Semester 2','lapind':'Laporan Individual','inklusi':'Inklusi','suara':'Suara Siswa','analisis':'Analisis','lintas':'Lintas Kelas','status':'Status Konseling','video':'Video','metode':'Metode'};
-  const KELAS_MAP = {'vii':'VII','viii':'VIII','ix':'IX'};
-
-  // Fungsi untuk memperbaiki metadata dari URL
-  function fixFromUrl(url) {
-    if (!url) return null;
-    const u = url.toLowerCase();
-    let kelas = null, section = null, kategori = null, guru = null;
-    
-    const m = u.match(/(?:kelas[\s_-]*)?(vii|viii|ix)[\s_-]*([a-j])/i) || u.match(/-(vii|viii|ix)-([a-j])(?:\/|$)/i);
-    if (m) { kelas = m[1]; section = m[2].toUpperCase(); }
-    
-    if (u.includes('kasus')) kategori = 'kasus';
-    else if (u.includes('rpl')) kategori = 'rpl';
-    else if (u.includes('materi')) kategori = 'materi';
-    else if (u.includes('homevisit') || u.includes('home-visit')) kategori = 'homevisit';
-    else if (u.includes('agenda')) kategori = 'agenda';
-    else if (u.includes('jurnal')) kategori = 'jurnal';
-    else if (u.includes('prota') || u.includes('promes')) kategori = 'protapromes';
-    else if (u.includes('laporan')) kategori = 'lapsem1';
-    else if (u.includes('inklusi')) kategori = 'inklusi';
-    else if (u.includes('suara') || u.includes('aspirasi')) kategori = 'suara';
-    else if (u.includes('analisis')) kategori = 'analisis';
-    else if (u.includes('status')) kategori = 'status';
-    else if (u.includes('video')) kategori = 'video';
-    else if (u.includes('metode')) kategori = 'metode';
-    
-    if (u.includes('sotya') || u.includes('palupi')) guru = 'sotya';
-    else if (u.includes('halaliah')) guru = 'halaliah';
-    else if (u.includes('wahyuni') || u.includes('siti')) guru = 'wahyuni';
-    else if (u.includes('rizqi') || u.includes('putri')) guru = 'rizqi';
-    
-    let nama = null;
-    if (kelas && section && kategori) {
-      const k = KELAS_MAP[kelas] || kelas.toUpperCase();
-      if (kategori === 'kasus') nama = 'Catatan Kasus Kelas ' + k + '-' + section;
-      else if (kategori === 'rpl') nama = 'RPL Kelas ' + k + '-' + section;
-      else if (kategori === 'materi') nama = 'Materi Kelas ' + k + '-' + section;
-      else if (kategori === 'homevisit') nama = 'Home Visit Kelas ' + k + '-' + section;
-      else if (kategori === 'agenda') nama = 'Agenda Kelas ' + k + '-' + section;
-      else if (kategori === 'jurnal') nama = 'Jurnal Kelas ' + k + '-' + section;
-      else if (kategori === 'protapromes') nama = 'Prota/Promes Kelas ' + k + '-' + section;
-      else if (kategori === 'lapsem1') nama = 'Laporan Semester 1 Kelas ' + k + '-' + section;
-      else if (kategori === 'inklusi') nama = 'Inklusi Kelas ' + k + '-' + section;
-      else if (kategori === 'suara') nama = 'Suara Siswa Kelas ' + k + '-' + section;
-      else if (kategori === 'analisis') nama = 'Analisis Kelas ' + k + '-' + section;
-      else if (kategori === 'status') nama = 'Status Konseling Kelas ' + k + '-' + section;
-      else if (kategori === 'video') nama = 'Video Kelas ' + k + '-' + section;
-      else if (kategori === 'metode') nama = 'Metode Kelas ' + k + '-' + section;
-      else nama = (KAT_MAP[kategori] || kategori) + ' Kelas ' + k + '-' + section;
-    }
-    return { kelas, section, kategori, guru, nama };
-  }
-
-  // Fungsi untuk memperbaiki payload sebelum dikirim ke Sheet
-  function fixPayload(payload) {
-    if (!payload || payload.action !== 'add') return payload;
-    const url = String(payload.url || '').trim();
-    const kelas = String(payload.kelas || '').toLowerCase().trim();
-    const guru = String(payload.guru || '').toLowerCase().trim();
-    const kategori = String(payload.kategori || '').toLowerCase().trim();
-    const nama = String(payload.nama || '').trim();
-    
-    const kelasRusak = !kelas || kelas === '-';
-    const guruRusak = !guru || guru === '-';
-    const kategoriRusak = !kategori || kategori === '-';
-    const namaRusak = !nama || nama === 'Dokumen' || nama === '-' || nama.length <= 5;
-    
-    if (!kelasRusak && !guruRusak && !kategoriRusak && !namaRusak) return payload;
-    
-    console.log('🔧 [FetchInterceptor] Metadata rusak terdeteksi, memperbaiki...');
-    
-    // Prioritas 1: Ambil dari array DOCS
-    if (typeof DOCS !== 'undefined' && Array.isArray(DOCS)) {
-      const urlLower = url.toLowerCase();
-      for (let i = 0; i < DOCS.length; i++) {
-        const doc = DOCS[i];
-        const docLink = String(doc.link || '').toLowerCase();
-        if (docLink && (docLink === urlLower || urlLower.includes(docLink) || docLink.includes(urlLower))) {
-          if (kelasRusak && doc.kelas) payload.kelas = doc.kelas;
-          if (guruRusak && doc.guru) payload.guru = doc.guru;
-          if (kategoriRusak && doc.kat) payload.kategori = doc.kat;
-          if (namaRusak && doc.nama) payload.nama = doc.nama;
-          console.log('   ✅ Diperbaiki dari DOCS[' + i + ']');
-          return payload;
-        }
-      }
-    }
-    
-    // Prioritas 2: Ekstrak dari URL
-    const extracted = fixFromUrl(url);
-    if (extracted) {
-      if (kelasRusak && extracted.kelas) payload.kelas = extracted.kelas;
-      if (guruRusak && extracted.guru) payload.guru = extracted.guru;
-      if (kategoriRusak && extracted.kategori) payload.kategori = extracted.kategori;
-      if (namaRusak && extracted.nama) payload.nama = extracted.nama;
-      console.log('   ✅ Diperbaiki dari URL');
-    }
-    return payload;
-  }
-
-  // 🔑 INTERCEPTOR: Cegat SEMUA fetch request
-  const originalFetch = window.fetch;
-  window.fetch = function(url, options) {
-    if (options && options.method === 'POST' && typeof options.body === 'string') {
-      try {
-        const backendUrl = localStorage.getItem('bk56_backend_url') || localStorage.getItem('BK56_CFG_KEY') || localStorage.getItem('bk56BackendUrl');
-        const isBackend = backendUrl && (url === backendUrl || (typeof url === 'string' && url.includes('script.google.com')));
-        if (isBackend) {
-          const payload = JSON.parse(options.body);
-          if (payload.action === 'add') {
-            const fixed = fixPayload(payload);
-            options.body = JSON.stringify(fixed);
-          }
-        }
-      } catch(e) {}
-    }
-    return originalFetch.apply(this, arguments);
-  };
-  console.log('✅ [FetchInterceptor] Fetch interceptor aktif');
-
-  // 🔑 PERBAIKI TAMPILAN DI bk56RekapData
-  function fixRekapData() {
-    if (typeof window.bk56RekapData === 'undefined' || !Array.isArray(window.bk56RekapData)) return;
-    let fixed = 0;
-    window.bk56RekapData.forEach(row => {
-      if (!row || !row.URL) return;
-      const url = String(row.URL || '').toLowerCase();
-      const kelas = String(row.Kelas || '').toLowerCase().trim();
-      const guru = String(row.Guru || '').toLowerCase().trim();
-      const kategori = String(row.Kategori || '').toLowerCase().trim();
-      const nama = String(row.NamaDokumen || '').trim();
-      
-      const kelasRusak = !kelas || kelas === '-';
-      const guruRusak = !guru || guru === '-';
-      const kategoriRusak = !kategori || kategori === '-';
-      const namaRusak = !nama || nama === 'Dokumen' || nama === '-' || nama.length <= 5;
-      
-      if (!kelasRusak && !guruRusak && !kategoriRusak && !namaRusak) return;
-      
-      if (typeof DOCS !== 'undefined' && Array.isArray(DOCS)) {
-        for (let i = 0; i < DOCS.length; i++) {
-          const doc = DOCS[i];
-          const docLink = String(doc.link || '').toLowerCase();
-          if (docLink && (docLink === url || url.includes(docLink) || docLink.includes(url))) {
-            if (kelasRusak && doc.kelas) row.Kelas = doc.kelas;
-            if (guruRusak && doc.guru) row.Guru = doc.guru;
-            if (kategoriRusak && doc.kat) row.Kategori = doc.kat;
-            if (namaRusak && doc.nama) row.NamaDokumen = doc.nama;
-            fixed++; return;
-          }
-        }
-      }
-      const extracted = fixFromUrl(row.URL);
-      if (extracted) {
-        if (kelasRusak && extracted.kelas) row.Kelas = extracted.kelas;
-        if (guruRusak && extracted.guru) row.Guru = extracted.guru;
-        if (kategoriRusak && extracted.kategori) row.Kategori = extracted.kategori;
-        if (namaRusak && extracted.nama) row.NamaDokumen = extracted.nama;
-        fixed++;
-      }
-    });
-    if (fixed > 0) {
-      console.log('✅ [FetchInterceptor]', fixed, 'baris di Rekap diperbaiki');
-      try { localStorage.setItem('bk56_rekap_cache', JSON.stringify(window.bk56RekapData)); } catch(e) {}
-      if (typeof window.bk56RenderRekap === 'function') setTimeout(() => window.bk56RenderRekap(), 300);
-    }
-  }
-
-  setTimeout(fixRekapData, 1500);
-  setTimeout(fixRekapData, 3000);
   
-  if (typeof window.bk56SyncFromSheet === 'function') {
-    const orig = window.bk56SyncFromSheet;
-    window.bk56SyncFromSheet = async function() { await orig.apply(this, arguments); setTimeout(fixRekapData, 500); };
+  const FLAG = '__bk56SyncOnlyOnUserAction';
+  if (window[FLAG]) {
+    console.log('ℹ️ [SyncOnUserAction] Patch sudah terpasang');
+    return;
   }
-  if (typeof window.bk56RenderRekap === 'function') {
-    const orig = window.bk56RenderRekap;
-    window.bk56RenderRekap = function() { fixRekapData(); orig.apply(this, arguments); };
+  window[FLAG] = true;
+  
+  console.log('🚀 [SyncOnUserAction] Patch dimulai...');
+  
+  /* ================================================================
+  * 🔑 STEP 1: HENTIKAN SEMUA AUTO-SYNC DIAM-DIAM
+  ================================================================= */
+  
+  // Hentikan semua interval yang mungkin berjalan
+  let stoppedCount = 0;
+  for (let i = 1; i <= 100000; i++) {
+    try { clearInterval(i); stoppedCount++; } catch(e) {}
   }
-
-  console.log('✅ [FetchInterceptor] Patch final terpasang.');
+  console.log('✅ [SyncOnUserAction] Dihentikan', stoppedCount, 'interval auto-sync');
+  
+  // Override fungsi auto-sync menjadi no-op (tidak melakukan apa-apa)
+  const disableFunc = function(name) {
+    if (typeof window[name] === 'function') {
+      window[name] = function() {
+        console.log('⏸️ [SyncOnUserAction]', name, '→ DIBLOKIR');
+        return Promise.resolve(false);
+      };
+      console.log('✅ [SyncOnUserAction]', name, '→ dinonaktifkan');
+    }
+  };
+  
+  disableFunc('bk56SyncToSheetSilent');
+  disableFunc('autoSyncToSheet');
+  disableFunc('startAutoSync');
+  disableFunc('startPeriodicSync');
+  disableFunc('bk56DetectChanges');
+  disableFunc('bk56StartAutoSync');
+  
+  /* ================================================================
+  * 🔑 STEP 2: FUNGSI SYNC 1 LINK KE SHEET
+  ================================================================= */
+  
+  async function syncSingleLinkToSheet(linkData) {
+    const backendUrl = localStorage.getItem('bk56_backend_url') || 
+                       localStorage.getItem('BK56_CFG_KEY');
+    
+    if (!backendUrl) {
+      console.warn('⚠️ [SyncOnUserAction] Backend URL belum dikonfigurasi');
+      return false;
+    }
+    
+    if (!linkData.url || !linkData.url.trim()) {
+      console.warn('⚠️ [SyncOnUserAction] URL kosong');
+      return false;
+    }
+    
+    // Normalisasi URL
+    let url = linkData.url.trim();
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+    
+    try {
+      // Cek duplikat di sheet
+      const res = await fetch(backendUrl, { method: 'GET', redirect: 'follow' });
+      const json = await res.json();
+      
+      if (json.success && Array.isArray(json.data)) {
+        const exists = json.data.some(d => 
+          String(d.URL || '').trim().toLowerCase() === url.toLowerCase()
+        );
+        
+        if (exists) {
+          console.log('ℹ️ [SyncOnUserAction] Link sudah ada di sheet, skip');
+          return false;
+        }
+      }
+      
+      // Push link baru (HANYA 1 link, TIDAK scan localStorage!)
+      const pushRes = await fetch(backendUrl, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+          action: 'add',
+          kelas: linkData.kelas || '-',
+          guru: linkData.guru || '-',
+          kategori: linkData.kategori || 'dokumen',
+          nama: linkData.nama || 'Dokumen',
+          jenis: linkData.jenis || 'doc',
+          url: url
+        })
+      });
+      
+      const pushJson = await pushRes.json();
+      
+      if (pushJson.success) {
+        console.log('✅ [SyncOnUserAction] 1 link di-push ke sheet:', linkData.nama);
+        if (typeof showToast === 'function') {
+          showToast('✅ Link tersinkron ke Google Sheets', 'success');
+        }
+        return true;
+      }
+      
+      return false;
+    } catch(e) {
+      console.warn('⚠️ [SyncOnUserAction] Error push:', e.message);
+      return false;
+    }
+  }
+  
+  /* ================================================================
+  * 🔑 STEP 3: HOOK FUNGSI TAMBAH LINK
+  ================================================================= */
+  
+  // Hook addDocLink
+  if (typeof window.addDocLink === 'function' && !window.addDocLink.__syncOnUserHooked) {
+    const _orig = window.addDocLink;
+    window.addDocLink = function() {
+      // Panggil fungsi asli dulu
+      const result = _orig.apply(this, arguments);
+      
+      // Sync ke sheet setelah 300ms (tunggu data tersimpan)
+      setTimeout(async () => {
+        try {
+          // Ambil data dari argumen atau currentLinkEdit
+          let linkData = { url: arguments[1] || arguments[0], jenis: 'doc', nama: 'Dokumen', kategori: 'dokumen' };
+          
+          // Coba ambil dari currentLinkEdit (variabel internal)
+          if (typeof currentLinkEdit !== 'undefined' && currentLinkEdit) {
+            const docIdx = currentLinkEdit.docIdx;
+            if (typeof DOCS !== 'undefined' && DOCS[docIdx]) {
+              const doc = DOCS[docIdx];
+              linkData = {
+                kelas: doc.kelas || '-',
+                guru: doc.guru || '-',
+                kategori: doc.kat || 'dokumen',
+                nama: doc.nama || 'Dokumen',
+                jenis: 'doc',
+                url: linkData.url
+              };
+            }
+          }
+          
+          await syncSingleLinkToSheet(linkData);
+        } catch(e) {
+          console.warn('⚠️ [SyncOnUserAction] Error hook addDocLink:', e);
+        }
+      }, 300);
+      
+      return result;
+    };
+    window.addDocLink.__syncOnUserHooked = true;
+    console.log('✅ [SyncOnUserAction] addDocLink di-hook');
+  }
+  
+  // Hook addMateriLink
+  if (typeof window.addMateriLink === 'function' && !window.addMateriLink.__syncOnUserHooked) {
+    const _orig = window.addMateriLink;
+    window.addMateriLink = function() {
+      const result = _orig.apply(this, arguments);
+      
+      setTimeout(async () => {
+        try {
+          const args = arguments;
+          const linkData = {
+            kelas: args[0] || '-',
+            guru: args[1] || '-',
+            kategori: 'materi',
+            nama: 'Materi ' + (parseInt(args[2] || 0) + 1),
+            jenis: args[3] || 'doc',
+            url: args[4]
+          };
+          await syncSingleLinkToSheet(linkData);
+        } catch(e) {
+          console.warn('⚠️ [SyncOnUserAction] Error hook addMateriLink:', e);
+        }
+      }, 300);
+      
+      return result;
+    };
+    window.addMateriLink.__syncOnUserHooked = true;
+    console.log('✅ [SyncOnUserAction] addMateriLink di-hook');
+  }
+  
+  // Hook addVideoLink
+  if (typeof window.addVideoLink === 'function' && !window.addVideoLink.__syncOnUserHooked) {
+    const _orig = window.addVideoLink;
+    window.addVideoLink = function() {
+      const result = _orig.apply(this, arguments);
+      
+      setTimeout(async () => {
+        try {
+          const args = arguments;
+          const linkData = {
+            kelas: '-',
+            guru: '-',
+            kategori: 'video',
+            nama: 'Video ' + (parseInt(args[0] || 0) + 1),
+            jenis: 'video',
+            url: args[1]
+          };
+          await syncSingleLinkToSheet(linkData);
+        } catch(e) {
+          console.warn('⚠️ [SyncOnUserAction] Error hook addVideoLink:', e);
+        }
+      }, 300);
+      
+      return result;
+    };
+    window.addVideoLink.__syncOnUserHooked = true;
+    console.log('✅ [SyncOnUserAction] addVideoLink di-hook');
+  }
+  
+  /* ================================================================
+  * 🔑 STEP 4: BLOCK AUTO-SYNC VIA VISIBILITY CHANGE & CLICK
+  ================================================================= */
+  
+  document.addEventListener('visibilitychange', function(e) {
+    if (!document.hidden) {
+      e.stopImmediatePropagation();
+      console.log('⏸️ [SyncOnUserAction] Tab aktif - auto-sync dicegah');
+    }
+  }, true);
+  
+  /* ================================================================
+  * 🎯 SELESAI
+  ================================================================= */
+  console.log('✅ [SyncOnUserAction] Patch terpasang');
+  console.log('📌 Yang DINONAKTIFKAN:');
+  console.log('   ❌ bk56SyncToSheetSilent (auto-sync diam-diam)');
+  console.log('   ❌ autoSyncToSheet (scan localStorage setiap 3 detik)');
+  console.log('   ❌ startAutoSync (auto-sync saat load)');
+  console.log('   ❌ startPeriodicSync (sync periodik)');
+  console.log('   ❌ bk56DetectChanges (deteksi perubahan localStorage)');
+  console.log('📌 Yang AKTIF:');
+  console.log('   ✅ Hook addDocLink → sync 1 link baru saat user tambah');
+  console.log('   ✅ Hook addMateriLink → sync 1 link baru saat user tambah');
+  console.log('   ✅ Hook addVideoLink → sync 1 link baru saat user tambah');
+  console.log('   ✅ Tombol "🔄 Sync dari Sheet" (manual)');
+  console.log('   ✅ Tombol "💾 Push ke Sheet" (manual)');
+  console.log('📌 ATURAN:');
+  console.log('   • TIDAK ADA scan localStorage saat sync');
+  console.log('   • HANYA sync 1 link yang user tambahkan');
+  console.log('   • Data diambil dari DOCS array (bukan localStorage)');
+  
 })();
 </script>
-<!-- ========== SOLUSI FINAL: FETCH INTERCEPTOR [END] ========== -->
+<!-- ========== PATCH: SYNC HANYA SAAT USER TAMBAH LINK [END] ========== -->
 </body>
 </html>
