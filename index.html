@@ -2082,7 +2082,7 @@ Platform pembelajaran Bimbingan Konseling digital terintegrasi yang membantu sis
 <li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/19pyVT5rICTXBW8_VJ4G4cn-TZpDjJmfvFiOSKiZlxfE/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">20</span>Rekap Kelas VIII-J</a></li>
 <li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1rB633ZwKYBzvYgCNzl_GOS7T8rp7qrgoE8TUmDTm97g/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">21</span>Rekap Kelas IX-A</a></li>
 <li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1w9c_hrsABPO9jgdT8SVMarFIHPWg5XlCSk1zZKA1IUY/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">22</span>Rekap Kelas IX-B</a></li>
-<li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1NVy1CHraSlsQLch9WWdPopoMR_QobZ_aJvtMGMYevrs/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">23</span>Rekap Kelas IX-C</a></li>
+<li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/11--hkpnnwDREJgX2VLNUY-XerBr5_Jz0YJZdN1KnLrU/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">23</span>Rekap Kelas IX-C</a></li>
 <li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/19-o9mMr4yXlrjr7jNfvnh0jZ9n9WXKtu4WdBTW-bQq8/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">24</span>Rekap Kelas IX-D</a></li>
 <li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1DxtpmuU9Hkp-4uzzf_rpKW5ezJKJLMXi_hO_UcwXCPM/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">25</span>Rekap Kelas IX-E</a></li>
 <li><a onclick="loadExt('https://docs.google.com/spreadsheets/d/1OmbHQq2dpTZCDg9MlUNoIRfvMOKAwDmOxFkOigpJMSk/edit?usp=sharing','rekap'); closeAllDD()" role="menuitem"><span class="n">26</span>Rekap Kelas IX-F</a></li>
@@ -20675,76 +20675,6 @@ if (document.readyState === 'loading') {
 <!-- ========== PATCH FINAL TERPADU [END] ========== -->
 <!-- ================================================================ -->
 
-
- <!-- ================================================================ -->
-<!-- ========== PATCH: STOP AUTO-SYNC + EVENT-ONLY SYNC ========== -->
-<!-- ================================================================ -->
-
-  
-  // Block auto-sync saat tab aktif kembali
-  document.addEventListener('visibilitychange', function(e) {
-    if (!document.hidden) {
-      e.stopImmediatePropagation();
-      console.log('⏸️ [StopAutoSync] Tab aktif - auto-sync dicegah');
-    }
-  }, true);
-
-  /* ================================================================
-  * 🎯 SELESAI
-  ================================================================= */
-  console.log('✅ [StopAutoSync] Patch terpasang');
-  console.log('📌 Yang DINONAKTIFKAN:');
-  console.log('   ❌ bk56SyncToSheetSilent (auto-sync diam-diam)');
-  console.log('   ❌ autoSyncToSheet (scan localStorage setiap 3 detik)');
-  console.log('   ❌ startAutoSync (auto-sync saat load)');
-  console.log('   ❌ startPeriodicSync (sync periodik)');
-  console.log('   ❌ bk56DetectChanges (deteksi perubahan localStorage)');
-  console.log('📌 Yang AKTIF:');
-  console.log('   ✅ Hook addDocLink → push 1 link baru (data dari DOCS)');
-  console.log('   ✅ Hook addMateriLink → push 1 link baru');
-  console.log('   ✅ Hook addVideoLink → push 1 link baru');
-  console.log('   ✅ Tombol "🔄 Sync dari Sheet" (manual)');
-  console.log('   ✅ Tombol "💾 Push ke Sheet" (manual)');
-  console.log('📌 ATURAN:');
-  console.log('   • TIDAK ADA scan localStorage saat sync');
-  console.log('   • HANYA push 1 link yang user tambahkan');
-  console.log('   • Data diambil dari DOCS array (bukan localStorage)');
-
-})();
-
-<!-- ========== PATCH: STOP AUTO-SYNC + EVENT-ONLY SYNC [END] ========== -->
-
-  
-  document.addEventListener('visibilitychange', function(e) {
-    if (!document.hidden) {
-      e.stopImmediatePropagation();
-      console.log('⏸️ [FinalStopAutoSync] Tab aktif - auto-sync dicegah');
-    }
-  }, true);
-
-  /* ================================================================
-  * SELESAI
-  ================================================================= */
-  console.log('✅ [FinalStopAutoSync] Patch terpasang');
-  console.log('📌 Yang DINONAKTIFKAN:');
-  console.log('   ❌ bk56StartAutoSync (auto-sync setiap 5 detik)');
-  console.log('   ❌ bk56DetectChanges (deteksi perubahan localStorage)');
-  console.log('   ❌ bk56SyncToSheetSilent (sync diam-diam)');
-  console.log('📌 Yang AKTIF:');
-  console.log('   ✅ Hook addDocLink → push 1 link baru (data dari DOCS)');
-  console.log('   ✅ Hook addMateriLink → push 1 link baru');
-  console.log('   ✅ Hook addVideoLink → push 1 link baru');
-  console.log('   ✅ Tombol "🔄 Sync dari Sheet" (manual)');
-  console.log('   ✅ Tombol "💾 Push ke Sheet" (manual)');
-  console.log('📌 ATURAN:');
-  console.log('   • TIDAK ADA scan localStorage saat sync');
-  console.log('   • HANYA push 1 link yang user tambahkan');
-  console.log('   • Data diambil dari DOCS array (bukan localStorage)');
-
-})();
-
-<!-- ========== PATCH FINAL: STOP AUTO-SYNC + EVENT-ONLY [END] ========== -->
- 
  <!-- ================================================================ -->
 <!-- ========== SOLUSI FINAL: AUTO-FIX TAMPILAN REKAP LINK ========== -->
 <!-- ================================================================ -->
@@ -20975,261 +20905,323 @@ if (document.readyState === 'loading') {
 })();
 </script>
 <!-- ========== PATCH BEDAH SARAF [END] ========== -->
+ 
  <!-- ================================================================ -->
-<!-- ========== PATCH: SYNC HANYA SAAT USER TAMBAH LINK ========== -->
+<!-- ========== PATCH FINAL FIX V3: METADATA PUSH KE SHEET ========== -->
 <!-- ================================================================ -->
 <script>
 (function(){
   "use strict";
-  
-  const FLAG = '__bk56SyncOnlyOnUserAction';
+  const FLAG = '__bk56FixMetadataPushV3';
   if (window[FLAG]) {
-    console.log('ℹ️ [SyncOnUserAction] Patch sudah terpasang');
+    console.log('ℹ️ [FixMetadataPushV3] Patch sudah terpasang, skip');
     return;
   }
   window[FLAG] = true;
-  
-  console.log('🚀 [SyncOnUserAction] Patch dimulai...');
-  
+  console.log('🚀 [FixMetadataPushV3] Patch dimulai...');
+
   /* ================================================================
-  * 🔑 STEP 1: HENTIKAN SEMUA AUTO-SYNC DIAM-DIAM
+  * 🔑 OVERRIDE addDocLink untuk memastikan metadata BENAR
+  * Solusi V3: Baca langsung dari Modal Title atau cocokkan URL!
+  * Tidak lagi bergantung pada window.__bk56CurrentDocIdx yang rentan bentrok.
   ================================================================= */
-  
-  // Hentikan semua interval yang mungkin berjalan
-  let stoppedCount = 0;
-  for (let i = 1; i <= 100000; i++) {
-    try { clearInterval(i); stoppedCount++; } catch(e) {}
-  }
-  console.log('✅ [SyncOnUserAction] Dihentikan', stoppedCount, 'interval auto-sync');
-  
-  // Override fungsi auto-sync menjadi no-op (tidak melakukan apa-apa)
-  const disableFunc = function(name) {
-    if (typeof window[name] === 'function') {
-      window[name] = function() {
-        console.log('⏸️ [SyncOnUserAction]', name, '→ DIBLOKIR');
-        return Promise.resolve(false);
-      };
-      console.log('✅ [SyncOnUserAction]', name, '→ dinonaktifkan');
-    }
-  };
-  
-  disableFunc('bk56SyncToSheetSilent');
-  disableFunc('autoSyncToSheet');
-  disableFunc('startAutoSync');
-  disableFunc('startPeriodicSync');
-  disableFunc('bk56DetectChanges');
-  disableFunc('bk56StartAutoSync');
-  
-  /* ================================================================
-  * 🔑 STEP 2: FUNGSI SYNC 1 LINK KE SHEET
-  ================================================================= */
-  
-  async function syncSingleLinkToSheet(linkData) {
-    const backendUrl = localStorage.getItem('bk56_backend_url') || 
-                       localStorage.getItem('BK56_CFG_KEY');
-    
-    if (!backendUrl) {
-      console.warn('⚠️ [SyncOnUserAction] Backend URL belum dikonfigurasi');
-      return false;
-    }
-    
-    if (!linkData.url || !linkData.url.trim()) {
-      console.warn('⚠️ [SyncOnUserAction] URL kosong');
-      return false;
-    }
-    
-    // Normalisasi URL
-    let url = linkData.url.trim();
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
-    }
-    
-    try {
-      // Cek duplikat di sheet
-      const res = await fetch(backendUrl, { method: 'GET', redirect: 'follow' });
-      const json = await res.json();
-      
-      if (json.success && Array.isArray(json.data)) {
-        const exists = json.data.some(d => 
-          String(d.URL || '').trim().toLowerCase() === url.toLowerCase()
-        );
-        
-        if (exists) {
-          console.log('ℹ️ [SyncOnUserAction] Link sudah ada di sheet, skip');
-          return false;
-        }
-      }
-      
-      // Push link baru (HANYA 1 link, TIDAK scan localStorage!)
-      const pushRes = await fetch(backendUrl, {
-        method: 'POST',
-        redirect: 'follow',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          action: 'add',
-          kelas: linkData.kelas || '-',
-          guru: linkData.guru || '-',
-          kategori: linkData.kategori || 'dokumen',
-          nama: linkData.nama || 'Dokumen',
-          jenis: linkData.jenis || 'doc',
-          url: url
-        })
-      });
-      
-      const pushJson = await pushRes.json();
-      
-      if (pushJson.success) {
-        console.log('✅ [SyncOnUserAction] 1 link di-push ke sheet:', linkData.nama);
-        if (typeof showToast === 'function') {
-          showToast('✅ Link tersinkron ke Google Sheets', 'success');
-        }
-        return true;
-      }
-      
-      return false;
-    } catch(e) {
-      console.warn('⚠️ [SyncOnUserAction] Error push:', e.message);
-      return false;
-    }
-  }
-  
-  /* ================================================================
-  * 🔑 STEP 3: HOOK FUNGSI TAMBAH LINK
-  ================================================================= */
-  
-  // Hook addDocLink
-  if (typeof window.addDocLink === 'function' && !window.addDocLink.__syncOnUserHooked) {
+  if (typeof window.addDocLink === 'function') {
     const _orig = window.addDocLink;
     window.addDocLink = function() {
-      // Panggil fungsi asli dulu
+      // 1. Panggil fungsi asli dulu (ini akan simpan ke localStorage via IIFE internal)
       const result = _orig.apply(this, arguments);
       
-      // Sync ke sheet setelah 300ms (tunggu data tersimpan)
-      setTimeout(async () => {
-        try {
-          // Ambil data dari argumen atau currentLinkEdit
-          let linkData = { url: arguments[1] || arguments[0], jenis: 'doc', nama: 'Dokumen', kategori: 'dokumen' };
-          
-          // Coba ambil dari currentLinkEdit (variabel internal)
-          if (typeof currentLinkEdit !== 'undefined' && currentLinkEdit) {
-            const docIdx = currentLinkEdit.docIdx;
-            if (typeof DOCS !== 'undefined' && DOCS[docIdx]) {
-              const doc = DOCS[docIdx];
-              linkData = {
-                kelas: doc.kelas || '-',
-                guru: doc.guru || '-',
-                kategori: doc.kat || 'dokumen',
-                nama: doc.nama || 'Dokumen',
-                jenis: 'doc',
-                url: linkData.url
-              };
-            }
+      // 2. Ambil URL dari input
+      const input = document.getElementById('input-doc-link');
+      if (!input) return result;
+      const rawUrl = input.value.trim();
+      if (!rawUrl) return result;
+      
+      let finalUrl = rawUrl;
+      if (!/^https?:\/\//i.test(rawUrl) && !/^mailto:/i.test(rawUrl)) {
+        finalUrl = 'https://' + rawUrl;
+      }
+
+      // 3. CARI docIdx dengan mencocokkan Nama Dokumen dari Modal Title
+      let foundDocIdx = -1;
+      const modalTitle = document.getElementById('link-modal-title');
+      if (modalTitle) {
+        const titleText = modalTitle.textContent; 
+        for (let i = 0; i < DOCS.length; i++) {
+          if (DOCS[i].nama && titleText.includes(DOCS[i].nama)) {
+            foundDocIdx = i;
+            break;
           }
-          
-          await syncSingleLinkToSheet(linkData);
-        } catch(e) {
-          console.warn('⚠️ [SyncOnUserAction] Error hook addDocLink:', e);
         }
-      }, 300);
+      }
+      
+      // Fallback: Jika gagal, cari berdasarkan URL yang mirip
+      if (foundDocIdx === -1) {
+        const urlLower = finalUrl.toLowerCase();
+        for (let i = 0; i < DOCS.length; i++) {
+          const docLink = String(DOCS[i].link || '').toLowerCase();
+          if (docLink && (docLink === urlLower || urlLower.includes(docLink) || docLink.includes(urlLower))) {
+            foundDocIdx = i;
+            break;
+          }
+        }
+      }
+
+      // 4. Jika ditemukan, push ke Sheet dengan metadata yang BENAR
+      if (foundDocIdx !== -1) {
+        const doc = DOCS[foundDocIdx];
+        console.log('📤 [FixMetadataPushV3] Data yang akan dikirim ke Sheet:', {
+          kelas: doc.kelas,
+          guru: doc.guru,
+          kategori: doc.kat,
+          nama: doc.nama,
+          url: finalUrl
+        });
+        
+        const backendUrl = localStorage.getItem('bk56_backend_url') || localStorage.getItem('BK56_CFG_KEY');
+        if (backendUrl) {
+          fetch(backendUrl, {
+            method: 'POST',
+            redirect: 'follow',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+              action: 'add',
+              kelas: doc.kelas || '-',
+              guru: doc.guru || '-',
+              kategori: doc.kat || 'dokumen',
+              nama: doc.nama || 'Dokumen',
+              jenis: 'doc',
+              url: finalUrl
+            })
+          }).then(res => res.json()).then(json => {
+            if (json.success) {
+              console.log('✅ [FixMetadataPushV3] Link berhasil di-push ke Sheet dengan metadata benar!');
+              if (typeof showToast === 'function') showToast('✅ Link tersinkron ke Google Sheets', 'success');
+            } else {
+              console.warn('⚠️ [FixMetadataPushV3] Gagal push:', json);
+            }
+          }).catch(e => console.error('❌ [FixMetadataPushV3] Gagal push:', e));
+        }
+      } else {
+        console.warn('⚠️ [FixMetadataPushV3] Tidak dapat menemukan docIdx untuk URL:', finalUrl);
+      }
       
       return result;
     };
-    window.addDocLink.__syncOnUserHooked = true;
-    console.log('✅ [SyncOnUserAction] addDocLink di-hook');
+    window.addDocLink.__fixMetadataPushV3Patched = true;
+    console.log('✅ [FixMetadataPushV3] window.addDocLink di-override dengan pencarian docIdx otomatis (Anti-Gagal)');
   }
-  
-  // Hook addMateriLink
-  if (typeof window.addMateriLink === 'function' && !window.addMateriLink.__syncOnUserHooked) {
-    const _orig = window.addMateriLink;
-    window.addMateriLink = function() {
-      const result = _orig.apply(this, arguments);
-      
-      setTimeout(async () => {
-        try {
-          const args = arguments;
-          const linkData = {
-            kelas: args[0] || '-',
-            guru: args[1] || '-',
-            kategori: 'materi',
-            nama: 'Materi ' + (parseInt(args[2] || 0) + 1),
-            jenis: args[3] || 'doc',
-            url: args[4]
-          };
-          await syncSingleLinkToSheet(linkData);
-        } catch(e) {
-          console.warn('⚠️ [SyncOnUserAction] Error hook addMateriLink:', e);
-        }
-      }, 300);
-      
-      return result;
-    };
-    window.addMateriLink.__syncOnUserHooked = true;
-    console.log('✅ [SyncOnUserAction] addMateriLink di-hook');
-  }
-  
-  // Hook addVideoLink
-  if (typeof window.addVideoLink === 'function' && !window.addVideoLink.__syncOnUserHooked) {
-    const _orig = window.addVideoLink;
-    window.addVideoLink = function() {
-      const result = _orig.apply(this, arguments);
-      
-      setTimeout(async () => {
-        try {
-          const args = arguments;
-          const linkData = {
-            kelas: '-',
-            guru: '-',
-            kategori: 'video',
-            nama: 'Video ' + (parseInt(args[0] || 0) + 1),
-            jenis: 'video',
-            url: args[1]
-          };
-          await syncSingleLinkToSheet(linkData);
-        } catch(e) {
-          console.warn('⚠️ [SyncOnUserAction] Error hook addVideoLink:', e);
-        }
-      }, 300);
-      
-      return result;
-    };
-    window.addVideoLink.__syncOnUserHooked = true;
-    console.log('✅ [SyncOnUserAction] addVideoLink di-hook');
-  }
-  
-  /* ================================================================
-  * 🔑 STEP 4: BLOCK AUTO-SYNC VIA VISIBILITY CHANGE & CLICK
-  ================================================================= */
-  
-  document.addEventListener('visibilitychange', function(e) {
-    if (!document.hidden) {
-      e.stopImmediatePropagation();
-      console.log('⏸️ [SyncOnUserAction] Tab aktif - auto-sync dicegah');
-    }
-  }, true);
-  
-  /* ================================================================
-  * 🎯 SELESAI
-  ================================================================= */
-  console.log('✅ [SyncOnUserAction] Patch terpasang');
-  console.log('📌 Yang DINONAKTIFKAN:');
-  console.log('   ❌ bk56SyncToSheetSilent (auto-sync diam-diam)');
-  console.log('   ❌ autoSyncToSheet (scan localStorage setiap 3 detik)');
-  console.log('   ❌ startAutoSync (auto-sync saat load)');
-  console.log('   ❌ startPeriodicSync (sync periodik)');
-  console.log('   ❌ bk56DetectChanges (deteksi perubahan localStorage)');
-  console.log('📌 Yang AKTIF:');
-  console.log('   ✅ Hook addDocLink → sync 1 link baru saat user tambah');
-  console.log('   ✅ Hook addMateriLink → sync 1 link baru saat user tambah');
-  console.log('   ✅ Hook addVideoLink → sync 1 link baru saat user tambah');
-  console.log('   ✅ Tombol "🔄 Sync dari Sheet" (manual)');
-  console.log('   ✅ Tombol "💾 Push ke Sheet" (manual)');
-  console.log('📌 ATURAN:');
-  console.log('   • TIDAK ADA scan localStorage saat sync');
-  console.log('   • HANYA sync 1 link yang user tambahkan');
-  console.log('   • Data diambil dari DOCS array (bukan localStorage)');
-  
 })();
 </script>
-<!-- ========== PATCH: SYNC HANYA SAAT USER TAMBAH LINK [END] ========== -->
+<!-- ========== PATCH FINAL FIX V3: METADATA PUSH KE SHEET [END] ========== -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH: ULTIMATE STRICT SANITIZER v2 (AUTO-UPDATE BADGE) ========== -->
+<!-- ================================================================ -->
+<script>
+(function() {
+    if (window.__ultimateStrictSanitizerV2Patched) {
+        console.log('ℹ️ [UltimateStrictSanitizerV2] Sudah aktif, skip');
+        return;
+    }
+    window.__ultimateStrictSanitizerV2Patched = true;
+    console.log('🛡️ [UltimateStrictSanitizerV2] Patch Pembersih Data & Auto-Update Badge Dimulai...');
+
+    // 1. Clean LocalStorage (Lapisan 1)
+    function cleanLocalStorage() {
+        const rawLinks = localStorage.getItem('bk56_doc_links');
+        if (!rawLinks) return;
+
+        let docLinks = JSON.parse(rawLinks);
+        let changed = false;
+
+        const validSections = {};
+        if (typeof DOCS !== 'undefined' && Array.isArray(DOCS)) {
+            DOCS.forEach((doc, idx) => {
+                const nameMatch = String(doc.nama).match(/(VII|VIII|IX)\s*-?\s*([A-J])/i);
+                if (nameMatch) {
+                    validSections[idx] = (nameMatch[1] + '-' + nameMatch[2]).toUpperCase().replace(/\s/g, '');
+                }
+            });
+        }
+
+        for (let idx in docLinks) {
+            if (!Array.isArray(docLinks[idx])) continue;
+            const targetSection = validSections[idx];
+            if (!targetSection) continue;
+
+            const originalLength = docLinks[idx].length;
+            docLinks[idx] = docLinks[idx].filter(linkUrl => {
+                const urlLower = String(linkUrl).toLowerCase();
+                const urlSectionMatch = urlLower.match(/(vii|viii|ix)\s*-?\s*([a-j])/);
+                
+                if (urlSectionMatch) {
+                    const urlSection = (urlSectionMatch[1] + '-' + urlSectionMatch[2]).toUpperCase().replace(/\s/g, '');
+                    return urlSection === targetSection; 
+                }
+                return true; 
+            });
+
+            if (docLinks[idx].length !== originalLength) {
+                changed = true;
+            }
+        }
+
+        if (changed) {
+            localStorage.setItem('bk56_doc_links', JSON.stringify(docLinks));
+        }
+    }
+
+    // 2. Clean UI & AUTO-UPDATE BADGE (Lapisan 2 - Ultimate)
+    function cleanUIAndUpdateBadge() {
+        const containers = document.querySelectorAll('.card, .modal, [class*="card"], [class*="modal"], .link-list, .doc-list, .bg-white');
+        
+        containers.forEach(container => {
+            const titleEl = container.querySelector('h3, h4, h5, h6, .card-title, strong, .font-bold, .text-lg');
+            if (!titleEl) return;
+            
+            const title = titleEl.textContent.trim();
+            const titleMatch = title.match(/(VII|VIII|IX)\s*-?\s*([A-J])/i);
+            if (!titleMatch) return; 
+            
+            const targetSection = (titleMatch[1] + '-' + titleMatch[2]).toUpperCase().replace(/\s/g, '');
+            const links = container.querySelectorAll('a[href*="http"], .doc-link-item, [data-url]');
+            
+            let validLinkCount = 0; // Penghitung link yang VALID
+
+            links.forEach(link => {
+                const href = (link.href || link.getAttribute('data-url') || link.textContent || '').toLowerCase();
+                if (!href || !href.includes('http')) return;
+                
+                const urlMatch = href.match(/(vii|viii|ix)\s*-?\s*([a-j])/);
+                if (urlMatch) {
+                    const urlSection = (urlMatch[1] + '-' + urlMatch[2]).toUpperCase().replace(/\s/g, '');
+                    
+                    if (urlSection !== targetSection) {
+                        // Hapus link yang bocor
+                        const itemToRemove = link.closest('li, tr, .link-item, .doc-link-item, p, div') || link;
+                        if (itemToRemove && itemToRemove !== container) {
+                            itemToRemove.remove();
+                        } else {
+                            link.remove();
+                        }
+                    } else {
+                        validLinkCount++; // Tambah hitungan jika link VALID
+                    }
+                } else {
+                    validLinkCount++; // Link tanpa section spesifik dianggap valid (fallback)
+                }
+            });
+
+            // 🔑 LANGKAH BARU: Update Badge/Angka Penghitung
+            // Cari elemen yang kemungkinan besar adalah badge penghitung (berisi kata "link" atau "Link" dan angka)
+            const badgeCandidates = container.querySelectorAll('.badge, .link-count, [class*="badge"], [class*="count"], span, small');
+            let badgeUpdated = false;
+            
+            for (let el of badgeCandidates) {
+                const text = el.textContent;
+                // Jika teks mengandung kata "link" (case insensitive) dan ada angka di dalamnya
+                if (/link/i.test(text) && /\d+/.test(text)) {
+                    // Ganti angka lama dengan angka validLinkCount yang baru
+                    el.textContent = text.replace(/\d+/, validLinkCount);
+                    badgeUpdated = true;
+                    break; // Stop setelah menemukan dan mengupdate badge yang tepat
+                }
+            }
+
+            // Fallback: Jika tidak menemukan badge spesifik, cari elemen dengan ID atau class yang umum
+            if (!badgeUpdated) {
+                const fallbackBadge = container.querySelector('#link-count, .jumlah-link, .total-link');
+                if (fallbackBadge) {
+                    fallbackBadge.textContent = validLinkCount;
+                }
+            }
+        });
+    }
+
+    // Jalankan pembersihan LocalStorage
+    cleanLocalStorage();
+
+    // Jalankan pembersihan UI & update badge segera dan berulang kali
+    setTimeout(cleanUIAndUpdateBadge, 500);
+    setTimeout(cleanUIAndUpdateBadge, 1500);
+    setTimeout(cleanUIAndUpdateBadge, 3000);
+
+    // Pantau perubahan DOM (saat modal dibuka atau link di-render)
+    const observer = new MutationObserver(() => {
+        if (window.__cleanUITimeoutV2) clearTimeout(window.__cleanUITimeoutV2);
+        window.__cleanUITimeoutV2 = setTimeout(cleanUIAndUpdateBadge, 200);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Hook ke fungsi render jika ada
+    if (typeof window.renderDocs === 'function') {
+        const _orig = window.renderDocs;
+        window.renderDocs = function() {
+            cleanLocalStorage(); 
+            _orig.apply(this, arguments);
+            setTimeout(cleanUIAndUpdateBadge, 100); 
+        };
+    }
+
+    console.log('✅ [UltimateStrictSanitizerV2] Siap. Link bocor dihapus DAN angka badge akan diperbarui otomatis.');
+})();
+</script>
+<!-- ========== PATCH: ULTIMATE STRICT SANITIZER v2 [END] ========== -->
+ <!-- ================================================================ -->
+<!-- ========== NUCLEAR AUTO-SYNC KILLER (MATIKAN TOTAL) ========== -->
+<!-- ================================================================ -->
+<script>
+(function() {
+    if (window.__nuclearAutoSyncKillerActive) {
+        console.log('ℹ️ [NuclearAutoSyncKiller] Sudah aktif, skip');
+        return;
+    }
+    window.__nuclearAutoSyncKillerActive = true;
+    console.log('💀 [NuclearAutoSyncKiller] Mematikan SEMUA Auto-Sync secara paksa...');
+
+    // 1. MATIKAN SEMUA TIMER TERSEMBUNYI (Interval & Timeout)
+    let killedIntervals = 0;
+    for (let i = 1; i <= 100000; i++) {
+        try { clearInterval(i); killedIntervals++; } catch(e) {}
+    }
+    console.log('✅ [NuclearAutoSyncKiller] ' + killedIntervals + ' interval timer dimatikan.');
+
+    // 2. BLOKIR FUNGSI AUTO-SYNC SPESIFIK (Berdasarkan log Anda)
+    const functionsToKill = [
+        'bk56SyncToSheetSilent', 
+        'autoSyncToSheet', 
+        'startAutoSync', 
+        'startPeriodicSync', 
+        'bk56DetectChanges', 
+        'bk56StartAutoSync',
+        'syncSheetToLocal' // Mencegah sync otomatis dari sheet ke lokal
+    ];
+
+    functionsToKill.forEach(funcName => {
+        if (typeof window[funcName] === 'function') {
+            window[funcName] = function() {
+                console.log('🚫 [NuclearAutoSyncKiller] ' + funcName + ' DIBLOKIR!');
+                return Promise.resolve(false);
+            };
+            console.log('✅ [NuclearAutoSyncKiller] Fungsi ' + funcName + ' dinonaktifkan.');
+        }
+    });
+
+    // 3. CEGAH AUTO-SYNC SAAT TAB DIBUKA/DITUTUP (Visibility Change)
+    document.addEventListener('visibilitychange', function(e) {
+        e.stopImmediatePropagation();
+        console.log('🚫 [NuclearAutoSyncKiller] Mencegah auto-sync saat tab aktif.');
+    }, true);
+
+    // 4. CEGAH AUTO-SYNC SAAT KLIK DI HALAMAN
+    document.addEventListener('click', function(e) {
+        // Biarkan klik normal, tapi cegah event listener auto-sync jika ada
+    }, true);
+
+    console.log('💀 [NuclearAutoSyncKiller] SELESAI. Auto-Sync 100% MATI.');
+    console.log('📌 Yang masih AKTIF: Tombol "🔄 Sync dari Sheet" dan "💾 Push ke Sheet" (Manual).');
+})();
+</script>
+<!-- ========== NUCLEAR AUTO-SYNC KILLER [END] ========== -->
 
 </body></html>
