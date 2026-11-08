@@ -18403,5 +18403,431 @@ init();
 <!-- ================================================================ -->
 <!-- ========== PATCH FINAL: BACKEND CONFIG PERMANEN + CROSS-DEVICE [END] ========== -->
 <!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ========== PATCH: TOMBOL PULIHKAN DARI SHEET - PASTI MUNCUL ========== -->
+<!-- ========== v2.0 - Direct DOM Injection | Nov 2026 ============== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+/* ================================================================
+* PATCH: TOMBOL "🔄 PULIHKAN DARI SHEET" - LANGSUNG INJECT
+* ================================================================
+* MASALAH SEBELUMNYA:
+* ❌ Tombol tidak muncul karena hook bk56RenderRekap timing-nya tidak pasti
+* ❌ Panel rekap di-render ulang → tombol hilang
+* ❌ Bergantung pada banyak kondisi
+*
+* SOLUSI BARU:
+* ✅ 1. Langsung inject tombol ke DOM (MutationObserver)
+* ✅ 2. Re-inject otomatis jika tombol hilang
+* ✅ 3. Tidak bergantung pada timing render
+* ✅ 4. Anti-double (flag + cek ID)
+* ✅ 5. Hook bk56RenderRekap sebagai backup
+*
+* FITUR:
+* - Tombol "🔄 Pulihkan dari Sheet" di panel Rekap Link
+* - Warna ungu (gradient) — mudah dibedakan
+* - Klik → fetch dari Google Sheets → restore ke card asal
+* - Notifikasi jelas saat berhasil
+================================================================ */
+const FLAG = '__bk56RestoreBtnPatched';
+if (window[FLAG]) {
+console.log('ℹ️ [RestoreBtn] Patch sudah terpasang, skip');
+return;
+}
+window[FLAG] = true;
+
+const CFG_KEY = 'bk56_backend_url';
+const MATERI_KEY = 'bk56_materi_links';
+const VIDEO_KEY = 'bk56_video_links';
+const DOC_KEY = 'bk56_doc_links';
+const PANEL_ID = 'a56-panel-rekap';
+const CONTROLS_SEL = '.a56-rekap-controls';
+const BTN_ID = 'bk56-restore-from-sheet-btn';
+
+/* ================================================================
+* 🔑 FUNGSI UTAMA: Restore dari Google Sheets
+*    → Fetch semua data dari Sheet
+*    → Cocokkan ke card yang tepat (matching KETAT)
+*    → Simpan ke localStorage
+*    → Refresh UI
+================================================================ */
+async function bk56RestoreFromSheetManual() {
+const backendUrl = localStorage.getItem(CFG_KEY);
+if (!backendUrl) {
+if (typeof showToast === 'function') {
+showToast('⚠️ Backend belum dikonfigurasi. Klik ⚙️ Konfigurasi Backend.', 'error');
+}
+return;
+}
+
+if (typeof DOCS === 'undefined' || !Array.isArray(DOCS)) {
+if (typeof showToast === 'function') {
+showToast('⚠️ Data dokumen belum dimuat', 'error');
+}
+return;
+}
+
+if (typeof showToast === 'function') {
+showToast('🔄 Sedang memulihkan link dari Google Sheets...', 'info');
+}
+
+console.log('🔄 [RestoreBtn] Mengambil data dari Google Sheets...');
+
+try {
+const res = await fetch(backendUrl, { method: 'GET', redirect: 'follow' });
+const json = await res.json();
+
+if (!json.success || !Array.isArray(json.data)) {
+console.warn('⚠️ [RestoreBtn] Response tidak valid');
+if (typeof showToast === 'function') {
+showToast('❌ Gagal mengambil data dari Sheet', 'error');
+}
+return;
+}
+
+console.log('📊 [RestoreBtn]', json.data.length, 'link ditemukan di sheet');
+
+// Load data lokal saat ini
+let materi = {}, video = {}, doc = {};
+try {
+const m = localStorage.getItem(MATERI_KEY);
+if (m) materi = JSON.parse(m);
+} catch(e) {}
+try {
+const v = localStorage.getItem(VIDEO_KEY);
+if (v) video = JSON.parse(v);
+} catch(e) {}
+try {
+const d = localStorage.getItem(DOC_KEY);
+if (d) doc = JSON.parse(d);
+} catch(e) {}
+
+let added = 0;
+let skipped = 0;
+
+// Helper: cari docIdx dengan matching KETAT (AND)
+function findDocIdxStrict(kelas, guru, kategori, nama) {
+const kL = String(kelas || '').toLowerCase().trim();
+const gL = String(guru || '').toLowerCase().trim();
+const katL = String(kategori || '').toLowerCase().trim();
+const nL = String(nama || '').toLowerCase().trim();
+
+for (let i = 0; i < DOCS.length; i++) {
+const d = DOCS[i];
+if (kL && kL !== '-' && d.kelas.toLowerCase() !== kL) continue;
+if (gL && gL !== '-' && d.guru.toLowerCase() !== gL) continue;
+if (katL && d.kat.toLowerCase() !== katL) continue;
+if (nL && d.nama.toLowerCase() === nL) return i;
+}
+return -1;
+}
+
+// Helper: hitung materiIdx dari docIdx
+function getMateriIdx(docIdx) {
+if (!DOCS[docIdx]) return -1;
+const d = DOCS[docIdx];
+let idx = 0;
+for (let i = 0; i < DOCS.length; i++) {
+if (DOCS[i].kelas === d.kelas && DOCS[i].guru === d.guru && DOCS[i].kat === 'materi') {
+if (i === docIdx) return idx;
+idx++;
+}
+}
+return -1;
+}
+
+// Proses setiap row di sheet
+json.data.forEach(row => {
+const kelas = String(row.Kelas || '').toLowerCase().trim();
+const guru = String(row.Guru || '').toLowerCase().trim();
+const kategori = String(row.Kategori || '').toLowerCase().trim();
+const nama = String(row.NamaDokumen || '').trim();
+const jenis = String(row.JenisLink || 'doc').toLowerCase().trim();
+const url = String(row.URL || '').trim();
+
+if (!url || url === '-') return;
+
+// Cari docIdx dengan matching KETAT
+const docIdx = findDocIdxStrict(kelas, guru, kategori, nama);
+if (docIdx < 0) {
+skipped++;
+return;
+}
+
+const d = DOCS[docIdx];
+
+if (d.kat === 'materi') {
+const materiIdx = getMateriIdx(docIdx);
+if (materiIdx < 0) return;
+
+const key = d.kelas + '_' + d.guru + '_' + materiIdx;
+if (!materi[key]) materi[key] = {ppt:[],pdf:[],doc:[],video:[]};
+if (!materi[key][jenis]) materi[key][jenis] = [];
+
+if (!materi[key][jenis].includes(url)) {
+materi[key][jenis].push(url);
+added++;
+}
+} else {
+if (!doc[docIdx]) doc[docIdx] = [];
+if (!doc[docIdx].includes(url)) {
+doc[docIdx].push(url);
+added++;
+}
+}
+});
+
+// Simpan ke localStorage
+localStorage.setItem(MATERI_KEY, JSON.stringify(materi));
+localStorage.setItem(VIDEO_KEY, JSON.stringify(video));
+localStorage.setItem(DOC_KEY, JSON.stringify(doc));
+
+console.log('✅ [RestoreBtn] Restore selesai:', added, 'link dipulihkan,', skipped, 'link dilewati');
+
+// Snapshot ke embedded JSON (untuk cross-device)
+try {
+const embEl = document.getElementById('bk56-embedded-data');
+if (embEl) {
+const emb = JSON.parse(embEl.textContent);
+emb.materi = materi;
+emb.video = video;
+emb.docLinks = doc;
+emb.lastUpdated = new Date().toISOString();
+emb.lastRestore = new Date().toISOString();
+embEl.textContent = JSON.stringify(emb);
+console.log('✅ [RestoreBtn] Snapshot ke embedded JSON');
+}
+} catch(e) {}
+
+// Refresh UI
+setTimeout(() => {
+if (typeof render === 'function') {
+try { render(true); } catch(e) {}
+}
+if (typeof bk56RenderRekap === 'function') {
+try { bk56RenderRekap(); } catch(e) {}
+}
+}, 500);
+
+if (typeof showToast === 'function') {
+if (added > 0) {
+showToast('✅ ' + added + ' link berhasil dipulihkan dari Google Sheets', 'success');
+} else {
+showToast('ℹ️ Tidak ada link baru untuk dipulihkan', 'info');
+}
+}
+} catch(e) {
+console.error('❌ [RestoreBtn] Gagal fetch dari sheet:', e);
+if (typeof showToast === 'function') {
+showToast('❌ Gagal memulihkan: ' + e.message, 'error');
+}
+}
+}
+
+/* ================================================================
+* 🎯 FUNGSI 1: Inject tombol ke panel rekap
+================================================================ */
+function injectRestoreButton() {
+// Cek apakah panel rekap ada di DOM
+const panel = document.getElementById(PANEL_ID);
+if (!panel) return false;
+
+// Cek apakah tombol sudah ada
+if (document.getElementById(BTN_ID)) return true;
+
+// Cari container controls
+const controls = panel.querySelector(CONTROLS_SEL);
+if (!controls) return false;
+
+// Buat tombol
+const btn = document.createElement('button');
+btn.id = BTN_ID;
+btn.className = 'a56-rekap-btn';
+btn.style.cssText = 'background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;box-shadow:0 4px 14px rgba(139,92,246,.4);';
+btn.innerHTML = '🔄 Pulihkan dari Sheet';
+btn.title = 'Ambil semua link dari Google Sheets dan kembalikan ke card asal';
+btn.onclick = function(e) {
+e.stopPropagation();
+bk56RestoreFromSheetManual();
+};
+
+// Hover effect
+btn.onmouseover = function() {
+this.style.transform = 'translateY(-2px)';
+this.style.boxShadow = '0 8px 22px rgba(139,92,246,.5)';
+};
+btn.onmouseout = function() {
+this.style.transform = '';
+this.style.boxShadow = '0 4px 14px rgba(139,92,246,.4)';
+};
+
+// Sisipkan setelah tombol "Push ke Sheet" (jika ada)
+const pushBtn = controls.querySelector('button[onclick*="bk56SyncToSheet"]');
+if (pushBtn && pushBtn.nextSibling) {
+controls.insertBefore(btn, pushBtn.nextSibling);
+} else {
+// Fallback: sisipkan di akhir
+controls.appendChild(btn);
+}
+
+console.log('✅ [RestoreBtn] Tombol "Pulihkan dari Sheet" di-inject');
+return true;
+}
+
+/* ================================================================
+* 🛡️ LAYER 1: MutationObserver — Auto-inject saat panel muncul
+================================================================ */
+function setupObserver() {
+const panel = document.getElementById(PANEL_ID);
+if (!panel) {
+// Panel belum ada, tunggu
+setTimeout(setupObserver, 500);
+return;
+}
+
+const observer = new MutationObserver(function(mutations) {
+let needInject = false;
+for (let i = 0; i < mutations.length; i++) {
+const m = mutations[i];
+if (m.attributeName === 'style' || m.attributeName === 'class') {
+if (panel.style.display === 'block' || panel.classList.contains('show')) {
+needInject = true;
+}
+}
+if (m.addedNodes && m.addedNodes.length > 0) {
+needInject = true;
+}
+}
+if (needInject) {
+setTimeout(injectRestoreButton, 200);
+}
+});
+
+observer.observe(panel, {
+attributes: true,
+attributeFilter: ['style', 'class'],
+childList: true,
+subtree: true
+});
+
+console.log('✅ [RestoreBtn] MutationObserver aktif');
+}
+
+/* ================================================================
+* 🛡️ LAYER 2: Hook bk56RenderRekap — Inject setelah render
+================================================================ */
+function hookRenderRekap() {
+if (typeof window.bk56RenderRekap !== 'function') {
+setTimeout(hookRenderRekap, 500);
+return;
+}
+if (window.bk56RenderRekap.__restoreBtnHooked) return;
+
+const _orig = window.bk56RenderRekap;
+window.bk56RenderRekap = function() {
+_orig.apply(this, arguments);
+setTimeout(injectRestoreButton, 300);
+};
+window.bk56RenderRekap.__restoreBtnHooked = true;
+console.log('✅ [RestoreBtn] bk56RenderRekap di-hook');
+}
+
+/* ================================================================
+* 🛡️ LAYER 3: Hook bk56ShowRekap — Inject saat tab Rekap dibuka
+================================================================ */
+function hookShowRekap() {
+if (typeof window.bk56ShowRekap !== 'function') {
+setTimeout(hookShowRekap, 500);
+return;
+}
+if (window.bk56ShowRekap.__restoreBtnHooked) return;
+
+const _orig = window.bk56ShowRekap;
+window.bk56ShowRekap = function(btn) {
+_orig.apply(this, arguments);
+setTimeout(injectRestoreButton, 400);
+};
+window.bk56ShowRekap.__restoreBtnHooked = true;
+console.log('✅ [RestoreBtn] bk56ShowRekap di-hook');
+}
+
+/* ================================================================
+* 🛡️ LAYER 4: Periodic check — Pastikan tombol selalu ada
+================================================================ */
+function startPeriodicCheck() {
+setInterval(function() {
+const panel = document.getElementById(PANEL_ID);
+if (!panel) return;
+if (panel.style.display === 'block') {
+injectRestoreButton();
+}
+}, 3000); // Cek setiap 3 detik
+}
+
+/* ================================================================
+* 🛡️ LAYER 5: Hook pindahKelas — Inject saat user pindah tab
+================================================================ */
+function hookPindahKelas() {
+if (typeof window.pindahKelas !== 'function') return;
+if (window.pindahKelas.__restoreBtnHooked) return;
+
+const _orig = window.pindahKelas;
+window.pindahKelas = function(k, btn) {
+_orig.apply(this, arguments);
+setTimeout(injectRestoreButton, 500);
+};
+window.pindahKelas.__restoreBtnHooked = true;
+}
+
+/* ================================================================
+* 🚀 INIT: Pasang semua layer
+================================================================ */
+function init() {
+console.log('🚀 [RestoreBtn] Tombol Pulihkan dari Sheet - v2.0');
+console.log('📌 Fitur:');
+console.log('   ✅ Langsung inject ke DOM (MutationObserver)');
+console.log('   ✅ Hook bk56RenderRekap (backup)');
+console.log('   ✅ Hook bk56ShowRekap (saat tab dibuka)');
+console.log('   ✅ Periodic check setiap 3 detik');
+console.log('   ✅ Hook pindahKelas (saat ganti tab)');
+console.log('');
+console.log('📌 Cara pakai:');
+console.log('   1. Buka tab "📋 Rekap Link"');
+console.log('   2. Klik tombol "🔄 Pulihkan dari Sheet" (warna ungu)');
+console.log('   3. Tunggu proses selesai');
+console.log('   4. Link akan otomatis muncul di card asal');
+
+// 1. Inject segera (jika panel sudah ada)
+setTimeout(injectRestoreButton, 500);
+setTimeout(injectRestoreButton, 1500);
+setTimeout(injectRestoreButton, 3000);
+
+// 2. Setup observer
+setupObserver();
+
+// 3. Hook fungsi-fungsi
+hookRenderRekap();
+hookShowRekap();
+hookPindahKelas();
+
+// 4. Periodic check
+startPeriodicCheck();
+
+console.log('✅ [RestoreBtn] Patch terpasang — 5 layer proteksi aktif');
+}
+
+// Jalankan init
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', init);
+} else {
+init();
+}
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH: TOMBOL PULIHKAN DARI SHEET - PASTI MUNCUL [END] ========== -->
+<!-- ================================================================ -->
 </body>
 </html>
