@@ -17735,332 +17735,6 @@ else init();
 <!-- ================================================================ -->
 <!-- ========== PATCH FINAL v40: HAPUS TERCENTANG [END] ========== -->
 <!-- ================================================================ -->
- <!-- ================================================================ -->
-<!-- ========== PATCH FINAL: BACKEND CONFIG PERMANEN + CROSS-DEVICE ========== -->
-<!-- ========== v2.0 - Ultra Strong | Anti-Lepas | Nov 2026 ========== -->
-<!-- ================================================================ -->
-<script>
-(function(){
-"use strict";
-/* ================================================================
-* PATCH FINAL: BACKEND CONFIG PERMANEN + CROSS-DEVICE v2.0
-* ================================================================
-* ATURAN UTAMA:
-* ✅ 1. URL backend tersimpan PERMANEN di embedded JSON (HTML)
-* ✅ 2. Auto-restore saat localStorage kosong (clear browser/ganti device)
-* ✅ 3. Real-time sync saat user mengetik di input
-* ✅ 4. Periodic check setiap 10 detik untuk sinkronisasi
-* ✅ 5. Anti-conflict dengan patch existing
-* ✅ 6. Namespace unik: sbc2- (Simple Backend Config v2)
-*
-* CARA KERJA:
-* 1. User input URL → simpan ke localStorage + embedded JSON
-* 2. Saat load → jika localStorage kosong, restore dari embedded
-* 3. Saat backup HTML → URL ikut ter-backup otomatis
-* 4. Saat ganti device → URL tetap ada di HTML
-* 5. Real-time sync → setiap perubahan langsung ter-embed
-*
-* ANTI-CONFLICT:
-* - Flag: window.__sbc2BackendConfigPatched
-* - Hanya hook 3 fungsi inti (bk56SaveConfig, bk56BackupToHTML, bk56OpenConfig)
-* - Tidak override setInterval/addEventListener global
-* - Menggunakan namespace sbc2- untuk semua variabel/fungsi
-================================================================ */
-const FLAG = '__sbc2BackendConfigPatched';
-if (window[FLAG]) {
-console.log('ℹ️ [SBC2] Patch sudah terpasang, skip');
-return;
-}
-window[FLAG] = true;
-
-const EMB_ID = 'bk56-embedded-data';
-const CFG_KEY = 'bk56_backend_url';
-const PATCH_VERSION = '2.0.0';
-
-/* ================================================================
-* 🔑 HELPER 1: Baca Embedded JSON
-================================================================ */
-function sbc2ReadEmb() {
-try {
-const el = document.getElementById(EMB_ID);
-if (!el) return null;
-return JSON.parse(el.textContent) || null;
-} catch(e) {
-console.warn('⚠️ [SBC2] Gagal baca embedded:', e);
-return null;
-}
-}
-
-/* ================================================================
-* 🔑 HELPER 2: Tulis Embedded JSON
-================================================================ */
-function sbc2WriteEmb(data) {
-try {
-const el = document.getElementById(EMB_ID);
-if (!el) return false;
-el.textContent = JSON.stringify(data);
-return true;
-} catch(e) {
-console.warn('⚠️ [SBC2] Gagal tulis embedded:', e);
-return false;
-}
-}
-
-/* ================================================================
-* 🔑 HELPER 3: Update URL di Embedded JSON (PERMANEN)
-================================================================ */
-function sbc2UpdateEmbUrl(url) {
-const data = sbc2ReadEmb() || { materi:{}, video:{}, docLinks:{} };
-data.backendUrl = url || '';
-data.lastUpdated = new Date().toISOString();
-data.sbc2Patch = PATCH_VERSION;
-const ok = sbc2WriteEmb(data);
-if (ok) {
-console.log('✅ [SBC2] URL tersimpan permanen di embedded HTML');
-}
-return ok;
-}
-
-/* ================================================================
-* 🎯 FUNGSI 1: AUTO-RESTORE dari Embedded JSON
-*    → Dipanggil saat halaman load
-*    → Jika localStorage kosong, restore dari embedded
-================================================================ */
-function sbc2AutoRestore() {
-const localUrl = localStorage.getItem(CFG_KEY);
-
-// Jika localStorage sudah ada URL → gunakan itu
-if (localUrl && localUrl.trim()) {
-console.log('✅ [SBC2] URL dari localStorage:', localUrl.slice(0, 50) + '...');
-sbc2UpdateInputField(localUrl);
-return;
-}
-
-// Jika localStorage kosong → restore dari embedded
-const emb = sbc2ReadEmb();
-if (emb && emb.backendUrl && emb.backendUrl.trim()) {
-localStorage.setItem(CFG_KEY, emb.backendUrl);
-console.log('✅ [SBC2] URL dipulihkan dari embedded HTML');
-sbc2UpdateInputField(emb.backendUrl);
-if (typeof showToast === 'function') {
-showToast('🔄 Konfigurasi backend dipulihkan dari HTML', 'info');
-}
-}
-}
-
-/* ================================================================
-* 🎯 FUNGSI 2: Update Input Field URL
-================================================================ */
-function sbc2UpdateInputField(url) {
-const input = document.getElementById('bk56-cfg-url');
-if (input && !input.value) {
-input.value = url;
-}
-}
-
-/* ================================================================
-* 🎯 FUNGSI 3: HOOK bk56SaveConfig
-*    → Setelah user simpan config → URL ikut ter-embed ke HTML
-================================================================ */
-function sbc2HookSaveConfig() {
-if (typeof window.bk56SaveConfig !== 'function') {
-setTimeout(sbc2HookSaveConfig, 500);
-return;
-}
-if (window.bk56SaveConfig.__sbc2Hooked) return;
-
-const _orig = window.bk56SaveConfig;
-window.bk56SaveConfig = function() {
-// Panggil fungsi asli dulu
-const result = _orig.apply(this, arguments);
-
-// Setelah selesai, sync URL ke embedded
-setTimeout(function() {
-const input = document.getElementById('bk56-cfg-url');
-if (input) {
-const url = input.value.trim();
-if (url) {
-localStorage.setItem(CFG_KEY, url);
-sbc2UpdateEmbUrl(url);
-console.log('✅ [SBC2] URL tersimpan di embedded HTML');
-}
-}
-}, 200);
-
-return result;
-};
-window.bk56SaveConfig.__sbc2Hooked = true;
-console.log('✅ [SBC2] bk56SaveConfig di-hook');
-}
-
-/* ================================================================
-* 🎯 FUNGSI 4: HOOK bk56BackupToHTML
-*    → Sebelum backup → pastikan URL terbaru ter-embed
-================================================================ */
-function sbc2HookBackup() {
-if (typeof window.bk56BackupToHTML !== 'function') {
-setTimeout(sbc2HookBackup, 500);
-return;
-}
-if (window.bk56BackupToHTML.__sbc2Hooked) return;
-
-const _orig = window.bk56BackupToHTML;
-window.bk56BackupToHTML = function() {
-// 🔑 Sync URL ke embedded SEBELUM backup
-const url = localStorage.getItem(CFG_KEY) || '';
-sbc2UpdateEmbUrl(url);
-console.log('✅ [SBC2] URL ter-embed sebelum backup');
-
-// Panggil fungsi asli
-return _orig.apply(this, arguments);
-};
-window.bk56BackupToHTML.__sbc2Hooked = true;
-console.log('✅ [SBC2] bk56BackupToHTML di-hook');
-}
-
-/* ================================================================
-* 🎯 FUNGSI 5: HOOK bk56OpenConfig
-*    → Saat modal config dibuka → pastikan URL ter-load
-================================================================ */
-function sbc2HookOpenConfig() {
-if (typeof window.bk56OpenConfig !== 'function') {
-setTimeout(sbc2HookOpenConfig, 500);
-return;
-}
-if (window.bk56OpenConfig.__sbc2Hooked) return;
-
-const _orig = window.bk56OpenConfig;
-window.bk56OpenConfig = function() {
-// Panggil fungsi asli
-const result = _orig.apply(this, arguments);
-
-// Setelah modal terbuka, pastikan input terisi
-setTimeout(function() {
-const url = localStorage.getItem(CFG_KEY) || '';
-const input = document.getElementById('bk56-cfg-url');
-if (input && !input.value && url) {
-input.value = url;
-}
-}, 300);
-
-return result;
-};
-window.bk56OpenConfig.__sbc2Hooked = true;
-console.log('✅ [SBC2] bk56OpenConfig di-hook');
-}
-
-/* ================================================================
-* 👁️ FUNGSI 6: WATCH Input URL (Real-time sync)
-*    → Setiap kali user mengetik → simpan ke embedded
-================================================================ */
-function sbc2WatchInput() {
-const input = document.getElementById('bk56-cfg-url');
-if (!input) {
-setTimeout(sbc2WatchInput, 500);
-return;
-}
-
-let debounceTimer;
-input.addEventListener('input', function() {
-clearTimeout(debounceTimer);
-debounceTimer = setTimeout(() => {
-const url = input.value.trim();
-if (url) {
-localStorage.setItem(CFG_KEY, url);
-sbc2UpdateEmbUrl(url);
-console.log('🔄 [SBC2] Real-time sync:', url.slice(0, 40) + '...');
-}
-}, 1000); // Debounce 1 detik
-});
-
-console.log('✅ [SBC2] Input watcher aktif');
-}
-
-/* ================================================================
-* 🔄 FUNGSI 7: PERIODIC SYNC (setiap 10 detik)
-*    → Pastikan embedded JSON selalu sinkron dengan localStorage
-================================================================ */
-function sbc2StartPeriodicSync() {
-setInterval(() => {
-const localUrl = localStorage.getItem(CFG_KEY);
-const emb = sbc2ReadEmb();
-
-// Jika ada perbedaan → sync ke embedded
-if (emb && localUrl && emb.backendUrl !== localUrl) {
-sbc2UpdateEmbUrl(localUrl);
-console.log('🔄 [SBC2] Periodic sync completed');
-}
-
-// Jika localStorage kosong tapi embedded ada → restore
-if (!localUrl && emb && emb.backendUrl) {
-localStorage.setItem(CFG_KEY, emb.backendUrl);
-sbc2UpdateInputField(emb.backendUrl);
-console.log('🔄 [SBC2] Restored from embedded');
-}
-}, 10000); // Setiap 10 detik
-
-console.log('✅ [SBC2] Periodic sync aktif (setiap 10 detik)');
-}
-
-/* ================================================================
-* 🚀 INIT: Pasang semua hook
-================================================================ */
-function init() {
-console.log('🚀 [SBC2] Backend Config Permanen + Cross-Device v' + PATCH_VERSION);
-console.log('📌 Prinsip:');
-console.log('   ✅ PERMANEN - URL tersimpan di embedded JSON (HTML)');
-console.log('   ✅ CROSS-DEVICE - Berlaku di semua device');
-console.log('   ✅ AUTO-RESTORE - Pulihkan saat localStorage kosong');
-console.log('   ✅ REAL-TIME SYNC - Setiap perubahan langsung ter-embed');
-console.log('   ✅ PERIODIC CHECK - Sinkronisasi setiap 10 detik');
-console.log('   ✅ ANTI-CONFLICT - Tidak override fungsi global');
-
-// 1. Auto-restore dari embedded
-sbc2AutoRestore();
-
-// 2. Hook fungsi-fungsi inti
-sbc2HookSaveConfig();
-sbc2HookBackup();
-sbc2HookOpenConfig();
-
-// 3. Watch input (real-time sync)
-sbc2WatchInput();
-
-// 4. Periodic sync
-sbc2StartPeriodicSync();
-
-// 5. Initial sync ke embedded (jika localStorage ada data)
-setTimeout(function() {
-const url = localStorage.getItem(CFG_KEY);
-if (url && url.trim()) {
-sbc2UpdateEmbUrl(url);
-console.log('✅ [SBC2] Initial sync selesai');
-}
-}, 2000);
-
-// 6. Sync saat visibility change (user kembali ke tab)
-document.addEventListener('visibilitychange', () => {
-if (!document.hidden) {
-sbc2AutoRestore();
-}
-});
-
-console.log('✅ [SBC2] Patch terpasang — semua hook aktif');
-console.log('📌 URL backend akan tersimpan permanen di HTML');
-console.log('📌 Berlaku lintas device (anti lepas/terlepas)');
-}
-
-// Jalankan init
-if (document.readyState === 'loading') {
-document.addEventListener('DOMContentLoaded', init);
-} else {
-init();
-}
-})();
-</script>
-<!-- ================================================================ -->
-<!-- ========== PATCH FINAL: BACKEND CONFIG PERMANEN + CROSS-DEVICE [END] ========== -->
-<!-- ================================================================ -->
 <!-- ================================================================ -->
 <!-- ========== PATCH: TOMBOL PULIHKAN DARI SHEET - PASTI MUNCUL ========== -->
 <!-- ========== v2.0 - Direct DOM Injection | Nov 2026 ============== -->
@@ -18486,6 +18160,435 @@ init();
 </script>
 <!-- ================================================================ -->
 <!-- ========== PATCH: TOMBOL PULIHKAN DARI SHEET - PASTI MUNCUL [END] ========== -->
+<!-- ================================================================ -->
+ <!-- ================================================================ -->
+<!-- ========== PATCH ULTIMATE: BACKEND CONFIG PERMANEN LINTAS DEVICE ========== -->
+<!-- ========== v3.0 - Embedded-First Strategy | Anti-Lepas ========== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+
+/* ================================================================
+ * PATCH ULTIMATE: BACKEND CONFIG PERMANEN LINTAS DEVICE v3.0
+ * ================================================================
+ * STRATEGI: "EMBEDDED-FIRST"
+ * - Embedded JSON di HTML = SUMBER UTAMA (bukan cadangan)
+ * - localStorage = cache sementara
+ * - Setiap perubahan → langsung tulis ke embedded JSON di DOM
+ * - Saat Backup → embedded JSON (yang sudah berisi URL) di-bake ke file baru
+ * - File baru di GitHub → URL permanen untuk semua device
+ *
+ * ANTI-CONFLICT:
+ * - Flag unik: window.__ultimateBackendConfigPatched
+ * - Namespace: ubc- (Ultimate Backend Config)
+ * - Hanya hook, tidak replace total
+ * - Tidak sentuh setInterval/addEventListener global
+ * ================================================================ */
+
+const FLAG = '__ultimateBackendConfigPatched';
+if (window[FLAG]) {
+    console.log('ℹ️ [UBC] Patch sudah terpasang, skip');
+    return;
+}
+window[FLAG] = true;
+
+const EMB_ID = 'bk56-embedded-data';
+const CFG_KEY = 'bk56_backend_url';
+const VERSION = '3.0';
+
+/* ================================================================
+ * 🔑 HELPER: Baca Embedded JSON
+ * ================================================================ */
+function ubcReadEmb() {
+    try {
+        const el = document.getElementById(EMB_ID);
+        if (!el) return null;
+        return JSON.parse(el.textContent) || null;
+    } catch(e) {
+        return null;
+    }
+}
+
+/* ================================================================
+ * 🔑 HELPER: Tulis Embedded JSON
+ * ================================================================ */
+function ubcWriteEmb(data) {
+    try {
+        const el = document.getElementById(EMB_ID);
+        if (!el) return false;
+        el.textContent = JSON.stringify(data);
+        return true;
+    } catch(e) {
+        return false;
+    }
+}
+
+/* ================================================================
+ * 🔑 HELPER: Simpan URL ke Embedded JSON (PERMANEN di HTML)
+ * ================================================================ */
+function ubcSaveUrlToEmbedded(url) {
+    const data = ubcReadEmb() || { materi:{}, video:{}, docLinks:{} };
+    data.backendUrl = url || '';
+    data.lastUpdated = new Date().toISOString();
+    data.ubcVersion = VERSION;
+    return ubcWriteEmb(data);
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 1: AUTO-RESTORE (Prioritas: Embedded JSON)
+ * - Cek embedded JSON DULU (sumber utama)
+ * - Jika ada URL di embedded → gunakan itu (override localStorage)
+ * - Ini memastikan URL dari GitHub selalu menang
+ * ================================================================ */
+function ubcAutoRestore() {
+    const emb = ubcReadEmb();
+    const embUrl = (emb && emb.backendUrl) ? emb.backendUrl.trim() : '';
+    const localUrl = (localStorage.getItem(CFG_KEY) || '').trim();
+
+    // PRIORITAS: Embedded JSON (dari file HTML di GitHub)
+    if (embUrl) {
+        // URL ada di embedded → ini yang berlaku (lintas device)
+        localStorage.setItem(CFG_KEY, embUrl);
+
+        // Update input field jika ada
+        const input = document.getElementById('bk56-cfg-url');
+        if (input && input.value !== embUrl) {
+            input.value = embUrl;
+        }
+
+        console.log('✅ [UBC] URL dari embedded HTML (lintas device):', embUrl.slice(0, 60) + '...');
+
+        // Notifikasi jika berbeda dengan localStorage lama
+        if (localUrl && localUrl !== embUrl) {
+            console.log('🔄 [UBC] URL embedded meng-override localStorage');
+        }
+
+        return embUrl;
+    }
+
+    // Fallback: localStorage (jika embedded kosong)
+    if (localUrl) {
+        console.log('ℹ️ [UBC] URL dari localStorage:', localUrl.slice(0, 60) + '...');
+        const input = document.getElementById('bk56-cfg-url');
+        if (input && !input.value) input.value = localUrl;
+        return localUrl;
+    }
+
+    console.log('ℹ️ [UBC] Belum ada URL backend terkonfigurasi');
+    return '';
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 2: HOOK bk56SaveConfig
+ * - Setelah user klik "Simpan Konfigurasi"
+ * - URL langsung ditulis ke embedded JSON di DOM
+ * - Juga simpan ke localStorage (cache)
+ * ================================================================ */
+function ubcHookSaveConfig() {
+    if (typeof window.bk56SaveConfig !== 'function') {
+        setTimeout(ubcHookSaveConfig, 500);
+        return;
+    }
+    if (window.bk56SaveConfig.__ubcHooked) return;
+
+    const _orig = window.bk56SaveConfig;
+    window.bk56SaveConfig = function() {
+        // Panggil fungsi asli
+        const result = _orig.apply(this, arguments);
+
+        // Setelah selesai → tulis URL ke embedded JSON
+        setTimeout(function() {
+            const input = document.getElementById('bk56-cfg-url');
+            if (input) {
+                const url = input.value.trim();
+                if (url) {
+                    localStorage.setItem(CFG_KEY, url);
+                    ubcSaveUrlToEmbedded(url);
+                    console.log('✅ [UBC] URL tersimpan di embedded HTML (permanen)');
+
+                    // Notifikasi penting
+                    if (typeof showToast === 'function') {
+                        showToast('💾 URL tersimpan. Klik "Backup Permanen" agar berlaku di semua device!', 'success');
+                    }
+                }
+            }
+        }, 200);
+
+        return result;
+    };
+    window.bk56SaveConfig.__ubcHooked = true;
+    console.log('✅ [UBC] bk56SaveConfig di-hook');
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 3: HOOK bk56BackupToHTML
+ * - SEBELUM backup → pastikan URL terbaru ada di embedded JSON
+ * - File HTML hasil backup akan mengandung URL permanen
+ * ================================================================ */
+function ubcHookBackup() {
+    if (typeof window.bk56BackupToHTML !== 'function') {
+        setTimeout(ubcHookBackup, 500);
+        return;
+    }
+    if (window.bk56BackupToHTML.__ubcHooked) return;
+
+    const _orig = window.bk56BackupToHTML;
+    window.bk56BackupToHTML = function() {
+        // 🔑 PENTING: Sync URL ke embedded SEBELUM backup
+        const url = localStorage.getItem(CFG_KEY) || '';
+        if (url) {
+            ubcSaveUrlToEmbedded(url);
+            console.log('✅ [UBC] URL ter-embed sebelum backup → akan permanen di file baru');
+        }
+
+        // Panggil fungsi asli
+        return _orig.apply(this, arguments);
+    };
+    window.bk56BackupToHTML.__ubcHooked = true;
+    console.log('✅ [UBC] bk56BackupToHTML di-hook');
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 4: HOOK bk56OpenConfig
+ * - Saat modal config dibuka → pastikan URL ter-load
+ * ================================================================ */
+function ubcHookOpenConfig() {
+    if (typeof window.bk56OpenConfig !== 'function') {
+        setTimeout(ubcHookOpenConfig, 500);
+        return;
+    }
+    if (window.bk56OpenConfig.__ubcHooked) return;
+
+    const _orig = window.bk56OpenConfig;
+    window.bk56OpenConfig = function() {
+        const result = _orig.apply(this, arguments);
+
+        setTimeout(function() {
+            const emb = ubcReadEmb();
+            const embUrl = (emb && emb.backendUrl) ? emb.backendUrl.trim() : '';
+            const localUrl = localStorage.getItem(CFG_KEY) || '';
+            const finalUrl = embUrl || localUrl;
+
+            const input = document.getElementById('bk56-cfg-url');
+            if (input && !input.value && finalUrl) {
+                input.value = finalUrl;
+            }
+        }, 300);
+
+        return result;
+    };
+    window.bk56OpenConfig.__ubcHooked = true;
+    console.log('✅ [UBC] bk56OpenConfig di-hook');
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 5: REAL-TIME WATCH pada input URL
+ * - Setiap user mengetik → auto-save ke embedded JSON
+ * - Debounce 1.5 detik
+ * ================================================================ */
+function ubcWatchInput() {
+    const input = document.getElementById('bk56-cfg-url');
+    if (!input) {
+        setTimeout(ubcWatchInput, 500);
+        return;
+    }
+    if (input.__ubcWatched) return;
+
+    let debounceTimer;
+    input.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            const url = input.value.trim();
+            if (url) {
+                localStorage.setItem(CFG_KEY, url);
+                ubcSaveUrlToEmbedded(url);
+                console.log('🔄 [UBC] Real-time sync ke embedded:', url.slice(0, 40) + '...');
+            }
+        }, 1500);
+    });
+
+    input.__ubcWatched = true;
+    console.log('✅ [UBC] Input watcher aktif');
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 6: NOTIFIKASI PENTING saat halaman load
+ * - Jika URL sudah ada di embedded → tampilkan info "Permanen Aktif"
+ * - Jika belum → tampilkan panduan setup
+ * ================================================================ */
+function ubcShowStatusNotification() {
+    const emb = ubcReadEmb();
+    const embUrl = (emb && emb.backendUrl) ? emb.backendUrl.trim() : '';
+
+    setTimeout(function() {
+        if (embUrl) {
+            // URL sudah permanen di HTML
+            console.log('✅ [UBC] Status: URL Backend PERMANEN di HTML (lintas device aktif)');
+            if (typeof showToast === 'function') {
+                showToast('✅ Konfigurasi Backend PERMANEN aktif (berlaku di semua device)', 'success');
+            }
+        } else {
+            // Belum ada URL
+            console.log('ℹ️ [UBC] Status: URL Backend belum dikonfigurasi');
+            setTimeout(function() {
+                if (typeof showToast === 'function') {
+                    showToast('ℹ️ Klik ⚙️ Konfigurasi Backend untuk setup. Setelah itu klik "Backup Permanen".', 'info');
+                }
+            }, 2000);
+        }
+    }, 3000);
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 7: PERIODIC SYNC (setiap 15 detik)
+ * - Pastikan embedded JSON selalu sinkron dengan localStorage
+ * - Jika embedded kosong tapi localStorage ada → restore
+ * ================================================================ */
+function ubcStartPeriodicSync() {
+    setInterval(function() {
+        const emb = ubcReadEmb();
+        if (!emb) return;
+
+        const embUrl = (emb.backendUrl || '').trim();
+        const localUrl = (localStorage.getItem(CFG_KEY) || '').trim();
+
+        // Jika embedded kosong tapi localStorage ada → sync ke embedded
+        if (!embUrl && localUrl) {
+            ubcSaveUrlToEmbedded(localUrl);
+            console.log('🔄 [UBC] Periodic sync: localStorage → embedded');
+        }
+
+        // Jika embedded ada tapi localStorage kosong → restore
+        if (embUrl && !localUrl) {
+            localStorage.setItem(CFG_KEY, embUrl);
+            console.log('🔄 [UBC] Periodic sync: embedded → localStorage');
+        }
+    }, 15000);
+
+    console.log('✅ [UBC] Periodic sync aktif (15 detik)');
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 8: VISIBILITY CHANGE (user kembali ke tab)
+ * ================================================================ */
+function ubcHookVisibility() {
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            ubcAutoRestore();
+        }
+    });
+}
+
+/* ================================================================
+ * 🎯 LANGKAH 9: INFO BOX di modal config
+ * - Tambahkan info jelas bahwa URL akan permanen setelah backup
+ * ================================================================ */
+function ubcInjectInfoBox() {
+    const configBody = document.querySelector('.bk56-config-body');
+    if (!configBody) {
+        setTimeout(ubcInjectInfoBox, 500);
+        return;
+    }
+    if (document.getElementById('ubc-info-box')) return;
+
+    const infoBox = document.createElement('div');
+    infoBox.id = 'ubc-info-box';
+    infoBox.style.cssText = 'background:linear-gradient(135deg,#dcfce7,#bbf7d0);border:2px solid #10b981;border-left:4px solid #10b981;padding:12px 16px;border-radius:10px;margin-bottom:16px;font-size:0.85rem;color:#065f46;line-height:1.6;';
+
+    const emb = ubcReadEmb();
+    const hasUrl = emb && emb.backendUrl && emb.backendUrl.trim();
+
+    infoBox.innerHTML = `
+        <strong>🔒 Mode: PERMANEN LINTAS DEVICE</strong><br>
+        <small style="opacity:0.9;">
+            ${hasUrl
+                ? '✅ URL Backend sudah tersimpan permanen di file HTML. Berlaku di semua device (HP, PC, tablet).'
+                : '⚠️ URL belum tersimpan permanen. Setelah konfigurasi, klik <strong>"Backup Permanen"</strong> lalu replace file di GitHub.'
+            }
+        </small>
+    `;
+
+    const firstSection = configBody.querySelector('.bk56-config-section');
+    if (firstSection) {
+        configBody.insertBefore(infoBox, firstSection);
+    } else {
+        configBody.appendChild(infoBox);
+    }
+
+    console.log('✅ [UBC] Info box di-inject di modal config');
+}
+
+/* ================================================================
+ * 🚀 INIT: Pasang semua mekanisme
+ * ================================================================ */
+function init() {
+    console.log('');
+    console.log('═══════════════════════════════════════');
+    console.log('🚀 [UBC] Ultimate Backend Config v' + VERSION);
+    console.log('═══════════════════════════════════════');
+    console.log('📌 Strategi: EMBEDDED-FIRST');
+    console.log('   ✅ Embedded JSON = sumber utama (permanen di HTML)');
+    console.log('   ✅ localStorage = cache sementara');
+    console.log('   ✅ Berlaku lintas device (HP, PC, tablet)');
+    console.log('   ✅ Anti-lepas (URL menempel di file HTML)');
+    console.log('');
+
+    // 1. Auto-restore (PRIORITAS: Embedded JSON)
+    const restoredUrl = ubcAutoRestore();
+
+    // 2. Hook fungsi-fungsi inti
+    ubcHookSaveConfig();
+    ubcHookBackup();
+    ubcHookOpenConfig();
+
+    // 3. Watch input (real-time sync)
+    ubcWatchInput();
+
+    // 4. Periodic sync
+    ubcStartPeriodicSync();
+
+    // 5. Visibility change
+    ubcHookVisibility();
+
+    // 6. Show status notification
+    ubcShowStatusNotification();
+
+    // 7. Inject info box saat modal config dibuka
+    const cfgModal = document.getElementById('bk56-config-modal');
+    if (cfgModal) {
+        const obs = new MutationObserver(function() {
+            if (cfgModal.classList.contains('show')) {
+                setTimeout(ubcInjectInfoBox, 300);
+            }
+        });
+        obs.observe(cfgModal, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    console.log('');
+    console.log('📌 CARA PAKAI (PENTING):');
+    console.log('   1. Klik ⚙️ Konfigurasi Backend → masukkan URL Apps Script');
+    console.log('   2. Klik 💾 Simpan Konfigurasi');
+    console.log('   3. Klik 💾 Backup Permanen → file HTML baru ter-download');
+    console.log('   4. Upload file baru ke GitHub (replace index.html)');
+    console.log('   5. ✅ SELESAI! URL berlaku permanen di semua device');
+    console.log('');
+    console.log('✅ [UBC] Patch terpasang — semua mekanisme aktif');
+    console.log('═══════════════════════════════════════');
+    console.log('');
+}
+
+// Jalankan init
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
+
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH ULTIMATE: BACKEND CONFIG PERMANEN LINTAS DEVICE [END] ========== -->
 <!-- ================================================================ -->
 </body>
 </html>
