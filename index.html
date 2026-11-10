@@ -18581,5 +18581,391 @@ if (document.readyState === 'loading') {
 <!-- ================================================================ -->
 <!-- ========== PATCH ULTIMATE: BACKEND CONFIG PERMANEN LINTAS DEVICE [END] ========== -->
 <!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ==== PATCH FINAL: ANTI-PINDAH CARD (OWNER GUARD + STABLE MAP) ==== -->
+<!-- ==== v1.0 | Memperbaiki link pindah ke VII-A / VIII-A / IX-A ===== -->
+<!-- ================================================================ -->
+<script>
+(function(){
+"use strict";
+/* ================================================================
+ * MASALAH YANG DIPERBAIKI:
+ *  1. syncSheetToLocal() LOKAL (di dalam IIFE) pakai logika OR (||)
+ *     → semua link kategori 'kasus' jatuh ke card pertama (VII-A dst)
+ *     → tidak bisa di-override via window.*
+ *  2. bk56_doc_links pakai INDEX ANGKA DOCS → saat DOCS.splice()
+ *     (patch hapus tercentang) semua index geser → link pindah card
+ *  3. Data bocor ikut tersimpan di localStorage + embedded JSON
+ *     → di-restore terus setiap refresh
+ *
+ * STRATEGI (dicegat di titik yang dilewati SEMUA patch):
+ *  ✅ Guard localStorage.setItem('bk56_doc_links' / 'bk56_materi_links')
+ *     → setiap URL diperiksa pemiliknya, dipindah ke card BENAR
+ *  ✅ Guard window.fetch() → belajar peta "URL → card pemilik" dari Sheet
+ *  ✅ Stable Map: index DOCS dipetakan ke identitas (kelas|guru|kat|nama)
+ *     → DOCS berubah/splice ⇒ link otomatis di-remap, tidak geser
+ *  ✅ Repair embedded JSON saat boot (sebelum patch lain restore)
+ *  ✅ Link TIDAK PERNAH DIHAPUS — hanya dipindah ke tempat benar
+ *
+ * ANTI-CONFLICT:
+ *  - Tidak override setInterval / addEventListener global
+ *  - Tidak override render / pindahKelas / setGuru / setKat
+ *  - Tidak override addDocLink / addMateriLink / addVideoLink
+ *  - Flag tunggal: window.__bk56AntiPindahCardV1
+ * ================================================================ */
+
+var FLAG='__bk56AntiPindahCardV1';
+if(window[FLAG]){ console.log('ℹ️ [APC] Patch sudah terpasang, skip'); return; }
+window[FLAG]=true;
+
+var DOC_KEY='bk56_doc_links';
+var MATERI_KEY='bk56_materi_links';
+var EMB_ID='bk56-embedded-data';
+var CFG_KEY='bk56_backend_url';
+var MAP_KEY='bk56_doc_index_map_v1';   // peta index → identitas card
+var OWNER_KEY='bk56_url_owner_v1';     // peta URL → identitas card pemilik
+
+var _rawSet = Storage.prototype.setItem;
+var _rawGet = Storage.prototype.getItem;
+function rawSet(k,v){ try{ _rawSet.call(localStorage,k,v); }catch(e){} }
+function rawGet(k){ try{ return _rawGet.call(localStorage,k); }catch(e){ return null; } }
+function jp(s,d){ try{ var v=JSON.parse(s); return (v&&typeof v==='object')?v:d; }catch(e){ return d; } }
+function docs(){ return (typeof DOCS!=='undefined'&&Array.isArray(DOCS))?DOCS:[]; }
+function nurl(u){ return String(u||'').trim().toLowerCase(); }
+function idOf(d){ return [d.kelas,d.guru,d.kat,String(d.nama||'').toLowerCase().trim()].join('|'); }
+
+var idList=[], idToIdx={};
+function rebuildIndex(){
+  idList=[]; idToIdx={};
+  docs().forEach(function(d,i){ var id=idOf(d); idList.push(id); idToIdx[id]=i; });
+}
+rebuildIndex();
+
+var ownerMap = jp(rawGet(OWNER_KEY),{});
+var stat = { moved:0, remap:0, learned:0 };
+
+/* ================================================================
+ * 1) STABLE MAP — remap otomatis bila urutan/ jumlah DOCS berubah
+ * ================================================================ */
+function migrateIfDocsChanged(){
+  rebuildIndex();
+  var oldMap = jp(rawGet(MAP_KEY), null);
+  if(Array.isArray(oldMap) && oldMap.length){
+    var same = (oldMap.length===idList.length) && oldMap.every(function(v,i){ return v===idList[i]; });
+    if(!same){
+      var cur = jp(rawGet(DOC_KEY),{}), next={};
+      Object.keys(cur).forEach(function(k){
+        var oi=parseInt(k,10), id=oldMap[oi];
+        var ni=(id && idToIdx[id]!==undefined)?idToIdx[id]:-1;
+        if(ni<0) return;                       // card memang sudah dihapus
+        next[ni]=(next[ni]||[]).concat(cur[k]||[]);
+      });
+      Object.keys(next).forEach(function(k){
+        next[k]=Array.from(new Set(next[k].map(function(u){return String(u).trim();}).filter(Boolean)));
+      });
+      rawSet(DOC_KEY, JSON.stringify(next));
+      stat.remap++;
+      console.log('🧭 [APC] DOCS berubah → link di-remap ke card pemilik (bukan geser index)');
+      queueRender();
+    }
+  }
+  rawSet(MAP_KEY, JSON.stringify(idList));
+}
+
+/* ================================================================
+ * 2) OWNER MAP — belajar dari data Google Sheets (via fetch guard)
+ * ================================================================ */
+function findStrict(kelas,guru,nama){
+  var D=docs(), n=String(nama||'').toLowerCase().trim();
+  if(!n) return -1;
+  for(var i=0;i<D.length;i++){
+    var d=D[i];
+    if(kelas && kelas!=='-' && String(d.kelas).toLowerCase()!==kelas) continue;
+    if(guru  && guru!=='-'  && String(d.guru).toLowerCase()!==guru)  continue;
+    if(String(d.nama).toLowerCase().trim()===n) return i;   // ✅ AND, bukan OR
+  }
+  return -1;
+}
+function learnOwners(rows){
+  if(!Array.isArray(rows)) return 0;
+  var changed=0;
+  rows.forEach(function(r){
+    var url=String(r.URL||r.url||'').trim();
+    var nama=String(r.NamaDokumen||r.nama||'').trim();
+    if(!url||!nama) return;
+    var kelas=String(r.Kelas||'').toLowerCase().trim();
+    var guru =String(r.Guru||'').toLowerCase().trim();
+    var idx=findStrict(kelas,guru,nama);
+    if(idx<0) return;
+    var id=idList[idx];
+    if(ownerMap[nurl(url)]!==id){ ownerMap[nurl(url)]=id; changed++; }
+  });
+  if(changed){ rawSet(OWNER_KEY, JSON.stringify(ownerMap)); stat.learned+=changed; }
+  return changed;
+}
+
+/* ================================================================
+ * 3) HEURISTIK CADANGAN — deteksi kode kelas dari URL
+ *    (untuk link lama yang belum ada di Owner Map)
+ * ================================================================ */
+function classCode(s){
+  var m=String(s||'').match(/(viii|vii|ix)[\s._\-\/]*([a-j])(?![a-z])/i);
+  return m ? (m[1].toLowerCase()+'-'+m[2].toLowerCase()) : '';
+}
+function heuristicIdx(url, curIdx){
+  var D=docs(), cur=D[curIdx]; if(!cur) return -1;
+  var urlCode=classCode(url), cardCode=classCode(cur.nama);
+  if(!urlCode || !cardCode || urlCode===cardCode) return -1;
+  for(var i=0;i<D.length;i++){
+    var d=D[i];
+    if(d.guru!==cur.guru || d.kat!==cur.kat || d.kelas!==cur.kelas) continue;
+    if(classCode(d.nama)===urlCode) return i;
+  }
+  return -1;
+}
+
+/* ================================================================
+ * 4) REPAIR ENGINE — pindahkan link ke card pemilik (tidak hapus)
+ * ================================================================ */
+function repairDoc(obj){
+  var out={}, moved=0;
+  if(!obj||typeof obj!=='object') return {obj:obj||{},moved:0};
+  Object.keys(obj).forEach(function(k){
+    var idx=parseInt(k,10), list=obj[k];
+    if(!Array.isArray(list)) return;
+    list.forEach(function(u){
+      var url=String(u||'').trim(); if(!url) return;
+      var target=idx, owner=ownerMap[nurl(url)];
+      if(owner && idToIdx[owner]!==undefined) target=idToIdx[owner];
+      else { var h=heuristicIdx(url, idx); if(h>=0) target=h; }
+      if(!out[target]) out[target]=[];
+      if(out[target].indexOf(url)===-1) out[target].push(url);
+      if(target!==idx) moved++;
+    });
+  });
+  return {obj:out, moved:moved};
+}
+function repairMateri(obj){
+  var out={}, moved=0, D=docs();
+  if(!obj||typeof obj!=='object') return {obj:obj||{},moved:0};
+  Object.keys(obj).forEach(function(key){
+    var parts=key.split('_');
+    if(parts.length<3){ out[key]=obj[key]; return; }
+    var d=obj[key]||{};
+    ['ppt','pdf','doc','video'].forEach(function(t){
+      (Array.isArray(d[t])?d[t]:[]).forEach(function(u){
+        var url=String(u||'').trim(); if(!url) return;
+        var tkey=key, owner=ownerMap[nurl(url)];
+        if(owner && idToIdx[owner]!==undefined){
+          var od=D[idToIdx[owner]];
+          var m=String(od.nama||'').match(/(\d+)/);
+          if(od.kat==='materi' && m){
+            tkey=od.kelas+'_'+od.guru+'_'+(parseInt(m[1],10)-1);
+          }
+        }
+        if(!out[tkey]) out[tkey]={ppt:[],pdf:[],doc:[],video:[]};
+        if(!out[tkey][t]) out[tkey][t]=[];
+        if(out[tkey][t].indexOf(url)===-1) out[tkey][t].push(url);
+        if(tkey!==key) moved++;
+      });
+    });
+  });
+  return {obj:out, moved:moved};
+}
+
+/* ================================================================
+ * 5) GUARD localStorage.setItem — inti perbaikan
+ *    Semua patch (termasuk closure lokal) lewat sini
+ * ================================================================ */
+var renderTimer=null;
+function queueRender(){
+  clearTimeout(renderTimer);
+  renderTimer=setTimeout(function(){
+    if(typeof window.render==='function'){ try{ window.render(true); }catch(e){} }
+  },400);
+}
+function guardedSet(k,v){
+  try{
+    if(k===DOC_KEY){
+      var o=jp(v,null);
+      if(o){ var r=repairDoc(o); if(r.moved){ v=JSON.stringify(r.obj); stat.moved+=r.moved; queueRender();
+        console.log('🛡️ [APC] '+r.moved+' link dicegah pindah card → dikembalikan ke pemilik'); } }
+    } else if(k===MATERI_KEY){
+      var o2=jp(v,null);
+      if(o2){ var r2=repairMateri(o2); if(r2.moved){ v=JSON.stringify(r2.obj); stat.moved+=r2.moved; queueRender(); } }
+    }
+  }catch(e){}
+  return _rawSet.call(localStorage,k,v);
+}
+try{
+  localStorage.setItem=function(k,v){ return guardedSet(String(k),v); };
+}catch(e){ console.warn('⚠️ [APC] Guard setItem gagal dipasang:',e); }
+
+/* ================================================================
+ * 6) GUARD window.fetch — belajar pemilik link dari Sheet
+ * ================================================================ */
+var _fetch=window.fetch;
+if(typeof _fetch==='function'){
+  window.fetch=function(input,init){
+    var u=''; try{ u=(typeof input==='string')?input:((input&&input.url)||''); }catch(e){}
+    var p=_fetch.apply(this,arguments);
+    if(u && /script\.google\.com|macros\/s\//i.test(u)){
+      try{
+        p.then(function(res){
+          try{
+            res.clone().json().then(function(j){
+              if(j && Array.isArray(j.data)){
+                var c=learnOwners(j.data);
+                if(c) console.log('🧭 [APC] Owner map belajar '+c+' link dari Sheet');
+                setTimeout(repairAll,300);
+              }
+            }).catch(function(){});
+          }catch(e){}
+          return res;
+        }).catch(function(){});
+      }catch(e){}
+    }
+    return p;
+  };
+}
+
+/* ================================================================
+ * 7) REPAIR PASS — perbaiki data yang sudah terlanjur bocor
+ * ================================================================ */
+function repairAll(silent){
+  var total=0;
+  var d=jp(rawGet(DOC_KEY),null);
+  if(d){ var r=repairDoc(d); total+=r.moved;
+    if(r.moved){ rawSet(DOC_KEY,JSON.stringify(r.obj)); } }
+  var m=jp(rawGet(MATERI_KEY),null);
+  if(m){ var r2=repairMateri(m); total+=r2.moved;
+    if(r2.moved){ rawSet(MATERI_KEY,JSON.stringify(r2.obj)); } }
+  if(total){
+    stat.moved+=total; queueRender();
+    console.log('🧹 [APC] '+total+' link dipindahkan ke card pemilik yang benar');
+    if(!silent && typeof showToast==='function'){
+      showToast('🧭 '+total+' link dikembalikan ke card asalnya','success');
+    }
+  }
+  return total;
+}
+function repairEmbedded(){
+  var el=document.getElementById(EMB_ID); if(!el) return;
+  var e=jp(el.textContent,null); if(!e) return;
+  var ch=0;
+  if(e.docLinks){ var r=repairDoc(e.docLinks); e.docLinks=r.obj; ch+=r.moved; }
+  if(e.materi){ var r2=repairMateri(e.materi); e.materi=r2.obj; ch+=r2.moved; }
+  if(ch){ try{ el.textContent=JSON.stringify(e); }catch(err){}
+    console.log('🧹 [APC] Embedded JSON dibersihkan: '+ch+' link dipindah ke card benar'); }
+}
+
+/* ================================================================
+ * 8) TOOL MANUAL: ambil Sheet → perbaiki semua posisi link
+ * ================================================================ */
+window.bk56PerbaikiPosisiLink = async function(){
+  var url=rawGet(CFG_KEY);
+  if(!url){
+    var n=repairAll();
+    if(typeof showToast==='function'){
+      showToast(n? ('🧭 '+n+' link diperbaiki (mode lokal)') : '✅ Posisi link sudah benar','info');
+    }
+    return;
+  }
+  if(typeof showToast==='function') showToast('🔄 Menganalisis posisi link dari Google Sheets...','info');
+  try{
+    var res=await _fetch(url,{method:'GET',redirect:'follow'});
+    var j=await res.json();
+    if(j && Array.isArray(j.data)){
+      rebuildIndex();
+      learnOwners(j.data);
+      var n=repairAll(true);
+      repairEmbedded();
+      queueRender();
+      if(typeof showToast==='function'){
+        showToast(n? ('✅ '+n+' link dikembalikan ke card asalnya') : '✅ Semua link sudah di card yang benar','success');
+      }
+      console.log('✅ [APC] Perbaikan manual selesai. Link dipindah:',n);
+    } else if(typeof showToast==='function'){
+      showToast('⚠️ Response Sheet tidak valid','error');
+    }
+  }catch(e){
+    var n2=repairAll();
+    if(typeof showToast==='function') showToast('⚠️ Sheet gagal diakses, perbaikan lokal: '+n2+' link','info');
+  }
+};
+
+/* ================================================================
+ * 9) STATUS (untuk pengecekan)
+ * ================================================================ */
+window.bk56StatusPosisiLink=function(){
+  rebuildIndex();
+  var d=jp(rawGet(DOC_KEY),{}), salah=0, total=0;
+  Object.keys(d).forEach(function(k){
+    var idx=parseInt(k,10);
+    (d[k]||[]).forEach(function(u){
+      total++;
+      var o=ownerMap[nurl(u)];
+      if(o && idToIdx[o]!==undefined && idToIdx[o]!==idx) salah++;
+      else if(heuristicIdx(u,idx)>=0) salah++;
+    });
+  });
+  console.log('═══════════════════════════════');
+  console.log('🧭 STATUS POSISI LINK CARD');
+  console.log(' Total link dokumen :',total);
+  console.log(' Salah posisi       :',salah);
+  console.log(' Owner map tercatat :',Object.keys(ownerMap).length);
+  console.log(' Dicegah/dipindah   :',stat.moved);
+  console.log(' Remap index DOCS   :',stat.remap);
+  console.log('═══════════════════════════════');
+  return {total:total,salahPosisi:salah,ownerMap:Object.keys(ownerMap).length,dipindah:stat.moved};
+};
+
+/* ================================================================
+ * 10) TOMBOL di panel Rekap Link
+ * ================================================================ */
+function injectBtn(){
+  var panel=document.getElementById('a56-panel-rekap');
+  if(!panel || panel.style.display!=='block') return;
+  if(document.getElementById('bk56-fix-posisi-btn')) return;
+  var c=panel.querySelector('.a56-rekap-controls'); if(!c) return;
+  var b=document.createElement('button');
+  b.id='bk56-fix-posisi-btn';
+  b.className='a56-rekap-btn';
+  b.style.cssText='background:linear-gradient(135deg,#0ea5e9,#0369a1);color:#fff;box-shadow:0 4px 14px rgba(14,165,233,.4);';
+  b.innerHTML='🧭 Perbaiki Posisi Link';
+  b.title='Kembalikan link yang pindah ke card VII-A / VIII-A / IX-A ke card asalnya';
+  b.onclick=function(e){ e.stopPropagation(); window.bk56PerbaikiPosisiLink(); };
+  c.appendChild(b);
+}
+
+/* ================================================================
+ * INIT — dijalankan SEKARANG (synchronous), sebelum patch lain
+ * ================================================================ */
+migrateIfDocsChanged();     // perbaiki pergeseran index DOCS
+repairEmbedded();           // bersihkan embedded sebelum di-restore patch lain
+repairAll(true);            // bersihkan localStorage dari kebocoran lama
+console.log('✅ [APC] Anti-Pindah Card v1.0 aktif (Guard setItem + fetch + Stable Map)');
+
+setTimeout(function(){ migrateIfDocsChanged(); repairAll(true); },1200);
+setTimeout(function(){ repairAll(true); injectBtn(); },3000);
+setTimeout(function(){ repairAll(true); },6000);
+
+/* Pengawas ringan: deteksi DOCS berubah + tombol + repair berkala */
+var lastSig='';
+setInterval(function(){
+  migrateIfDocsChanged();
+  injectBtn();
+  var sig=(rawGet(DOC_KEY)||'').length+'|'+(rawGet(MATERI_KEY)||'').length;
+  if(sig!==lastSig){ lastSig=sig; repairAll(true); }
+},4000);
+
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden){ migrateIfDocsChanged(); repairAll(true); }
+});
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ==== PATCH FINAL: ANTI-PINDAH CARD [END] ======================= -->
+<!-- ================================================================ -->
 </body>
 </html>
