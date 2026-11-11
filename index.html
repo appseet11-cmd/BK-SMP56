@@ -19103,5 +19103,90 @@ if (typeof window.render === 'function') {
 <!-- ================================================================ -->
 <!-- ========== PATCH LOOP BREAKER [END] ========== -->
 <!-- ================================================================ -->
+<!-- ================================================================ -->
+<!-- ========== PATCH NO-SCROLL: TAP LANGSUNG KE HALAMAN ========== -->
+<!-- ========== v1.0 - Matikan Smooth Scroll Global | Nov 2026 ========== -->
+<!-- ================================================================ -->
+<style id="no-smooth-scroll-style">
+/* Paksa semua scroll jadi instan (tanpa animasi) */
+html, body { scroll-behavior: auto !important; }
+* { scroll-behavior: auto !important; }
+</style>
+<script>
+(function(){
+"use strict";
+var FLAG = '__noSmoothScrollPatched';
+if (window[FLAG]) { console.log('ℹ️ [NoScroll] Patch sudah terpasang, skip'); return; }
+window[FLAG] = true;
+
+/* ================================================================
+* 1) OVERRIDE Element.prototype.scrollIntoView
+*    → Semua panggilan (go, loadExt, tab 6C, daftar isi, hero, dll)
+*      dipaksa behavior: 'instant' = teleport, tanpa animasi
+================================================================ */
+var origSIV = Element.prototype.scrollIntoView;
+Element.prototype.scrollIntoView = function(opts) {
+    if (opts && typeof opts === 'object') {
+        var o = {};
+        for (var k in opts) o[k] = opts[k];
+        o.behavior = 'instant';
+        return origSIV.call(this, o);
+    }
+    // scrollIntoView() / scrollIntoView(true) → langsung ke atas elemen
+    return origSIV.call(this, false);
+};
+
+/* ================================================================
+* 2) OVERRIDE Element.prototype.scrollTo & scrollBy (container scroll)
+================================================================ */
+var origElScrollTo = Element.prototype.scrollTo;
+Element.prototype.scrollTo = function(opts) {
+    if (opts && typeof opts === 'object') {
+        var o = {}; for (var k in opts) o[k] = opts[k];
+        o.behavior = 'instant';
+        return origElScrollTo.call(this, o);
+    }
+    return origElScrollTo.apply(this, arguments);
+};
+var origElScrollBy = Element.prototype.scrollBy;
+Element.prototype.scrollBy = function(opts) {
+    if (opts && typeof opts === 'object') {
+        var o = {}; for (var k in opts) o[k] = opts[k];
+        o.behavior = 'instant';
+        return origElScrollBy.call(this, o);
+    }
+    return origElScrollBy.apply(this, arguments);
+};
+
+/* ================================================================
+* 3) OVERRIDE window.scrollTo / scrollBy / scroll
+================================================================ */
+['scrollTo', 'scrollBy', 'scroll'].forEach(function(fn) {
+    var orig = window[fn];
+    if (typeof orig !== 'function') return;
+    window[fn] = function(opts) {
+        if (opts && typeof opts === 'object') {
+            var o = {}; for (var k in opts) o[k] = opts[k];
+            o.behavior = 'instant';
+            return orig.call(window, o);
+        }
+        return orig.apply(window, arguments);
+    };
+});
+
+/* ================================================================
+* 4) Paksa style inline html (jaga-jaga ada yang set via JS)
+================================================================ */
+try {
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.body.style.scrollBehavior = 'auto';
+} catch(e) {}
+
+console.log('✅ [NoScroll] Patch aktif — semua tombol kini TAP LANGSUNG tanpa scroll animasi');
+})();
+</script>
+<!-- ================================================================ -->
+<!-- ========== PATCH NO-SCROLL: TAP LANGSUNG KE HALAMAN [END] ========== -->
+<!-- ================================================================ -->
 </body>
 </html>
